@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informations médicales - TSA App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 16px 20px 20px;
+        }
+
+        .intro-text {
+            color: rgba(245, 228, 204, 0.9);
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .form-section {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .input-field, .input-select {
+            width: 100%;
+            background-color: rgba(46, 58, 89, 0.05);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #2E3A59;
+        }
+
+        .input-field:focus, .input-select:focus {
+            outline: none;
+            border-color: #F7B89C;
+            background-color: rgba(247, 184, 156, 0.05);
+        }
+
+        .input-textarea {
+            min-height: 80px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .save-button {
+            background-color: #F7B89C;
+            color: #2E3A59;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .save-button:active {
+            transform: scale(0.98);
+            background-color: rgba(247, 184, 156, 0.9);
+        }
+
+        /* Message de succès en position fixe */
+        .success-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 20px;
+            right: 20px;
+            background-color: #F7B89C;
+            color: #2E3A59;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .success-toast.visible {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">⬅️</button>
+        <h1 class="page-title">Informations médicales</h1>
+    </header>
+
+    <main class="main-content">
+        <p class="intro-text">
+            Ces informations sont réservées aux secours. Vous pourrez choisir, pour chaque contexte, si elles doivent être affichées ou non.
+        </p>
+
+        <div class="form-section">
+            <div class="input-group">
+                <label class="input-label">Groupe sanguin</label>
+                <select class="input-select" id="groupeSanguin">
+                    <option value="">Non renseigné</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Allergies médicamenteuses</label>
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="allergiesMedic"
+                    placeholder="Ex : Pénicilline, Aspirine..."
+                >
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Autres allergies</label>
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="autresAllergies"
+                    placeholder="Ex : Arachides, pollen..."
+                >
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Traitement en cours</label>
+                <textarea 
+                    class="input-field input-textarea" 
+                    id="traitements"
+                    placeholder="Listez vos médicaments actuels..."
+                ></textarea>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Antécédents médicaux majeurs</label>
+                <textarea 
+                    class="input-field input-textarea" 
+                    id="antecedents"
+                    placeholder="Maladies chroniques, opérations importantes..."
+                ></textarea>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Autres informations utiles</label>
+                <textarea 
+                    class="input-field input-textarea" 
+                    id="autresInfos"
+                    placeholder="Informations importantes pour les secours..."
+                ></textarea>
+            </div>
+        </div>
+
+        <button class="save-button" onclick="saveInfos()">
+            💾 Enregistrer
+        </button>
+    </main>
+
+    <!-- Toast de succès en bas de l'écran -->
+    <div class="success-toast" id="successToast">
+        ✅ Informations enregistrées !
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            loadInfos();
+        });
+
+        function loadInfos() {
+            const saved = localStorage.getItem('infosMedicales');
+            if (!saved) return;
+
+            const infos = JSON.parse(saved);
+            
+            document.getElementById('groupeSanguin').value = infos.groupeSanguin || '';
+            document.getElementById('allergiesMedic').value = infos.allergiesMedic || '';
+            document.getElementById('autresAllergies').value = infos.autresAllergies || '';
+            document.getElementById('traitements').value = infos.traitements || '';
+            document.getElementById('antecedents').value = infos.antecedents || '';
+            document.getElementById('autresInfos').value = infos.autresInfos || '';
+        }
+
+        function saveInfos() {
+            const infos = {
+                groupeSanguin: document.getElementById('groupeSanguin').value,
+                allergiesMedic: document.getElementById('allergiesMedic').value.trim(),
+                autresAllergies: document.getElementById('autresAllergies').value.trim(),
+                traitements: document.getElementById('traitements').value.trim(),
+                antecedents: document.getElementById('antecedents').value.trim(),
+                autresInfos: document.getElementById('autresInfos').value.trim()
+            };
+
+            localStorage.setItem('infosMedicales', JSON.stringify(infos));
+            
+            // Afficher le toast en bas de l'écran
+            const toast = document.getElementById('successToast');
+            toast.classList.add('visible');
+            
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2500);
+        }
+
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+    </script>
+</body>
+</html>

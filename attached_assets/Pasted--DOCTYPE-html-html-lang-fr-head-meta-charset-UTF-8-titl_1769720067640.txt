@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Sons relaxants</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #384657;
+  color: #F5E4CC;
+}
+
+/* ===== TITRE ===== */
+h1 {
+  text-align: center;
+  padding: 20px 16px 8px;
+  font-weight: 500;
+}
+
+/* ===== BOUTON MIX ===== */
+.mix-cta {
+  margin: 16px;
+  padding: 18px;
+  background: #2E3A59;
+  border-radius: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.mix-cta strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.mix-cta span {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+  gap: 14px;
+  padding: 14px;
+}
+
+.card {
+  background: #2E3A59;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.card .label {
+  padding: 10px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+/* ===== MODALE LECTEUR SIMPLE ===== */
+.player-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.player-modal.active {
+  display: flex;
+}
+
+.player-box {
+  background: #384657;
+  border-radius: 26px;
+  width: 90%;
+  max-width: 420px;
+  padding: 20px;
+  text-align: center;
+}
+
+.player-box img {
+  width: 100%;
+  border-radius: 18px;
+}
+
+.player-controls {
+  margin-top: 14px;
+  font-size: 32px;
+  cursor: pointer;
+}
+
+.player-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* ===== MIXEUR ===== */
+.mixer-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  z-index: 1100;
+}
+
+.mixer-modal.active {
+  display: block;
+}
+
+.mixer-box {
+  background: #384657;
+  height: 100%;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.mixer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mixer-center {
+  text-align: center;
+  margin: 18px 0 28px;
+}
+
+.mixer-center button {
+  font-size: 26px;
+  background: none;
+  border: none;
+  color: #F5E4CC;
+  cursor: pointer;
+}
+
+.mixer-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.mixer-item img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ===== SLIDER DOUX ===== */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #2E3A59;
+  border-radius: 6px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #F7B89C;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Sons relaxants</h1>
+
+<div class="mix-cta" id="openMixer">
+  <strong>Créer mon ambiance sonore</strong>
+  <span>Mélangez plusieurs sons à votre rythme</span>
+</div>
+
+<div class="grid" id="soundGrid"></div>
+
+<!-- ===== LECTEUR SIMPLE ===== -->
+<div class="player-modal" id="playerModal">
+  <div class="player-close" id="closePlayer">✕</div>
+  <div class="player-box">
+    <img id="playerImage">
+    <div class="player-controls" id="playerBtn">⏸</div>
+  </div>
+</div>
+
+<!-- ===== MIXEUR ===== -->
+<div class="mixer-modal" id="mixerModal">
+  <div class="mixer-box">
+    <div class="mixer-header">
+      <strong>Ambiance personnalisée</strong>
+      <span id="closeMixer">✕</span>
+    </div>
+
+    <div class="mixer-center">
+      <button id="mixPlay">⏸</button>
+      <div id="timeDisplay">10:00</div>
+    </div>
+
+    <div id="mixerList"></div>
+  </div>
+</div>
+
+<script>
+/* ===== LISTE ===== */
+const sounds = [
+ "Pluie Sur La Fenêtre","Feu De Cheminée","Chant Nocturne","Ruisseau",
+ "Arrivée Au Refuge","Sur Le Rivage","Chant Des Oiseaux","Vers Les Étoiles"
+];
+
+const grid = document.getElementById("soundGrid");
+let currentAudio = null;
+
+sounds.forEach(name => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <img src="assets/images/${name.toLowerCase()}.jpg">
+    <div class="label">${name}</div>
+  `;
+  card.onclick = () => openPlayer(name);
+  grid.appendChild(card);
+});
+
+/* ===== LECTEUR SIMPLE ===== */
+function openPlayer(name){
+  if(currentAudio) currentAudio.pause();
+  currentAudio = new Audio(`assets/audio/${name.toLowerCase()}.mp3`);
+  currentAudio.loop = true;
+  currentAudio.play();
+  playerImage.src = `assets/images/${name.toLowerCase()}.jpg`;
+  playerModal.classList.add("active");
+}
+
+closePlayer.onclick = () => {
+  if(currentAudio) currentAudio.pause();
+  playerModal.classList.remove("active");
+};
+
+playerBtn.onclick = () => {
+  if(currentAudio.paused){
+    currentAudio.play();
+    playerBtn.textContent = "⏸";
+  } else {
+    currentAudio.pause();
+    playerBtn.textContent = "▶️";
+  }
+};
+
+/* ===== MIXEUR ===== */
+const mixSounds = ["Pluie","Ruisseau","Feu De Cheminée","Orage"];
+const mixerList = document.getElementById("mixerList");
+const audioMap = {};
+let remaining = 600;
+let timerStarted = false;
+let playing = true;
+
+function updateTime(){
+  const m = String(Math.floor(remaining/60)).padStart(2,"0");
+  const s = String(remaining%60).padStart(2,"0");
+  timeDisplay.textContent = `${m}:${s}`;
+}
+
+setInterval(() => {
+  if(!playing || !timerStarted) return;
+  remaining--;
+  updateTime();
+  if(remaining <= 0){
+    Object.values(audioMap).forEach(a => a.pause());
+    playing = false;
+  }
+},1000);
+
+mixSounds.forEach(name => {
+  const audio = new Audio(`assets/audio/${name.toLowerCase()}.mp3`);
+  audio.loop = true;
+  audio.volume = 0;
+  audioMap[name] = audio;
+
+  const div = document.createElement("div");
+  div.className = "mixer-item";
+  div.innerHTML = `
+    <img src="assets/images/${name.toLowerCase()}.jpg">
+    <input type="range" min="0" max="100" value="0">
+  `;
+
+  div.querySelector("input").oninput = e => {
+    const v = e.target.value / 100;
+    audio.volume = v;
+    if(v > 0){
+      timerStarted = true;
+      if(playing) audio.play();
+    } else {
+      audio.pause();
+    }
+  };
+
+  mixerList.appendChild(div);
+});
+
+openMixer.onclick = () => mixerModal.classList.add("active");
+closeMixer.onclick = () => {
+  Object.values(audioMap).forEach(a => a.pause());
+  mixerModal.classList.remove("active");
+};
+</script>
+
+</body>
+</html>

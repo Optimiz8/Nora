@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts d'urgence - TSA App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        .intro-text {
+            color: rgba(245, 228, 204, 0.8);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        /* Bouton ajouter */
+        .add-contact-btn {
+            background-color: #F7B89C;
+            border: none;
+            color: #2E3A59;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 24px;
+            transition: all 0.2s;
+        }
+
+        .add-contact-btn:active {
+            transform: scale(0.98);
+            background-color: rgba(247, 184, 156, 0.9);
+        }
+
+        .add-contact-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Liste des contacts */
+        .contacts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-card {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 16px 18px;
+            border: 2px solid transparent;
+        }
+
+        .contact-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .contact-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(46, 58, 89, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .contact-info {
+            color: #2E3A59;
+        }
+
+        .contact-main {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .contact-phone {
+            font-size: 15px;
+            opacity: 0.8;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: rgba(245, 228, 204, 0.6);
+            padding: 40px 20px;
+            font-size: 15px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #F5E4CC;
+            border-radius: 16px;
+            padding: 28px 24px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2E3A59;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .input-field {
+            width: 100%;
+            background-color: rgba(46, 58, 89, 0.05);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 10px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #2E3A59;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #F7B89C;
+            background-color: rgba(247, 184, 156, 0.05);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .modal-button.secondary {
+            background-color: rgba(46, 58, 89, 0.1);
+            color: #2E3A59;
+        }
+
+        .modal-button.primary {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .modal-button:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">⬅️</button>
+        <h1 class="page-title">Contacts d'urgence</h1>
+    </header>
+
+    <main class="main-content">
+        <p class="intro-text">
+            Ces contacts pourront être sélectionnés selon le contexte (Maison, Extérieur, Travail, Secours). Vous pouvez en ajouter jusqu'à 10.
+        </p>
+
+        <button class="add-contact-btn" onclick="openAddModal()">
+            Ajouter un contact
+        </button>
+
+        <div class="contacts-list" id="contactsList">
+            <!-- Généré dynamiquement -->
+        </div>
+    </main>
+
+    <!-- Modal Ajout/Modification -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Ajouter un contact</h2>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Nom</label>
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="inputNom"
+                    placeholder="Ex : Erica Dupond"
+                >
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Lien</label>
+                <input 
+                    type="text" 
+                    class="input-field" 
+                    id="inputLien"
+                    placeholder="Ex : Sœur, Ami(e), Médecin..."
+                >
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Téléphone</label>
+                <input 
+                    type="tel" 
+                    class="input-field" 
+                    id="inputTelephone"
+                    placeholder="Ex : 06 12 34 56 78"
+                >
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeModal()">Annuler</button>
+                <button class="modal-button primary" onclick="saveContact()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let contacts = [];
+        let editingIndex = null;
+        const MAX_CONTACTS = 10;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadContacts();
+            renderContacts();
+            updateAddButton();
+        });
+
+        function loadContacts() {
+            const saved = localStorage.getItem('contactsUrgence');
+            contacts = saved ? JSON.parse(saved) : [];
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('contactsUrgence', JSON.stringify(contacts));
+        }
+
+        function updateAddButton() {
+            const btn = document.querySelector('.add-contact-btn');
+            if (contacts.length >= MAX_CONTACTS) {
+                btn.disabled = true;
+                btn.textContent = `Limite de ${MAX_CONTACTS} contacts atteinte`;
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'Ajouter un contact';
+            }
+        }
+
+        function renderContacts() {
+            const container = document.getElementById('contactsList');
+            container.innerHTML = '';
+
+            if (contacts.length === 0) {
+                container.innerHTML = '<div class="empty-state">Aucun contact ajouté. Cliquez sur "Ajouter un contact" pour commencer.</div>';
+                return;
+            }
+
+            contacts.forEach((contact, index) => {
+                const card = document.createElement('div');
+                card.className = 'contact-card';
+
+                // Format : Nom (Lien) - Téléphone
+                const nomComplet = contact.nom || 'Contact';
+                const lien = contact.lien ? ` (${contact.lien})` : '';
+                const telephone = contact.telephone ? ` - ${contact.telephone}` : '';
+
+                card.innerHTML = `
+                    <div class="contact-header">
+                        <div class="contact-number">Contact ${index + 1}</div>
+                        <div class="contact-actions">
+                            <button class="action-btn" onclick="editContact(${index})" title="Modifier">✏️</button>
+                            <button class="action-btn" onclick="deleteContact(${index})" title="Supprimer">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-main">${nomComplet}${lien}</div>
+                        <div class="contact-phone">${telephone.replace(' - ', '')}</div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function openAddModal() {
+            if (contacts.length >= MAX_CONTACTS) {
+                return;
+            }
+            editingIndex = null;
+            document.getElementById('modalTitle').textContent = 'Ajouter un contact';
+            document.getElementById('inputNom').value = '';
+            document.getElementById('inputLien').value = '';
+            document.getElementById('inputTelephone').value = '';
+            document.getElementById('contactModal').classList.add('visible');
+        }
+
+        function editContact(index) {
+            editingIndex = index;
+            const contact = contacts[index];
+            document.getElementById('modalTitle').textContent = 'Modifier le contact';
+            document.getElementById('inputNom').value = contact.nom || '';
+            document.getElementById('inputLien').value = contact.lien || '';
+            document.getElementById('inputTelephone').value = contact.telephone || '';
+            document.getElementById('contactModal').classList.add('visible');
+        }
+
+        function deleteContact(index) {
+            if (confirm('Supprimer ce contact ?')) {
+                contacts.splice(index, 1);
+                saveToStorage();
+                renderContacts();
+                updateAddButton();
+            }
+        }
+
+        function saveContact() {
+            const nom = document.getElementById('inputNom').value.trim();
+            const lien = document.getElementById('inputLien').value.trim();
+            const telephone = document.getElementById('inputTelephone').value.trim();
+
+            if (!nom && !telephone) {
+                alert('Veuillez renseigner au moins un nom ou un téléphone');
+                return;
+            }
+
+            const contact = { nom, lien, telephone };
+
+            if (editingIndex !== null) {
+                // Modification
+                contacts[editingIndex] = contact;
+            } else {
+                // Ajout
+                contacts.push(contact);
+            }
+
+            saveToStorage();
+            renderContacts();
+            updateAddButton();
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('contactModal').classList.remove('visible');
+        }
+
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+    </script>
+</body>
+</html>

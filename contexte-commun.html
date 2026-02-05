@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSA App - Profil commun</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        /* SECTIONS */
+        .config-section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #F5E4CC;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-card {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        /* TOGGLE */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .toggle-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .toggle-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2E3A59;
+            flex: 1;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 30px;
+            background-color: rgba(46, 58, 89, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background-color: #F7B89C;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+
+        /* TEXTAREA */
+        .textarea-field {
+            width: 100%;
+            min-height: 120px;
+            padding: 14px;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            font-size: 15px;
+            color: #2E3A59;
+            background-color: white;
+            font-family: inherit;
+            resize: vertical;
+            margin-top: 12px;
+        }
+
+        .textarea-field:focus {
+            outline: none;
+            border-color: #F7B89C;
+        }
+
+        .textarea-field.hidden {
+            display: none;
+        }
+
+        /* BOUTON GÉRER */
+        .manage-button {
+            background-color: rgba(46, 58, 89, 0.1);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            color: #2E3A59;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .manage-button:active {
+            transform: scale(0.98);
+            background-color: rgba(46, 58, 89, 0.15);
+        }
+
+        .manage-button.hidden {
+            display: none;
+        }
+
+        .manage-button-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .manage-button-count {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-left: 8px;
+        }
+
+        .manage-button-arrow {
+            font-size: 18px;
+            opacity: 0.5;
+        }
+
+        /* LISTE EXPANDABLE (plié/déplié) */
+        .expandable-list {
+            margin-top: 12px;
+            border-top: 2px solid rgba(46, 58, 89, 0.1);
+            padding-top: 12px;
+        }
+
+        .expandable-list.hidden {
+            display: none;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-checkbox {
+            font-size: 22px;
+            cursor: pointer;
+            user-select: none;
+            min-width: 24px;
+        }
+
+        .item-emoji {
+            font-size: 20px;
+            min-width: 24px;
+        }
+
+        .item-text {
+            flex: 1;
+            font-size: 14px;
+            color: #2E3A59;
+        }
+
+        .item-delete {
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.5;
+            padding: 4px;
+        }
+
+        .item-delete:active {
+            opacity: 1;
+        }
+
+        .item-delete.hidden {
+            display: none;
+        }
+
+        /* BOUTON AJOUTER */
+        .add-item-button {
+            background-color: rgba(247, 184, 156, 0.2);
+            border: 2px dashed #F7B89C;
+            color: #2E3A59;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+            transition: all 0.2s;
+        }
+
+        .add-item-button:active {
+            transform: scale(0.98);
+            background-color: rgba(247, 184, 156, 0.3);
+        }
+
+        /* CONTACTS */
+        .contact-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
+        }
+
+        .contact-row:last-child {
+            border-bottom: none;
+        }
+
+        .contact-checkbox {
+            font-size: 22px;
+            cursor: pointer;
+            user-select: none;
+            min-width: 24px;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 2px;
+        }
+
+        .contact-relation {
+            font-size: 13px;
+            color: rgba(46, 58, 89, 0.6);
+        }
+
+        /* FOOTER */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #384657;
+            border-top: 1px solid rgba(245, 228, 204, 0.1);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .footer-back {
+            background-color: rgba(245, 228, 204, 0.1);
+            color: #F5E4CC;
+        }
+
+        .footer-save {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .footer-button:active {
+            transform: scale(0.96);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 58, 89, 0.95);
+            color: #F5E4CC;
+            padding: 14px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.visible {
+            opacity: 1;
+        }
+
+        /* MODAL AJOUT ITEM */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #F5E4CC;
+            border-radius: 16px;
+            padding: 28px 24px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2E3A59;
+            margin-bottom: 20px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #2E3A59;
+            background-color: white;
+            font-family: inherit;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #F7B89C;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .modal-button.secondary {
+            background-color: rgba(46, 58, 89, 0.1);
+            color: #2E3A59;
+        }
+
+        .modal-button.primary {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .modal-button:active {
+            transform: scale(0.96);
+        }
+
+        .empty-message {
+            text-align: center;
+            color: rgba(46, 58, 89, 0.5);
+            font-size: 14px;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">⬅️</button>
+        <h1 class="page-title">Profil commun</h1>
+    </header>
+
+    <main class="main-content">
+
+        <!-- TEXTE DE PRÉSENTATION -->
+        <section class="config-section">
+            <h2 class="section-title">✍️ Texte de présentation</h2>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher la présentation</div>
+                    <div class="toggle-switch active" id="togglePresentation" onclick="toggleSection('presentation')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <textarea class="textarea-field" 
+                          id="textePresentationField" 
+                          placeholder="Exemple : Je m'appelle Marine, je suis autiste. En cas de crise..."></textarea>
+            </div>
+        </section>
+
+        <!-- CAPACITÉS -->
+        <section class="config-section">
+            <h2 class="section-title">💬 Capacités</h2>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Inclure les capacités</div>
+                    <div class="toggle-switch active" id="toggleCapacites" onclick="toggleSection('capacites')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <button class="manage-button" id="btnCapacites" onclick="toggleExpandable('capacites')">
+                    <span class="manage-button-text">Gérer les capacités</span>
+                    <span class="manage-button-count" id="countCapacites">(0/16)</span>
+                    <span class="manage-button-arrow">▼</span>
+                </button>
+                <div class="expandable-list hidden" id="listCapacites">
+                    <!-- Liste générée en JS -->
+                </div>
+                <button class="add-item-button" onclick="openAddItemModal('capacite')">
+                    ➕ Ajouter une capacité personnalisée
+                </button>
+            </div>
+        </section>
+
+        <!-- BESOINS -->
+        <section class="config-section">
+            <h2 class="section-title">🤲 Besoins</h2>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Inclure les besoins</div>
+                    <div class="toggle-switch active" id="toggleBesoins" onclick="toggleSection('besoins')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <button class="manage-button" id="btnBesoins" onclick="toggleExpandable('besoins')">
+                    <span class="manage-button-text">Gérer les besoins</span>
+                    <span class="manage-button-count" id="countBesoins">(0/21)</span>
+                    <span class="manage-button-arrow">▼</span>
+                </button>
+                <div class="expandable-list hidden" id="listBesoins">
+                    <!-- Liste générée en JS -->
+                </div>
+                <button class="add-item-button" onclick="openAddItemModal('besoin')">
+                    ➕ Ajouter un besoin personnalisé
+                </button>
+            </div>
+        </section>
+
+        <!-- ÉTATS / RESSENTIS -->
+        <section class="config-section">
+            <h2 class="section-title">😰 États / Ressentis</h2>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Inclure les états</div>
+                    <div class="toggle-switch active" id="toggleEtats" onclick="toggleSection('etats')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <button class="manage-button" id="btnEtats" onclick="toggleExpandable('etats')">
+                    <span class="manage-button-text">Gérer les états</span>
+                    <span class="manage-button-count" id="countEtats">(0/16)</span>
+                    <span class="manage-button-arrow">▼</span>
+                </button>
+                <div class="expandable-list hidden" id="listEtats">
+                    <!-- Liste générée en JS -->
+                </div>
+                <button class="add-item-button" onclick="openAddItemModal('etat')">
+                    ➕ Ajouter un état personnalisé
+                </button>
+            </div>
+        </section>
+
+        <!-- CONTACTS D'URGENCE -->
+        <section class="config-section">
+            <h2 class="section-title">📞 Contacts d'urgence</h2>
+            <div class="section-card">
+                <p style="font-size: 14px; color: #2E3A59; opacity: 0.8; margin-bottom: 16px; line-height: 1.5;">
+                    Sélectionnez jusqu'à 3 contacts à afficher dans ce contexte
+                </p>
+                <div id="contactsContainer">
+                    <div class="empty-message">Aucun contact défini. Ajoutez-en dans "Mon profil".</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INFORMATIONS MÉDICALES -->
+        <section class="config-section">
+            <h2 class="section-title">🚑 Informations médicales</h2>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher les infos médicales</div>
+                    <div class="toggle-switch active" id="toggleMedical" onclick="toggleSection('medical')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <button class="manage-button" style="margin-top: 12px;" onclick="goToInfosMedicales()">
+                    <span class="manage-button-text">Modifier les informations médicales</span>
+                    <span class="manage-button-arrow">›</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bouton Afficher l'exemple -->
+    <div style="padding: 0 20px 20px 20px;">
+        <button style="
+            width: 100%;
+            background-color: rgba(247, 184, 156, 0.2);
+            border: 2px dashed #F7B89C;
+            color: #F5E4CC;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        " onclick="afficherExemple()">
+            👁️ Afficher l'exemple avec ces réglages
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <button class="footer-button footer-back" onclick="goBack()">
+            ⬅️ Retour
+        </button>
+        <button class="footer-button footer-save" onclick="saveData()">
+            💾 Enregistrer
+        </button>
+    </footer>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">✅ Modifications enregistrées</div>
+
+    <!-- MODAL AJOUT ITEM -->
+    <div class="modal" id="addItemModal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">Ajouter un item</h2>
+            
+            <div style="margin-bottom: 16px;">
+                <div style="font-size: 14px; font-weight: 600; color: #2E3A59; margin-bottom: 8px;">Emoji</div>
+                <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px;">
+                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('🎯')">🎯</div>
+                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('🤲')">🤲</div>
+                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('😶')">😶</div>
+                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('💪')">💪</div>
+                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor; text-align: center;" onclick="selectItemEmoji('🧠')">🧠</div>
+                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('❤️')">❤️</div>
+                </div>
+                <div style="font-size: 14px; color: #2E3A59; margin-bottom: 8px;">Ou tapez directement :</div>
+                <input type="text" 
+                       style="width: 100%; padding: 12px 14px; border: 2px solid rgba(46, 58, 89, 0.2); border-radius: 8px; font-size: 16px; color: #2E3A59; background-color: white; font-family: inherit;" 
+                       id="itemEmojiInput" 
+                       placeholder="🎯"
+                       maxlength="2">
+            </div>
+            
+            <input type="text" 
+                   class="modal-input" 
+                   id="itemNameInput" 
+                   placeholder="Nom de l'item"
+                   maxlength="50"
+                   style="margin-bottom: 20px;">
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeAddItemModal()">Annuler</button>
+                <button class="modal-button primary" onclick="addCustomItem()">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CAPACITÉS PAR DÉFAUT (16 items)
+        const CAPACITES = [
+            { id: 'parler', emoji: '💬', nom: 'Parler' },
+            { id: 'etre-touchee', emoji: '🤝', nom: 'Être touchée' },
+            { id: 'bouger', emoji: '🚶', nom: 'Bouger' },
+            { id: 'rester-ici', emoji: '📍', nom: 'Rester ici' },
+            { id: 'ecrire', emoji: '⌨️', nom: 'Écrire / taper sur un clavier' },
+            { id: 'lire', emoji: '📖', nom: 'Lire' },
+            { id: 'comprendre', emoji: '🧠', nom: 'Comprendre ce qu\'on me dit' },
+            { id: 'repondre', emoji: '💭', nom: 'Répondre à des questions' },
+            { id: 'marcher', emoji: '🚶‍♀️', nom: 'Marcher' },
+            { id: 'rester-debout', emoji: '🧍', nom: 'Rester debout' },
+            { id: 'asseoir', emoji: '🪑', nom: 'M\'asseoir' },
+            { id: 'lever', emoji: '⬆️', nom: 'Me lever' },
+            { id: 'proche-autres', emoji: '👥', nom: 'Être proche des autres' },
+            { id: 'changer-endroit', emoji: '🔄', nom: 'Changer d\'endroit' },
+            { id: 'attendre', emoji: '⏳', nom: 'Attendre' },
+            { id: 'concentrer', emoji: '🎯', nom: 'Me concentrer' }
+        ];
+
+        // BESOINS PAR DÉFAUT (21 items)
+        const BESOINS = [
+            { id: 'reduire-bruit', emoji: '🔇', nom: 'Réduire le bruit' },
+            { id: 'etre-noir', emoji: '🌑', nom: 'Être dans le noir / pénombre' },
+            { id: 'etre-calme', emoji: '🤫', nom: 'Être au calme' },
+            { id: 'casque', emoji: '🎧', nom: 'Casque / écouteurs' },
+            { id: 'coucher', emoji: '🛏️', nom: 'Me coucher / m\'allonger' },
+            { id: 'asseoir', emoji: '🪑', nom: 'M\'asseoir' },
+            { id: 'appeler-secours', emoji: '🚑', nom: 'Appeler les secours' },
+            { id: 'boire', emoji: '💧', nom: 'Boire' },
+            { id: 'manger', emoji: '🍽️', nom: 'Manger' },
+            { id: 'aller-wc', emoji: '🚻', nom: 'Aller aux WC' },
+            { id: 'dormir', emoji: '😴', nom: 'Dormir' },
+            { id: 'calin', emoji: '🤗', nom: 'Un câlin' },
+            { id: 'etre-seule', emoji: '🚪', nom: 'Être seule' },
+            { id: 'etre-accompagnee', emoji: '👥', nom: 'Être accompagnée' },
+            { id: 'rester-avec-moi', emoji: '🫂', nom: 'Qu\'on reste avec moi' },
+            { id: 'attendre', emoji: '⏳', nom: 'Attendre' },
+            { id: 'appeler-quelquun', emoji: '📞', nom: 'Appeler quelqu\'un' },
+            { id: 'appeler-pour-moi', emoji: '☎️', nom: 'Qu\'on appelle quelqu\'un pour moi' },
+            { id: 'connaitre-heure', emoji: '🕐', nom: 'Connaître l\'heure' },
+            { id: 'comprendre-situation', emoji: '❓', nom: 'Comprendre ce qui se passe' },
+            { id: 'expliquer-calmement', emoji: '💬', nom: 'Qu\'on m\'explique calmement' }
+        ];
+
+        // ÉTATS / RESSENTIS PAR DÉFAUT (16 items)
+        const ETATS = [
+            { id: 'surcharge', emoji: '🤯', nom: 'Surchargé(e)' },
+            { id: 'fatigue', emoji: '😴', nom: 'Fatigué(e)' },
+            { id: 'confus', emoji: '😵', nom: 'Confus(e)' },
+            { id: 'impuissant', emoji: '😞', nom: 'Impuissant(e)' },
+            { id: 'fige-partiel', emoji: '🧊', nom: 'Figé(e) partiellement' },
+            { id: 'fige-total', emoji: '⛔', nom: 'Figé(e) totalement' },
+            { id: 'muet', emoji: '🤐', nom: 'Incapable de parler (muet/muette)' },
+            { id: 'tendu', emoji: '💪', nom: 'Tendu(e) (tension musculaire)' },
+            { id: 'anxieux', emoji: '😰', nom: 'Anxieux(se)' },
+            { id: 'panique', emoji: '😱', nom: 'Paniqué(e)' },
+            { id: 'stresse', emoji: '😣', nom: 'Stressé(e)' },
+            { id: 'triste', emoji: '😢', nom: 'Triste' },
+            { id: 'colere', emoji: '😠', nom: 'En colère' },
+            { id: 'etourdi', emoji: '😵‍💫', nom: 'Étourdi(e)' },
+            { id: 'nausee', emoji: '🤢', nom: 'Nauséeux(se)' },
+            { id: 'mal-tete', emoji: '🤕', nom: 'Mal à la tête' }
+        ];
+
+        // État de la page
+        let currentItemType = '';
+        let contextData = {
+            textePresentation: '',
+            afficherPresentation: true,
+            capacites: {
+                inclure: true,
+                visibles: [],
+                personnalisees: []
+            },
+            besoins: {
+                inclure: true,
+                visibles: [],
+                personnalisees: []
+            },
+            etats: {
+                inclure: true,
+                visibles: [],
+                personnalisees: []
+            },
+            contactsVisibles: [],
+            afficherMedical: true
+        };
+
+        // INITIALISATION
+        function init() {
+            console.log('Init commencé');
+            console.log('CAPACITES disponibles:', CAPACITES.length);
+            console.log('BESOINS disponibles:', BESOINS.length);
+            console.log('ETATS disponibles:', ETATS.length);
+            
+            loadData();
+            renderCapacites();
+            renderBesoins();
+            renderEtats();
+            renderContacts();
+            updateCounts();
+            
+            console.log('Init terminé');
+            console.log('contextData:', contextData);
+        }
+
+        // CHARGER DONNÉES
+        function loadData() {
+            const saved = localStorage.getItem('contexte_commun');
+            if (saved) {
+                contextData = JSON.parse(saved);
+            } else {
+                // PREMIÈRE FOIS : Tout cocher par défaut
+                contextData.capacites.visibles = CAPACITES.map(c => c.id);
+                contextData.besoins.visibles = BESOINS.map(b => b.id);
+                contextData.etats.visibles = ETATS.map(e => e.id);
+            }
+
+            // Charger texte présentation
+            document.getElementById('textePresentationField').value = contextData.textePresentation || '';
+            
+            // Charger toggles
+            updateToggle('togglePresentation', contextData.afficherPresentation);
+            updateToggle('toggleCapacites', contextData.capacites.inclure);
+            updateToggle('toggleBesoins', contextData.besoins.inclure);
+            updateToggle('toggleEtats', contextData.etats.inclure);
+            updateToggle('toggleMedical', contextData.afficherMedical);
+            
+            // Afficher/masquer les boutons selon les toggles
+            document.getElementById('btnCapacites').classList.toggle('hidden', !contextData.capacites.inclure);
+            document.getElementById('btnBesoins').classList.toggle('hidden', !contextData.besoins.inclure);
+            document.getElementById('btnEtats').classList.toggle('hidden', !contextData.etats.inclure);
+            document.getElementById('textePresentationField').classList.toggle('hidden', !contextData.afficherPresentation);
+        }
+
+        function updateToggle(id, active) {
+            const toggle = document.getElementById(id);
+            if (active) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        // TOGGLE SECTIONS
+        function toggleSection(section) {
+            const toggle = document.getElementById(`toggle${section.charAt(0).toUpperCase() + section.slice(1)}`);
+            const isActive = toggle.classList.toggle('active');
+
+            if (section === 'presentation') {
+                contextData.afficherPresentation = isActive;
+                document.getElementById('textePresentationField').classList.toggle('hidden', !isActive);
+            } else if (section === 'capacites') {
+                contextData.capacites.inclure = isActive;
+                document.getElementById('btnCapacites').classList.toggle('hidden', !isActive);
+            } else if (section === 'besoins') {
+                contextData.besoins.inclure = isActive;
+                document.getElementById('btnBesoins').classList.toggle('hidden', !isActive);
+            } else if (section === 'etats') {
+                contextData.etats.inclure = isActive;
+                document.getElementById('btnEtats').classList.toggle('hidden', !isActive);
+            } else if (section === 'medical') {
+                contextData.afficherMedical = isActive;
+            }
+
+            autoSave();
+        }
+
+        // TOGGLE EXPANDABLE
+        function toggleExpandable(type) {
+            const list = document.getElementById(`list${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            list.classList.toggle('hidden');
+        }
+
+        // RENDER LISTES
+        function renderCapacites() {
+            console.log('renderCapacites appelé');
+            const container = document.getElementById('listCapacites');
+            if (!container) {
+                console.error('Container listCapacites non trouvé !');
+                return;
+            }
+            
+            const items = [...CAPACITES, ...(contextData.capacites.personnalisees || [])];
+            console.log('Items à afficher:', items.length);
+            
+            container.innerHTML = items.map(item => {
+                const isChecked = contextData.capacites.visibles.includes(item.id);
+                const isCustom = item.custom || false;
+                
+                return `
+                    <div class="item-row">
+                        <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
+                            ${isChecked ? '☑️' : '⬜'}
+                        </div>
+                        <div class="item-emoji">${item.emoji || ''}</div>
+                        <div class="item-text">${item.nom}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('capacites', '${item.id}')">
+                            🗑️
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            console.log('HTML généré, longueur:', container.innerHTML.length);
+        }
+
+        function renderBesoins() {
+            const container = document.getElementById('listBesoins');
+            const items = [...BESOINS, ...contextData.besoins.personnalisees];
+            
+            container.innerHTML = items.map(item => {
+                const isChecked = contextData.besoins.visibles.includes(item.id);
+                const isCustom = item.custom || false;
+                
+                return `
+                    <div class="item-row">
+                        <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
+                            ${isChecked ? '☑️' : '⬜'}
+                        </div>
+                        <div class="item-emoji">${item.emoji || ''}</div>
+                        <div class="item-text">${item.nom}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('besoins', '${item.id}')">
+                            🗑️
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderEtats() {
+            const container = document.getElementById('listEtats');
+            const items = [...ETATS, ...contextData.etats.personnalisees];
+            
+            container.innerHTML = items.map(item => {
+                const isChecked = contextData.etats.visibles.includes(item.id);
+                const isCustom = item.custom || false;
+                
+                return `
+                    <div class="item-row">
+                        <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
+                            ${isChecked ? '☑️' : '⬜'}
+                        </div>
+                        <div class="item-emoji">${item.emoji || ''}</div>
+                        <div class="item-text">${item.nom}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('etats', '${item.id}')">
+                            🗑️
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderContacts() {
+            const contacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+            const container = document.getElementById('contactsContainer');
+            
+            if (contacts.length === 0) {
+                container.innerHTML = '<div class="empty-message">Aucun contact défini. Ajoutez-en dans "Mon profil".</div>';
+                return;
+            }
+
+            container.innerHTML = contacts.map((contact, index) => {
+                const isChecked = contextData.contactsVisibles.includes(index);
+                return `
+                    <div class="contact-row">
+                        <div class="contact-checkbox" onclick="toggleContact(${index})">
+                            ${isChecked ? '☑️' : '⬜'}
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">${contact.nom}</div>
+                            <div class="contact-relation">${contact.lien}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // TOGGLE ITEM
+        function toggleItem(type, id) {
+            const index = contextData[type].visibles.indexOf(id);
+            if (index > -1) {
+                contextData[type].visibles.splice(index, 1);
+            } else {
+                contextData[type].visibles.push(id);
+            }
+
+            if (type === 'capacites') renderCapacites();
+            if (type === 'besoins') renderBesoins();
+            if (type === 'etats') renderEtats();
+
+            updateCounts();
+            autoSave();
+        }
+
+        // TOGGLE CONTACT
+        function toggleContact(index) {
+            const pos = contextData.contactsVisibles.indexOf(index);
+            if (pos > -1) {
+                contextData.contactsVisibles.splice(pos, 1);
+            } else {
+                contextData.contactsVisibles.push(index);
+            }
+
+            renderContacts();
+            autoSave();
+        }
+
+        // UPDATE COUNTS
+        function updateCounts() {
+            const capCount = contextData.capacites.visibles.length;
+            const capTotal = CAPACITES.length + contextData.capacites.personnalisees.length;
+            document.getElementById('countCapacites').textContent = `(${capCount}/${capTotal})`;
+
+            const besCount = contextData.besoins.visibles.length;
+            const besTotal = BESOINS.length + contextData.besoins.personnalisees.length;
+            document.getElementById('countBesoins').textContent = `(${besCount}/${besTotal})`;
+
+            const etaCount = contextData.etats.visibles.length;
+            const etaTotal = ETATS.length + contextData.etats.personnalisees.length;
+            document.getElementById('countEtats').textContent = `(${etaCount}/${etaTotal})`;
+        }
+
+        // MODAL AJOUT ITEM
+        function openAddItemModal(type) {
+            currentItemType = type;
+            const titles = {
+                capacite: 'Ajouter une capacité',
+                besoin: 'Ajouter un besoin',
+                etat: 'Ajouter un état'
+            };
+            
+            const defaultEmojis = {
+                capacite: '🎯',
+                besoin: '🤲',
+                etat: '😶'
+            };
+            
+            document.getElementById('modalTitle').textContent = titles[type];
+            document.getElementById('itemNameInput').value = '';
+            document.getElementById('itemEmojiInput').value = defaultEmojis[type];
+            document.getElementById('addItemModal').classList.add('visible');
+            document.getElementById('itemNameInput').focus();
+        }
+
+        function selectItemEmoji(emoji) {
+            document.getElementById('itemEmojiInput').value = emoji;
+        }
+
+        function closeAddItemModal() {
+            document.getElementById('addItemModal').classList.remove('visible');
+        }
+
+        function addCustomItem() {
+            const name = document.getElementById('itemNameInput').value.trim();
+            const emoji = document.getElementById('itemEmojiInput').value.trim() || '🎯';
+            
+            if (!name) {
+                alert('⚠️ Veuillez entrer un nom');
+                return;
+            }
+
+            const newItem = {
+                id: 'custom_' + Date.now(),
+                emoji: emoji,
+                nom: name,
+                custom: true
+            };
+
+            const typeMap = {
+                capacite: 'capacites',
+                besoin: 'besoins',
+                etat: 'etats'
+            };
+
+            const key = typeMap[currentItemType];
+            contextData[key].personnalisees.push(newItem);
+            contextData[key].visibles.push(newItem.id);
+
+            if (currentItemType === 'capacite') renderCapacites();
+            if (currentItemType === 'besoin') renderBesoins();
+            if (currentItemType === 'etat') renderEtats();
+
+            updateCounts();
+            autoSave();
+            closeAddItemModal();
+        }
+
+        // SUPPRIMER ITEM PERSONNALISÉ
+        function deleteCustomItem(type, id) {
+            if (!confirm('Supprimer cet item personnalisé ?')) return;
+
+            const index = contextData[type].personnalisees.findIndex(item => item.id === id);
+            if (index > -1) {
+                contextData[type].personnalisees.splice(index, 1);
+            }
+
+            const visIndex = contextData[type].visibles.indexOf(id);
+            if (visIndex > -1) {
+                contextData[type].visibles.splice(visIndex, 1);
+            }
+
+            if (type === 'capacites') renderCapacites();
+            if (type === 'besoins') renderBesoins();
+            if (type === 'etats') renderEtats();
+
+            updateCounts();
+            autoSave();
+        }
+
+        // SAUVEGARDE
+        function autoSave() {
+            contextData.textePresentation = document.getElementById('textePresentationField').value;
+            localStorage.setItem('contexte_commun', JSON.stringify(contextData));
+        }
+
+        function saveData() {
+            autoSave();
+            showToast();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 2000);
+        }
+
+        // NAVIGATION
+        function goBack() {
+            autoSave();
+            showToast();
+            setTimeout(() => {
+                window.location.href = 'contextes-liste.html';
+            }, 500);
+        }
+
+        function goToInfosMedicales() {
+            // Sauvegarder d'où on vient
+            localStorage.setItem('returnTo', 'contexte-commun');
+            window.location.href = 'infos-medicales.html';
+        }
+
+        function afficherExemple() {
+            // Sauvegarder les données actuelles
+            autoSave();
+            
+            // Générer un récap de test
+            const exempleDonnees = {
+                textePresentation: contextData.textePresentation || '',
+                capacites: {
+                    impossible: contextData.capacites.visibles.slice(0, 3).map(id => {
+                        const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
+                        return item ? item.nom : id;
+                    }),
+                    difficile: contextData.capacites.visibles.slice(3, 6).map(id => {
+                        const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
+                        return item ? item.nom : id;
+                    }),
+                    possible: contextData.capacites.visibles.slice(6, 9).map(id => {
+                        const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
+                        return item ? item.nom : id;
+                    }),
+                    incertain: []
+                },
+                besoins: contextData.besoins.visibles.slice(0, 5).map(id => {
+                    const item = [...BESOINS, ...contextData.besoins.personnalisees].find(b => b.id === id);
+                    return { icon: item?.emoji || '•', label: item?.nom || id };
+                }),
+                etats: contextData.etats.visibles.slice(0, 4).map(id => {
+                    const item = [...ETATS, ...contextData.etats.personnalisees].find(e => e.id === id);
+                    return { icon: item?.emoji || '😔', label: item?.nom || id };
+                }),
+                contacts: contextData.contactsVisibles || [],
+                medical: contextData.afficherMedical
+            };
+            
+            // Sauvegarder dans localStorage temporaire
+            localStorage.setItem('exempleCrise', JSON.stringify(exempleDonnees));
+            
+            // Ouvrir recap-exemple.html
+            window.open('recap-exemple.html', '_blank');
+        }
+
+        // INIT
+        window.addEventListener('DOMContentLoaded', init);
+
+        // Auto-save sur changement textarea
+        document.getElementById('textePresentationField').addEventListener('input', autoSave);
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon profil - TSA App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        .form-section {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-help {
+            font-size: 14px;
+            color: rgba(46, 58, 89, 0.7);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: rgba(46, 58, 89, 0.05);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 10px;
+            padding: 14px;
+            font-family: inherit;
+            font-size: 16px;
+            color: #2E3A59;
+            margin-bottom: 8px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #F7B89C;
+            background-color: rgba(247, 184, 156, 0.05);
+        }
+
+        .form-textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .default-text {
+            font-size: 13px;
+            color: rgba(46, 58, 89, 0.6);
+            font-style: italic;
+            margin-top: 6px;
+        }
+
+        .save-button {
+            background-color: #F7B89C;
+            color: #2E3A59;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .save-button:active {
+            transform: scale(0.98);
+            background-color: rgba(247, 184, 156, 0.9);
+        }
+
+        .success-message {
+            background-color: rgba(100, 200, 100, 0.2);
+            color: #F5E4CC;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">⬅️</button>
+        <h1 class="page-title">Mon profil</h1>
+    </header>
+
+    <main class="main-content">
+        <div class="success-message" id="successMessage">
+            ✅ Profil enregistré avec succès !
+        </div>
+
+        <!-- Prénom -->
+        <div class="form-section">
+            <label class="form-label">Mon prénom dans l'application</label>
+            <p class="form-help">
+                Ce prénom sera utilisé dans l'application. Vous pouvez le modifier à tout moment.
+            </p>
+            <input 
+                type="text" 
+                class="form-input" 
+                id="prenomInput" 
+                placeholder="Ex : Marine"
+                maxlength="50"
+            >
+        </div>
+
+        <!-- Bouton sauvegarder -->
+        <button class="save-button" onclick="saveProfil()">
+            💾 Enregistrer
+        </button>
+    </main>
+
+    <script>
+        // Charger les données au démarrage
+        window.addEventListener('DOMContentLoaded', () => {
+            const prenom = localStorage.getItem('userPrenom') || '';
+            document.getElementById('prenomInput').value = prenom;
+        });
+
+        // Sauvegarder
+        function saveProfil() {
+            const prenom = document.getElementById('prenomInput').value.trim();
+            localStorage.setItem('userPrenom', prenom);
+            
+            // Afficher message de succès
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('visible');
+            
+            // Masquer après 2 secondes
+            setTimeout(() => {
+                successMsg.classList.remove('visible');
+            }, 2000);
+        }
+
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+    </script>
+</body>
+</html>

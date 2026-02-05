@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSA App - Paramètres des contextes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        /* SECTIONS */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #F5E4CC;
+        }
+
+        .section-description {
+            font-size: 14px;
+            color: rgba(245, 228, 204, 0.7);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* TOGGLE */
+        .toggle-container {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .toggle-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .toggle-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2E3A59;
+            flex: 1;
+            line-height: 1.3;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 30px;
+            background-color: rgba(46, 58, 89, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background-color: #F7B89C;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+
+        .toggle-description {
+            font-size: 13px;
+            color: rgba(46, 58, 89, 0.7);
+            line-height: 1.4;
+        }
+
+        /* BOUTON CONFIGURER PROFIL COMMUN */
+        .config-commun-button {
+            background-color: #F7B89C;
+            color: #2E3A59;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .config-commun-button:active {
+            transform: scale(0.98);
+            background-color: #f5a584;
+        }
+
+        .config-commun-button.hidden {
+            display: none;
+        }
+
+        /* CARTES CONTEXTES */
+        .contextes-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .contexte-card {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 18px 20px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-height: 70px;
+        }
+
+        .contexte-card:active {
+            transform: scale(0.98);
+            border-color: #F7B89C;
+        }
+
+        .contexte-card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .contexte-card.disabled:active {
+            transform: none;
+            border-color: transparent;
+        }
+
+        .contexte-card.disabled::after {
+            content: 'Mode simplifié activé';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 13px;
+            font-weight: 600;
+            color: #2E3A59;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .contexte-emoji {
+            font-size: 32px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .contexte-name {
+            font-size: 17px;
+            font-weight: 600;
+            color: #2E3A59;
+            flex: 1;
+        }
+
+        .contexte-arrow {
+            font-size: 22px;
+            color: #2E3A59;
+            opacity: 0.5;
+        }
+
+        /* BOUTON AJOUTER */
+        .add-button {
+            background-color: rgba(245, 228, 204, 0.15);
+            border: 2px dashed rgba(245, 228, 204, 0.4);
+            color: #F5E4CC;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .add-button:active {
+            transform: scale(0.98);
+            background-color: rgba(245, 228, 204, 0.25);
+        }
+
+        .add-button.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .add-button.disabled:active {
+            transform: none;
+        }
+
+        /* MODAL AJOUT CONTEXTE */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #F5E4CC;
+            border-radius: 16px;
+            padding: 28px 24px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2E3A59;
+        }
+
+        .modal-input-group {
+            margin-bottom: 18px;
+        }
+
+        .modal-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 8px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #2E3A59;
+            background-color: white;
+            font-family: inherit;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #F7B89C;
+        }
+
+        .emoji-input-wrapper {
+            position: relative;
+        }
+
+        .emoji-display {
+            font-size: 32px;
+            text-align: center;
+            padding: 12px;
+            background-color: white;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji-display:hover {
+            border-color: #F7B89C;
+        }
+
+        .emoji-suggestions {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .emoji-suggestion {
+            font-size: 28px;
+            padding: 8px;
+            background-color: white;
+            border: 2px solid rgba(46, 58, 89, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .emoji-suggestion:active {
+            transform: scale(0.95);
+            border-color: #F7B89C;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .modal-button.secondary {
+            background-color: rgba(46, 58, 89, 0.1);
+            color: #2E3A59;
+        }
+
+        .modal-button.primary {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .modal-button:active {
+            transform: scale(0.96);
+        }
+
+        /* MESSAGE INFO */
+        .info-message {
+            background-color: rgba(247, 184, 156, 0.2);
+            border-left: 4px solid #F7B89C;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.9);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">⬅️</button>
+        <h1 class="page-title">Paramètres des contextes</h1>
+    </header>
+
+    <main class="main-content">
+
+        <!-- MODE SIMPLIFIÉ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Mode simplifié</h2>
+            </div>
+            <p class="section-description">
+                Utilisez le même contenu pour toutes les situations
+            </p>
+
+            <div class="toggle-container">
+                <div class="toggle-header">
+                    <div class="toggle-label">
+                        Utiliser le même contenu pour toutes les situations
+                    </div>
+                    <div class="toggle-switch" id="toggleSimple" onclick="toggleModeSimple()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="toggle-description">
+                    Vos capacités, besoins, états, contacts et présentation seront identiques partout
+                </div>
+            </div>
+
+            <button class="config-commun-button hidden" id="btnConfigCommun" onclick="goToConfigCommun()">
+                ⚙️ Configurer mon profil commun
+            </button>
+        </section>
+
+        <!-- MODE PERSONNALISÉ -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Mode personnalisé</h2>
+            </div>
+            <p class="section-description">
+                Paramétrez chaque contexte selon vos besoins
+            </p>
+
+            <div class="contextes-grid" id="contextesGrid">
+                <!-- Les contextes seront générés en JS -->
+            </div>
+
+            <button class="add-button" id="btnAddContexte" onclick="openAddContexteModal()">
+                ➕ Ajouter un contexte
+            </button>
+
+            <div class="info-message" id="maxContextesMessage" style="display: none;">
+                ℹ️ Vous avez atteint le nombre maximum de contextes (6).
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL AJOUT CONTEXTE -->
+    <div class="modal" id="addContexteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Ajouter un contexte</h2>
+            </div>
+
+            <div class="modal-input-group">
+                <label class="modal-label">Emoji</label>
+                <div class="emoji-input-wrapper">
+                    <div class="emoji-display" id="emojiDisplay" onclick="focusEmojiInput()">
+                        📍
+                    </div>
+                    <input type="text" 
+                           id="emojiInput" 
+                           maxlength="2" 
+                           style="position: absolute; opacity: 0; pointer-events: none;"
+                           oninput="updateEmojiDisplay()">
+                </div>
+                <div class="emoji-suggestions">
+                    <div class="emoji-suggestion" onclick="selectEmoji('🏠')">🏠</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('🌍')">🌍</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('💼')">💼</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('🚑')">🚑</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('🎯')">🎯</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('📍')">📍</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('🔔')">🔔</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('⚡')">⚡</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('🎧')">🎧</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('💡')">💡</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('✨')">✨</div>
+                    <div class="emoji-suggestion" onclick="selectEmoji('🌙')">🌙</div>
+                </div>
+            </div>
+
+            <div class="modal-input-group">
+                <label class="modal-label">Nom du contexte</label>
+                <input type="text" 
+                       class="modal-input" 
+                       id="contexteNameInput" 
+                       placeholder="Ex: Transport, Sport..."
+                       maxlength="30">
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeAddContexteModal()">Annuler</button>
+                <button class="modal-button primary" onclick="addContexte()">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONTEXTES PAR DÉFAUT
+        const DEFAULT_CONTEXTES = [
+            { id: 'maison', emoji: '🏠', nom: 'Maison', default: true },
+            { id: 'exterieur', emoji: '🌍', nom: 'Extérieur', default: true },
+            { id: 'travail', emoji: '💼', nom: 'Travail', default: true },
+            { id: 'secours', emoji: '🚑', nom: 'Secours', default: true }
+        ];
+
+        const MAX_CONTEXTES = 6;
+
+        // INITIALISATION
+        function init() {
+            // Charger les contextes depuis localStorage ou utiliser les défauts
+            let contextes = JSON.parse(localStorage.getItem('contextes')) || DEFAULT_CONTEXTES;
+            localStorage.setItem('contextes', JSON.stringify(contextes));
+
+            // Charger l'état du mode simplifié
+            const modeSimple = localStorage.getItem('contexte_messageUnique') === 'true';
+            if (modeSimple) {
+                document.getElementById('toggleSimple').classList.add('active');
+                document.getElementById('btnConfigCommun').classList.remove('hidden');
+            }
+
+            renderContextes();
+            updateAddButton();
+        }
+
+        // RENDER CONTEXTES
+        function renderContextes() {
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const grid = document.getElementById('contextesGrid');
+            const modeSimple = localStorage.getItem('contexte_messageUnique') === 'true';
+
+            grid.innerHTML = contextes.map(ctx => `
+                <div class="contexte-card ${modeSimple ? 'disabled' : ''}" 
+                     onclick="${modeSimple ? '' : `goToContexte('${ctx.id}')`}">
+                    <div class="contexte-emoji">${ctx.emoji}</div>
+                    <div class="contexte-name">${ctx.nom}</div>
+                    <div class="contexte-arrow">›</div>
+                </div>
+            `).join('');
+        }
+
+        // TOGGLE MODE SIMPLE
+        function toggleModeSimple() {
+            const toggle = document.getElementById('toggleSimple');
+            const btn = document.getElementById('btnConfigCommun');
+            const isActive = toggle.classList.toggle('active');
+
+            localStorage.setItem('contexte_messageUnique', isActive ? 'true' : 'false');
+
+            if (isActive) {
+                btn.classList.remove('hidden');
+            } else {
+                btn.classList.add('hidden');
+            }
+
+            renderContextes();
+        }
+
+        // NAVIGATION
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+
+        function goToConfigCommun() {
+            window.location.href = 'contexte-commun.html';
+        }
+
+        function goToContexte(id) {
+            window.location.href = `contexte-detail.html?id=${id}`;
+        }
+
+        // MODAL AJOUT
+        function openAddContexteModal() {
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            if (contextes.length >= MAX_CONTEXTES) return;
+
+            document.getElementById('addContexteModal').classList.add('visible');
+            document.getElementById('emojiDisplay').textContent = '📍';
+            document.getElementById('emojiInput').value = '📍';
+            document.getElementById('contexteNameInput').value = '';
+            document.getElementById('contexteNameInput').focus();
+        }
+
+        function closeAddContexteModal() {
+            document.getElementById('addContexteModal').classList.remove('visible');
+        }
+
+        // GESTION EMOJI
+        function focusEmojiInput() {
+            document.getElementById('emojiInput').focus();
+        }
+
+        function selectEmoji(emoji) {
+            document.getElementById('emojiDisplay').textContent = emoji;
+            document.getElementById('emojiInput').value = emoji;
+        }
+
+        function updateEmojiDisplay() {
+            const input = document.getElementById('emojiInput');
+            const display = document.getElementById('emojiDisplay');
+            display.textContent = input.value || '📍';
+        }
+
+        // AJOUTER CONTEXTE
+        function addContexte() {
+            const emoji = document.getElementById('emojiInput').value.trim() || '📍';
+            const nom = document.getElementById('contexteNameInput').value.trim();
+
+            if (!nom) {
+                alert('⚠️ Veuillez entrer un nom pour le contexte');
+                return;
+            }
+
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            
+            if (contextes.length >= MAX_CONTEXTES) {
+                alert('⚠️ Nombre maximum de contextes atteint (6)');
+                return;
+            }
+
+            // Générer un ID unique
+            const id = 'custom_' + Date.now();
+
+            contextes.push({
+                id: id,
+                emoji: emoji,
+                nom: nom,
+                default: false
+            });
+
+            localStorage.setItem('contextes', JSON.stringify(contextes));
+
+            // Créer un contexte vide dans localStorage
+            const newContexteData = {
+                emoji: emoji,
+                nom: nom,
+                visible: true,
+                textePresentation: '',
+                afficherPresentation: true,
+                capacites: {
+                    inclure: true,
+                    visibles: [],
+                    personnalisees: []
+                },
+                besoins: {
+                    inclure: true,
+                    visibles: [],
+                    personnalisees: []
+                },
+                etats: {
+                    inclure: true,
+                    visibles: [],
+                    personnalisees: []
+                },
+                contactsVisibles: [],
+                afficherMedical: true
+            };
+
+            localStorage.setItem(`contexte_${id}`, JSON.stringify(newContexteData));
+
+            closeAddContexteModal();
+            renderContextes();
+            updateAddButton();
+        }
+
+        // UPDATE BOUTON AJOUTER
+        function updateAddButton() {
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const btn = document.getElementById('btnAddContexte');
+            const message = document.getElementById('maxContextesMessage');
+
+            if (contextes.length >= MAX_CONTEXTES) {
+                btn.classList.add('disabled');
+                btn.style.pointerEvents = 'none';
+                message.style.display = 'block';
+            } else {
+                btn.classList.remove('disabled');
+                btn.style.pointerEvents = 'auto';
+                message.style.display = 'none';
+            }
+        }
+
+        // INIT AU CHARGEMENT
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

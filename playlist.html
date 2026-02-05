@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ma playlist apaisante</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+  background: #384657;
+  color: #F5E4CC;
+  min-height: 100vh;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background-color: #384657;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+}
+
+.back-button {
+  background: rgba(245, 228, 204, 0.1);
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 20px;
+  width: 44px;
+  height: 44px;
+  color: #F5E4CC;
+}
+
+.back-button:active {
+  background-color: rgba(245, 228, 204, 0.2);
+  transform: scale(0.95);
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ===== MAIN ===== */
+.main {
+  padding: 32px 24px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.intro-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* ===== SECTION PLAYLIST CONFIGURÉE ===== */
+.playlist-configured {
+  background: rgba(245, 228, 204, 0.1);
+  border: 2px solid rgba(247, 184, 156, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.playlist-configured h2 {
+  font-size: 18px;
+  color: #F7B89C;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.playlist-info {
+  background: rgba(245, 228, 204, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  word-break: break-all;
+}
+
+.playlist-label {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+
+.playlist-url {
+  font-size: 15px;
+  color: #F7B89C;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #F7B89C;
+  color: #2E3A59;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-secondary {
+  background: rgba(245, 228, 204, 0.15);
+  color: #F5E4CC;
+}
+
+.btn-secondary:active {
+  background: rgba(245, 228, 204, 0.25);
+  transform: scale(0.97);
+}
+
+/* ===== SECTION PAS DE PLAYLIST ===== */
+.no-playlist {
+  text-align: center;
+}
+
+.no-playlist-icon {
+  font-size: 64px;
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+
+.no-playlist p {
+  margin-bottom: 24px;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+/* ===== FORMULAIRE ===== */
+.form-section {
+  background: rgba(245, 228, 204, 0.1);
+  border: 2px solid rgba(247, 184, 156, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.form-section h2 {
+  font-size: 18px;
+  color: #F7B89C;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(245, 228, 204, 0.2);
+  background: rgba(245, 228, 204, 0.05);
+  color: #F5E4CC;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #F7B89C;
+  background: rgba(245, 228, 204, 0.1);
+}
+
+.form-input::placeholder {
+  color: rgba(245, 228, 204, 0.4);
+}
+
+.form-hint {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.platform-examples {
+  background: rgba(245, 228, 204, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.platform-examples h3 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #F7B89C;
+}
+
+.platform-example {
+  font-size: 13px;
+  margin-bottom: 8px;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.platform-example strong {
+  color: #F7B89C;
+}
+
+/* ===== MESSAGE DE CONFIRMATION ===== */
+.success-message {
+  background: rgba(247, 184, 156, 0.2);
+  border: 2px solid #F7B89C;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+  text-align: center;
+  display: none;
+}
+
+.success-message.visible {
+  display: block;
+}
+
+.success-message-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <button class="back-button" onclick="window.location.href='index.html'">⬅️</button>
+  <h1 class="page-title">Ma playlist apaisante</h1>
+</header>
+
+<main class="main">
+  <div class="intro">
+    <div class="intro-icon">🎵</div>
+    <p>Configure le lien vers ta playlist préférée pour y accéder rapidement en cas de besoin.</p>
+  </div>
+
+  <!-- Section si une playlist est configurée -->
+  <div id="playlistConfigured" class="playlist-configured" style="display: none;">
+    <h2>Ta playlist configurée</h2>
+
+    <div class="playlist-info">
+      <div class="playlist-label">Nom</div>
+      <div id="displayName" class="playlist-url"></div>
+    </div>
+
+    <div class="playlist-info">
+      <div class="playlist-label">Lien</div>
+      <div id="displayUrl" class="playlist-url"></div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-primary" onclick="openPlaylist()">
+        🎧 Ouvrir ma playlist
+      </button>
+      <button class="btn btn-secondary" onclick="editPlaylist()">
+        ✏️ Modifier
+      </button>
+    </div>
+  </div>
+
+  <!-- Section si pas de playlist -->
+  <div id="noPlaylist" class="no-playlist" style="display: none;">
+    <div class="no-playlist-icon">🎵</div>
+    <p>Aucune playlist configurée pour le moment.</p>
+    <button class="btn btn-primary" onclick="showForm()">
+      ➕ Ajouter ma playlist
+    </button>
+  </div>
+
+  <!-- Formulaire -->
+  <div id="formSection" class="form-section" style="display: none;">
+    <h2>Configure ta playlist</h2>
+
+    <form id="playlistForm" onsubmit="savePlaylist(event)">
+      <div class="form-group">
+        <label class="form-label" for="playlistName">
+          Nom de la playlist
+        </label>
+        <input 
+          type="text" 
+          id="playlistName" 
+          class="form-input" 
+          placeholder="Ma playlist relaxante"
+          required
+        >
+        <div class="form-hint">
+          Un nom pour t'y retrouver facilement
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="playlistUrl">
+          Lien de la playlist
+        </label>
+        <input 
+          type="url" 
+          id="playlistUrl" 
+          class="form-input" 
+          placeholder="https://open.spotify.com/playlist/..."
+          required
+        >
+        <div class="form-hint">
+          Copie-colle le lien complet depuis ton application de musique
+        </div>
+      </div>
+
+      <div class="platform-examples">
+        <h3>📱 Exemples de liens :</h3>
+        <div class="platform-example">
+          <strong>Spotify :</strong> https://open.spotify.com/playlist/...
+        </div>
+        <div class="platform-example">
+          <strong>YouTube :</strong> https://youtube.com/playlist?list=...
+        </div>
+        <div class="platform-example">
+          <strong>Deezer :</strong> https://www.deezer.com/playlist/...
+        </div>
+        <div class="platform-example">
+          <strong>Apple Music :</strong> https://music.apple.com/playlist/...
+        </div>
+      </div>
+
+      <div class="button-group" style="margin-top: 24px;">
+        <button type="submit" class="btn btn-primary">
+          💾 Enregistrer
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="cancelForm()">
+          ✕ Annuler
+        </button>
+      </div>
+    </form>
+
+    <div id="successMessage" class="success-message">
+      <div class="success-message-icon">✓</div>
+      <div>Playlist enregistrée !</div>
+    </div>
+  </div>
+</main>
+
+<script>
+// Charger l'état au démarrage
+document.addEventListener('DOMContentLoaded', () => {
+  updateDisplay();
+});
+
+function updateDisplay() {
+  const name = localStorage.getItem('playlistName');
+  const url = localStorage.getItem('lienPlaylist');
+
+  if (name && url) {
+    // Afficher la playlist configurée
+    document.getElementById('displayName').textContent = name;
+    document.getElementById('displayUrl').textContent = url;
+    document.getElementById('playlistConfigured').style.display = 'block';
+    document.getElementById('noPlaylist').style.display = 'none';
+    document.getElementById('formSection').style.display = 'none';
+  } else {
+    // Afficher "pas de playlist"
+    document.getElementById('playlistConfigured').style.display = 'none';
+    document.getElementById('noPlaylist').style.display = 'block';
+    document.getElementById('formSection').style.display = 'none';
+  }
+}
+
+function openPlaylist() {
+  const url = localStorage.getItem('lienPlaylist');
+  if (url) {
+    window.open(url, '_blank');
+  }
+}
+
+function editPlaylist() {
+  showForm();
+  // Pré-remplir le formulaire
+  const name = localStorage.getItem('playlistName');
+  const url = localStorage.getItem('lienPlaylist');
+  if (name) document.getElementById('playlistName').value = name;
+  if (url) document.getElementById('playlistUrl').value = url;
+}
+
+function showForm() {
+  document.getElementById('playlistConfigured').style.display = 'none';
+  document.getElementById('noPlaylist').style.display = 'none';
+  document.getElementById('formSection').style.display = 'block';
+  document.getElementById('successMessage').classList.remove('visible');
+}
+
+function cancelForm() {
+  document.getElementById('playlistForm').reset();
+  updateDisplay();
+}
+
+function savePlaylist(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('playlistName').value.trim();
+  const url = document.getElementById('playlistUrl').value.trim();
+
+  if (name && url) {
+    localStorage.setItem('playlistName', name);
+    localStorage.setItem('lienPlaylist', url);
+
+    // Afficher le message de confirmation
+    document.getElementById('successMessage').classList.add('visible');
+
+    // Retour à l'affichage après 1.5s
+    setTimeout(() => {
+      document.getElementById('playlistForm').reset();
+      updateDisplay();
+    }, 1500);
+  }
+}
+</script>
+
+</body>
+</html>

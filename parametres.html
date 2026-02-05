@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSA App - Paramètres</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        .section {
+            margin-bottom: 36px;
+        }
+
+        .section-title {
+            color: #F5E4CC;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-description {
+            color: rgba(245, 228, 204, 0.7);
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .settings-card {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 70px;
+        }
+
+        .settings-card:active {
+            transform: scale(0.98);
+            border-color: #F7B89C;
+        }
+
+        .settings-card-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+
+        .settings-icon {
+            font-size: 26px;
+            min-width: 32px;
+            text-align: center;
+        }
+
+        .settings-text {
+            color: #2E3A59;
+            flex: 1;
+        }
+
+        .settings-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 3px;
+            line-height: 1.2;
+        }
+
+        .settings-sublabel {
+            font-size: 13px;
+            opacity: 0.65;
+            line-height: 1.3;
+        }
+
+        .settings-arrow {
+            color: #2E3A59;
+            font-size: 22px;
+            opacity: 0.5;
+        }
+
+        .danger-section {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 2px solid rgba(245, 228, 204, 0.15);
+        }
+
+        .danger-button {
+            background-color: rgba(255, 70, 70, 0.15);
+            color: #F5E4CC;
+            border: 2px solid rgba(255, 70, 70, 0.4);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .danger-button:active {
+            transform: scale(0.98);
+            background-color: rgba(255, 70, 70, 0.25);
+        }
+
+        /* Modal de confirmation */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #F5E4CC;
+            border-radius: 16px;
+            padding: 28px 24px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .modal-header {
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2E3A59;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-text {
+            color: #2E3A59;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-text ul {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .modal-text li {
+            margin: 6px 0;
+        }
+
+        .modal-text strong {
+            font-weight: 700;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .modal-button.secondary {
+            background-color: rgba(46, 58, 89, 0.1);
+            color: #2E3A59;
+        }
+
+        .modal-button.danger {
+            background-color: rgba(255, 70, 70, 0.9);
+            color: #FFF;
+        }
+
+        .modal-button:active {
+            transform: scale(0.96);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goHome()">⬅️</button>
+        <h1 class="page-title">Paramètres</h1>
+    </header>
+
+    <main class="main-content">
+
+        <!-- 1) MON PROFIL (UTILISATEUR) -->
+        <section class="section">
+            <h2 class="section-title">👤 Mon profil</h2>
+            <p class="section-description">Informations personnelles utilisées dans l'application</p>
+
+            <div class="settings-card" onclick="goToPage('mon-profil.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">✏️</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Mon prénom</div>
+                        <div class="settings-sublabel">Prénom utilisé dans l'application</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
+            <div class="settings-card" onclick="goToPage('contacts-urgence.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">📞</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Contacts d'urgence</div>
+                        <div class="settings-sublabel">Jusqu'à 3 contacts principaux</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
+            <div class="settings-card" onclick="goToPage('infos-medicales.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">🚑</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Informations médicales</div>
+                        <div class="settings-sublabel">Allergies, traitements, groupe sanguin</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+        </section>
+
+        <!-- 2) PARAMÈTRES DES CONTEXTES -->
+        <section class="section">
+            <h2 class="section-title">🌍 Paramètres des contextes</h2>
+            <p class="section-description">Personnalisez ce qui s'affiche selon la situation</p>
+
+            <div class="settings-card" onclick="goToPage('contextes-liste.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">⚙️</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Configurer les contextes</div>
+                        <div class="settings-sublabel">Maison, Extérieur, Travail, Secours</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+        </section>
+
+        <!-- 3) DONNÉES -->
+        <section class="section">
+            <h2 class="section-title">📁 Données</h2>
+            <p class="section-description">Sauvegarder ou restaurer vos réglages</p>
+
+            <div class="settings-card" onclick="exportData()">
+                <div class="settings-card-content">
+                    <div class="settings-icon">📤</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Exporter mes données</div>
+                        <div class="settings-sublabel">Télécharger un fichier JSON</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
+            <div class="settings-card" onclick="importData()">
+                <div class="settings-card-content">
+                    <div class="settings-icon">📥</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Importer des données</div>
+                        <div class="settings-sublabel">Restaurer une sauvegarde</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+        </section>
+
+        <!-- 4) À PROPOS -->
+        <section class="section">
+            <h2 class="section-title">ℹ️ À propos</h2>
+
+            <div class="settings-card" onclick="goToPage('a-propos.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">📖</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Informations</div>
+                        <div class="settings-sublabel">Version, confidentialité, contact</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+        </section>
+
+        <!-- 5) ZONE DE DANGER -->
+        <section class="section danger-section">
+            <h2 class="section-title" style="color: rgba(255, 120, 120, 1);">⚠️ Zone de danger</h2>
+            <button class="danger-button" onclick="confirmReset()">
+                🗑️ Réinitialiser toutes les données
+            </button>
+        </section>
+
+    </main>
+
+    <!-- Modal de confirmation réinitialisation -->
+    <div class="modal" id="resetModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">⚠️ Confirmation</h2>
+            </div>
+            <div class="modal-text">
+                <strong>Attention !</strong><br><br>
+                Cette action supprimera définitivement :
+                <ul>
+                    <li>Vos données personnelles (prénom, texte)</li>
+                    <li>Vos contacts d'urgence</li>
+                    <li>Vos informations médicales</li>
+                    <li>Tous vos paramètres de contextes</li>
+                    <li>Votre journal de crise</li>
+                </ul>
+                <strong>Cette action est irréversible.</strong>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeResetModal()">Annuler</button>
+                <button class="modal-button danger" onclick="resetAllData()">Tout supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function goToPage(page) {
+            window.location.href = page;
+        }
+
+        // Export des données
+        function exportData() {
+            const data = {
+                version: '1.0',
+                dateExport: new Date().toISOString(),
+                prenom: localStorage.getItem('userPrenom') || '',
+                textePresentationDefaut: localStorage.getItem('textePresentationDefaut') || '',
+                contacts: JSON.parse(localStorage.getItem('contactsUrgence') || '[]'),
+                infosMedicales: JSON.parse(localStorage.getItem('infosMedicales') || '{}'),
+                contextes: {
+                    messageUnique: localStorage.getItem('contexte_messageUnique') === 'true',
+                    maison: JSON.parse(localStorage.getItem('contexte_maison') || '{}'),
+                    exterieur: JSON.parse(localStorage.getItem('contexte_exterieur') || '{}'),
+                    travail: JSON.parse(localStorage.getItem('contexte_travail') || '{}'),
+                    secours: JSON.parse(localStorage.getItem('contexte_secours') || '{}')
+                },
+                journalCrises: JSON.parse(localStorage.getItem('journalCrises') || '[]')
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `tsa-app-sauvegarde-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('✅ Données exportées avec succès !');
+        }
+
+        // Import des données
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        if (!data.version) {
+                            alert('❌ Fichier invalide');
+                            return;
+                        }
+                        
+                        // Import des données
+                        localStorage.setItem('userPrenom', data.prenom || '');
+                        localStorage.setItem('textePresentationDefaut', data.textePresentationDefaut || '');
+                        localStorage.setItem('contactsUrgence', JSON.stringify(data.contacts || []));
+                        localStorage.setItem('infosMedicales', JSON.stringify(data.infosMedicales || {}));
+                        
+                        // Contextes
+                        if (data.contextes) {
+                            localStorage.setItem('contexte_messageUnique', data.contextes.messageUnique ? 'true' : 'false');
+                            localStorage.setItem('contexte_maison', JSON.stringify(data.contextes.maison || {}));
+                            localStorage.setItem('contexte_exterieur', JSON.stringify(data.contextes.exterieur || {}));
+                            localStorage.setItem('contexte_travail', JSON.stringify(data.contextes.travail || {}));
+                            localStorage.setItem('contexte_secours', JSON.stringify(data.contextes.secours || {}));
+                        }
+                        
+                        localStorage.setItem('journalCrises', JSON.stringify(data.journalCrises || []));
+                        
+                        alert('✅ Données importées avec succès !');
+                        location.reload();
+                    } catch (err) {
+                        alert('❌ Erreur lors de l\'import : fichier corrompu');
+                        console.error(err);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // Réinitialisation
+        function confirmReset() {
+            document.getElementById('resetModal').classList.add('visible');
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetModal').classList.remove('visible');
+        }
+
+        function resetAllData() {
+            if (confirm('Êtes-vous VRAIMENT sûr(e) ? Cette action est définitive.')) {
+                localStorage.clear();
+                alert('✅ Toutes les données ont été supprimées');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

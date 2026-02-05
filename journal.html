@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSA App - Journal de crises</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+            padding-bottom: 20px;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .export-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #F5E4CC;
+            font-weight: 500;
+        }
+
+        .export-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .add-button {
+            background-color: #F7B89C;
+            color: #2E3A59;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .add-button:active {
+            transform: scale(0.98);
+        }
+
+        .table-container {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            overflow-x: auto;
+            overflow-y: visible;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        thead {
+            background-color: #2E3A59;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            color: #F5E4CC;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 10px;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(46, 58, 89, 0.1);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(247, 184, 156, 0.1);
+        }
+
+        tbody tr:active {
+            background-color: rgba(247, 184, 156, 0.2);
+        }
+
+        td {
+            color: #2E3A59;
+            font-size: 17px;
+            padding: 10px 8px;
+            vertical-align: top;
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+
+        .date-cell {
+            font-weight: normal;
+            white-space: nowrap;
+        }
+
+        .profile-cell {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .count-badge {
+            background-color: #F7B89C;
+            color: #2E3A59;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: help;
+            position: relative;
+            display: inline-block;
+        }
+
+        .count-badge:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 135%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2E3A59;
+            color: #F5E4CC;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            z-index: 1000;
+            transition: opacity 0.2s;
+            min-width: 250px;
+            max-width: 95vw;
+            white-space: normal;
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-bottom-color: #2E3A59;
+        }
+
+        .tooltip ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tooltip li {
+            padding: 2px 0;
+        }
+
+        .tooltip li:before {
+            content: "• ";
+            margin-right: 4px;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #F5E4CC;
+            opacity: 0.6;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.visible {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #F5E4CC;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            margin: 20px auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-top: 4px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2E3A59;
+            padding-top: 8px;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: #2E3A59;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            margin: -8px -8px 0 0;
+        }
+
+        .modal-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.1);
+        }
+
+        .modal-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .modal-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-text {
+            color: #2E3A59;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-required {
+            color: #F7B89C;
+            font-weight: bold;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            color: #2E3A59;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #F7B89C;
+        }
+
+        .intensity-slider {
+            width: 100%;
+            margin-top: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #384657;
+            outline: none;
+        }
+
+        .intensity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #F7B89C;
+            cursor: pointer;
+            border-radius: 50%;
+            margin-top: -8px;
+        }
+
+        .intensity-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #F7B89C;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .intensity-slider::-webkit-slider-runnable-track {
+            background: #384657;
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .intensity-slider::-moz-range-track {
+            background: #384657;
+            height: 8px;
+            border-radius: 4px;
+        }
+
+        .intensity-display {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #2E3A59;
+            margin: 10px 0;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-button.primary {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .modal-button.secondary {
+            background-color: rgba(46, 58, 89, 0.1);
+            color: #2E3A59;
+        }
+
+        .modal-button.danger {
+            background-color: rgba(255, 70, 70, 0.8);
+            color: #F5E4CC;
+        }
+
+        .modal-button:active {
+            transform: scale(0.98);
+        }
+
+        .triggers-button {
+            background-color: #2E3A59;
+            border: 2px solid #384657;
+            color: #F5E4CC;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .triggers-button:hover {
+            background-color: #485A70;
+        }
+
+        .triggers-button:active {
+            background-color: #384657;
+        }
+
+        .triggers-preview {
+            background-color: rgba(46, 58, 89, 0.05);
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 8px;
+            font-size: 15px;
+            color: #2E3A59;
+            min-height: 30px;
+        }
+
+        .triggers-modal {
+            z-index: 300;
+        }
+
+        .triggers-modal .modal-content {
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .triggers-modal .modal-actions {
+            position: sticky;
+            bottom: 0;
+            background-color: #F5E4CC;
+            padding: 16px 0 0 0;
+            margin-top: 20px;
+            border-top: 2px solid rgba(46, 58, 89, 0.1);
+        }
+
+        .triggers-info {
+            color: #2E3A59;
+            margin-bottom: 20px;
+            font-size: 15px;
+            background-color: rgba(46, 58, 89, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            font-style: italic;
+        }
+
+        .trigger-category {
+            margin-bottom: 20px;
+        }
+
+        .trigger-category-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #2E3A59;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #F7B89C;
+        }
+
+        .trigger-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .trigger-item:hover {
+            background-color: rgba(247, 184, 156, 0.1);
+        }
+
+        .trigger-checkbox {
+            margin-top: 2px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #2E3A59;
+        }
+
+        .trigger-label {
+            flex: 1;
+            cursor: pointer;
+            line-height: 1.4;
+            font-size: 15px;
+        }
+
+        .trigger-name {
+            font-weight: 600;
+            color: #2E3A59;
+        }
+
+        .trigger-description {
+            font-weight: 400;
+            color: #2E3A59;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .export-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .export-option {
+            background-color: #2E3A59;
+            border: 2px solid #384657;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .export-option:hover {
+            border-color: #F7B89C;
+            background-color: #485A70;
+        }
+
+        .export-option:active {
+            transform: scale(0.98);
+        }
+
+        .export-option-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #F5E4CC;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .export-option-desc {
+            font-size: 14px;
+            color: #F5E4CC;
+            opacity: 0.8;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 600px) {
+            .table-container {
+                border-radius: 0;
+            }
+            th, td {
+                font-size: 14px;
+                padding: 8px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <button class="back-button" onclick="goHome()">⬅️</button>
+            <h1 class="page-title">Journal de crises</h1>
+        </div>
+        <button class="export-button" onclick="showExportOptions()">📤 Exporter</button>
+    </header>
+
+    <main class="main-content">
+        <button class="add-button" onclick="openFormModal('create')">
+            ➕ Ajouter une crise manuellement
+        </button>
+
+        <div class="table-container" id="tableContainer">
+            <table id="crisisTable">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Date<br>Heure</th>
+                        <th style="width: 90px;">Contexte</th>
+                        <th style="width: 110px;">Type</th>
+                        <th style="width: 70px;">Intensité</th>
+                        <th style="width: 80px;">Durée</th>
+                        <th>Déclencheurs</th>
+                        <th style="width: 80px;">Cap.</th>
+                        <th style="width: 80px;">Bes.</th>
+                        <th style="width: 80px;">États</th>
+                        <th>Remarques</th>
+                        <th style="text-align: center; width: 60px;">🔧</th>
+                    </tr>
+                </thead>
+                <tbody id="journalTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">📔</div>
+            <div>Aucune crise enregistrée</div>
+        </div>
+    </main>
+
+    <div class="modal" id="detailModal" onclick="closeModal(event, 'detailModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Détail de la crise</h2>
+                <button class="close-button" onclick="closeModal(null, 'detailModal')">×</button>
+            </div>
+            <div id="detailContent"></div>
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="editFromDetail()">✏️ Modifier</button>
+                <button class="modal-button danger" onclick="confirmDelete()">🗑️ Supprimer</button>
+                <button class="modal-button primary" onclick="closeModal(null, 'detailModal')">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="formModal" onclick="closeModal(event, 'formModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title" id="formModalTitle">Ajouter une crise</h2>
+                <button class="close-button" onclick="closeModal(null, 'formModal')">×</button>
+            </div>
+            
+            <div class="form-group" id="dateGroup">
+                <label class="form-label">Date <span class="form-required">*</span></label>
+                <input type="date" class="form-input" id="formDate" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Heure (optionnel)</label>
+                <input type="time" class="form-input" id="formTime">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Type de crise</label>
+                <select class="form-select" id="formType">
+                    <option value="">Non précisé</option>
+                    <option value="Anticipatoire">Anticipatoire</option>
+                    <option value="Réactionnelle">Réactionnelle</option>
+                    <option value="Mixte">Mixte</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
+                <input type="range" class="intensity-slider" id="formIntensity" min="1" max="10" value="5" oninput="updateFormIntensityDisplay()">
+                <div class="intensity-display" id="formIntensityDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Durée estimée</label>
+                <input type="text" class="form-input" id="formDuration" placeholder="Ex: 30 min, 1h30...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Déclencheurs identifiés</label>
+                <button type="button" class="triggers-button" onclick="openTriggersModal()">
+                    <span>🎯</span>
+                    <span>Sélectionner les déclencheurs</span>
+                </button>
+                <div class="triggers-preview" id="triggersPreview">Aucun déclencheur sélectionné</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Remarques (optionnel)</label>
+                <textarea class="form-textarea" id="formRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeModal(null, 'formModal')">Annuler</button>
+                <button class="modal-button primary" onclick="saveForm()">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal triggers-modal" id="triggersModal" onclick="closeModal(event, 'triggersModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Sélectionner les déclencheurs</h2>
+                <button class="close-button" onclick="closeModal(null, 'triggersModal')">×</button>
+            </div>
+            <p class="triggers-info">💡 Vous pouvez sélectionner plusieurs déclencheurs</p>
+
+            <div id="triggersContent"></div>
+
+            <div class="modal-actions">
+                <button class="modal-button primary" onclick="validateTriggers()">✅ Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="exportModal" onclick="closeModal(event, 'exportModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Exporter le journal</h2>
+                <button class="close-button" onclick="closeModal(null, 'exportModal')">×</button>
+            </div>
+
+            <div class="export-options">
+                <div class="export-option" onclick="exportPDF()">
+                    <div class="export-option-title">📄 Export PDF</div>
+                    <div class="export-option-desc">
+                        Format lisible et imprimable. Idéal pour partager avec des professionnels de santé ou archiver.
+                    </div>
+                </div>
+
+                <div class="export-option" onclick="exportJSON()">
+                    <div class="export-option-title">💾 Export JSON</div>
+                    <div class="export-option-desc">
+                        Format de sauvegarde technique. Permet de réimporter vos données ou de les transférer sur un autre appareil en conservant toutes les informations.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        const PROFILES = {
+            maison: { icon: '🏠', name: 'Maison' },
+            exterieur: { icon: '🌍', name: 'Extérieur' },
+            travail: { icon: '💼', name: 'Travail' },
+            secours: { icon: '🚑', name: 'Secours' }
+        };
+
+        const TRIGGERS = {
+            "Hypersensibilité et Surcharges Sensorielles": [
+                { name: "Auditif", desc: "Présence de bruits latents (bourdonnements, bruits de fond subtils) ou survenue de bruits soudains" },
+                { name: "Visuel", desc: "Variations brusques de luminosité ou exposition à des lumières trop fortes" },
+                { name: "Olfactif", desc: "Perception d'odeurs dérangeantes" },
+                { name: "Tactile", desc: "Contact physique (quelqu'un qui nous touche) ou confrontation à certaines textures alimentaires" },
+                { name: "Proprioceptive", desc: "Difficultés à se représenter dans l'espace ou ressenti d'un inconfort spatio-temporel" },
+                { name: "Surcharge émotionnelle", desc: "Accumulation d'émotions intenses" }
+            ],
+            "Prévisibilité et Contrôle de l'Environnement": [
+                { name: "Instabilité", desc: "Arrivée d'un changement, d'un imprévu ou d'une interaction imprévisible" },
+                { name: "Zone Secure", desc: "Modification de la zone secure ou obligation de s'en éloigner" },
+                { name: "Perturbation de l'organisation ou des routines personnelles", desc: "Rupture de structure habituelle" },
+                { name: "Non-respect des règles", desc: "Cadre : non respecté, règle enfreinte" },
+                { name: "Injustice", desc: "Confrontation à une situation ou un vécu injuste / non éthique" },
+                { name: "Intrusion", desc: "dans la zone secure / votre espace personnel" }
+            ],
+            "Contacts sociaux": [
+                { name: "Situations sociales", desc: "Participation à des occasions sociales ou à des conversations superficielles (small talk)" },
+                { name: "Traitement social", desc: "Difficulté à lire les visages ou problèmes de compréhension dans les échanges. difficulté d'expression ou de compréhension ou de traduction des sous-entendus ou des messages de l'autre)" },
+                { name: "Barrière de communication", desc: "Difficulté à s'exprimer ou à traduire la pensée de l'autre" }
+            ],
+            "Fonctions Exécutives": [
+                { name: "Gestion du temps", desc: "Difficulté de planification et de projection (dans le temps ou dans des scénarios abstraits)" },
+                { name: "Surcharge cognitive", desc: "Trop d'informations ou de tâches à traiter simultanément ou non" },
+                { name: "Pression de résultat", desc: "Exigence de précision, de perfection et de performance" },
+                { name: "Besoin impérieux de corriger les erreurs", desc: "Réaction cognitive : face à une erreur avec un besoin presque incontrôlable de corriger cette erreur. Peut parfois entraîner des ruminations" }
+            ]
+        };
+
+        let currentEntryIndex = null;
+        let formMode = 'create';
+        let selectedTriggers = [];
+
+        function loadJournal() {
+            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            const tbody = document.getElementById('journalTableBody');
+            const tableContainer = document.getElementById('tableContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (journal.length === 0) {
+                tableContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            tableContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+            tbody.innerHTML = '';
+
+            journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+
+            journal.forEach((entry, index) => {
+                const row = createTableRow(entry, index);
+                tbody.appendChild(row);
+            });
+        }
+
+        function createTableRow(entry, index) {
+            const date = new Date(entry.horodatage);
+            const dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+            const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            
+            const profile = PROFILES[entry.profil] || { icon: '📍', name: '?' };
+            
+            const capsCount = (entry.capacites?.impossible?.length || 0) + 
+                            (entry.capacites?.difficile?.length || 0) + 
+                            (entry.capacites?.possible?.length || 0) + 
+                            (entry.capacites?.incertain?.length || 0);
+            const needsCount = entry.besoins?.length || 0;
+            const statesCount = entry.etats?.length || 0;
+
+            let capsTooltip = '';
+            if (capsCount > 0) {
+                const allCaps = [
+                    ...(entry.capacites?.impossible || []),
+                    ...(entry.capacites?.difficile || []),
+                    ...(entry.capacites?.possible || []),
+                    ...(entry.capacites?.incertain || [])
+                ];
+                capsTooltip = '<div class="tooltip"><ul>' + allCaps.map(c => `<li>${c}</li>`).join('') + '</ul></div>';
+            }
+
+            let needsTooltip = '';
+            if (needsCount > 0) {
+                needsTooltip = '<div class="tooltip"><ul>' + entry.besoins.map(b => `<li>${b.label || b}</li>`).join('') + '</ul></div>';
+            }
+
+            let statesTooltip = '';
+            if (statesCount > 0) {
+                statesTooltip = '<div class="tooltip"><ul>' + entry.etats.map(e => `<li>${e.label || e}</li>`).join('') + '</ul></div>';
+            }
+
+            const row = document.createElement('tr');
+            row.onclick = () => showDetail(index);
+            
+            let intensityDisplay = '-';
+            if (entry.intensite !== undefined && entry.intensite !== '') {
+                intensityDisplay = `${entry.intensite}/10`;
+            }
+
+            const triggersDisplay = entry.declencheurs && entry.declencheurs.length > 0 
+                ? entry.declencheurs.join(', ') 
+                : '-';
+            
+            row.innerHTML = `
+                <td class="date-cell">${dateStr}<br>${timeStr}</td>
+                <td style="white-space: nowrap;"><div class="profile-cell">${profile.icon} ${profile.name}</div></td>
+                <td>${entry.typeCrise || '-'}</td>
+                <td>${intensityDisplay}</td>
+                <td>${entry.duree || '-'}</td>
+                <td style="max-width: 150px;">${triggersDisplay}</td>
+                <td><span class="count-badge">${capsCount}${capsTooltip}</span></td>
+                <td><span class="count-badge">${needsCount}${needsTooltip}</span></td>
+                <td><span class="count-badge">${statesCount}${statesTooltip}</span></td>
+                <td style="max-width: 200px;">${entry.remarques || '-'}</td>
+                <td class="actions-cell" style="white-space: nowrap;">
+                    <button class="action-btn" onclick="event.stopPropagation(); openFormModal('edit', ${index})" title="Modifier">✏️</button>
+                    <button class="action-btn" onclick="event.stopPropagation(); deleteEntry(${index})" title="Supprimer">🗑️</button>
+                </td>
+            `;
+            
+            return row;
+        }
+
+        function showDetail(index) {
+            currentEntryIndex = index;
+            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+            const entry = journal[index];
+            
+            const date = new Date(entry.horodatage);
+            const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+            
+            const profile = PROFILES[entry.profil] || { icon: '📍', name: '?' };
+            
+            let intensityText = '-';
+            if (entry.intensite !== undefined && entry.intensite !== '') {
+                intensityText = `${entry.intensite}/10`;
+            }
+            
+            let html = `
+                <div class="modal-section">
+                    <div class="modal-section-title">📅 Informations générales</div>
+                    <div class="modal-text"><strong>Date :</strong> ${dateStr} à ${timeStr}</div>
+                    <div class="modal-text"><strong>Contexte :</strong> ${profile.icon} ${profile.name}</div>
+                    ${entry.typeCrise ? `<div class="modal-text"><strong>Type :</strong> ${entry.typeCrise}</div>` : ''}
+                    ${entry.intensite !== undefined && entry.intensite !== '' ? `<div class="modal-text"><strong>Intensité :</strong> ${intensityText}</div>` : ''}
+                    ${entry.duree ? `<div class="modal-text"><strong>Durée :</strong> ${entry.duree}</div>` : ''}
+                </div>
+            `;
+            
+            if (entry.declencheurs && entry.declencheurs.length > 0) {
+                html += `
+                    <div class="modal-section">
+                        <div class="modal-section-title">🎯 Déclencheurs identifiés</div>
+                        <div class="modal-text">${entry.declencheurs.join(', ')}</div>
+                    </div>
+                `;
+            }
+            
+            if (entry.remarques) {
+                html += `
+                    <div class="modal-section">
+                        <div class="modal-section-title">📝 Remarques</div>
+                        <div class="modal-text">${entry.remarques}</div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('detailContent').innerHTML = html;
+            document.getElementById('detailModal').classList.add('visible');
+        }
+
+        function openFormModal(mode, index = null) {
+            formMode = mode;
+            currentEntryIndex = index;
+            
+            const modalTitle = document.getElementById('formModalTitle');
+            const dateGroup = document.getElementById('dateGroup');
+            
+            if (mode === 'create') {
+                modalTitle.textContent = 'Ajouter une crise manuellement';
+                dateGroup.style.display = 'block';
+                
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('formDate').value = today;
+                document.getElementById('formTime').value = '';
+                document.getElementById('formType').value = '';
+                document.getElementById('formIntensity').value = '5';
+                updateFormIntensityDisplay();
+                document.getElementById('formDuration').value = '';
+                document.getElementById('formRemarks').value = '';
+                selectedTriggers = [];
+                updateTriggersPreview();
+            } else {
+                modalTitle.textContent = 'Modifier la crise';
+                dateGroup.style.display = 'none';
+                
+                const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+                journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+                const entry = journal[index];
+                
+                document.getElementById('formType').value = entry.typeCrise || '';
+                document.getElementById('formIntensity').value = entry.intensite || '5';
+                updateFormIntensityDisplay();
+                document.getElementById('formDuration').value = entry.duree || '';
+                document.getElementById('formRemarks').value = entry.remarques || '';
+                selectedTriggers = Array.isArray(entry.declencheurs) ? [...entry.declencheurs] : [];
+                updateTriggersPreview();
+            }
+            
+            document.getElementById('formModal').classList.add('visible');
+        }
+
+        function updateFormIntensityDisplay() {
+            const value = document.getElementById('formIntensity').value;
+            document.getElementById('formIntensityDisplay').textContent = `${value}/10`;
+        }
+
+        function openTriggersModal() {
+            const content = document.getElementById('triggersContent');
+            let html = '';
+            
+            Object.keys(TRIGGERS).forEach(category => {
+                html += `<div class="trigger-category">`;
+                html += `<div class="trigger-category-title">${category}</div>`;
+                
+                TRIGGERS[category].forEach((trigger, idx) => {
+                    const isChecked = selectedTriggers.includes(trigger.name);
+                    const uniqueId = 'trigger_' + category.replace(/[^a-z0-9]/gi, '_') + '_' + idx;
+                    html += `
+                        <div class="trigger-item">
+                            <input type="checkbox" 
+                                   class="trigger-checkbox" 
+                                   ${isChecked ? 'checked' : ''} 
+                                   id="${uniqueId}" 
+                                   data-trigger-name="${trigger.name.replace(/"/g, '&quot;')}"
+                                   onchange="handleTriggerChange(this)">
+                            <label class="trigger-label" for="${uniqueId}">
+                                <span class="trigger-name">${trigger.name}</span> : 
+                                <span class="trigger-description">${trigger.desc}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            });
+            
+            content.innerHTML = html;
+            document.getElementById('triggersModal').classList.add('visible');
+        }
+
+        function handleTriggerChange(checkbox) {
+            const triggerName = checkbox.getAttribute('data-trigger-name');
+            
+            if (checkbox.checked) {
+                if (!selectedTriggers.includes(triggerName)) {
+                    selectedTriggers.push(triggerName);
+                }
+            } else {
+                selectedTriggers = selectedTriggers.filter(t => t !== triggerName);
+            }
+        }
+
+        function validateTriggers() {
+            updateTriggersPreview();
+            closeModal(null, 'triggersModal');
+        }
+
+        function updateTriggersPreview() {
+            const preview = document.getElementById('triggersPreview');
+            if (selectedTriggers.length === 0) {
+                preview.textContent = 'Aucun déclencheur sélectionné';
+            } else {
+                preview.innerHTML = selectedTriggers.map(t => `• ${t}`).join('<br>');
+            }
+        }
+
+        function saveForm() {
+            if (formMode === 'create') {
+                const dateInput = document.getElementById('formDate').value;
+                if (!dateInput) {
+                    alert('La date est obligatoire');
+                    return;
+                }
+                
+                const timeInput = document.getElementById('formTime').value;
+                let horodatage;
+                
+                if (timeInput) {
+                    horodatage = new Date(`${dateInput}T${timeInput}:00`).toISOString();
+                } else {
+                    // Si pas d'heure, on met l'heure actuelle
+                    const now = new Date();
+                    const dateOnly = new Date(dateInput);
+                    dateOnly.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+                    horodatage = dateOnly.toISOString();
+                }
+                
+                // Vérifier que la date n'est pas dans le futur (avec une marge d'1 jour)
+                const now = new Date();
+                const crisisDate = new Date(horodatage);
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                
+                if (crisisDate.getTime() > tomorrow.getTime()) {
+                    alert('Vous ne pouvez pas créer une crise dans le futur.');
+                    return;
+                }
+                
+                const entry = {
+                    horodatage: horodatage,
+                    profil: localStorage.getItem('currentProfil') || 'maison',
+                    capacites: JSON.parse(localStorage.getItem('currentCapacites') || '{}'),
+                    besoins: JSON.parse(localStorage.getItem('currentBesoins') || '[]'),
+                    etats: JSON.parse(localStorage.getItem('currentEtats') || '[]'),
+                    typeCrise: document.getElementById('formType').value,
+                    intensite: document.getElementById('formIntensity').value,
+                    duree: document.getElementById('formDuration').value,
+                    declencheurs: [...selectedTriggers],
+                    remarques: document.getElementById('formRemarks').value,
+                    manual: true
+                };
+                
+                const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+                journal.push(entry);
+                localStorage.setItem('journalCrises', JSON.stringify(journal));
+                
+                closeModal(null, 'formModal');
+                loadJournal();
+                alert('Crise ajoutée !');
+            } else {
+                const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+                const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+                
+                sorted[currentEntryIndex].typeCrise = document.getElementById('formType').value;
+                sorted[currentEntryIndex].intensite = document.getElementById('formIntensity').value;
+                sorted[currentEntryIndex].duree = document.getElementById('formDuration').value;
+                sorted[currentEntryIndex].declencheurs = [...selectedTriggers];
+                sorted[currentEntryIndex].remarques = document.getElementById('formRemarks').value;
+                
+                localStorage.setItem('journalCrises', JSON.stringify(sorted));
+                closeModal(null, 'formModal');
+                loadJournal();
+                alert('Modifications enregistrées !');
+            }
+        }
+
+        function editFromDetail() {
+            closeModal(null, 'detailModal');
+            openFormModal('edit', currentEntryIndex);
+        }
+
+        function confirmDelete() {
+            if (confirm('Supprimer cette entrée définitivement ?')) {
+                deleteEntry(currentEntryIndex);
+                closeModal(null, 'detailModal');
+            }
+        }
+
+        function deleteEntry(index) {
+            if (!confirm('Supprimer cette entrée définitivement ?')) return;
+            
+            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+            sorted.splice(index, 1);
+            localStorage.setItem('journalCrises', JSON.stringify(sorted));
+            loadJournal();
+        }
+
+        function showExportOptions() {
+            document.getElementById('exportModal').classList.add('visible');
+        }
+
+        function exportJSON() {
+            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            if (journal.length === 0) {
+                alert('Aucune crise à exporter');
+                return;
+            }
+
+            const data = JSON.stringify(journal, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `journal-crises-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            closeModal(null, 'exportModal');
+        }
+
+        function exportPDF() {
+            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            if (journal.length === 0) {
+                alert('Aucune crise à exporter');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // Titre avec prénom si disponible
+            const prenom = localStorage.getItem('userPrenom') || '';
+            doc.setFontSize(18);
+            if (prenom) {
+                doc.text(`Journal de Crises de ${prenom}`, 15, 15);
+            } else {
+                doc.text('Journal de Crises', 15, 15);
+            }
+
+            doc.setFontSize(10);
+            const exportDate = new Date().toLocaleDateString('fr-FR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            }) + ' ' + new Date().toLocaleTimeString('fr-FR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            doc.text(`Export du ${exportDate}`, 240, 15);
+
+            const tableData = [];
+            journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+
+            journal.forEach(entry => {
+                const date = new Date(entry.horodatage);
+                const dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                
+                const profile = PROFILES[entry.profil] || { name: '?' };
+                
+                // Détail des capacités
+                let capsDetail = '';
+                if (entry.capacites?.impossible?.length > 0) {
+                    capsDetail += 'Impossible :\n';
+                    entry.capacites.impossible.forEach(c => capsDetail += `  • ${c}\n`);
+                }
+                if (entry.capacites?.difficile?.length > 0) {
+                    capsDetail += 'Difficile :\n';
+                    entry.capacites.difficile.forEach(c => capsDetail += `  • ${c}\n`);
+                }
+                if (entry.capacites?.possible?.length > 0) {
+                    capsDetail += 'Possible :\n';
+                    entry.capacites.possible.forEach(c => capsDetail += `  • ${c}\n`);
+                }
+                if (entry.capacites?.incertain?.length > 0) {
+                    capsDetail += 'Incertain :\n';
+                    entry.capacites.incertain.forEach(c => capsDetail += `  • ${c}\n`);
+                }
+                capsDetail = capsDetail.trim();
+                if (!capsDetail) capsDetail = '-';
+                
+                // Détail des besoins
+                let needsDetail = '-';
+                if (entry.besoins?.length > 0) {
+                    needsDetail = '';
+                    entry.besoins.forEach(b => needsDetail += `• ${b.label || b}\n`);
+                    needsDetail = needsDetail.trim();
+                }
+                
+                // Détail des états
+                let statesDetail = '-';
+                if (entry.etats?.length > 0) {
+                    statesDetail = '';
+                    entry.etats.forEach(e => statesDetail += `• ${e.label || e}\n`);
+                    statesDetail = statesDetail.trim();
+                }
+
+                const intensityDisplay = entry.intensite !== undefined && entry.intensite !== '' 
+                    ? `${entry.intensite}/10` 
+                    : '-';
+
+                const triggersDisplay = entry.declencheurs && entry.declencheurs.length > 0 
+                    ? entry.declencheurs.join(', ') 
+                    : '-';
+
+                tableData.push([
+                    `${dateStr}\n${timeStr}`,
+                    profile.name,
+                    entry.typeCrise || '-',
+                    intensityDisplay,
+                    entry.duree || '-',
+                    triggersDisplay,
+                    capsDetail,
+                    needsDetail,
+                    statesDetail,
+                    entry.remarques || '-'
+                ]);
+            });
+
+            doc.autoTable({
+                head: [['Date\nHeure', 'Contexte', 'Type', 'Int.', 'Durée', 'Déclencheurs', 'Capacités', 'Besoins', 'États', 'Remarques']],
+                body: tableData,
+                startY: 25,
+                theme: 'grid',
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 2,
+                    textColor: [0, 0, 0],
+                    lineColor: [0, 0, 0],
+                    lineWidth: 0.1,
+                    valign: 'top',
+                    minCellHeight: 8
+                },
+                headStyles: {
+                    fillColor: [200, 200, 200],
+                    textColor: [0, 0, 0],
+                    fontStyle: 'bold',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                columnStyles: {
+                    0: { cellWidth: 16 },
+                    1: { cellWidth: 15 },
+                    2: { cellWidth: 20 },
+                    3: { cellWidth: 10 },
+                    4: { cellWidth: 12 },
+                    5: { cellWidth: 28 },
+                    6: { cellWidth: 30 },
+                    7: { cellWidth: 30 },
+                    8: { cellWidth: 30 },
+                    9: { cellWidth: 35 }
+                }
+            });
+
+            doc.save(`journal-crises-${new Date().toISOString().split('T')[0]}.pdf`);
+            closeModal(null, 'exportModal');
+        }
+
+        function closeModal(event, modalId) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById(modalId).classList.remove('visible');
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        loadJournal();
+    </script>
+</body>
+</html>

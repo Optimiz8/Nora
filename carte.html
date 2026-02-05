@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carte d'urgence – TSA App</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+    background-color: #384657;
+    color: #F5E4CC;
+    min-height: 100vh;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER RÉDUIT */
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 0;
+    margin-bottom: 8px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: #F5E4CC;
+    padding: 0;
+    line-height: 1;
+}
+
+/* CONTENU */
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TITRE PRINCIPAL - ENCADRÉ */
+.main-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #F7B89C;
+    text-align: center;
+    margin-bottom: 14px;
+    line-height: 1.1;
+    padding: 12px 16px;
+    border: 3px solid #F7B89C;
+    border-radius: 16px;
+    background: rgba(247,184,156,0.08);
+}
+
+/* TOUT LE TEXTE EN 17px */
+.identity,
+.list,
+.text {
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+/* IDENTITÉ */
+.identity {
+    margin-bottom: 16px;
+}
+
+.identity strong {
+    color: #F7B89C;
+}
+
+/* SECTIONS */
+.section {
+    margin-bottom: 14px;
+}
+
+/* SOUS-TITRES */
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #F7B89C;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* LISTE */
+.list-item {
+    margin-bottom: 6px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.list-item::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #F7B89C;
+    font-weight: 700;
+}
+
+.list-item strong {
+    font-weight: 700;
+}
+
+/* TEXTE NORMAL */
+.text {
+    margin-bottom: 6px;
+}
+
+/* CONTACT */
+.contact-subtitle {
+    font-size: 17px;
+    font-style: italic;
+    margin-bottom: 6px;
+    opacity: 0.9;
+}
+
+.contact-name {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.contact-phone {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+/* BOUTON INFOS MÉDICALES - PLUS LARGE SUR 2 LIGNES */
+.medical-btn {
+    background: rgba(245,228,204,0.12);
+    border: 1px solid rgba(247,184,156,0.4);
+    color: #F5E4CC;
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    margin: 14px auto 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 90%;
+    max-width: 380px;
+}
+
+.medical-btn .emoji {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.medical-btn .text-content {
+    flex: 1;
+    text-align: left;
+}
+
+.medical-btn .main-text {
+    display: block;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.medical-btn .sub-text {
+    display: block;
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+.medical-btn:active {
+    transform: scale(0.98);
+}
+
+/* MESSAGE FINAL */
+.thank-you {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 500;
+    margin-top: 12px;
+    margin-bottom: 16px;
+}
+
+/* BOUTON QR CODE */
+.qr-btn {
+    background: #F7B89C;
+    color: #2E3A59;
+    border: none;
+    border-radius: 16px;
+    padding: 12px 24px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.qr-btn:active {
+    transform: scale(0.97);
+}
+
+/* MODALES */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.modal.visible {
+    display: flex;
+}
+
+.modal-content {
+    background: #384657;
+    border-radius: 24px;
+    padding: 24px 20px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #F5E4CC;
+    background: none;
+    border: none;
+    line-height: 1;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #F7B89C;
+    margin-bottom: 20px;
+    text-align: center;
+    padding-right: 30px;
+}
+
+/* FORMULAIRE MÉDICAL */
+.medical-field {
+    margin-bottom: 16px;
+}
+
+.medical-field-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: #F7B89C;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.medical-field select,
+.medical-field input,
+.medical-field textarea {
+    width: 100%;
+    background: rgba(245,228,204,0.12);
+    border: 1px solid rgba(247,184,156,0.4);
+    color: #F5E4CC;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.medical-field select {
+    cursor: pointer;
+}
+
+.medical-field input::placeholder,
+.medical-field textarea::placeholder {
+    color: rgba(245,228,204,0.5);
+    font-style: italic;
+}
+
+.medical-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.save-medical-btn {
+    background: #F7B89C;
+    color: #2E3A59;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.save-medical-btn:active {
+    transform: scale(0.98);
+}
+
+/* QR CODE MODAL */
+#qrcode {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 0 auto 24px;
+    display: inline-block;
+}
+
+.qr-close-btn {
+    background: #F7B89C;
+    color: #2E3A59;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <button class="close-btn" onclick="location.href='index.html'">×</button>
+</header>
+
+<div class="content">
+    <h1 class="main-title">URGENCE : CRISE AUTISTIQUE</h1>
+
+    <div class="identity">
+        Je m'appelle <strong>Marine ROBINET WEYMIENS</strong>.<br>
+        Je suis autiste verbale sans déficience intellectuelle.<br>
+        Je peux vous entendre mais probablement pas parler.
+    </div>
+
+    <div class="section">
+        <div class="section-title">Consignes</div>
+        <div class="list">
+            <div class="list-item"><strong>NE PAS ME TOUCHER</strong></div>
+            <div class="list-item"><strong>METTEZ-MOI AU CALME</strong> (sombre, silencieux, seule)</div>
+            <div class="list-item"><strong>NE PAS M'EMMENER AUX URGENCES</strong> (sauf blessure grave)</div>
+            <div class="list-item">Si agitée → endroit froid pour me calmer</div>
+            <div class="list-item">Si calme → me couvrir si possible</div>
+            <div class="list-item">Si je porte un casque/écouteurs → ne pas les retirer, ils m'aident</div>
+            <div class="list-item">Patienter (la crise peut durer de 30 min à plusieurs heures)</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Informations</div>
+        <div class="text">Je ne suis pas dangereuse. Je peux me figer, pleurer, crier, faire des gestes involontaires.</div>
+        <div class="text">Normalement, je vous entends et comprends.</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Contact</div>
+        <div class="contact-subtitle">si ça dure ou s'il y a une urgence</div>
+        <div class="contact-name">Thomas WEYMIENS (époux)</div>
+        <div class="contact-phone">06.72.09.10.54</div>
+        
+        <button class="medical-btn" onclick="openMedical()">
+            <span class="emoji">🔍</span>
+            <div class="text-content">
+                <span class="main-text">Informations médicales</span>
+                <span class="sub-text">secours uniquement</span>
+            </div>
+        </button>
+    </div>
+
+    <div class="thank-you">Merci pour votre aide bienveillante 💙</div>
+
+    <button class="qr-btn" onclick="generateQR()">📱 Partager via QR Code</button>
+</div>
+
+<!-- MODALE INFORMATIONS MÉDICALES -->
+<div class="modal" id="medicalModal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeMedical()">×</button>
+        <div class="modal-title">Informations médicales<br><small style="font-size:14px;font-weight:400;opacity:0.8;">(secours uniquement)</small></div>
+        
+        <div class="medical-field">
+            <label class="medical-field-label">Groupe sanguin</label>
+            <select id="bloodType">
+                <option value="">Non renseigné</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+
+        <div class="medical-field">
+            <label class="medical-field-label">Allergies médicamenteuses</label>
+            <input type="text" id="drugAllergies" placeholder="ex: pénicilline, aspirine...">
+        </div>
+
+        <div class="medical-field">
+            <label class="medical-field-label">Autres allergies</label>
+            <input type="text" id="otherAllergies" placeholder="ex: arachides, latex...">
+        </div>
+
+        <div class="medical-field">
+            <label class="medical-field-label">Traitement en cours</label>
+            <textarea id="currentTreatment" placeholder="ex: Lévothyrox 50µg le matin"></textarea>
+        </div>
+
+        <div class="medical-field">
+            <label class="medical-field-label">Antécédents médicaux majeurs</label>
+            <textarea id="medicalHistory" placeholder="ex: épilepsie, diabète, asthme..."></textarea>
+        </div>
+
+        <div class="medical-field">
+            <label class="medical-field-label">Autres informations</label>
+            <textarea id="otherInfo" placeholder="Toute autre information utile pour les secours"></textarea>
+        </div>
+
+        <button class="save-medical-btn" onclick="saveMedical()">Enregistrer</button>
+    </div>
+</div>
+
+<!-- MODALE QR CODE -->
+<div class="modal" id="qrModal">
+    <div class="modal-content" style="text-align: center;">
+        <button class="modal-close" onclick="closeQR()">×</button>
+        <div class="modal-title">Scannez ce QR Code</div>
+        <div id="qrcode"></div>
+        <button class="qr-close-btn" onclick="closeQR()">Fermer</button>
+    </div>
+</div>
+
+<!-- Bibliothèque QR Code -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<script>
+let qrCodeInstance = null;
+
+// Charger les données médicales au démarrage
+window.addEventListener('DOMContentLoaded', () => {
+    loadMedicalData();
+});
+
+function openMedical() {
+    document.getElementById('medicalModal').classList.add('visible');
+}
+
+function closeMedical() {
+    document.getElementById('medicalModal').classList.remove('visible');
+}
+
+function saveMedical() {
+    const medicalData = {
+        bloodType: document.getElementById('bloodType').value,
+        drugAllergies: document.getElementById('drugAllergies').value,
+        otherAllergies: document.getElementById('otherAllergies').value,
+        currentTreatment: document.getElementById('currentTreatment').value,
+        medicalHistory: document.getElementById('medicalHistory').value,
+        otherInfo: document.getElementById('otherInfo').value
+    };
+    
+    // Pour l'instant stocké localement, 
+    // plus tard sera synchronisé avec les paramètres
+    localStorage.setItem('medicalData', JSON.stringify(medicalData));
+    closeMedical();
+}
+
+function loadMedicalData() {
+    // Pour l'instant charge depuis localStorage
+    // Plus tard ira chercher dans les paramètres
+    const saved = localStorage.getItem('medicalData');
+    if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('bloodType').value = data.bloodType || '';
+        document.getElementById('drugAllergies').value = data.drugAllergies || '';
+        document.getElementById('otherAllergies').value = data.otherAllergies || '';
+        document.getElementById('currentTreatment').value = data.currentTreatment || '';
+        document.getElementById('medicalHistory').value = data.medicalHistory || '';
+        document.getElementById('otherInfo').value = data.otherInfo || '';
+    }
+}
+
+function generateQR() {
+    const modal = document.getElementById('qrModal');
+    const qrContainer = document.getElementById('qrcode');
+    
+    qrContainer.innerHTML = '';
+    
+    const pageUrl = window.location.href;
+    
+    qrCodeInstance = new QRCode(qrContainer, {
+        text: pageUrl,
+        width: 256,
+        height: 256,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
+    
+    modal.classList.add('visible');
+}
+
+function closeQR() {
+    document.getElementById('qrModal').classList.remove('visible');
+}
+
+// Fermer avec Echap
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeMedical();
+        closeQR();
+    }
+});
+</script>
+
+</body>
+</html>

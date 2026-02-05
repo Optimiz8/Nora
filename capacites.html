@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TSA App – Capacités</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
+  background:#384657;
+  color:#F5E4CC;
+  min-height:100vh;
+  padding-bottom:100px;
+}
+
+.header{
+  position:sticky;
+  top:0;
+  background:#384657;
+  padding:16px 20px;
+  border-bottom:1px solid rgba(245,228,204,.1);
+  z-index:10;
+}
+
+.page-title-header{font-size:20px}
+
+.profile-banner{
+  background:#2E3A59;
+  padding:12px 20px;
+  font-size:16px;
+}
+
+.main-content{padding:24px 20px}
+
+.page-title{
+  font-size:26px;
+  margin-bottom:8px;
+}
+
+.instruction-text{
+  color:#F7B89C;
+  font-size:15px;
+  margin-bottom:20px;
+}
+
+.reset-button{
+  background:rgba(245,228,204,.2);
+  border:1px solid rgba(245,228,204,.3);
+  color:#F5E4CC;
+  border-radius:12px;
+  font-size:26px;
+  padding:8px 14px;
+  cursor:pointer;
+}
+
+.capacity-item{
+  background:#F5E4CC;
+  color:#2E3A59;
+  border-radius:14px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:10px;
+  user-select:none;
+  transition:.15s;
+}
+
+.capacity-item:active{transform:scale(.97)}
+
+.capacity-icon{font-size:24px}
+.capacity-text{flex:1;font-size:16px}
+.capacity-state{font-size:24px}
+
+.more-toggle{
+  margin:22px 0;
+  background:none;
+  border:none;
+  color:#F7B89C;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#2E3A59;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-top:1px solid rgba(245,228,204,0.1);
+}
+
+.footer-button{
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.footer-button.icon{
+  flex:0 0 48px;
+  height:48px;
+  border-radius:12px;
+  font-size:20px;
+  background:rgba(245,228,204,0.18);
+  color:#F5E4CC;
+}
+
+.footer-button.center{
+  flex:1;
+  height:56px;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:700;
+  background:#F7B89C;
+  color:#2E3A59;
+}
+
+.confirm-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+}
+
+.confirm-overlay.show{display:flex}
+
+.confirm-dialog{
+  background:#F5E4CC;
+  padding:24px;
+  border-radius:16px;
+  width:300px;
+  color:#2E3A59;
+}
+
+.confirm-buttons{
+  display:flex;
+  gap:12px;
+  margin-top:20px;
+}
+
+.confirm-btn{
+  flex:1;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.confirm{background:#F7B89C}
+.cancel{background:#ddd}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1 class="page-title-header">Capacités</h1>
+</header>
+
+<div class="profile-banner">Maison</div>
+
+<main class="main-content">
+
+<div style="display:flex;justify-content:space-between;align-items:center">
+  <h2 class="page-title">Mes capacités actuelles</h2>
+  <button class="reset-button" onclick="resetAllCapacities()">↻</button>
+</div>
+
+<p class="instruction-text">
+Appuyez pour changer l'état. Appui long pour remettre à zéro.
+</p>
+
+<!-- CAPACITÉS ESSENTIELLES -->
+<div class="capacity-item" data-state="empty" data-label="Parler" onclick="cycleState(this)">
+  <div class="capacity-icon">💬</div>
+  <div class="capacity-text">Parler</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Être touchée" onclick="cycleState(this)">
+  <div class="capacity-icon">🤝</div>
+  <div class="capacity-text">Être touchée</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Bouger" onclick="cycleState(this)">
+  <div class="capacity-icon">🚶</div>
+  <div class="capacity-text">Bouger</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Rester ici" onclick="cycleState(this)">
+  <div class="capacity-icon">📍</div>
+  <div class="capacity-text">Rester ici</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Comprendre ce qu'on me dit" onclick="cycleState(this)">
+  <div class="capacity-icon">🧠</div>
+  <div class="capacity-text">Comprendre ce qu'on me dit</div>
+  <div class="capacity-state"></div>
+</div>
+
+<button class="more-toggle" onclick="toggleMore()">➕ Voir plus de capacités</button>
+
+<div id="moreCapacities" style="display:none">
+
+<div class="capacity-item" data-state="empty" data-label="Écrire / taper sur un clavier" onclick="cycleState(this)">
+  <div class="capacity-icon">⌨️</div>
+  <div class="capacity-text">Écrire / taper sur un clavier</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Lire" onclick="cycleState(this)">
+  <div class="capacity-icon">📖</div>
+  <div class="capacity-text">Lire</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Répondre à des questions" onclick="cycleState(this)">
+  <div class="capacity-icon">💭</div>
+  <div class="capacity-text">Répondre à des questions</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Marcher" onclick="cycleState(this)">
+  <div class="capacity-icon">🚶‍♀️</div>
+  <div class="capacity-text">Marcher</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Rester debout" onclick="cycleState(this)">
+  <div class="capacity-icon">🧍</div>
+  <div class="capacity-text">Rester debout</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="M'asseoir" onclick="cycleState(this)">
+  <div class="capacity-icon">🪑</div>
+  <div class="capacity-text">M'asseoir</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Me lever" onclick="cycleState(this)">
+  <div class="capacity-icon">⬆️</div>
+  <div class="capacity-text">Me lever</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Être proche des autres" onclick="cycleState(this)">
+  <div class="capacity-icon">👥</div>
+  <div class="capacity-text">Être proche des autres</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Attendre" onclick="cycleState(this)">
+  <div class="capacity-icon">⏳</div>
+  <div class="capacity-text">Attendre</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Me concentrer" onclick="cycleState(this)">
+  <div class="capacity-icon">🎯</div>
+  <div class="capacity-text">Me concentrer</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Regarder dans les yeux" onclick="cycleState(this)">
+  <div class="capacity-icon">👁️</div>
+  <div class="capacity-text">Regarder dans les yeux</div>
+  <div class="capacity-state"></div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Manger" onclick="cycleState(this)">
+  <div class="capacity-icon">🍽️</div>
+  <div class="capacity-text">Manger</div>
+  <div class="capacity-state"></div>
+</div>
+
+</div>
+
+</main>
+
+<footer class="footer">
+  <button class="footer-button icon" onclick="goBack()">⬅️</button>
+  <button class="footer-button center" onclick="finish()">Voir le récapitulatif</button>
+  <button class="footer-button icon" onclick="goNext()">➡️</button>
+</footer>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-dialog">
+    <h3>Réinitialiser ?</h3>
+    <p>Toutes les capacités seront effacées.</p>
+    <div class="confirm-buttons">
+      <button class="confirm-btn cancel" onclick="hideConfirm()">Annuler</button>
+      <button class="confirm-btn confirm" onclick="confirmReset()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STATES={
+  empty:{emoji:'',next:'possible'},
+  possible:{emoji:'✅',next:'difficult'},
+  difficult:{emoji:'⚠️',next:'impossible'},
+  impossible:{emoji:'⛔',next:'unknown'},
+  unknown:{emoji:'❓',next:'empty'}
+};
+
+let longPressTimer,isLongPress=false;
+
+function cycleState(el){
+  if(isLongPress){isLongPress=false;return}
+  const n=STATES[el.dataset.state].next;
+  el.dataset.state=n;
+  el.querySelector('.capacity-state').textContent=STATES[n].emoji;
+  saveCapacities();
+}
+
+document.querySelectorAll('.capacity-item').forEach(i=>{
+  i.addEventListener('mousedown',()=>startLong(i));
+  i.addEventListener('mouseup',clear);
+  i.addEventListener('mouseleave',clear);
+  i.addEventListener('touchstart',()=>startLong(i));
+  i.addEventListener('touchend',clear);
+});
+
+function startLong(i){
+  isLongPress=false;
+  longPressTimer=setTimeout(()=>{
+    isLongPress=true;
+    i.dataset.state='empty';
+    i.querySelector('.capacity-state').textContent='';
+    saveCapacities();
+  },600);
+}
+
+function clear(){clearTimeout(longPressTimer)}
+
+function toggleMore(){
+  const b=document.getElementById('moreCapacities');
+  b.style.display=b.style.display==='block'?'none':'block';
+}
+
+function resetAllCapacities(){
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function hideConfirm(){
+  document.getElementById('confirmOverlay').classList.remove('show');
+}
+
+function confirmReset(){
+  document.querySelectorAll('.capacity-item').forEach(i=>{
+    i.dataset.state='empty';
+    i.querySelector('.capacity-state').textContent='';
+  });
+  saveCapacities();
+  hideConfirm();
+}
+
+// Sauvegarde des capacités dans le localStorage
+function saveCapacities(){
+  const capacites = {
+    impossible: [],
+    difficile: [],
+    possible: [],
+    incertain: []
+  };
+  
+  document.querySelectorAll('.capacity-item').forEach(item => {
+    const state = item.dataset.state;
+    const label = item.dataset.label || item.querySelector('.capacity-text').textContent;
+    
+    if(state === 'impossible'){
+      capacites.impossible.push(label);
+    } else if(state === 'difficult'){
+      capacites.difficile.push(label);
+    } else if(state === 'possible'){
+      capacites.possible.push(label);
+    } else if(state === 'unknown'){
+      capacites.incertain.push(label);
+    }
+  });
+  
+  localStorage.setItem('currentCapacites', JSON.stringify(capacites));
+  console.log('Capacités sauvegardées:', capacites);
+}
+
+// Charger les capacités au démarrage
+function loadCapacities(){
+  try {
+    const saved = localStorage.getItem('currentCapacites');
+    if(!saved) return;
+    
+    const capacites = JSON.parse(saved);
+    
+    document.querySelectorAll('.capacity-item').forEach(item => {
+      const label = item.dataset.label || item.querySelector('.capacity-text').textContent;
+      
+      if(capacites.impossible.includes(label)){
+        item.dataset.state = 'impossible';
+        item.querySelector('.capacity-state').textContent = '⛔';
+      } else if(capacites.difficile.includes(label)){
+        item.dataset.state = 'difficult';
+        item.querySelector('.capacity-state').textContent = '⚠️';
+      } else if(capacites.possible.includes(label)){
+        item.dataset.state = 'possible';
+        item.querySelector('.capacity-state').textContent = '✅';
+      } else if(capacites.incertain.includes(label)){
+        item.dataset.state = 'unknown';
+        item.querySelector('.capacity-state').textContent = '❓';
+      }
+    });
+  } catch(e) {
+    console.error('Erreur chargement capacités:', e);
+  }
+}
+
+function goBack(){
+  saveCapacities();
+  location.href='index.html';
+}
+
+function goNext(){
+  saveCapacities();
+  location.href='besoins.html';
+}
+
+function finish(){
+  saveCapacities();
+  location.href='recap.html';
+}
+
+// Charger au démarrage
+document.addEventListener('DOMContentLoaded', function() {
+  loadCapacities();
+  
+  // Enregistrer l'heure de début de la crise si pas déjà fait
+  if (!localStorage.getItem('crisisStartTime')) {
+    localStorage.setItem('crisisStartTime', Date.now().toString());
+    console.log('Heure de début de crise enregistrée');
+  }
+});
+</script>
+
+</body>
+</html>

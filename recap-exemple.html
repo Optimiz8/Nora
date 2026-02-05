@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aperçu - TSA App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #2E3A59;
+            line-height: 1.4;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* BANDEAU EXEMPLE */
+        .exemple-banner {
+            background: linear-gradient(135deg, #F7B89C 0%, #f5a584 100%);
+            color: #2E3A59;
+            padding: 16px 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background-color: #2E3A59;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #F5E4CC;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .content {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .alert-block {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 8px;
+        }
+
+        .alert-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2E3A59;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .intro-text {
+            margin-bottom: 12px;
+        }
+
+        .intro-text p {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .intro-text strong {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        .highlight-box {
+            padding: 0;
+            margin: 6px 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 2px;
+            line-height: 1.4;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .highlight-box p:before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            font-weight: bold;
+        }
+
+        .info-important {
+            background-color: rgba(56, 70, 87, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0 6px 0;
+        }
+
+        .info-important h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #2E3A59;
+        }
+
+        .info-important ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-important li {
+            margin-bottom: 4px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .info-important li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+        }
+
+        .collapsible-section {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F5E4CC;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 17px;
+            font-weight: 600;
+            color: #2E3A59;
+        }
+
+        .section-header:active {
+            background-color: #eed9b8;
+        }
+
+        .chevron {
+            transition: transform 0.2s;
+            font-size: 20px;
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .section-content.open {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .section-inner {
+            padding: 0 16px 12px 16px;
+        }
+
+        .capacity-item, .need-item, .state-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+        }
+
+        .capacity-group {
+            margin-bottom: 10px;
+        }
+
+        .capacity-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .capacity-group-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #2E3A59;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.4;
+        }
+
+        .capacity-inline-list {
+            margin: 0;
+            padding-left: 32px;
+            line-height: 1.4;
+        }
+
+        .item-icon {
+            font-size: 20px;
+            width: 28px;
+            text-align: center;
+        }
+
+        .item-status {
+            font-size: 18px;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .contact-btn {
+            flex: 1;
+            background-color: #F7B89C;
+            border: none;
+            color: #2E3A59;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .contact-btn:active {
+            background-color: #f5a585;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #2E3A59;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .footer-btn {
+            background-color: #F5E4CC;
+            border: none;
+            color: #2E3A59;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .footer-btn:active {
+            background-color: #eed9b8;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- BANDEAU EXEMPLE -->
+    <div class="exemple-banner">
+        👁️ APERÇU - Ceci est un exemple (pas une vraie crise)
+    </div>
+
+    <div class="header">
+        <button class="back-btn" onclick="fermerApercu()">
+            <span>×</span>
+            <span>Fermer l'aperçu</span>
+        </button>
+    </div>
+
+    <div class="content">
+        <div class="alert-block">
+            <div class="alert-title">
+                🚨 JE SUIS EN CRISE AUTISTIQUE
+            </div>
+            
+            <div class="intro-text" id="presentationText">
+                <!-- Sera rempli par JS -->
+            </div>
+        </div>
+
+        <!-- Section Capacités -->
+        <div class="collapsible-section" id="capacitesSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Mes capacités actuelles</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="capacitesContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Besoins -->
+        <div class="collapsible-section" id="besoinsSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Ce qui va m'aider</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="besoinsContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section États -->
+        <div class="collapsible-section" id="etatsSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Comment je me sens</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="etatsContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Contact d'urgence -->
+        <div class="collapsible-section" id="contactSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>📞 Contact d'urgence</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="contactContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Informations médicales -->
+        <div class="collapsible-section" id="medicalSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>🚑 Informations médicales (pour les secours)</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="medicalContent">
+                    <p style="margin-bottom: 8px;"><strong>Médicaments :</strong></p>
+                    <p style="margin-bottom: 16px;" id="medicaments">À compléter dans les paramètres</p>
+                    
+                    <p style="margin-bottom: 8px;"><strong>Allergies :</strong></p>
+                    <p style="margin-bottom: 16px;" id="allergies">À compléter dans les paramètres</p>
+                    
+                    <p style="margin-bottom: 8px;"><strong>Informations utiles :</strong></p>
+                    <p id="infosUtiles">À compléter dans les paramètres</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer simplifié -->
+    <div class="footer">
+        <button class="footer-btn" onclick="fermerApercu()">
+            ✓ Fermer l'aperçu
+        </button>
+    </div>
+
+    <script>
+        function toggleSection(button) {
+            const content = button.nextElementSibling;
+            const chevron = button.querySelector('.chevron');
+            
+            content.classList.toggle('open');
+            chevron.classList.toggle('open');
+        }
+
+        function fermerApercu() {
+            window.close();
+        }
+
+        function loadExempleData() {
+            const exempleDonnees = localStorage.getItem('exempleCrise');
+            
+            if (!exempleDonnees) {
+                alert('❌ Aucune donnée d\'exemple trouvée');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(exempleDonnees);
+                
+                // Charger présentation
+                loadPresentation(data);
+                
+                // Charger capacités
+                loadCapacites(data.capacites);
+                
+                // Charger besoins
+                loadBesoins(data.besoins);
+                
+                // Charger états
+                loadEtats(data.etats);
+                
+                // Charger contacts
+                loadContacts(data.contacts);
+                
+                // Charger médical
+                loadMedical(data.medical);
+                
+                // Masquer sections vides
+                hideEmptySections(data);
+                
+            } catch (error) {
+                console.error('Erreur chargement exemple:', error);
+                alert('❌ Erreur lors du chargement de l\'exemple');
+            }
+        }
+
+        function loadPresentation(data) {
+            const container = document.getElementById('presentationText');
+            const prenom = localStorage.getItem('userPrenom') || 'Marine';
+            
+            let html = `
+                <p><strong>Bonjour,</strong>
+                Je m'appelle ${prenom}.
+                Je suis autiste, verbale, sans déficience intellectuelle.</p>
+
+                <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
+                Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
+            `;
+            
+            if (data.textePresentation) {
+                html = `<p>${data.textePresentation}</p>`;
+            }
+            
+            html += `
+                <div class="highlight-box">
+                    <p>Ce n'est pas volontaire.</p>
+                    <p>Ce n'est pas dangereux.</p>
+                    <p>Ce n'est pas un malaise médical classique.</p>
+                </div>
+
+                <div class="info-important">
+                    <h3>ℹ️ Ce que vous devez savoir (important)</h3>
+                    <ul>
+                        <li>Mon état est involontaire et lié à une surcharge du système nerveux.</li>
+                        <li>Il peut fluctuer : je peux aller un peu mieux puis moins bien.</li>
+                        <li>Une crise peut durer de quelques dizaines de minutes à plusieurs heures.</li>
+                    </ul>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function loadCapacites(capacites) {
+            const container = document.getElementById('capacitesContent');
+            if (!capacites) {
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucune capacité configurée</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            if (capacites.impossible?.length > 0) {
+                html += `
+                    <div class="capacity-group">
+                        <p class="capacity-group-title">
+                            <span class="item-status">⛔</span> Ce qui m'est impossible actuellement :
+                        </p>
+                        <p class="capacity-inline-list">${capacites.impossible.join(', ')}</p>
+                    </div>`;
+            }
+            
+            if (capacites.difficile?.length > 0) {
+                html += `
+                    <div class="capacity-group">
+                        <p class="capacity-group-title">
+                            <span class="item-status">⚠️</span> Ce qui m'est difficile actuellement :
+                        </p>
+                        <p class="capacity-inline-list">${capacites.difficile.join(', ')}</p>
+                    </div>`;
+            }
+            
+            if (capacites.possible?.length > 0) {
+                html += `
+                    <div class="capacity-group">
+                        <p class="capacity-group-title">
+                            <span class="item-status">✅</span> Ce qui m'est actuellement possible :
+                        </p>
+                        <p class="capacity-inline-list">${capacites.possible.join(', ')}</p>
+                    </div>`;
+            }
+            
+            if (html === '') {
+                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucune capacité sélectionnée</p>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function loadBesoins(besoins) {
+            const container = document.getElementById('besoinsContent');
+            
+            if (!besoins || besoins.length === 0) {
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun besoin configuré</p>';
+                return;
+            }
+            
+            let html = '';
+            besoins.forEach(besoin => {
+                html += `
+                    <div class="need-item">
+                        <span class="item-icon">${besoin.icon || '•'}</span>
+                        <span>${besoin.label || besoin}</span>
+                    </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function loadEtats(etats) {
+            const container = document.getElementById('etatsContent');
+            
+            if (!etats || etats.length === 0) {
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun état configuré</p>';
+                return;
+            }
+            
+            let html = '';
+            etats.forEach(etat => {
+                html += `
+                    <div class="state-item">
+                        <span class="item-icon">${etat.icon || '😔'}</span>
+                        <span>${etat.label || etat}</span>
+                    </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function loadContacts(contactsVisibles) {
+            const container = document.getElementById('contactContent');
+            const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+            
+            if (!allContacts || allContacts.length === 0 || !contactsVisibles || contactsVisibles.length === 0) {
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact configuré</p>';
+                return;
+            }
+            
+            let html = '';
+            contactsVisibles.forEach(index => {
+                const contact = allContacts[index];
+                if (contact) {
+                    html += `
+                        <p style="margin-bottom: 12px;"><strong>${contact.lien || 'Contact'}</strong></p>
+                        <p style="margin-bottom: 12px;">${contact.nom}</p>
+                        <div class="contact-buttons">
+                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                                <span>📞</span>
+                                <span>Appeler</span>
+                            </button>
+                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                                <span>💬</span>
+                                <span>Message</span>
+                            </button>
+                        </div>
+                    `;
+                }
+            });
+            
+            if (html === '') {
+                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact sélectionné</p>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function loadMedical(afficher) {
+            if (!afficher) {
+                document.getElementById('medicalSection').style.display = 'none';
+                return;
+            }
+            
+            const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
+            
+            if (infosMed.traitements) {
+                document.getElementById('medicaments').textContent = infosMed.traitements;
+            }
+            
+            let allergies = [];
+            if (infosMed.allergiesMedic) allergies.push(infosMed.allergiesMedic);
+            if (infosMed.autresAllergies) allergies.push(infosMed.autresAllergies);
+            
+            if (allergies.length > 0) {
+                document.getElementById('allergies').textContent = allergies.join(', ');
+            }
+            
+            if (infosMed.autresInfos) {
+                document.getElementById('infosUtiles').textContent = infosMed.autresInfos;
+            }
+        }
+
+        function hideEmptySections(data) {
+            if (!data.capacites || 
+                (!data.capacites.impossible?.length && !data.capacites.difficile?.length && 
+                 !data.capacites.possible?.length && !data.capacites.incertain?.length)) {
+                document.getElementById('capacitesSection').style.display = 'none';
+            }
+            
+            if (!data.besoins || data.besoins.length === 0) {
+                document.getElementById('besoinsSection').style.display = 'none';
+            }
+            
+            if (!data.etats || data.etats.length === 0) {
+                document.getElementById('etatsSection').style.display = 'none';
+            }
+            
+            if (!data.contacts || data.contacts.length === 0) {
+                document.getElementById('contactSection').style.display = 'none';
+            }
+        }
+
+        // Chargement au démarrage
+        document.addEventListener('DOMContentLoaded', loadExempleData);
+    </script>
+</body>
+</html>

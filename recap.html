@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Récapitulatif - Crise Autistique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #2E3A59;
+            line-height: 1.4;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background-color: #2E3A59;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #F5E4CC;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .content {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .alert-block {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 8px;
+        }
+
+        .alert-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2E3A59;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .intro-text {
+            margin-bottom: 12px;
+        }
+
+        .intro-text p {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .intro-text strong {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        .highlight-box {
+            padding: 0;
+            margin: 6px 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 2px;
+            line-height: 1.4;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .highlight-box p:before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            font-weight: bold;
+        }
+
+        .info-important {
+            background-color: rgba(56, 70, 87, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0 6px 0;
+        }
+
+        .info-important h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #2E3A59;
+        }
+
+        .info-important ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-important li {
+            margin-bottom: 4px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .info-important li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+        }
+
+        .collapsible-section {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #F5E4CC;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 17px;
+            font-weight: 600;
+            color: #2E3A59;
+        }
+
+        .section-header:active {
+            background-color: #eed9b8;
+        }
+
+        .chevron {
+            transition: transform 0.2s;
+            font-size: 20px;
+        }
+
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .section-content.open {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .section-inner {
+            padding: 0 16px 12px 16px;
+        }
+
+        .capacity-item, .need-item, .state-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+        }
+
+        .capacity-group {
+            margin-bottom: 10px;
+        }
+
+        .capacity-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .capacity-group-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #2E3A59;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            line-height: 1.4;
+        }
+
+        .capacity-inline-list {
+            margin: 0;
+            padding-left: 32px;
+            line-height: 1.4;
+        }
+
+        .item-icon {
+            font-size: 20px;
+            width: 28px;
+            text-align: center;
+        }
+
+        .item-status {
+            font-size: 18px;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .contact-btn {
+            flex: 1;
+            background-color: #F7B89C;
+            border: none;
+            color: #2E3A59;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .contact-btn:active {
+            background-color: #f5a585;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(46, 58, 89, 0.9);
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .modal.open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2E3A59;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #2E3A59;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-text {
+            line-height: 1.7;
+        }
+
+        .modal-text h3 {
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-size: 18px;
+            color: #2E3A59;
+        }
+
+        .modal-text p {
+            margin-bottom: 12px;
+        }
+
+        .modal-text ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .modal-text li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer optimisé */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #2E3A59;
+            padding: 12px 10px;
+            display: flex;
+            justify-content: space-around;
+            gap: 6px;
+            z-index: 100;
+        }
+
+        .footer-btn {
+            background-color: #F5E4CC;
+            border: none;
+            color: #2E3A59;
+            padding: 8px 6px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-width: 60px;
+            gap: 2px;
+        }
+
+        .footer-btn:active {
+            background-color: #eed9b8;
+        }
+
+        .footer-btn-text {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.1;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Modale questionnaire ajout journal */
+        .questionnaire-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(46, 58, 89, 0.9);
+            z-index: 300;
+            overflow-y: auto;
+        }
+
+        .questionnaire-modal.open {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .questionnaire-content {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 20px auto;
+        }
+
+        .questionnaire-header {
+            margin-bottom: 20px;
+        }
+
+        .questionnaire-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2E3A59;
+            margin-bottom: 8px;
+        }
+
+        .questionnaire-subtitle {
+            font-size: 14px;
+            color: #2E3A59;
+            opacity: 0.7;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 6px;
+        }
+
+        .form-required {
+            color: #F7B89C;
+            font-weight: bold;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #2E3A59;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #F7B89C;
+        }
+
+        .intensity-slider {
+            width: 100%;
+            margin-top: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #384657;
+            outline: none;
+        }
+
+        .intensity-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #F7B89C;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .intensity-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #F7B89C;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .intensity-display {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2E3A59;
+            margin: 10px 0;
+        }
+
+        .questionnaire-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .questionnaire-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .questionnaire-btn.primary {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .questionnaire-btn.secondary {
+            background-color: rgba(46, 58, 89, 0.1);
+            color: #2E3A59;
+        }
+
+        .questionnaire-btn:active {
+            transform: scale(0.98);
+        }
+
+        .triggers-button {
+            background-color: #2E3A59;
+            border: 2px solid #384657;
+            color: #F5E4CC;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .triggers-button:active {
+            background-color: #384657;
+        }
+
+        .triggers-preview {
+            background-color: rgba(46, 58, 89, 0.05);
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 8px;
+            font-size: 15px;
+            color: #2E3A59;
+            min-height: 30px;
+        }
+
+        .triggers-modal {
+            z-index: 400;
+        }
+
+        .triggers-modal .questionnaire-content {
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding-bottom: 80px;
+        }
+
+        .triggers-modal .questionnaire-actions {
+            position: sticky;
+            bottom: 0;
+            background-color: #F5E4CC;
+            padding: 16px 0 0 0;
+            margin-top: 20px;
+            border-top: 2px solid rgba(46, 58, 89, 0.1);
+        }
+
+        .triggers-info {
+            color: #2E3A59;
+            margin-bottom: 20px;
+            font-size: 15px;
+            background-color: rgba(46, 58, 89, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            font-style: italic;
+        }
+
+        .trigger-category {
+            margin-bottom: 20px;
+        }
+
+        .trigger-category-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #2E3A59;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #F7B89C;
+        }
+
+        .trigger-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .trigger-item:hover {
+            background-color: rgba(247, 184, 156, 0.1);
+        }
+
+        .trigger-checkbox {
+            margin-top: 2px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #2E3A59;
+        }
+
+        .trigger-label {
+            flex: 1;
+            cursor: pointer;
+            line-height: 1.4;
+            font-size: 15px;
+        }
+
+        .trigger-name {
+            font-weight: 600;
+            color: #2E3A59;
+        }
+
+        .trigger-description {
+            font-weight: 400;
+            color: #2E3A59;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        @media (max-width: 360px) {
+            .footer {
+                padding: 10px 12px;
+                gap: 6px;
+            }
+            
+            .footer-btn {
+                font-size: 20px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="goBack()">
+            <span>⬅️</span>
+            <span>Accueil</span>
+        </button>
+    </div>
+
+    <div class="content">
+        <div class="alert-block">
+            <div class="alert-title">
+                🚨 JE SUIS EN CRISE AUTISTIQUE
+            </div>
+            
+            <div class="intro-text">
+                <p><strong>Bonjour,</strong>
+                Je m'appelle Marine.
+                Je suis autiste, verbale, sans déficience intellectuelle.</p>
+
+                <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
+                Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
+
+                <div class="highlight-box">
+                    <p>Ce n'est pas volontaire.</p>
+                    <p>Ce n'est pas dangereux.</p>
+                    <p>Ce n'est pas un malaise médical classique.</p>
+                </div>
+
+                <div class="info-important">
+                    <h3>ℹ️ Ce que vous devez savoir (important)</h3>
+                    <ul>
+                        <li>Mon état est involontaire et lié à une surcharge du système nerveux.</li>
+                        <li>Il peut fluctuer : je peux aller un peu mieux puis moins bien.</li>
+                        <li>Une crise peut durer de quelques dizaines de minutes à plusieurs heures.</li>
+                    </ul>
+                    
+                    <p style="margin-top: 12px;">Je peux pleurer, trembler, crier, me figer, avoir des mouvements involontaires ou de réassurance (stim)...</p>
+                    <p style="margin-top: 6px; font-weight: 600;">👉 N'essayez pas de m'empêcher de bouger, cela m'aide à me réguler.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Capacités -->
+        <div class="collapsible-section" id="capacitesSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Mes capacités actuelles</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="capacitesContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Besoins -->
+        <div class="collapsible-section" id="besoinsSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Ce qui va m'aider</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="besoinsContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section États -->
+        <div class="collapsible-section" id="etatsSection">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>Comment je me sens</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner" id="etatsContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Contact d'urgence -->
+        <div class="collapsible-section">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>📞 Contact d'urgence</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner">
+                    <p style="margin-bottom: 12px;"><strong>Personne de confiance</strong></p>
+                    <p style="margin-bottom: 12px;">Nom du contact</p>
+                    <div class="contact-buttons">
+                        <button class="contact-btn" onclick="callContact()">
+                            <span>📞</span>
+                            <span>Appeler</span>
+                        </button>
+                        <button class="contact-btn" onclick="messageContact()">
+                            <span>💬</span>
+                            <span>Message</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Informations médicales -->
+        <div class="collapsible-section">
+            <button class="section-header" onclick="toggleSection(this)">
+                <span>🚑 Informations médicales (pour les secours)</span>
+                <span class="chevron">▼</span>
+            </button>
+            <div class="section-content">
+                <div class="section-inner">
+                    <p style="margin-bottom: 8px;"><strong>Médicaments :</strong></p>
+                    <p style="margin-bottom: 16px;">À compléter dans les paramètres</p>
+                    
+                    <p style="margin-bottom: 8px;"><strong>Allergies :</strong></p>
+                    <p style="margin-bottom: 16px;">À compléter dans les paramètres</p>
+                    
+                    <p style="margin-bottom: 8px;"><strong>Informations utiles :</strong></p>
+                    <p>À compléter dans les paramètres</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lien information en bas de page -->
+        <div style="text-align: center; padding: 20px 0;">
+            <a href="#" onclick="openModal(); return false;" style="color: #F7B89C; text-decoration: none; font-size: 15px; display: inline-flex; align-items: center; gap: 6px;">
+                <span>ℹ️</span>
+                <span>Qu'est-ce qu'une crise autistique ?</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal informations -->
+    <div class="modal" id="infoModal" onclick="closeModalOnOutside(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">Qu'est-ce qu'une crise autistique ?</div>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-text">
+                <h3>Définition</h3>
+                <p>Une crise autistique, aussi appelée "meltdown", est une réaction involontaire du système nerveux face à une surcharge.</p>
+                
+                <p>Ce n'est <strong>ni un caprice, ni une colère, ni une manipulation</strong>. C'est un processus neurologique automatique qui se déclenche quand le cerveau ne peut plus gérer les informations sensorielles, émotionnelles ou cognitives.</p>
+
+                <h3>Causes fréquentes</h3>
+                <ul>
+                    <li><strong>Surcharge sensorielle</strong> (bruit, lumière, foule, textures)</li>
+                    <li><strong>Stress émotionnel</strong> intense ou prolongé</li>
+                    <li><strong>Changement imprévu</strong> ou rupture de routine</li>
+                    <li><strong>Fatigue</strong> accumulée</li>
+                    <li><strong>Trop de sollicitations</strong> cognitives ou sociales</li>
+                </ul>
+
+                <h3>Comment ça se manifeste ?</h3>
+                <p>Les manifestations varient d'une personne à l'autre et peuvent inclure :</p>
+                <ul>
+                    <li>Incapacité totale ou partielle de parler</li>
+                    <li>Pleurs intenses, cris</li>
+                    <li>Figement complet (shutdown)</li>
+                    <li>Mouvements répétitifs (stims intensifiés)</li>
+                    <li>Hypersensibilité extrême</li>
+                    <li>Désorientation, confusion</li>
+                </ul>
+
+                <h3>Ce qui aide</h3>
+                <ul>
+                    <li><strong>Réduire les stimulations</strong> : lumière, bruit, sollicitations</li>
+                    <li><strong>Ne pas toucher</strong> sans autorisation claire</li>
+                    <li><strong>Laisser l'espace nécessaire</strong></li>
+                    <li><strong>Parler calmement</strong> avec des phrases courtes</li>
+                    <li><strong>Respecter les mouvements</strong> de réassurance (stims)</li>
+                    <li><strong>Attendre</strong> que ça passe, sans forcer</li>
+                </ul>
+
+                <h3>Durée</h3>
+                <p>Une crise peut durer de quelques minutes à plusieurs heures. La récupération peut prendre plusieurs jours.</p>
+
+                <h3>Ce que ce n'est PAS</h3>
+                <ul>
+                    <li>Ce n'est pas un danger pour autrui</li>
+                    <li>Ce n'est pas une urgence médicale classique (sauf complications)</li>
+                    <li>Ce n'est pas une "crise de nerfs" qu'on peut arrêter par la volonté</li>
+                    <li>Ce n'est pas une raison d'hospitaliser d'office</li>
+                </ul>
+
+                <p style="margin-top: 20px; font-weight: 600;">⚠️ Si la personne indique avoir besoin d'aide médicale ou si elle se met en danger, composez le 15 ou le 112.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale questionnaire ajout au journal -->
+    <div class="questionnaire-modal" id="questionnaireModal" onclick="closeQuestionnaireOnOutside(event)">
+        <div class="questionnaire-content" onclick="event.stopPropagation()">
+            <div class="questionnaire-header">
+                <div class="questionnaire-title">Ajouter cette crise au journal</div>
+                <div class="questionnaire-subtitle">Seule la date est obligatoire</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Date <span class="form-required">*</span></label>
+                <input type="date" class="form-input" id="crisisDate" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Heure (optionnel)</label>
+                <input type="time" class="form-input" id="crisisTime">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Type de crise</label>
+                <select class="form-select" id="crisisType">
+                    <option value="">Non précisé</option>
+                    <option value="Anticipatoire">Anticipatoire</option>
+                    <option value="Réactionnelle">Réactionnelle</option>
+                    <option value="Mixte">Mixte</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
+                <input type="range" class="intensity-slider" id="intensitySlider" min="1" max="10" value="5" oninput="updateIntensityDisplay()">
+                <div class="intensity-display" id="intensityDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Durée estimée</label>
+                <input type="text" class="form-input" id="crisisDuration" placeholder="Ex: 30 min, 1h30...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Déclencheurs identifiés</label>
+                <button type="button" class="triggers-button" onclick="openTriggersModal()">
+                    <span>🎯</span>
+                    <span>Sélectionner les déclencheurs</span>
+                </button>
+                <div class="triggers-preview" id="triggersPreview">Aucun déclencheur sélectionné</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Remarques (optionnel)</label>
+                <textarea class="form-textarea" id="crisisRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
+            </div>
+
+            <div class="questionnaire-actions">
+                <button class="questionnaire-btn secondary" onclick="closeQuestionnaire()">Annuler</button>
+                <button class="questionnaire-btn primary" onclick="saveToJournal()">✅ Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale déclencheurs -->
+    <div class="questionnaire-modal triggers-modal" id="triggersModal" onclick="closeTriggersOnOutside(event)">
+        <div class="questionnaire-content" onclick="event.stopPropagation()">
+            <div class="questionnaire-header">
+                <div class="questionnaire-title">Sélectionner les déclencheurs</div>
+            </div>
+            <p class="triggers-info">💡 Vous pouvez sélectionner plusieurs déclencheurs</p>
+
+            <div id="triggersContent"></div>
+
+            <div class="questionnaire-actions">
+                <button class="questionnaire-btn primary" onclick="validateTriggers()">✅ Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer optimisé -->
+    <div class="footer">
+        <button class="footer-btn" onclick="modifyRecap()">
+            <span>✏️</span>
+            <span class="footer-btn-text">Modifier</span>
+        </button>
+        <button class="footer-btn" onclick="shareRecap()">
+            <span>✉️</span>
+            <span class="footer-btn-text">Partager</span>
+        </button>
+        <button class="footer-btn" onclick="showQRCode()">
+            <span>🔳</span>
+            <span class="footer-btn-text">QR code</span>
+        </button>
+        <button class="footer-btn" onclick="addToJournal()">
+            <span>➕</span>
+            <span class="footer-btn-text">Journal</span>
+        </button>
+    </div>
+
+    <script>
+        const TRIGGERS = {
+            "Hypersensibilité et Surcharges Sensorielles": [
+                { name: "Auditif", desc: "Présence de bruits latents (bourdonnements, bruits de fond subtils) ou survenue de bruits soudains" },
+                { name: "Visuel", desc: "Variations brusques de luminosité ou exposition à des lumières trop fortes" },
+                { name: "Olfactif", desc: "Perception d'odeurs dérangeantes" },
+                { name: "Tactile", desc: "Contact physique (quelqu'un qui nous touche) ou confrontation à certaines textures alimentaires" },
+                { name: "Proprioceptive", desc: "Difficultés à se représenter dans l'espace ou ressenti d'un inconfort spatio-temporel" },
+                { name: "Surcharge émotionnelle", desc: "Accumulation d'émotions intenses" }
+            ],
+            "Prévisibilité et Contrôle de l'Environnement": [
+                { name: "Instabilité", desc: "Arrivée d'un changement, d'un imprévu ou d'une interaction imprévisible" },
+                { name: "Zone Secure", desc: "Modification de la zone secure ou obligation de s'en éloigner" },
+                { name: "Perturbation de l'organisation ou des routines personnelles", desc: "Rupture de structure habituelle" },
+                { name: "Non-respect des règles", desc: "Cadre : non respecté, règle enfreinte" },
+                { name: "Injustice", desc: "Confrontation à une situation ou un vécu injuste / non éthique" },
+                { name: "Intrusion", desc: "dans la zone secure / votre espace personnel" }
+            ],
+            "Contacts sociaux": [
+                { name: "Situations sociales", desc: "Participation à des occasions sociales ou à des conversations superficielles (small talk)" },
+                { name: "Traitement social", desc: "Difficulté à lire les visages ou problèmes de compréhension dans les échanges. difficulté d'expression ou de compréhension ou de traduction des sous-entendus ou des messages de l'autre)" },
+                { name: "Barrière de communication", desc: "Difficulté à s'exprimer ou à traduire la pensée de l'autre" }
+            ],
+            "Fonctions Exécutives": [
+                { name: "Gestion du temps", desc: "Difficulté de planification et de projection (dans le temps ou dans des scénarios abstraits)" },
+                { name: "Surcharge cognitive", desc: "Trop d'informations ou de tâches à traiter simultanément ou non" },
+                { name: "Pression de résultat", desc: "Exigence de précision, de perfection et de performance" },
+                { name: "Besoin impérieux de corriger les erreurs", desc: "Réaction cognitive : face à une erreur avec un besoin presque incontrôlable de corriger cette erreur. Peut parfois entraîner des ruminations" }
+            ]
+        };
+
+        let selectedTriggers = [];
+
+        function toggleSection(button) {
+            const content = button.nextElementSibling;
+            const chevron = button.querySelector('.chevron');
+            
+            content.classList.toggle('open');
+            chevron.classList.toggle('open');
+        }
+
+        function openModal() {
+            document.getElementById('infoModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').classList.remove('open');
+        }
+
+        function closeModalOnOutside(event) {
+            if (event.target.id === 'infoModal') {
+                closeModal();
+            }
+        }
+
+        function loadRecapData() {
+            try {
+                const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
+                const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
+                const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
+                
+                console.log('Données chargées:', {capacites, besoins, etats});
+                
+                updateCapacitesDisplay(capacites);
+                updateBesoinsDisplay(besoins);
+                updateEtatsDisplay(etats);
+                hideEmptySections(capacites, besoins, etats);
+                
+            } catch (error) {
+                console.error('Erreur chargement:', error);
+            }
+        }
+
+        function hideEmptySections(capacites, besoins, etats) {
+            const hasCapacites = (capacites.impossible?.length > 0) ||
+                                (capacites.difficile?.length > 0) ||
+                                (capacites.possible?.length > 0) ||
+                                (capacites.incertain?.length > 0);
+            
+            if (!hasCapacites) {
+                document.getElementById('capacitesSection').style.display = 'none';
+            }
+            
+            if (besoins.length === 0) {
+                document.getElementById('besoinsSection').style.display = 'none';
+            }
+            
+            if (etats.length === 0) {
+                document.getElementById('etatsSection').style.display = 'none';
+            }
+        }
+
+        function updateCapacitesDisplay(capacites) {
+            const container = document.getElementById('capacitesContent');
+            if (!container) return;
+            
+            let html = '';
+            
+            if (capacites.impossible?.length > 0) {
+                html += `
+                    <div class="capacity-group">
+                        <p class="capacity-group-title">
+                            <span class="item-status">⛔</span> Ce qui m'est impossible actuellement :
+                        </p>
+                        <p class="capacity-inline-list">${capacites.impossible.join(', ')}</p>
+                    </div>`;
+            }
+            
+            if (capacites.difficile?.length > 0) {
+                html += `
+                    <div class="capacity-group">
+                        <p class="capacity-group-title">
+                            <span class="item-status">⚠️</span> Ce qui m'est difficile actuellement :
+                        </p>
+                        <p class="capacity-inline-list">${capacites.difficile.join(', ')}</p>
+                    </div>`;
+            }
+            
+            if (capacites.possible?.length > 0) {
+                html += `
+                    <div class="capacity-group">
+                        <p class="capacity-group-title">
+                            <span class="item-status">✅</span> Ce qui m'est actuellement possible :
+                        </p>
+                        <p class="capacity-inline-list">${capacites.possible.join(', ')}</p>
+                    </div>`;
+            }
+            
+            if (capacites.incertain?.length > 0) {
+                html += `
+                    <div class="capacity-group">
+                        <p class="capacity-group-title">
+                            <span class="item-status">❓</span> Ce que je ne sais pas si je suis en capacité :
+                        </p>
+                        <p class="capacity-inline-list">${capacites.incertain.join(', ')}</p>
+                    </div>`;
+            }
+            
+            if (html === '') {
+                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucune capacité sélectionnée</p>';
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function updateBesoinsDisplay(besoins) {
+            const container = document.getElementById('besoinsContent');
+            if (!container) return;
+            
+            if (besoins.length === 0) {
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun besoin sélectionné</p>';
+                return;
+            }
+            
+            let html = '';
+            besoins.forEach(besoin => {
+                html += `
+                    <div class="need-item">
+                        <span class="item-icon">${besoin.icon || '•'}</span>
+                        <span>${besoin.label || besoin}</span>
+                    </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updateEtatsDisplay(etats) {
+            const container = document.getElementById('etatsContent');
+            if (!container) return;
+            
+            if (etats.length === 0) {
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun état sélectionné</p>';
+                return;
+            }
+            
+            let html = '';
+            etats.forEach(etat => {
+                html += `
+                    <div class="state-item">
+                        <span class="item-icon">${etat.icon || '😔'}</span>
+                        <span>${etat.label || etat}</span>
+                    </div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function modifyRecap() {
+            if (confirm('Retourner modifier vos informations ?')) {
+                window.location.href = 'capacites.html';
+            }
+        }
+
+        function shareRecap() {
+            const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
+            const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
+            const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
+            
+            let capacitesText = '';
+            if (capacites.impossible?.length > 0) {
+                capacitesText += `⛔ Ce qui m'est impossible actuellement :\n${capacites.impossible.join(', ')}\n\n`;
+            }
+            if (capacites.difficile?.length > 0) {
+                capacitesText += `⚠️ Ce qui m'est difficile actuellement :\n${capacites.difficile.join(', ')}\n\n`;
+            }
+            if (capacites.possible?.length > 0) {
+                capacitesText += `✅ Ce qui m'est actuellement possible :\n${capacites.possible.join(', ')}\n\n`;
+            }
+            if (capacites.incertain?.length > 0) {
+                capacitesText += `❓ Ce que je ne sais pas si je suis en capacité :\n${capacites.incertain.join(', ')}\n\n`;
+            }
+            
+            let besoinsText = '';
+            if (besoins.length > 0) {
+                const besoinsLabels = besoins.map(b => b.label || b);
+                besoinsText = `CE QUI VA M'AIDER :\n${besoinsLabels.join(', ')}\n\n`;
+            }
+            
+            let etatsText = '';
+            if (etats.length > 0) {
+                const etatsLabels = etats.map(e => e.label || e);
+                etatsText = `COMMENT JE ME SENS :\n${etatsLabels.join(', ')}\n\n`;
+            }
+            
+            const shareText = `🚨 Marine est en crise autistique
+
+${capacitesText}---
+${besoinsText}---
+${etatsText}---
+CONTACT D'URGENCE :
+[Nom du contact]
+[Numéro à ajouter]`;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const locationText = `\n---\n📍 MA POSITION :\nhttps://www.google.com/maps?q=${lat},${lon}`;
+                        doShare(shareText + locationText);
+                    },
+                    function(error) {
+                        doShare(shareText);
+                    },
+                    {enableHighAccuracy: true, timeout: 5000, maximumAge: 0}
+                );
+            } else {
+                doShare(shareText);
+            }
+        }
+
+        function doShare(text) {
+            if (navigator.share) {
+                navigator.share({
+                    title: '🚨 Crise autistique en cours',
+                    text: text
+                }).catch(err => {
+                    copyToClipboard(text);
+                });
+            } else {
+                copyToClipboard(text);
+            }
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('✅ Récapitulatif copié !');
+                }).catch(() => {
+                    alert('❌ Impossible de copier. Faites une capture d\'écran.');
+                });
+            } else {
+                alert('❌ Fonction de copie non disponible.');
+            }
+        }
+
+        function showQRCode() {
+            const qrData = encodeURIComponent(window.location.href);
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${qrData}`;
+            
+            const qrModal = document.createElement('div');
+            qrModal.className = 'modal open';
+            qrModal.innerHTML = `
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <div class="modal-title">QR Code du récapitulatif</div>
+                        <button class="close-modal" onclick="this.closest('.modal').remove()">×</button>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <img src="${qrCodeUrl}" alt="QR Code" style="max-width: 100%; height: auto; border-radius: 8px;">
+                        <p style="margin-top: 16px; color: #2E3A59;">Scannez ce code pour accéder au récapitulatif</p>
+                    </div>
+                </div>
+            `;
+            qrModal.onclick = function(e) {
+                if (e.target === qrModal) qrModal.remove();
+            };
+            document.body.appendChild(qrModal);
+        }
+
+        function addToJournal() {
+            // Pré-remplir la date avec aujourd'hui
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('crisisDate').value = today;
+            
+            // Réinitialiser les autres champs
+            document.getElementById('crisisTime').value = '';
+            document.getElementById('crisisType').value = '';
+            document.getElementById('intensitySlider').value = '5';
+            updateIntensityDisplay();
+            document.getElementById('crisisDuration').value = '';
+            selectedTriggers = [];
+            updateTriggersPreview();
+            document.getElementById('crisisRemarks').value = '';
+            
+            // Ouvrir le questionnaire
+            document.getElementById('questionnaireModal').classList.add('open');
+        }
+
+        function updateIntensityDisplay() {
+            const value = document.getElementById('intensitySlider').value;
+            document.getElementById('intensityDisplay').textContent = `${value}/10`;
+        }
+
+        function openTriggersModal() {
+            const content = document.getElementById('triggersContent');
+            let html = '';
+            
+            Object.keys(TRIGGERS).forEach(category => {
+                html += `<div class="trigger-category">`;
+                html += `<div class="trigger-category-title">${category}</div>`;
+                
+                TRIGGERS[category].forEach((trigger, idx) => {
+                    const isChecked = selectedTriggers.includes(trigger.name);
+                    const uniqueId = 'trigger_' + category.replace(/[^a-z0-9]/gi, '_') + '_' + idx;
+                    html += `
+                        <div class="trigger-item">
+                            <input type="checkbox" 
+                                   class="trigger-checkbox" 
+                                   ${isChecked ? 'checked' : ''} 
+                                   id="${uniqueId}" 
+                                   data-trigger-name="${trigger.name.replace(/"/g, '&quot;')}"
+                                   onchange="handleTriggerChange(this)">
+                            <label class="trigger-label" for="${uniqueId}">
+                                <span class="trigger-name">${trigger.name}</span> : 
+                                <span class="trigger-description">${trigger.desc}</span>
+                            </label>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            });
+            
+            content.innerHTML = html;
+            document.getElementById('triggersModal').classList.add('open');
+        }
+
+        function handleTriggerChange(checkbox) {
+            const triggerName = checkbox.getAttribute('data-trigger-name');
+            
+            if (checkbox.checked) {
+                if (!selectedTriggers.includes(triggerName)) {
+                    selectedTriggers.push(triggerName);
+                }
+            } else {
+                selectedTriggers = selectedTriggers.filter(t => t !== triggerName);
+            }
+        }
+
+        function validateTriggers() {
+            updateTriggersPreview();
+            document.getElementById('triggersModal').classList.remove('open');
+        }
+
+        function updateTriggersPreview() {
+            const preview = document.getElementById('triggersPreview');
+            if (selectedTriggers.length === 0) {
+                preview.textContent = 'Aucun déclencheur sélectionné';
+            } else {
+                preview.innerHTML = selectedTriggers.map(t => `• ${t}`).join('<br>');
+            }
+        }
+
+        function closeQuestionnaire() {
+            document.getElementById('questionnaireModal').classList.remove('open');
+        }
+
+        function closeQuestionnaireOnOutside(event) {
+            if (event.target.classList.contains('questionnaire-modal') && !event.target.classList.contains('triggers-modal')) {
+                closeQuestionnaire();
+            }
+        }
+
+        function closeTriggersOnOutside(event) {
+            if (event.target.id === 'triggersModal') {
+                document.getElementById('triggersModal').classList.remove('open');
+            }
+        }
+
+        function saveToJournal() {
+            // Validation de la date
+            const dateInput = document.getElementById('crisisDate').value;
+            if (!dateInput) {
+                alert('❌ La date est obligatoire');
+                return;
+            }
+
+            // Vérifier que la date n'est pas dans le futur (avec tolérance 1 jour)
+            const now = new Date();
+            const crisisDate = new Date(dateInput);
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            
+            if (crisisDate.getTime() > tomorrow.getTime()) {
+                alert('❌ Vous ne pouvez pas créer une crise dans le futur.');
+                return;
+            }
+
+            try {
+                const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
+                const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
+                const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
+                const profil = localStorage.getItem('currentProfil') || 'maison';
+                
+                // Créer l'horodatage
+                const timeInput = document.getElementById('crisisTime').value;
+                let horodatage;
+                
+                if (timeInput) {
+                    horodatage = new Date(`${dateInput}T${timeInput}:00`).toISOString();
+                } else {
+                    const dateOnly = new Date(dateInput);
+                    dateOnly.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+                    horodatage = dateOnly.toISOString();
+                }
+
+                const crisisEntry = {
+                    horodatage: horodatage,
+                    profil: profil,
+                    capacites: capacites,
+                    besoins: besoins,
+                    etats: etats,
+                    typeCrise: document.getElementById('crisisType').value || '',
+                    intensite: document.getElementById('intensitySlider').value || '',
+                    duree: document.getElementById('crisisDuration').value || '',
+                    declencheurs: [...selectedTriggers],
+                    remarques: document.getElementById('crisisRemarks').value || '',
+                    manual: false // Ajouté depuis le récap, pas manuellement
+                };
+
+                // Récupérer le journal existant
+                let journal = [];
+                const storedJournal = localStorage.getItem('journalCrises');
+                if (storedJournal) {
+                    try {
+                        journal = JSON.parse(storedJournal);
+                    } catch (e) {
+                        console.error('Erreur lecture journal:', e);
+                    }
+                }
+
+                // Ajouter la nouvelle entrée
+                journal.unshift(crisisEntry);
+
+                // Sauvegarder
+                try {
+                    localStorage.setItem('journalCrises', JSON.stringify(journal));
+                    closeQuestionnaire();
+                    
+                    alert('✅ Crise enregistrée dans le journal !');
+                    
+                    // Proposer d'aller au journal
+                    if (confirm('Voulez-vous consulter le journal ?')) {
+                        window.location.href = 'journal.html';
+                    }
+                } catch (e) {
+                    alert('❌ Erreur lors de la sauvegarde : ' + e.message);
+                }
+            } catch (e) {
+                alert('❌ Erreur lors de la récupération des données : ' + e.message);
+            }
+        }
+
+        function callContact() {
+            window.location.href = 'tel:'; // À compléter avec le numéro
+        }
+
+        function messageContact() {
+            window.location.href = 'sms:'; // À compléter avec le numéro
+        }
+
+        function goBack() {
+            if (confirm('Retourner à l\'accueil ?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadRecapData);
+
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+    </script>
+</body>
+</html>

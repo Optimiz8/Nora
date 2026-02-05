@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos - TSA App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background-color: #384657;
+            color: #F5E4CC;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        .header {
+            background-color: #384657;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: rgba(245, 228, 204, 0.1);
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 20px;
+            width: 44px;
+            height: 44px;
+        }
+
+        .back-button:active {
+            background-color: rgba(245, 228, 204, 0.2);
+            transform: scale(0.95);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-card {
+            background-color: #F5E4CC;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .app-logo {
+            text-align: center;
+            font-size: 60px;
+            margin-bottom: 12px;
+        }
+
+        .app-name {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #2E3A59;
+            margin-bottom: 8px;
+        }
+
+        .app-version {
+            text-align: center;
+            font-size: 14px;
+            color: rgba(46, 58, 89, 0.6);
+            margin-bottom: 16px;
+        }
+
+        .app-description {
+            font-size: 15px;
+            color: #2E3A59;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info-group {
+            margin-bottom: 20px;
+        }
+
+        .info-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2E3A59;
+            margin-bottom: 8px;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: rgba(46, 58, 89, 0.8);
+            line-height: 1.5;
+        }
+
+        .info-link {
+            color: #F7B89C;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: rgba(46, 58, 89, 0.15);
+            margin: 20px 0;
+        }
+
+        .faq-item {
+            margin-bottom: 16px;
+        }
+
+        .faq-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2E3A59;
+            cursor: pointer;
+            padding: 14px 16px;
+            background-color: rgba(46, 58, 89, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .faq-question:active {
+            background-color: rgba(46, 58, 89, 0.1);
+        }
+
+        .faq-icon {
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .faq-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            font-size: 14px;
+            color: rgba(46, 58, 89, 0.8);
+            line-height: 1.6;
+            padding: 12px 16px;
+            display: none;
+        }
+
+        .faq-answer.visible {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #F5E4CC;
+        }
+
+        .privacy-card {
+            background-color: rgba(100, 200, 100, 0.15);
+            border: 2px solid rgba(100, 200, 100, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .privacy-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #F5E4CC;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .privacy-text {
+            font-size: 14px;
+            color: rgba(245, 228, 204, 0.9);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">⬅️</button>
+        <h1 class="page-title">À propos</h1>
+    </header>
+
+    <main class="main-content">
+
+        <!-- Info app -->
+        <section class="section">
+            <div class="section-card">
+                <div class="app-logo">🧩</div>
+                <div class="app-name">TSA App</div>
+                <div class="app-version">Version 1.0</div>
+                <div class="app-description">
+                    Application d'aide à la gestion des surcharges et crises autistiques
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-group">
+                    <div class="info-title">👤 Créé par</div>
+                    <div class="info-text">Marine (personne autiste SDI)</div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-title">🎯 Objectif</div>
+                    <div class="info-text">
+                        Fournir un outil simple et accessible pour communiquer ses besoins en situation de crise ou de surcharge sensorielle.
+                    </div>
+                </div>
+
+                <div class="info-group">
+                    <div class="info-title">📧 Contact</div>
+                    <div class="info-text">
+                        Pour toute question : <a href="mailto:contact@tsa-app.fr" class="info-link">contact@tsa-app.fr</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Confidentialité -->
+        <section class="section">
+            <h2 class="section-title">🔒 Confidentialité</h2>
+            <div class="privacy-card">
+                <div class="privacy-title">🛡️ Vos données sont protégées</div>
+                <div class="privacy-text">
+                    Toutes vos données sont stockées <strong>localement sur votre appareil uniquement</strong>. 
+                    Rien n'est envoyé vers un serveur externe. Vous avez le contrôle total de vos informations.
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="section">
+            <h2 class="section-title">❓ Questions fréquentes</h2>
+            <div class="section-card">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(0)">
+                        <span>Où sont stockées mes données ?</span>
+                        <span class="faq-icon" id="faqIcon0">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer0">
+                        Toutes vos données sont stockées localement dans le navigateur de votre appareil (Local Storage). 
+                        Elles ne quittent jamais votre téléphone et ne sont pas envoyées vers internet.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(1)">
+                        <span>Qui peut voir mes informations ?</span>
+                        <span class="faq-icon" id="faqIcon1">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer1">
+                        Personne ne peut voir vos informations à moins que vous ne les partagiez volontairement 
+                        (par exemple en montrant votre récapitulatif ou en exportant vos données).
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(2)">
+                        <span>Comment modifier mes contacts ?</span>
+                        <span class="faq-icon" id="faqIcon2">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer2">
+                        Allez dans Paramètres > Mon profil > Contacts d'urgence. 
+                        Vous pouvez modifier, ajouter ou supprimer jusqu'à 3 contacts.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(3)">
+                        <span>L'app fonctionne-t-elle hors ligne ?</span>
+                        <span class="faq-icon" id="faqIcon3">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer3">
+                        Oui ! L'application fonctionne entièrement hors ligne. 
+                        Une fois chargée, vous n'avez pas besoin de connexion internet.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(4)">
+                        <span>Puis-je personnaliser les listes ?</span>
+                        <span class="faq-icon" id="faqIcon4">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer4">
+                        Oui ! Dans chaque contexte (Maison, Extérieur, Travail, Secours), 
+                        vous pouvez choisir quelles capacités, besoins et états afficher.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(5)">
+                        <span>Comment sauvegarder mes données ?</span>
+                        <span class="faq-icon" id="faqIcon5">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer5">
+                        Allez dans Paramètres > Données > Exporter mes données. 
+                        Vous téléchargerez un fichier JSON que vous pourrez réimporter plus tard.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function toggleFaq(index) {
+            const answer = document.getElementById(`faqAnswer${index}`);
+            const icon = document.getElementById(`faqIcon${index}`);
+
+            if (answer.classList.contains('visible')) {
+                answer.classList.remove('visible');
+                icon.classList.remove('open');
+            } else {
+                answer.classList.add('visible');
+                icon.classList.add('open');
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+    </script>
+</body>
+</html>
