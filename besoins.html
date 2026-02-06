@@ -3,32 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="nora-common.css">
 <title>TSA App – Besoins</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-
 body{
-font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
-background:#384657;
-color:#F5E4CC;
-min-height:100vh;
 padding-bottom:80px;
-}
-
-.header{
-position:sticky;
-top:0;
-background:#384657;
-padding:16px 20px;
-border-bottom:1px solid rgba(245,228,204,.1);
-z-index:10;
 }
 
 .page-title-header{font-size:20px}
 
 .profile-banner{
-background:#2E3A59;
+background:var(--dark);
 padding:12px 20px;
 font-size:16px;
 }
@@ -41,7 +27,7 @@ margin-bottom:8px;
 }
 
 .instruction-text{
-color:#F7B89C;
+color:var(--accent);
 font-size:15px;
 margin-bottom:20px;
 }
@@ -49,7 +35,7 @@ margin-bottom:20px;
 .reset-button{
 background:rgba(245,228,204,.2);
 border:1px solid rgba(245,228,204,.3);
-color:#F5E4CC;
+color:var(--light);
 border-radius:12px;
 font-size:26px;
 padding:8px 14px;
@@ -64,9 +50,9 @@ cursor:pointer;
 transition: all 0.2s;
 user-select:none;
 
-border:2px solid #384657;
-background:#F5E4CC;
-color:#2E3A59;
+border:2px solid var(--bg);
+background:var(--light);
+color:var(--dark);
 
 display:flex;
 align-items:center;
@@ -76,9 +62,9 @@ gap:14px;
 .need-item:active{transform:scale(.97)}
 
 .need-item.active{
-background:#F7B89C;
-color:#2E3A59;
-border:2px solid #384657;
+background:var(--accent);
+color:var(--dark);
+border:2px solid var(--bg);
 box-shadow:0 4px 8px rgba(0,0,0,0.2);
 }
 
@@ -89,47 +75,9 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
 margin:22px 0;
 background:none;
 border:none;
-color:#F7B89C;
+color:var(--accent);
 font-size:16px;
 cursor:pointer;
-}
-
-.footer{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#2E3A59;
-padding:10px 16px;
-display:flex;
-align-items:center;
-gap:12px;
-border-top:1px solid rgba(245,228,204,0.1);
-}
-
-.footer-button{
-border:none;
-cursor:pointer;
-font-weight:600;
-}
-
-.footer-button.icon{
-flex:0 0 48px;
-height:48px;
-border-radius:12px;
-font-size:20px;
-background:rgba(245,228,204,0.18);
-color:#F5E4CC;
-}
-
-.footer-button.center{
-flex:1;
-height:56px;
-border-radius:16px;
-font-size:16px;
-font-weight:700;
-background:#F7B89C;
-color:#2E3A59;
 }
 
 .confirm-overlay{
@@ -145,11 +93,11 @@ z-index:100;
 .confirm-overlay.show{display:flex}
 
 .confirm-dialog{
-background:#F5E4CC;
+background:var(--light);
 padding:24px;
 border-radius:16px;
 width:300px;
-color:#2E3A59;
+color:var(--dark);
 }
 
 .confirm-buttons{
@@ -167,7 +115,7 @@ font-weight:600;
 cursor:pointer;
 }
 
-.confirm{background:#F7B89C}
+.confirm{background:var(--accent)}
 .cancel{background:#ddd}
 </style>
 </head>

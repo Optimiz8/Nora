@@ -3,53 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="nora-common.css">
     <title>TSA App - Paramètres des contextes</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-            background-color: #384657;
-            color: #F5E4CC;
-            min-height: 100vh;
             padding-bottom: 20px;
-        }
-
-        .header {
-            background-color: #384657;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .back-button {
-            background: rgba(245, 228, 204, 0.1);
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 20px;
-            width: 44px;
-            height: 44px;
-        }
-
-        .back-button:active {
-            background-color: rgba(245, 228, 204, 0.2);
-            transform: scale(0.95);
-        }
-
-        .page-title {
-            font-size: 20px;
-            font-weight: 600;
         }
 
         .main-content {
@@ -71,7 +29,7 @@
         .section-title {
             font-size: 18px;
             font-weight: 700;
-            color: #F5E4CC;
+            color: var(--light);
         }
 
         .section-description {
@@ -83,7 +41,7 @@
 
         /* TOGGLE */
         .toggle-container {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 16px;
@@ -99,7 +57,7 @@
         .toggle-label {
             font-size: 16px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             flex: 1;
             line-height: 1.3;
         }
@@ -116,7 +74,7 @@
         }
 
         .toggle-switch.active {
-            background-color: #F7B89C;
+            background-color: var(--accent);
         }
 
         .toggle-slider {
@@ -142,8 +100,8 @@
 
         /* BOUTON CONFIGURER PROFIL COMMUN */
         .config-commun-button {
-            background-color: #F7B89C;
-            color: #2E3A59;
+            background-color: var(--accent);
+            color: var(--dark);
             border: none;
             padding: 16px 20px;
             border-radius: 12px;
@@ -176,7 +134,7 @@
         }
 
         .contexte-card {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             padding: 18px 20px;
             cursor: pointer;
@@ -190,7 +148,7 @@
 
         .contexte-card:active {
             transform: scale(0.98);
-            border-color: #F7B89C;
+            border-color: var(--accent);
         }
 
         .contexte-card.disabled {
@@ -212,7 +170,7 @@
             transform: translate(-50%, -50%);
             font-size: 13px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             opacity: 0.6;
             pointer-events: none;
         }
@@ -226,13 +184,13 @@
         .contexte-name {
             font-size: 17px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             flex: 1;
         }
 
         .contexte-arrow {
             font-size: 22px;
-            color: #2E3A59;
+            color: var(--dark);
             opacity: 0.5;
         }
 
@@ -240,7 +198,7 @@
         .add-button {
             background-color: rgba(245, 228, 204, 0.15);
             border: 2px dashed rgba(245, 228, 204, 0.4);
-            color: #F5E4CC;
+            color: var(--light);
             padding: 16px;
             border-radius: 12px;
             font-size: 15px;
@@ -288,7 +246,7 @@
         }
 
         .modal-content {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 16px;
             padding: 28px 24px;
             max-width: 400px;
@@ -302,7 +260,7 @@
         .modal-title {
             font-size: 22px;
             font-weight: 700;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .modal-input-group {
@@ -313,7 +271,7 @@
             display: block;
             font-size: 14px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 8px;
         }
 
@@ -323,14 +281,14 @@
             border: 2px solid rgba(46, 58, 89, 0.2);
             border-radius: 8px;
             font-size: 16px;
-            color: #2E3A59;
+            color: var(--dark);
             background-color: white;
             font-family: inherit;
         }
 
         .modal-input:focus {
             outline: none;
-            border-color: #F7B89C;
+            border-color: var(--accent);
         }
 
         .emoji-input-wrapper {
@@ -353,7 +311,7 @@
         }
 
         .emoji-display:hover {
-            border-color: #F7B89C;
+            border-color: var(--accent);
         }
 
         .emoji-suggestions {
@@ -376,7 +334,7 @@
 
         .emoji-suggestion:active {
             transform: scale(0.95);
-            border-color: #F7B89C;
+            border-color: var(--accent);
         }
 
         .modal-actions {
@@ -398,12 +356,12 @@
 
         .modal-button.secondary {
             background-color: rgba(46, 58, 89, 0.1);
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .modal-button.primary {
-            background-color: #F7B89C;
-            color: #2E3A59;
+            background-color: var(--accent);
+            color: var(--dark);
         }
 
         .modal-button:active {
@@ -413,7 +371,7 @@
         /* MESSAGE INFO */
         .info-message {
             background-color: rgba(247, 184, 156, 0.2);
-            border-left: 4px solid #F7B89C;
+            border-left: 4px solid var(--accent);
             padding: 14px 16px;
             border-radius: 8px;
             margin-top: 12px;

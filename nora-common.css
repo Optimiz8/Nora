@@ -1,0 +1,120 @@
+/* ===== NORA-COMMON.CSS ===== */
+/* Variables et styles partagés par toutes les pages */
+
+:root {
+  --bg: #384657;
+  --dark: #2E3A59;
+  --light: #F5E4CC;
+  --accent: #F7B89C;
+  --header-height: 56px;
+  --footer-height: 64px;
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== BODY ===== */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background-color: var(--bg);
+  color: var(--light);
+  min-height: 100vh;
+}
+
+/* ===== HEADER (plus fin) ===== */
+.header {
+  position: sticky;
+  top: 0;
+  background-color: var(--bg);
+  height: var(--header-height);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(245, 228, 204, 0.1);
+  z-index: 100;
+}
+
+/* ===== BACK BUTTON ===== */
+.back-button {
+  background: rgba(245, 228, 204, 0.1);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--light);
+  flex-shrink: 0;
+}
+
+.back-button:active {
+  background-color: rgba(245, 228, 204, 0.2);
+  transform: scale(0.95);
+}
+
+/* ===== PAGE TITLE ===== */
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ===== FOOTER (plus fin) ===== */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--dark);
+  height: var(--footer-height);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid rgba(245, 228, 204, 0.1);
+  z-index: 100;
+}
+
+.footer-button {
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.footer-button.icon {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 18px;
+  background: rgba(245, 228, 204, 0.18);
+  color: var(--light);
+}
+
+.footer-button.center {
+  flex: 1;
+  height: 46px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--accent);
+  color: var(--dark);
+}
+
+/* ===== HEADER ICON (index page) ===== */
+.header-icon {
+  background: rgba(245, 228, 204, 0.15);
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  cursor: pointer;
+}

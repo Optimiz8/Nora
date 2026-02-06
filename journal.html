@@ -3,59 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="nora-common.css">
     <title>TSA App - Journal de crises</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-            background-color: #384657;
-            color: #F5E4CC;
-            min-height: 100vh;
             padding-bottom: 20px;
         }
 
         .header {
-            background-color: #384657;
-            padding: 16px 20px;
-            display: flex;
             justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
         }
 
         .header-left {
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .back-button {
-            background: rgba(245, 228, 204, 0.1);
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 20px;
-            width: 44px;
-            height: 44px;
-        }
-
-        .back-button:active {
-            background-color: rgba(245, 228, 204, 0.2);
-            transform: scale(0.95);
-        }
-
-        .page-title {
-            font-size: 20px;
-            font-weight: 600;
         }
 
         .export-button {
@@ -65,7 +27,7 @@
             padding: 10px 16px;
             border-radius: 8px;
             font-size: 16px;
-            color: #F5E4CC;
+            color: var(--light);
             font-weight: 500;
         }
 
@@ -79,8 +41,8 @@
         }
 
         .add-button {
-            background-color: #F7B89C;
-            color: #2E3A59;
+            background-color: var(--accent);
+            color: var(--dark);
             border: none;
             padding: 14px;
             border-radius: 12px;
@@ -100,7 +62,7 @@
         }
 
         .table-container {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             overflow-x: auto;
             overflow-y: visible;
@@ -120,7 +82,7 @@
         }
 
         th {
-            color: #F5E4CC;
+            color: var(--light);
             font-size: 18px;
             font-weight: 600;
             text-align: left;
@@ -143,7 +105,7 @@
         }
 
         td {
-            color: #2E3A59;
+            color: var(--dark);
             font-size: 17px;
             padding: 10px 8px;
             vertical-align: top;
@@ -163,8 +125,8 @@
         }
 
         .count-badge {
-            background-color: #F7B89C;
-            color: #2E3A59;
+            background-color: var(--accent);
+            color: var(--dark);
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 15px;
@@ -187,7 +149,7 @@
             left: 50%;
             transform: translateX(-50%);
             background-color: #2E3A59;
-            color: #F5E4CC;
+            color: var(--light);
             padding: 10px 14px;
             border-radius: 8px;
             font-size: 16px;
@@ -244,7 +206,7 @@
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: #F5E4CC;
+            color: var(--light);
             opacity: 0.6;
         }
 
@@ -273,7 +235,7 @@
         }
 
         .modal-content {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 16px;
             padding: 24px;
             max-width: 600px;
@@ -292,7 +254,7 @@
         .modal-title {
             font-size: 24px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             padding-top: 8px;
         }
 
@@ -300,7 +262,7 @@
             background: none;
             border: none;
             font-size: 32px;
-            color: #2E3A59;
+            color: var(--dark);
             cursor: pointer;
             line-height: 1;
             padding: 0;
@@ -320,7 +282,7 @@
         .modal-section-title {
             font-size: 18px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -328,7 +290,7 @@
         }
 
         .modal-text {
-            color: #2E3A59;
+            color: var(--dark);
             font-size: 16px;
             line-height: 1.5;
         }
@@ -340,13 +302,13 @@
         .form-label {
             font-size: 16px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 6px;
             display: block;
         }
 
         .form-required {
-            color: #F7B89C;
+            color: var(--accent);
             font-weight: bold;
         }
 
@@ -358,7 +320,7 @@
             padding: 10px;
             font-family: inherit;
             font-size: 16px;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .form-textarea {
@@ -368,7 +330,7 @@
 
         .form-input:focus, .form-textarea:focus, .form-select:focus {
             outline: none;
-            border-color: #F7B89C;
+            border-color: var(--accent);
         }
 
         .intensity-slider {
@@ -418,7 +380,7 @@
             text-align: center;
             font-size: 22px;
             font-weight: bold;
-            color: #2E3A59;
+            color: var(--dark);
             margin: 10px 0;
         }
 
@@ -439,18 +401,18 @@
         }
 
         .modal-button.primary {
-            background-color: #F7B89C;
-            color: #2E3A59;
+            background-color: var(--accent);
+            color: var(--dark);
         }
 
         .modal-button.secondary {
             background-color: rgba(46, 58, 89, 0.1);
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .modal-button.danger {
             background-color: rgba(255, 70, 70, 0.8);
-            color: #F5E4CC;
+            color: var(--light);
         }
 
         .modal-button:active {
@@ -460,7 +422,7 @@
         .triggers-button {
             background-color: #2E3A59;
             border: 2px solid #384657;
-            color: #F5E4CC;
+            color: var(--light);
             padding: 10px;
             border-radius: 8px;
             font-size: 16px;
@@ -487,7 +449,7 @@
             padding: 8px;
             margin-top: 8px;
             font-size: 15px;
-            color: #2E3A59;
+            color: var(--dark);
             min-height: 30px;
         }
 
@@ -505,14 +467,14 @@
         .triggers-modal .modal-actions {
             position: sticky;
             bottom: 0;
-            background-color: #F5E4CC;
+            background-color: var(--light);
             padding: 16px 0 0 0;
             margin-top: 20px;
             border-top: 2px solid rgba(46, 58, 89, 0.1);
         }
 
         .triggers-info {
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 20px;
             font-size: 15px;
             background-color: rgba(46, 58, 89, 0.05);
@@ -528,7 +490,7 @@
         .trigger-category-title {
             font-size: 17px;
             font-weight: 700;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 10px;
             padding-bottom: 6px;
             border-bottom: 2px solid #F7B89C;
@@ -566,12 +528,12 @@
 
         .trigger-name {
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .trigger-description {
             font-weight: 400;
-            color: #2E3A59;
+            color: var(--dark);
             opacity: 0.8;
             font-size: 14px;
         }
@@ -593,7 +555,7 @@
         }
 
         .export-option:hover {
-            border-color: #F7B89C;
+            border-color: var(--accent);
             background-color: #485A70;
         }
 
@@ -604,7 +566,7 @@
         .export-option-title {
             font-size: 18px;
             font-weight: 600;
-            color: #F5E4CC;
+            color: var(--light);
             margin-bottom: 8px;
             display: flex;
             align-items: center;
@@ -613,7 +575,7 @@
 
         .export-option-desc {
             font-size: 14px;
-            color: #F5E4CC;
+            color: var(--light);
             opacity: 0.8;
             line-height: 1.4;
         }

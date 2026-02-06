@@ -4,56 +4,14 @@
 <meta charset="UTF-8">
 <title>Sons relaxants</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="nora-common.css">
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #384657;
-  color: #F5E4CC;
-}
-
-/* ===== HEADER ===== */
-.header {
-  background-color: #384657;
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(245, 228, 204, 0.1);
-}
-
-.back-button {
-  background: rgba(245, 228, 204, 0.1);
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 20px;
-  width: 44px;
-  height: 44px;
-  color: #F5E4CC;
-}
-
-.back-button:active {
-  background-color: rgba(245, 228, 204, 0.2);
-  transform: scale(0.95);
-}
-
-.page-title {
-  font-size: 20px;
-  font-weight: 600;
-}
-
 /* ===== BOUTON MIXEUR ===== */
 .mix-cta {
   margin: 16px;
   padding: 18px;
-  background: #2E3A59;
+  background: var(--dark);
   border-radius: 20px;
   text-align: center;
   cursor: pointer;
@@ -329,7 +287,7 @@ input[type=range]::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #F7B89C;
+  background: var(--accent);
   cursor: pointer;
 }
 
@@ -337,7 +295,7 @@ input[type=range]::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #F7B89C;
+  background: var(--accent);
   cursor: pointer;
   border: none;
 }

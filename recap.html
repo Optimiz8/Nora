@@ -3,37 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="nora-common.css">
     <title>Récapitulatif - Crise Autistique</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-            background-color: #384657;
-            color: #2E3A59;
+            color: var(--dark);
             line-height: 1.4;
-            min-height: 100vh;
             padding-bottom: 80px;
         }
 
         .header {
-            background-color: #2E3A59;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background-color: var(--dark);
         }
 
         .back-btn {
             background: none;
             border: none;
-            color: #F5E4CC;
+            color: var(--light);
             font-size: 16px;
             cursor: pointer;
             display: flex;
@@ -49,7 +35,7 @@
         }
 
         .alert-block {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 8px;
@@ -58,7 +44,7 @@
         .alert-title {
             font-size: 20px;
             font-weight: bold;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 12px;
             text-align: center;
         }
@@ -107,7 +93,7 @@
         .info-important h3 {
             font-size: 16px;
             margin-bottom: 8px;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .info-important ul {
@@ -129,7 +115,7 @@
         }
 
         .collapsible-section {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             margin-bottom: 8px;
             overflow: hidden;
@@ -141,13 +127,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border: none;
             width: 100%;
             text-align: left;
             font-size: 17px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .section-header:active {
@@ -196,7 +182,7 @@
         .capacity-group-title {
             font-weight: 600;
             margin-bottom: 4px;
-            color: #2E3A59;
+            color: var(--dark);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -227,9 +213,9 @@
 
         .contact-btn {
             flex: 1;
-            background-color: #F7B89C;
+            background-color: var(--accent);
             border: none;
-            color: #2E3A59;
+            color: var(--dark);
             padding: 14px;
             border-radius: 8px;
             font-size: 15px;
@@ -265,7 +251,7 @@
         }
 
         .modal-content {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             padding: 24px;
             max-width: 500px;
@@ -284,14 +270,14 @@
         .modal-title {
             font-size: 24px;
             font-weight: bold;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .close-modal {
             background: none;
             border: none;
             font-size: 28px;
-            color: #2E3A59;
+            color: var(--dark);
             cursor: pointer;
             padding: 0;
             width: 32px;
@@ -309,7 +295,7 @@
             margin-top: 20px;
             margin-bottom: 12px;
             font-size: 18px;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .modal-text p {
@@ -331,7 +317,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: #2E3A59;
+            background-color: var(--dark);
             padding: 12px 10px;
             display: flex;
             justify-content: space-around;
@@ -340,9 +326,9 @@
         }
 
         .footer-btn {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border: none;
-            color: #2E3A59;
+            color: var(--dark);
             padding: 8px 6px;
             border-radius: 8px;
             font-size: 18px;
@@ -392,7 +378,7 @@
         }
 
         .questionnaire-content {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             padding: 24px;
             max-width: 500px;
@@ -409,13 +395,13 @@
         .questionnaire-title {
             font-size: 24px;
             font-weight: bold;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 8px;
         }
 
         .questionnaire-subtitle {
             font-size: 14px;
-            color: #2E3A59;
+            color: var(--dark);
             opacity: 0.7;
         }
 
@@ -427,12 +413,12 @@
             display: block;
             font-size: 16px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 6px;
         }
 
         .form-required {
-            color: #F7B89C;
+            color: var(--accent);
             font-weight: bold;
         }
 
@@ -444,7 +430,7 @@
             padding: 10px;
             font-family: inherit;
             font-size: 15px;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .form-textarea {
@@ -491,7 +477,7 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            color: #2E3A59;
+            color: var(--dark);
             margin: 10px 0;
         }
 
@@ -512,13 +498,13 @@
         }
 
         .questionnaire-btn.primary {
-            background-color: #F7B89C;
-            color: #2E3A59;
+            background-color: var(--accent);
+            color: var(--dark);
         }
 
         .questionnaire-btn.secondary {
             background-color: rgba(46, 58, 89, 0.1);
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .questionnaire-btn:active {
@@ -526,9 +512,9 @@
         }
 
         .triggers-button {
-            background-color: #2E3A59;
+            background-color: var(--dark);
             border: 2px solid #384657;
-            color: #F5E4CC;
+            color: var(--light);
             padding: 10px;
             border-radius: 8px;
             font-size: 16px;
@@ -551,7 +537,7 @@
             padding: 8px;
             margin-top: 8px;
             font-size: 15px;
-            color: #2E3A59;
+            color: var(--dark);
             min-height: 30px;
         }
 
@@ -569,14 +555,14 @@
         .triggers-modal .questionnaire-actions {
             position: sticky;
             bottom: 0;
-            background-color: #F5E4CC;
+            background-color: var(--light);
             padding: 16px 0 0 0;
             margin-top: 20px;
             border-top: 2px solid rgba(46, 58, 89, 0.1);
         }
 
         .triggers-info {
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 20px;
             font-size: 15px;
             background-color: rgba(46, 58, 89, 0.05);
@@ -592,7 +578,7 @@
         .trigger-category-title {
             font-size: 17px;
             font-weight: 700;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 10px;
             padding-bottom: 6px;
             border-bottom: 2px solid #F7B89C;
@@ -630,12 +616,12 @@
 
         .trigger-name {
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .trigger-description {
             font-weight: 400;
-            color: #2E3A59;
+            color: var(--dark);
             opacity: 0.8;
             font-size: 14px;
         }

@@ -3,53 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="nora-common.css">
     <title>Contacts d'urgence - TSA App</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-            background-color: #384657;
-            color: #F5E4CC;
-            min-height: 100vh;
             padding-bottom: 20px;
-        }
-
-        .header {
-            background-color: #384657;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(245, 228, 204, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .back-button {
-            background: rgba(245, 228, 204, 0.1);
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 20px;
-            width: 44px;
-            height: 44px;
-        }
-
-        .back-button:active {
-            background-color: rgba(245, 228, 204, 0.2);
-            transform: scale(0.95);
-        }
-
-        .page-title {
-            font-size: 20px;
-            font-weight: 600;
         }
 
         .main-content {
@@ -65,9 +23,9 @@
 
         /* Bouton ajouter */
         .add-contact-btn {
-            background-color: #F7B89C;
+            background-color: var(--accent);
             border: none;
-            color: #2E3A59;
+            color: var(--dark);
             padding: 16px 20px;
             border-radius: 12px;
             font-size: 16px;
@@ -96,7 +54,7 @@
         }
 
         .contact-card {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 12px;
             padding: 16px 18px;
             border: 2px solid transparent;
@@ -137,7 +95,7 @@
         }
 
         .contact-info {
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .contact-main {
@@ -179,7 +137,7 @@
         }
 
         .modal-content {
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 16px;
             padding: 28px 24px;
             max-width: 400px;
@@ -193,7 +151,7 @@
         .modal-title {
             font-size: 22px;
             font-weight: 700;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .input-group {
@@ -203,7 +161,7 @@
         .input-label {
             font-size: 15px;
             font-weight: 600;
-            color: #2E3A59;
+            color: var(--dark);
             margin-bottom: 6px;
             display: block;
         }
@@ -216,12 +174,12 @@
             padding: 12px;
             font-family: inherit;
             font-size: 15px;
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .input-field:focus {
             outline: none;
-            border-color: #F7B89C;
+            border-color: var(--accent);
             background-color: rgba(247, 184, 156, 0.05);
         }
 
@@ -244,12 +202,12 @@
 
         .modal-button.secondary {
             background-color: rgba(46, 58, 89, 0.1);
-            color: #2E3A59;
+            color: var(--dark);
         }
 
         .modal-button.primary {
-            background-color: #F7B89C;
-            color: #2E3A59;
+            background-color: var(--accent);
+            color: var(--dark);
         }
 
         .modal-button:active {
