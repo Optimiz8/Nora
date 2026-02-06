@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="color-scheme" content="only light">
+    <link rel="stylesheet" href="nora-common.css">
+    <title>Nora - Cliqueur</title>
+    <style>
+        body { 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh;
+            background-color: var(--bg);
+        }
+
+        .main-f { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            padding-bottom: 80px;
+        }
+
+        /* Retour au style "Bouton Poussoir" d'origine */
+        .fidget-btn {
+            width: 220px; 
+            height: 220px; 
+            border-radius: 50%; 
+            border: 10px solid var(--dark);
+            background: var(--accent); 
+            color: var(--dark); 
+            font-weight: 800; 
+            font-size: 32px;
+            cursor: pointer; 
+            /* Ombre portée qui crée l'effet d'épaisseur */
+            box-shadow: 0 12px 0 #d9967a; 
+            transition: all 0.05s; /* Transition ultra rapide comme avant */
+            outline: none; 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none;
+        }
+
+        /* L'effet d'enfoncement que vous aimiez */
+        .fidget-btn:active { 
+            transform: translateY(8px); 
+            box-shadow: 0 4px 0 #d9967a; 
+            background: #f9cbb8; /* Un peu plus clair au clic pour le flash visuel */
+        }
+
+        .count { 
+            font-size: 24px; 
+            margin-top: 35px; 
+            font-weight: 600;
+            color: var(--light);
+            opacity: 0.7;
+        }
+
+        /* Contrôles flottants */
+        .floating-controls {
+            position: fixed;
+            bottom: calc(var(--footer-height) + 20px);
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 0 16px;
+            z-index: 90;
+        }
+
+        .tgl-btn {
+            background: var(--dark);
+            color: var(--light);
+            border: 1px solid rgba(245, 228, 204, 0.2);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            max-width: 140px;
+        }
+
+        .tgl-btn.active {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .tgl-btn span { margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="location.href='fidgets.html'">←</button>
+        <h1 class="page-title">Cliqueur</h1>
+    </header>
+
+    <main class="main-f">
+        <button id="target" class="fidget-btn">CLIC</button>
+        <div class="count">Total : <span id="num">0</span></div>
+    </main>
+
+    <div class="floating-controls">
+        <button id="vTgl" class="tgl-btn active" onclick="tgl('vibrate')">
+            <span>📳</span> Vibreur
+        </button>
+        <button id="sTgl" class="tgl-btn active" onclick="tgl('sound')">
+            <span>🔊</span> Son
+        </button>
+    </div>
+
+    <footer class="footer">
+        <button class="footer-button center" onclick="resetCount()">Réinitialiser le compteur</button>
+    </footer>
+
+    <script>
+        let c = 0;
+        let opt = { sound: true, vibrate: true };
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function tgl(o) {
+            opt[o] = !opt[o];
+            const btn = document.getElementById(o === 'sound' ? 'sTgl' : 'vTgl');
+            btn.classList.toggle('active');
+            // Mise à jour de l'icône
+            if(o === 'sound') btn.querySelector('span').innerText = opt.sound ? '🔊' : '🔇';
+            if(o === 'vibrate') btn.querySelector('span').innerText = opt.vibrate ? '📳' : '📴';
+        }
+
+        function resetCount() {
+            c = 0;
+            document.getElementById('num').innerText = c;
+        }
+
+        // Le bip d'origine plus sec et percutant
+        function beep() {
+            if(!opt.sound) return;
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            o.frequency.setValueAtTime(400 + Math.random() * 100, ctx.currentTime);
+            o.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.1);
+            g.gain.setValueAtTime(0.1, ctx.currentTime); 
+            g.connect(ctx.destination);
+            o.connect(g); 
+            o.start(); 
+            o.stop(ctx.currentTime + 0.1);
+        }
+
+        const target = document.getElementById('target');
+        target.onpointerdown = (e) => {
+            e.preventDefault();
+            c++; 
+            document.getElementById('num').innerText = c;
+            
+            beep(); 
+            if(opt.vibrate && navigator.vibrate) navigator.vibrate(15);
+        };
+    </script>
+</body>
+</html>

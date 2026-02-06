@@ -2,6 +2,7 @@
 /* Variables et styles partagés par toutes les pages */
 
 :root {
+  color-scheme: only light;
   --bg: #384657;
   --dark: #2E3A59;
   --light: #F5E4CC;
@@ -117,4 +118,34 @@ body {
   height: 36px;
   font-size: 18px;
   cursor: pointer;
+}
+
+/* ===== ANTI DARK-MODE NAVIGATEUR ===== */
+/* Empêche les navigateurs mobiles de modifier nos couleurs */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: only light;
+    --bg: #384657;
+    --dark: #2E3A59;
+    --light: #F5E4CC;
+    --accent: #F7B89C;
+  }
+
+  body {
+    background-color: #384657 !important;
+    color: #F5E4CC !important;
+  }
+
+  .header {
+    background-color: #384657 !important;
+  }
+
+  .footer {
+    background: #2E3A59 !important;
+  }
+}
+
+/* Empêche la manipulation forcée des couleurs */
+html, body, *, *::before, *::after {
+  -webkit-text-fill-color: inherit;
 }

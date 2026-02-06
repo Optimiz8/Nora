@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="stylesheet" href="nora-common.css" />
+    <title>TSA App – Fidgets</title>
+
+    <style>
+      .main-content {
+        padding: 24px 20px;
+      }
+      /* Fidget option buttons */
+      .fidget-option {
+        background: var(--light);
+        color: var(--dark);
+        border-radius: 14px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 12px;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+        text-align: left;
+        transition: transform 0.1s;
+        box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      .fidget-option:active {
+        transform: scale(0.97);
+        box-shadow: none;
+      }
+      .fidget-icon {
+        font-size: 30px;
+      }
+      .fidget-text b {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+      .fidget-text span {
+        font-size: 14px;
+        opacity: 0.7;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <header class="header">
+      <button class="back-button" onclick="location.href='index.html'">⬅️</button>
+      <h1 class="page-title">Fidgets</h1>
+    </header>
+
+    <main class="main-content">
+      <h2 class="section-title" style="text-align:center;margin-bottom:24px;">Choisis un outil</h2>
+
+      <button class="fidget-option" onclick="location.href = 'cliqueur.html'">
+        <div class="fidget-icon">🔘</div>
+        <div class="fidget-text">
+          <b>Le Cliqueur</b>
+          <span>Un bouton simple pour décharger la tension.</span>
+        </div>
+      </button>
+
+      <button class="fidget-option" onclick="location.href = 'Slider.html'">
+        <div class="fidget-icon">↕️</div>
+        <div class="fidget-text">
+          <b>Le Slider</b>
+          <span>Mouvement de va-et-vient apaisant.</span>
+        </div>
+      </button>
+
+      <button class="fidget-option" onclick="location.href = 'Pop-it.html'">
+        <div class="fidget-icon">🌈</div>
+        <div class="fidget-text">
+          <b>Le Pop-it</b>
+          <span>Éclater des bulles colorées à l'infini.</span>
+        </div>
+      </button>
+
+    </main>
+  </body>
+</html>

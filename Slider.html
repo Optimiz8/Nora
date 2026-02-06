@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="stylesheet" href="nora-common.css" />
+    <title>Fidget - Slider Tactile</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg);
+      }
+
+      .main-f {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        touch-action: none;
+        padding-bottom: 40px;
+      }
+
+      .track {
+        width: 100px;
+        height: 400px;
+        background: var(--dark);
+        border-radius: 50px;
+        position: relative;
+        border: 4px solid rgba(245, 228, 204, 0.1);
+        box-shadow: inset 0 8px 15px rgba(0,0,0,0.4);
+        display: flex;
+        justify-content: center;
+        overflow: hidden; 
+      }
+
+      /* Sillage avec dégradé et lueur */
+      #fill {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background: linear-gradient(to top, var(--accent), var(--light));
+        height: 0%;
+        opacity: 0;
+        box-shadow: 0 0 30px rgba(247, 184, 156, 0.4);
+      }
+
+      .handle {
+        width: 84px;
+        height: 84px;
+        background: var(--accent);
+        border-radius: 50%;
+        position: absolute;
+        top: 0; 
+        cursor: grab;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        user-select: none;
+        z-index: 2;
+      }
+
+      .footer-button.equal {
+        flex: 1;
+        height: 48px;
+        border-radius: 12px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(245, 228, 204, 0.1);
+        color: var(--light);
+        border: none;
+        font-weight: 600;
+      }
+
+      .footer-button.equal.active {
+        background: var(--light);
+        color: var(--dark);
+      }
+
+      .footer-button.mode-active {
+        background: var(--accent);
+        color: var(--dark);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <button class="back-button" onclick="location.href = 'fidgets.html'">⬅</button>
+      <span class="page-title">Slider</span>
+    </header>
+
+    <main class="main-f" id="interaction-zone">
+      <div class="track" id="tr">
+        <div id="fill"></div>
+        <div class="handle" id="hd"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <button id="vTgl" class="footer-button equal active" onclick="tgl('vibrate')">📳 Vibreur</button>
+      <button id="mBtn" class="footer-button equal mode-active" onclick="nextMode()">⚪ Neutre</button>
+      <button id="sTgl" class="footer-button equal active" onclick="tgl('sound')">🔊 Son</button>
+    </footer>
+
+    <script>
+      let opt = { sound: true, vibrate: true };
+      let modes = ['neutral', 'color', 'trail'];
+      let currentModeIndex = 0;
+      let dragging = false;
+      
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const hd = document.getElementById("hd");
+      const tr = document.getElementById("tr");
+      const fill = document.getElementById("fill");
+      const mBtn = document.getElementById("mBtn");
+      const zone = document.getElementById("interaction-zone");
+
+      function tgl(o) {
+        opt[o] = !opt[o];
+        document.getElementById(o === "sound" ? "sTgl" : "vTgl").classList.toggle("active");
+      }
+
+      function nextMode() {
+        currentModeIndex = (currentModeIndex + 1) % modes.length;
+        const mode = modes[currentModeIndex];
+        const labels = { neutral: '⚪ Neutre', color: '🎨 Couleur', trail: '📏 Sillage' };
+        mBtn.innerText = labels[mode];
+
+        // Reset visuel
+        hd.style.opacity = (mode === 'trail') ? "0" : "1";
+        hd.style.backgroundColor = "var(--accent)";
+        fill.style.opacity = (mode === 'trail') ? "1" : "0";
+        fill.style.height = "0%";
+      }
+
+      function tick(freq) {
+        if (!opt.sound) return;
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(freq, ctx.currentTime);
+        g.gain.setValueAtTime(0.04, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.08);
+      }
+
+      // Gestion de l'interaction globale sur la zone pour le mode sillage
+      zone.onpointerdown = (e) => {
+        dragging = true;
+        ctx.resume();
+        handleMove(e);
+      };
+
+      window.onpointerup = () => { dragging = false; };
+
+      window.onpointermove = (e) => {
+        if (dragging) handleMove(e);
+      };
+
+      function handleMove(e) {
+        let r = tr.getBoundingClientRect();
+        const mode = modes[currentModeIndex];
+        
+        // Calcul du pourcentage (0 en bas, 1 en haut)
+        let rawY = e.clientY - r.top;
+        let percent = 1 - (rawY / r.height);
+        percent = Math.max(0, Math.min(percent, 1));
+
+        if (mode === 'trail') {
+          // Mode Sillage : remplit de 0 à 100%
+          fill.style.height = (percent * 100) + "%";
+        } else {
+          // Modes avec bulle : on limite pour pas qu'elle sorte
+          const pad = 8; // Marge de sécurité pour le bas et le haut
+          const maxScroll = r.height - hd.offsetHeight - (pad * 2);
+          let y = rawY - (hd.offsetHeight / 2) - pad;
+          y = Math.max(0, Math.min(y, maxScroll));
+          
+          hd.style.top = (y + pad) + "px";
+
+          if (mode === 'color') {
+            hd.style.backgroundColor = `hsl(18, ${85 - (percent * 20)}%, ${72 + (percent * 12)}%)`;
+          }
+        }
+
+        if (opt.vibrate) navigator.vibrate(2);
+        const frequency = 150 + (percent * 350);
+        if (Math.random() > 0.82) tick(frequency);
+      }
+    </script>
+  </body>
+</html>
