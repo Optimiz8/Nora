@@ -451,11 +451,11 @@
                 <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
                 Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
             `;
-            
+
             if (data.textePresentation) {
-                html = `<p>${data.textePresentation}</p>`;
+                html += `<p style="margin: 16px 0; padding: 12px; background: rgba(247, 184, 156, 0.15); border-left: 4px solid var(--accent); border-radius: 4px;">${data.textePresentation}</p>`;
             }
-            
+
             html += `
                 <div class="highlight-box">
                     <p>Ce n'est pas volontaire.</p>
@@ -516,7 +516,7 @@
             }
             
             if (html === '') {
-                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucune capacité sélectionnée</p>';
+                html = '<p style="color: #2E3A59; opacity: 0.6; font-style: italic;">Les capacités sélectionnées lors d\'une crise apparaîtront ici. Vous pourrez choisir ce qui vous est impossible, difficile ou possible lors de la personnalisation de votre récapitulatif de crise.</p>';
             }
             
             container.innerHTML = html;
@@ -524,9 +524,9 @@
 
         function loadBesoins(besoins) {
             const container = document.getElementById('besoinsContent');
-            
+
             if (!besoins || besoins.length === 0) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun besoin configuré</p>';
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6; font-style: italic;">Les besoins sélectionnés lors d\'une crise apparaîtront ici (ex: boire, manger, réduire le bruit, m\'isoler, etc.). Vous pourrez les choisir lors de la personnalisation de votre récapitulatif de crise.</p>';
                 return;
             }
             
@@ -544,9 +544,9 @@
 
         function loadEtats(etats) {
             const container = document.getElementById('etatsContent');
-            
+
             if (!etats || etats.length === 0) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun état configuré</p>';
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6; font-style: italic;">Les états et ressentis sélectionnés lors d\'une crise apparaîtront ici (ex: anxiété, surcharge sensorielle, fatigue, etc.). Vous pourrez les choisir lors de la personnalisation de votre récapitulatif de crise.</p>';
                 return;
             }
             
@@ -565,37 +565,40 @@
         function loadContacts(contactsVisibles) {
             const container = document.getElementById('contactContent');
             const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
-            
+
             if (!allContacts || allContacts.length === 0 || !contactsVisibles || contactsVisibles.length === 0) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact configuré</p>';
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact configuré ou sélectionné pour ce contexte.</p>';
                 return;
             }
-            
+
             let html = '';
-            contactsVisibles.forEach(index => {
-                const contact = allContacts[index];
+            contactsVisibles.forEach(contactId => {
+                const contact = allContacts.find(c => c.id === contactId);
                 if (contact) {
                     html += `
-                        <p style="margin-bottom: 12px;"><strong>${contact.lien || 'Contact'}</strong></p>
-                        <p style="margin-bottom: 12px;">${contact.nom}</p>
-                        <div class="contact-buttons">
-                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
-                                <span>📞</span>
-                                <span>Appeler</span>
-                            </button>
-                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
-                                <span>💬</span>
-                                <span>Message</span>
-                            </button>
+                        <div style="margin-bottom: 20px;">
+                            <p style="margin-bottom: 8px;"><strong>${contact.lien || 'Contact'}</strong></p>
+                            <p style="margin-bottom: 12px; font-size: 16px;">${contact.nom}</p>
+                            ${contact.telephone ? `<p style="margin-bottom: 12px; color: #2E3A59;">📞 ${contact.telephone}</p>` : ''}
+                            <div class="contact-buttons">
+                                <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                                    <span>📞</span>
+                                    <span>Appeler</span>
+                                </button>
+                                <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                                    <span>💬</span>
+                                    <span>Message</span>
+                                </button>
+                            </div>
                         </div>
                     `;
                 }
             });
-            
+
             if (html === '') {
-                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact sélectionné</p>';
+                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact sélectionné pour ce contexte.</p>';
             }
-            
+
             container.innerHTML = html;
         }
 
@@ -604,23 +607,44 @@
                 document.getElementById('medicalSection').style.display = 'none';
                 return;
             }
-            
+
             const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
-            
-            if (infosMed.traitements) {
-                document.getElementById('medicaments').textContent = infosMed.traitements;
+
+            // Médicaments/Traitements
+            const medicElem = document.getElementById('medicaments');
+            if (infosMed.traitements && infosMed.traitements.trim()) {
+                medicElem.textContent = infosMed.traitements;
+                medicElem.style.opacity = '1';
+            } else {
+                medicElem.textContent = 'Aucun traitement renseigné';
+                medicElem.style.opacity = '0.6';
+                medicElem.style.fontStyle = 'italic';
             }
-            
+
+            // Allergies
+            const allergiesElem = document.getElementById('allergies');
             let allergies = [];
-            if (infosMed.allergiesMedic) allergies.push(infosMed.allergiesMedic);
-            if (infosMed.autresAllergies) allergies.push(infosMed.autresAllergies);
-            
+            if (infosMed.allergiesMedic && infosMed.allergiesMedic.trim()) allergies.push(infosMed.allergiesMedic);
+            if (infosMed.autresAllergies && infosMed.autresAllergies.trim()) allergies.push(infosMed.autresAllergies);
+
             if (allergies.length > 0) {
-                document.getElementById('allergies').textContent = allergies.join(', ');
+                allergiesElem.textContent = allergies.join(', ');
+                allergiesElem.style.opacity = '1';
+            } else {
+                allergiesElem.textContent = 'Aucune allergie renseignée';
+                allergiesElem.style.opacity = '0.6';
+                allergiesElem.style.fontStyle = 'italic';
             }
-            
-            if (infosMed.autresInfos) {
-                document.getElementById('infosUtiles').textContent = infosMed.autresInfos;
+
+            // Autres infos
+            const infosElem = document.getElementById('infosUtiles');
+            if (infosMed.autresInfos && infosMed.autresInfos.trim()) {
+                infosElem.textContent = infosMed.autresInfos;
+                infosElem.style.opacity = '1';
+            } else {
+                infosElem.textContent = 'Aucune information complémentaire';
+                infosElem.style.opacity = '0.6';
+                infosElem.style.fontStyle = 'italic';
             }
         }
 

@@ -417,14 +417,22 @@
                 const isChecked = (contexteConfig.contactsVisibles || []).includes(contact.id);
                 const div = document.createElement('div');
                 div.className = `contact-checkbox ${isChecked ? 'checked' : ''}`;
-                div.onclick = () => toggleContact(contact.id, div);
-                div.innerHTML = `
-                    <div class="checkbox-icon">${isChecked ? '✅' : '⬜'}</div>
-                    <div class="contact-info">
-                        <div class="contact-name">${contact.nom || 'Contact'}</div>
-                        <div class="contact-relation">${contact.lien || ''}</div>
-                    </div>
+
+                const checkboxIcon = document.createElement('div');
+                checkboxIcon.className = 'checkbox-icon';
+                checkboxIcon.textContent = isChecked ? '✅' : '⬜';
+
+                const contactInfo = document.createElement('div');
+                contactInfo.className = 'contact-info';
+                contactInfo.innerHTML = `
+                    <div class="contact-name">${contact.nom || 'Contact'}</div>
+                    <div class="contact-relation">${contact.lien || ''}</div>
                 `;
+
+                div.appendChild(checkboxIcon);
+                div.appendChild(contactInfo);
+                div.onclick = () => toggleContact(contact.id, div);
+
                 container.appendChild(div);
             });
         }

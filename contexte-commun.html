@@ -416,12 +416,48 @@
             background-color: rgba(46, 58, 89, 0.15);
         }
 
-        /* FOOTER - RESET BUTTON */
+        /* FOOTER */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #384657;
+            border-top: 1px solid rgba(245, 228, 204, 0.1);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .footer-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .footer-save {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .footer-button:active {
+            transform: scale(0.96);
+        }
+
         .footer-reset {
             flex: 0.8;
             background: rgba(244, 67, 54, 0.15) !important;
             color: var(--light) !important;
             border: 2px solid rgba(244, 67, 54, 0.3) !important;
+            font-size: 14px;
         }
     </style>
 </head>
