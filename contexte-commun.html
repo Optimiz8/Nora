@@ -505,7 +505,7 @@
                 </button>
                 <div class="expandable-list hidden" id="listCapacites">
                     <div class="select-buttons" id="selectCapacites">
-                        <button class="select-btn" onclick="selectAll('capacites')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="selectAll('capacites')">✅ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('capacites')">⚪ Tout masquer</button>
                     </div>
                     <div id="capacitesItems">
@@ -536,7 +536,7 @@
                 </button>
                 <div class="expandable-list hidden" id="listBesoins">
                     <div class="select-buttons" id="selectBesoins">
-                        <button class="select-btn" onclick="selectAll('besoins')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="selectAll('besoins')">✅ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('besoins')">⚪ Tout masquer</button>
                     </div>
                     <div id="besoinsItems">
@@ -567,7 +567,7 @@
                 </button>
                 <div class="expandable-list hidden" id="listEtats">
                     <div class="select-buttons" id="selectEtats">
-                        <button class="select-btn" onclick="selectAll('etats')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="selectAll('etats')">✅ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('etats')">⚪ Tout masquer</button>
                     </div>
                     <div id="etatsItems">
@@ -631,7 +631,7 @@
             cursor: pointer;
             transition: all 0.2s;
         " onclick="afficherExemple()">
-            👁️ Afficher l'exemple avec ces réglages
+            ✅ Afficher l'exemple avec ces réglages
         </button>
     </div>
 
@@ -855,7 +855,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
-                            ${isChecked ? '👁️' : '⚪'}
+                            ${isChecked ? '✅' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -880,7 +880,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
-                            ${isChecked ? '👁️' : '⚪'}
+                            ${isChecked ? '✅' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -903,7 +903,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
-                            ${isChecked ? '👁️' : '⚪'}
+                            ${isChecked ? '✅' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -917,6 +917,7 @@
 
         function renderContacts() {
             const contacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+            console.log('renderContacts - contacts chargés:', contacts);
             const container = document.getElementById('contactsContainer');
             container.innerHTML = '';
 
@@ -926,6 +927,7 @@
             }
 
             contacts.forEach((contact) => {
+                console.log('Contact:', contact, 'ID:', contact.id);
                 const isChecked = contextData.contacts.selection.includes(contact.id);
 
                 const row = document.createElement('div');
@@ -933,7 +935,7 @@
 
                 const checkbox = document.createElement('div');
                 checkbox.className = 'contact-checkbox';
-                checkbox.textContent = isChecked ? '👁️' : '⚪';
+                checkbox.textContent = isChecked ? '✅' : '⚪';
                 checkbox.onclick = () => toggleContact(contact.id);
 
                 const info = document.createElement('div');
@@ -1001,6 +1003,14 @@
 
         // TOGGLE CONTACT
         function toggleContact(contactId) {
+            console.log('toggleContact appelé avec contactId:', contactId);
+            console.log('Selection actuelle:', contextData.contacts.selection);
+
+            if (!contactId) {
+                console.error('contactId est undefined!');
+                return;
+            }
+
             const pos = contextData.contacts.selection.indexOf(contactId);
             if (pos > -1) {
                 contextData.contacts.selection.splice(pos, 1);
@@ -1013,6 +1023,7 @@
                 contextData.contacts.selection.push(contactId);
             }
 
+            console.log('Nouvelle selection:', contextData.contacts.selection);
             renderContacts();
             markAsModified();
         }

@@ -62,23 +62,27 @@
             font-size: 20px;
             font-weight: bold;
             color: var(--dark);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             text-align: center;
         }
 
         .intro-text {
+            margin-top: 0;
             margin-bottom: 12px;
+            color: var(--dark);
         }
 
         .intro-text p {
             margin-bottom: 8px;
             line-height: 1.4;
+            color: var(--dark);
         }
 
         .intro-text strong {
             display: block;
             margin-top: 12px;
             margin-bottom: 6px;
+            color: var(--dark);
         }
 
         .highlight-box {
@@ -91,6 +95,7 @@
             line-height: 1.4;
             padding-left: 16px;
             position: relative;
+            color: var(--dark);
         }
 
         .highlight-box p:before {
@@ -98,6 +103,7 @@
             position: absolute;
             left: 4px;
             font-weight: bold;
+            color: var(--dark);
         }
 
         .info-important {
@@ -564,37 +570,33 @@
             container.innerHTML = html;
         }
 
-        function loadContacts(contactsVisibles) {
+        function loadContacts(contacts) {
             const container = document.getElementById('contactContent');
-            const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
 
-            if (!allContacts || allContacts.length === 0 || !contactsVisibles || contactsVisibles.length === 0) {
+            if (!contacts || contacts.length === 0) {
                 container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact configuré ou sélectionné pour ce contexte.</p>';
                 return;
             }
 
             let html = '';
-            contactsVisibles.forEach(contactId => {
-                const contact = allContacts.find(c => c.id === contactId);
-                if (contact) {
-                    html += `
-                        <div style="margin-bottom: 20px;">
-                            <p style="margin-bottom: 8px;"><strong>${contact.lien || 'Contact'}</strong></p>
-                            <p style="margin-bottom: 12px; font-size: 16px;">${contact.nom}</p>
-                            ${contact.telephone ? `<p style="margin-bottom: 12px; color: #2E3A59;">📞 ${contact.telephone}</p>` : ''}
-                            <div class="contact-buttons">
-                                <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
-                                    <span>📞</span>
-                                    <span>Appeler</span>
-                                </button>
-                                <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
-                                    <span>💬</span>
-                                    <span>Message</span>
-                                </button>
-                            </div>
+            contacts.forEach(contact => {
+                html += `
+                    <div style="margin-bottom: 20px;">
+                        <p style="margin-bottom: 8px; color: var(--dark);"><strong>${contact.lien || 'Contact'}</strong></p>
+                        <p style="margin-bottom: 12px; font-size: 16px; color: var(--dark);">${contact.nom}</p>
+                        ${contact.telephone ? `<p style="margin-bottom: 12px; color: #2E3A59;">📞 ${contact.telephone}</p>` : ''}
+                        <div class="contact-buttons">
+                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                                <span>📞</span>
+                                <span>Appeler</span>
+                            </button>
+                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                                <span>💬</span>
+                                <span>Message</span>
+                            </button>
                         </div>
-                    `;
-                }
+                    </div>
+                `;
             });
 
             if (html === '') {

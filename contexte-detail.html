@@ -677,7 +677,7 @@
                 </button>
                 <div class="expandable-list hidden" id="listCapacites">
                     <div class="select-buttons" id="selectCapacites">
-                        <button class="select-btn" onclick="selectAll('capacites')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="selectAll('capacites')">✅ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('capacites')">⚪ Tout masquer</button>
                     </div>
                     <div id="capacitesItems">
@@ -708,7 +708,7 @@
                 </button>
                 <div class="expandable-list hidden" id="listBesoins">
                     <div class="select-buttons" id="selectBesoins">
-                        <button class="select-btn" onclick="selectAll('besoins')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="selectAll('besoins')">✅ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('besoins')">⚪ Tout masquer</button>
                     </div>
                     <div id="besoinsItems">
@@ -739,7 +739,7 @@
                 </button>
                 <div class="expandable-list hidden" id="listEtats">
                     <div class="select-buttons" id="selectEtats">
-                        <button class="select-btn" onclick="selectAll('etats')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="selectAll('etats')">✅ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('etats')">⚪ Tout masquer</button>
                     </div>
                     <div id="etatsItems">
@@ -803,7 +803,7 @@
             cursor: pointer;
             transition: all 0.2s;
         " onclick="afficherExemple()">
-            👁️ Afficher l'exemple avec ces réglages
+            ✅ Afficher l'exemple avec ces réglages
         </button>
     </div>
 
@@ -1138,7 +1138,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
-                            ${isChecked ? '👁️' : '⚪'}
+                            ${isChecked ? '✅' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -1161,7 +1161,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
-                            ${isChecked ? '👁️' : '⚪'}
+                            ${isChecked ? '✅' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -1184,7 +1184,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
-                            ${isChecked ? '👁️' : '⚪'}
+                            ${isChecked ? '✅' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -1215,7 +1215,7 @@
 
                 const checkbox = document.createElement('div');
                 checkbox.className = 'contact-checkbox';
-                checkbox.textContent = isChecked ? '👁️' : '⚪';
+                checkbox.textContent = isChecked ? '✅' : '⚪';
                 checkbox.onclick = () => toggleContact(contact.id);
 
                 const info = document.createElement('div');
