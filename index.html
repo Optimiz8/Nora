@@ -6,6 +6,7 @@
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
     <link rel="stylesheet" href="nora-common.css">
+    <script src="nora-data.js"></script>
     <title>TSA App – Accueil</title>
 
     <style>
@@ -175,11 +176,8 @@
         <div class="modal-content">
             <div class="modal-close" data-close="contextModal">×</div>
             <div class="modal-title">Où es-tu&nbsp;?</div>
-            <div class="context-grid">
-                <div class="modal-option" data-profile="maison"><div class="option-icon">🏠</div><div class="option-text">Maison</div></div>
-                <div class="modal-option" data-profile="exterieur"><div class="option-icon">🌍</div><div class="option-text">Extérieur</div></div>
-                <div class="modal-option" data-profile="travail"><div class="option-icon">💼</div><div class="option-text">Travail / École</div></div>
-                <div class="modal-option" data-profile="secours"><div class="option-icon">🙏</div><div class="option-text">Secours</div></div>
+            <div class="context-grid" id="contextGrid">
+                <!-- Généré dynamiquement -->
             </div>
         </div>
     </div>
@@ -198,6 +196,39 @@
     </div>
 
     <script>
+    function startCrisis(profilId) {
+        localStorage.setItem('profilActuel', profilId);
+        localStorage.setItem('criseEnCours', 'true');
+        localStorage.setItem('crisisStartTime', Date.now().toString());
+        // Nettoyer les données de crise précédente
+        localStorage.removeItem('currentCapacites');
+        localStorage.removeItem('currentBesoins');
+        localStorage.removeItem('currentEtats');
+        const config = getProfileConfig(profilId);
+        const pages = getFlowPages(config);
+        location.href = pages[0];
+    }
+
+    function buildContextGrid() {
+        const grid = document.getElementById('contextGrid');
+        const DEFAULT_CONTEXTES = [
+            { id: 'maison', emoji: '🏠', nom: 'Maison', default: true },
+            { id: 'exterieur', emoji: '🌍', nom: 'Extérieur', default: true },
+            { id: 'travail', emoji: '💼', nom: 'Travail / École', default: true },
+            { id: 'secours', emoji: '🙏', nom: 'Secours', default: true }
+        ];
+        const contextes = JSON.parse(localStorage.getItem('contextes')) || DEFAULT_CONTEXTES;
+
+        grid.innerHTML = contextes
+            .filter(ctx => ctx.visible !== false)
+            .map(ctx => `<div class="modal-option" data-profile="${ctx.id}"><div class="option-icon">${ctx.emoji}</div><div class="option-text">${ctx.nom}</div></div>`)
+            .join('');
+
+        grid.querySelectorAll('[data-profile]').forEach(el =>
+            el.onclick = () => startCrisis(el.dataset.profile)
+        );
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
 
         const open = id => document.getElementById(id).classList.add('visible');
@@ -206,14 +237,22 @@
         // Ouvrir automatiquement la modale si hash présent
         if (location.hash === '#calm') {
             open('calmModal');
-            history.replaceState(null, '', location.pathname); // Nettoyer le hash
+            history.replaceState(null, '', location.pathname);
         }
+
+        // Construire la grille de contextes dynamiquement
+        buildContextGrid();
 
         btnHelp.onclick = () => open('helpModal');
         btnCalm.onclick = () => open('calmModal');
 
         btnContext.onclick = () => {
             close('helpModal');
+            // Mode simplifié : skip la modale "Où es-tu"
+            if (localStorage.getItem('contexte_messageUnique') === 'true') {
+                startCrisis('commun');
+                return;
+            }
             open('contextModal');
         };
 
@@ -221,14 +260,6 @@
 
         document.querySelectorAll('[data-close]').forEach(el =>
             el.onclick = () => close(el.dataset.close)
-        );
-
-        document.querySelectorAll('[data-profile]').forEach(el =>
-            el.onclick = () => {
-                localStorage.setItem('profilActuel', el.dataset.profile);
-                localStorage.setItem('criseEnCours','true');
-                location.href = 'capacites.html';
-            }
         );
 
         btnConseils.onclick = () => location.href='conseils.html';

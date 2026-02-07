@@ -6,6 +6,7 @@
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
 <link rel="stylesheet" href="nora-common.css">
+<script src="nora-data.js"></script>
 <title>TSA App – Capacités</title>
 
 <style>
@@ -13,13 +14,7 @@ body{
   padding-bottom:100px;
 }
 
-.page-title-header{font-size:20px}
-
-.profile-banner{
-  background:var(--dark);
-  padding:12px 20px;
-  font-size:16px;
-}
+.header-context-name{font-size:18px;font-weight:600}
 
 .main-content{padding:24px 20px}
 
@@ -132,10 +127,8 @@ body{
 <body>
 
 <header class="header">
-  <h1 class="page-title-header">Capacités</h1>
+  <h1 class="header-context-name" id="headerContextName">Contexte</h1>
 </header>
-
-<div class="profile-banner">Maison</div>
 
 <main class="main-content">
 
@@ -148,119 +141,8 @@ body{
 Appuyez pour changer l'état. Appui long pour remettre à zéro.
 </p>
 
-<!-- CAPACITÉS ESSENTIELLES -->
-<div class="capacity-item" data-state="empty" data-label="Parler" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">💬</div>
-  <div class="capacity-text">Parler</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Être touchée" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🤝</div>
-  <div class="capacity-text">Être touchée</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Bouger" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🚶</div>
-  <div class="capacity-text">Bouger</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Rester ici" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">📍</div>
-  <div class="capacity-text">Rester ici</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Comprendre ce qu'on me dit" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🧠</div>
-  <div class="capacity-text">Comprendre ce qu'on me dit</div>
-</div>
-
-<button class="more-toggle" onclick="toggleMore()">➕ Voir plus de capacités</button>
-
-<div id="moreCapacities" style="display:none">
-
-<div class="capacity-item" data-state="empty" data-label="Écrire / taper sur un clavier" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">⌨️</div>
-  <div class="capacity-text">Écrire / taper sur un clavier</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Lire" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">📖</div>
-  <div class="capacity-text">Lire</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Répondre à des questions" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">💭</div>
-  <div class="capacity-text">Répondre à des questions</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Marcher" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🚶‍♀️</div>
-  <div class="capacity-text">Marcher</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Rester debout" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🧍</div>
-  <div class="capacity-text">Rester debout</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="M'asseoir" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🪑</div>
-  <div class="capacity-text">M'asseoir</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Me lever" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">⬆️</div>
-  <div class="capacity-text">Me lever</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Être proche des autres" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">👥</div>
-  <div class="capacity-text">Être proche des autres</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Attendre" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">⏳</div>
-  <div class="capacity-text">Attendre</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Me concentrer" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🎯</div>
-  <div class="capacity-text">Me concentrer</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Prendre une décision" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🤔</div>
-  <div class="capacity-text">Prendre une décision</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Arrêter ce que je fais" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🛑</div>
-  <div class="capacity-text">Arrêter ce que je fais</div>
-</div>
-
-<div class="capacity-item" data-state="empty" data-label="Manger" onclick="cycleState(this)">
-  <div class="capacity-state"></div>
-  <div class="capacity-icon">🍽️</div>
-  <div class="capacity-text">Manger</div>
-</div>
-
+<div id="capacitiesContainer">
+<!-- Généré dynamiquement -->
 </div>
 
 </main>
@@ -292,6 +174,7 @@ const STATES={
 };
 
 let longPressTimer,isLongPress=false;
+let profileConfig = null;
 
 function cycleState(el){
   if(isLongPress){isLongPress=false;return}
@@ -301,13 +184,15 @@ function cycleState(el){
   saveCapacities();
 }
 
-document.querySelectorAll('.capacity-item').forEach(i=>{
-  i.addEventListener('mousedown',()=>startLong(i));
-  i.addEventListener('mouseup',clear);
-  i.addEventListener('mouseleave',clear);
-  i.addEventListener('touchstart',()=>startLong(i));
-  i.addEventListener('touchend',clear);
-});
+function attachLongPress(items){
+  items.forEach(i=>{
+    i.addEventListener('mousedown',()=>startLong(i));
+    i.addEventListener('mouseup',clear);
+    i.addEventListener('mouseleave',clear);
+    i.addEventListener('touchstart',()=>startLong(i));
+    i.addEventListener('touchend',clear);
+  });
+}
 
 function startLong(i){
   isLongPress=false;
@@ -320,11 +205,6 @@ function startLong(i){
 }
 
 function clear(){clearTimeout(longPressTimer)}
-
-function toggleMore(){
-  const b=document.getElementById('moreCapacities');
-  b.style.display=b.style.display==='block'?'none':'block';
-}
 
 function resetAllCapacities(){
   document.getElementById('confirmOverlay').classList.add('show');
@@ -343,45 +223,47 @@ function confirmReset(){
   hideConfirm();
 }
 
-// Sauvegarde des capacités dans le localStorage
+function buildCapacityItems(){
+  const container = document.getElementById('capacitiesContainer');
+  const config = profileConfig;
+  const visibles = config.capacites.visibles || [];
+  const personnalisees = config.capacites.personnalisees || [];
+
+  // Filtrer les items standards visibles
+  const allItems = [...CAPACITES, ...personnalisees];
+  const visibleItems = allItems.filter(item => visibles.includes(item.id));
+
+  container.innerHTML = visibleItems.map(item =>
+    `<div class="capacity-item" data-state="empty" data-label="${item.nom}" onclick="cycleState(this)">
+      <div class="capacity-state"></div>
+      <div class="capacity-icon">${item.emoji}</div>
+      <div class="capacity-text">${item.nom}</div>
+    </div>`
+  ).join('');
+
+  attachLongPress(container.querySelectorAll('.capacity-item'));
+}
+
 function saveCapacities(){
-  const capacites = {
-    impossible: [],
-    difficile: [],
-    possible: [],
-    incertain: []
-  };
-  
+  const capacites = { impossible: [], difficile: [], possible: [], incertain: [] };
   document.querySelectorAll('.capacity-item').forEach(item => {
     const state = item.dataset.state;
     const label = item.dataset.label || item.querySelector('.capacity-text').textContent;
-    
-    if(state === 'impossible'){
-      capacites.impossible.push(label);
-    } else if(state === 'difficult'){
-      capacites.difficile.push(label);
-    } else if(state === 'possible'){
-      capacites.possible.push(label);
-    } else if(state === 'unknown'){
-      capacites.incertain.push(label);
-    }
+    if(state === 'impossible') capacites.impossible.push(label);
+    else if(state === 'difficult') capacites.difficile.push(label);
+    else if(state === 'possible') capacites.possible.push(label);
+    else if(state === 'unknown') capacites.incertain.push(label);
   });
-  
   localStorage.setItem('currentCapacites', JSON.stringify(capacites));
-  console.log('Capacités sauvegardées:', capacites);
 }
 
-// Charger les capacités au démarrage
 function loadCapacities(){
   try {
     const saved = localStorage.getItem('currentCapacites');
     if(!saved) return;
-    
     const capacites = JSON.parse(saved);
-    
     document.querySelectorAll('.capacity-item').forEach(item => {
       const label = item.dataset.label || item.querySelector('.capacity-text').textContent;
-      
       if(capacites.impossible.includes(label)){
         item.dataset.state = 'impossible';
         item.querySelector('.capacity-state').textContent = '⛔';
@@ -403,12 +285,12 @@ function loadCapacities(){
 
 function goBack(){
   saveCapacities();
-  location.href='index.html';
+  location.href = getPrevPage('capacites.html', profileConfig);
 }
 
 function goNext(){
   saveCapacities();
-  location.href='besoins.html';
+  location.href = getNextPage('capacites.html', profileConfig);
 }
 
 function finish(){
@@ -416,14 +298,20 @@ function finish(){
   location.href='recap.html';
 }
 
-// Charger au démarrage
 document.addEventListener('DOMContentLoaded', function() {
+  const profilId = localStorage.getItem('profilActuel') || 'maison';
+  profileConfig = getProfileConfig(profilId);
+
+  // Header dynamique
+  const info = getContexteInfo(profilId);
+  document.getElementById('headerContextName').textContent = info.emoji + ' ' + info.nom;
+
+  // Construire les items filtrés
+  buildCapacityItems();
   loadCapacities();
-  
-  // Enregistrer l'heure de début de la crise si pas déjà fait
+
   if (!localStorage.getItem('crisisStartTime')) {
     localStorage.setItem('crisisStartTime', Date.now().toString());
-    console.log('Heure de début de crise enregistrée');
   }
 });
 </script>

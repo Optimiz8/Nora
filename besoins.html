@@ -6,6 +6,7 @@
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
 <link rel="stylesheet" href="nora-common.css">
+<script src="nora-data.js"></script>
 <title>TSA App – Besoins</title>
 
 <style>
@@ -13,13 +14,7 @@ body{
 padding-bottom:80px;
 }
 
-.page-title-header{font-size:20px}
-
-.profile-banner{
-background:var(--dark);
-padding:12px 20px;
-font-size:16px;
-}
+.header-context-name{font-size:18px;font-weight:600}
 
 .main-content{padding:24px 20px}
 
@@ -73,15 +68,6 @@ box-shadow:0 4px 8px rgba(0,0,0,0.2);
 .need-icon{font-size:24px}
 .need-text{flex:1;font-size:16px}
 
-.more-toggle{
-margin:22px 0;
-background:none;
-border:none;
-color:var(--accent);
-font-size:16px;
-cursor:pointer;
-}
-
 .confirm-overlay{
 position:fixed;
 inset:0;
@@ -125,10 +111,8 @@ cursor:pointer;
 <body>
 
 <header class="header">
-<h1 class="page-title-header">Besoins</h1>
+<h1 class="header-context-name" id="headerContextName">Contexte</h1>
 </header>
-
-<div class="profile-banner">Maison</div>
 
 <main class="main-content">
 
@@ -139,116 +123,8 @@ cursor:pointer;
 
 <p class="instruction-text">Appuyez pour sélectionner. Appui long pour remettre à zéro.</p>
 
-<!-- BESOINS PRIORITAIRES -->
-<div class="need-item" data-need="Réduire le bruit" data-icon="🔇" onclick="toggleNeed(this)">
-<div class="need-icon">🔇</div>
-<div class="need-text">Réduire le bruit</div>
-</div>
-
-<div class="need-item" data-need="Être dans le noir / pénombre" data-icon="🌑" onclick="toggleNeed(this)">
-<div class="need-icon">🌑</div>
-<div class="need-text">Être dans le noir / pénombre</div>
-</div>
-
-<div class="need-item" data-need="Être au calme" data-icon="🤫" onclick="toggleNeed(this)">
-<div class="need-icon">🤫</div>
-<div class="need-text">Être au calme</div>
-</div>
-
-<div class="need-item" data-need="Casque / écouteurs" data-icon="🎧" onclick="toggleNeed(this)">
-<div class="need-icon">🎧</div>
-<div class="need-text">Casque / écouteurs</div>
-</div>
-
-<div class="need-item" data-need="Me coucher / m'allonger" data-icon="🛏️" onclick="toggleNeed(this)">
-<div class="need-icon">🛏️</div>
-<div class="need-text">Me coucher / m'allonger</div>
-</div>
-
-<div class="need-item" data-need="M'asseoir" data-icon="🪑" onclick="toggleNeed(this)">
-<div class="need-icon">🪑</div>
-<div class="need-text">M'asseoir</div>
-</div>
-
-<div class="need-item" data-need="Appeler les secours" data-icon="🚑" onclick="toggleNeed(this)">
-<div class="need-icon">🚑</div>
-<div class="need-text">Appeler les secours</div>
-</div>
-
-<button class="more-toggle" onclick="toggleMore()">➕ Voir plus de besoins</button>
-
-<div id="moreNeeds" style="display:none">
-
-<div class="need-item" data-need="Boire" data-icon="💧" onclick="toggleNeed(this)">
-<div class="need-icon">💧</div>
-<div class="need-text">Boire</div>
-</div>
-
-<div class="need-item" data-need="Manger" data-icon="🍽️" onclick="toggleNeed(this)">
-<div class="need-icon">🍽️</div>
-<div class="need-text">Manger</div>
-</div>
-
-<div class="need-item" data-need="Aller aux WC" data-icon="🚻" onclick="toggleNeed(this)">
-<div class="need-icon">🚻</div>
-<div class="need-text">Aller aux WC</div>
-</div>
-
-<div class="need-item" data-need="Dormir" data-icon="😴" onclick="toggleNeed(this)">
-<div class="need-icon">😴</div>
-<div class="need-text">Dormir</div>
-</div>
-
-<div class="need-item" data-need="Un câlin" data-icon="🤗" onclick="toggleNeed(this)">
-<div class="need-icon">🤗</div>
-<div class="need-text">Un câlin</div>
-</div>
-
-<div class="need-item" data-need="Être seule" data-icon="🚪" onclick="toggleNeed(this)">
-<div class="need-icon">🚪</div>
-<div class="need-text">Être seule</div>
-</div>
-
-<div class="need-item" data-need="Être accompagnée" data-icon="👥" onclick="toggleNeed(this)">
-<div class="need-icon">👥</div>
-<div class="need-text">Être accompagnée</div>
-</div>
-
-<div class="need-item" data-need="Qu'on reste avec moi" data-icon="🫂" onclick="toggleNeed(this)">
-<div class="need-icon">🫂</div>
-<div class="need-text">Qu'on reste avec moi</div>
-</div>
-
-<div class="need-item" data-need="Attendre" data-icon="⏳" onclick="toggleNeed(this)">
-<div class="need-icon">⏳</div>
-<div class="need-text">Attendre</div>
-</div>
-
-<div class="need-item" data-need="Appeler quelqu'un" data-icon="📞" onclick="toggleNeed(this)">
-<div class="need-icon">📞</div>
-<div class="need-text">Appeler quelqu'un</div>
-</div>
-
-<div class="need-item" data-need="Qu'on appelle quelqu'un pour moi" data-icon="☎️" onclick="toggleNeed(this)">
-<div class="need-icon">☎️</div>
-<div class="need-text">Qu'on appelle quelqu'un pour moi</div>
-</div>
-
-<div class="need-item" data-need="Connaître l'heure" data-icon="🕐" onclick="toggleNeed(this)">
-<div class="need-icon">🕐</div>
-<div class="need-text">Connaître l'heure</div>
-</div>
-
-<div class="need-item" data-need="Comprendre ce qui se passe" data-icon="❓" onclick="toggleNeed(this)">
-<div class="need-icon">❓</div>
-<div class="need-text">Comprendre ce qui se passe</div>
-</div>
-
-<div class="need-item" data-need="Qu'on m'explique calmement" data-icon="💬" onclick="toggleNeed(this)">
-<div class="need-icon">💬</div>
-<div class="need-text">Qu'on m'explique calmement</div>
-</div>
-
+<div id="needsContainer">
+<!-- Généré dynamiquement -->
 </div>
 
 </main>
@@ -272,23 +148,23 @@ cursor:pointer;
 
 <script>
 let longPressTimer, isLongPress = false;
+let profileConfig = null;
 
 function toggleNeed(el){
-  if(isLongPress){
-    isLongPress = false;
-    return;
-  }
+  if(isLongPress){ isLongPress = false; return; }
   el.classList.toggle('active');
   saveBesoins();
 }
 
-document.querySelectorAll('.need-item').forEach(i => {
-  i.addEventListener('mousedown', () => startLong(i));
-  i.addEventListener('mouseup', clear);
-  i.addEventListener('mouseleave', clear);
-  i.addEventListener('touchstart', () => startLong(i));
-  i.addEventListener('touchend', clear);
-});
+function attachLongPress(items){
+  items.forEach(i => {
+    i.addEventListener('mousedown', () => startLong(i));
+    i.addEventListener('mouseup', clear);
+    i.addEventListener('mouseleave', clear);
+    i.addEventListener('touchstart', () => startLong(i));
+    i.addEventListener('touchend', clear);
+  });
+}
 
 function startLong(i){
   isLongPress = false;
@@ -299,13 +175,24 @@ function startLong(i){
   }, 600);
 }
 
-function clear(){
-  clearTimeout(longPressTimer);
-}
+function clear(){ clearTimeout(longPressTimer); }
 
-function toggleMore(){
-  const b = document.getElementById('moreNeeds');
-  b.style.display = b.style.display === 'block' ? 'none' : 'block';
+function buildNeedItems(){
+  const container = document.getElementById('needsContainer');
+  const config = profileConfig;
+  const visibles = config.besoins.visibles || [];
+  const personnalisees = config.besoins.personnalisees || [];
+  const allItems = [...BESOINS, ...personnalisees];
+  const visibleItems = allItems.filter(item => visibles.includes(item.id));
+
+  container.innerHTML = visibleItems.map(item =>
+    `<div class="need-item" data-need="${item.nom}" data-icon="${item.emoji}" onclick="toggleNeed(this)">
+      <div class="need-icon">${item.emoji}</div>
+      <div class="need-text">${item.nom}</div>
+    </div>`
+  ).join('');
+
+  attachLongPress(container.querySelectorAll('.need-item'));
 }
 
 function resetAllNeeds(){
@@ -317,49 +204,31 @@ function hideConfirm(){
 }
 
 function confirmReset(){
-  document.querySelectorAll('.need-item').forEach(i => {
-    i.classList.remove('active');
-  });
+  document.querySelectorAll('.need-item').forEach(i => i.classList.remove('active'));
   saveBesoins();
   hideConfirm();
 }
 
-// Sauvegarde des besoins dans le localStorage
 function saveBesoins(){
   const besoins = [];
-  
   document.querySelectorAll('.need-item.active').forEach(item => {
-    const label = item.dataset.need || item.querySelector('.need-text').textContent;
-    const icon = item.dataset.icon || item.querySelector('.need-icon').textContent;
-    
     besoins.push({
-      label: label,
-      icon: icon
+      label: item.dataset.need || item.querySelector('.need-text').textContent,
+      icon: item.dataset.icon || item.querySelector('.need-icon').textContent
     });
   });
-  
   localStorage.setItem('currentBesoins', JSON.stringify(besoins));
-  console.log('Besoins sauvegardés:', besoins);
 }
 
-// Charger les besoins au démarrage
 function loadBesoins(){
   try {
     const saved = localStorage.getItem('currentBesoins');
     if(!saved) return;
-    
     const besoins = JSON.parse(saved);
-    
     document.querySelectorAll('.need-item').forEach(item => {
       const label = item.dataset.need || item.querySelector('.need-text').textContent;
-      
-      const isActive = besoins.some(b => b.label === label);
-      if(isActive){
-        item.classList.add('active');
-      }
+      if(besoins.some(b => b.label === label)) item.classList.add('active');
     });
-    
-    console.log('Besoins chargés:', besoins);
   } catch(e) {
     console.error('Erreur chargement besoins:', e);
   }
@@ -367,12 +236,12 @@ function loadBesoins(){
 
 function goBack(){
   saveBesoins();
-  location.href = 'capacites.html';
+  location.href = getPrevPage('besoins.html', profileConfig);
 }
 
 function goNext(){
   saveBesoins();
-  location.href = 'etats.html';
+  location.href = getNextPage('besoins.html', profileConfig);
 }
 
 function finish(){
@@ -380,8 +249,16 @@ function finish(){
   location.href = 'recap.html';
 }
 
-// Charger au démarrage
-document.addEventListener('DOMContentLoaded', loadBesoins);
+document.addEventListener('DOMContentLoaded', function() {
+  const profilId = localStorage.getItem('profilActuel') || 'maison';
+  profileConfig = getProfileConfig(profilId);
+
+  const info = getContexteInfo(profilId);
+  document.getElementById('headerContextName').textContent = info.emoji + ' ' + info.nom;
+
+  buildNeedItems();
+  loadBesoins();
+});
 </script>
 
 </body>

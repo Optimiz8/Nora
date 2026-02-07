@@ -83,3 +83,73 @@ const NORA_DATA = {
 const CAPACITES = NORA_DATA.CAPACITES;
 const BESOINS = NORA_DATA.BESOINS;
 const ETATS = NORA_DATA.ETATS;
+
+/**
+ * Fonctions utilitaires pour le flux de crise
+ */
+
+// Retourne la config du profil actif (commun ou individuel)
+function getProfileConfig(profilId) {
+    const isCommun = localStorage.getItem('contexte_messageUnique') === 'true';
+    const key = isCommun ? 'contexte_commun' : `contexte_${profilId}`;
+    const saved = localStorage.getItem(key);
+
+    if (saved) {
+        const data = JSON.parse(saved);
+        // Fallbacks de sécurité
+        data.capacites = data.capacites || { inclure: true, visibles: CAPACITES.map(c => c.id), personnalisees: [] };
+        data.besoins = data.besoins || { inclure: true, visibles: BESOINS.map(b => b.id), personnalisees: [] };
+        data.etats = data.etats || { inclure: true, visibles: ETATS.map(e => e.id), personnalisees: [] };
+        data.presentation = data.presentation || { inclure: true, texte: '' };
+        data.contacts = data.contacts || { inclure: true, selection: [] };
+        data.medical = data.medical || { inclure: true };
+        return data;
+    }
+
+    // Fallback : tout inclus par défaut
+    return {
+        presentation: { inclure: true, texte: '' },
+        capacites: { inclure: true, visibles: CAPACITES.map(c => c.id), personnalisees: [] },
+        besoins: { inclure: true, visibles: BESOINS.map(b => b.id), personnalisees: [] },
+        etats: { inclure: true, visibles: ETATS.map(e => e.id), personnalisees: [] },
+        contacts: { inclure: true, selection: [] },
+        medical: { inclure: true }
+    };
+}
+
+// Retourne {emoji, nom} pour un profil donné
+function getContexteInfo(profilId) {
+    if (profilId === 'commun') {
+        return { emoji: '🌐', nom: 'Profil commun' };
+    }
+    const contextes = JSON.parse(localStorage.getItem('contextes') || '[]');
+    const ctx = contextes.find(c => c.id === profilId);
+    if (ctx) return { emoji: ctx.emoji, nom: ctx.nom };
+    return { emoji: '📍', nom: 'Contexte' };
+}
+
+// Retourne la liste ordonnée des pages du flux selon la config
+function getFlowPages(config) {
+    const pages = [];
+    if (config.capacites.inclure) pages.push('capacites.html');
+    if (config.besoins.inclure) pages.push('besoins.html');
+    if (config.etats.inclure) pages.push('etats.html');
+    pages.push('recap.html');
+    return pages;
+}
+
+// Retourne la page suivante dans le flux (ou null)
+function getNextPage(currentPage, config) {
+    const pages = getFlowPages(config);
+    const idx = pages.indexOf(currentPage);
+    if (idx === -1 || idx >= pages.length - 1) return 'recap.html';
+    return pages[idx + 1];
+}
+
+// Retourne la page précédente dans le flux (ou index.html)
+function getPrevPage(currentPage, config) {
+    const pages = getFlowPages(config);
+    const idx = pages.indexOf(currentPage);
+    if (idx <= 0) return 'index.html';
+    return pages[idx - 1];
+}
