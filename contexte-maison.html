@@ -315,15 +315,31 @@
 
         function loadConfig() {
             const saved = localStorage.getItem(`contexte_${CONTEXTE_ID}`);
-            contexteConfig = saved ? JSON.parse(saved) : {
-                capacites: true,
-                besoins: true,
-                etats: true,
-                medical: false,
-                contactsVisibles: [],
-                textePresentation: ''
-            };
-            
+            if (saved) {
+                contexteConfig = JSON.parse(saved);
+                // Migration ancienne structure index vers IDs
+                if (Array.isArray(contexteConfig.contactsVisibles) && contexteConfig.contactsVisibles.length > 0) {
+                    const firstItem = contexteConfig.contactsVisibles[0];
+                    if (typeof firstItem === 'number') {
+                        // Ancienne structure avec index, migration vers IDs
+                        const contacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+                        contexteConfig.contactsVisibles = contexteConfig.contactsVisibles.map(idx => {
+                            const contact = contacts[idx];
+                            return contact ? contact.id : null;
+                        }).filter(id => id !== null);
+                    }
+                }
+            } else {
+                contexteConfig = {
+                    capacites: true,
+                    besoins: true,
+                    etats: true,
+                    medical: false,
+                    contactsVisibles: [],
+                    textePresentation: ''
+                };
+            }
+
             updateToggle('capacites', contexteConfig.capacites);
             updateToggle('besoins', contexteConfig.besoins);
             updateToggle('etats', contexteConfig.etats);
@@ -391,21 +407,21 @@
             const contacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
             const container = document.getElementById('contactsList');
             container.innerHTML = '';
-            
+
             if (contacts.length === 0) {
                 container.innerHTML = '<p class="empty-text">Aucun contact configuré. Ajoutez-en dans "Mon profil" → "Contacts d\'urgence".</p>';
                 return;
             }
-            
-            contacts.forEach((contact, index) => {
-                const isChecked = (contexteConfig.contactsVisibles || []).includes(index);
+
+            contacts.forEach((contact) => {
+                const isChecked = (contexteConfig.contactsVisibles || []).includes(contact.id);
                 const div = document.createElement('div');
                 div.className = `contact-checkbox ${isChecked ? 'checked' : ''}`;
-                div.onclick = () => toggleContact(index, div);
+                div.onclick = () => toggleContact(contact.id, div);
                 div.innerHTML = `
                     <div class="checkbox-icon">${isChecked ? '✅' : '⬜'}</div>
                     <div class="contact-info">
-                        <div class="contact-name">${contact.nom || 'Contact ' + (index + 1)}</div>
+                        <div class="contact-name">${contact.nom || 'Contact'}</div>
                         <div class="contact-relation">${contact.lien || ''}</div>
                     </div>
                 `;
@@ -413,22 +429,27 @@
             });
         }
 
-        function toggleContact(index, element) {
+        function toggleContact(contactId, element) {
             if (!contexteConfig.contactsVisibles) {
                 contexteConfig.contactsVisibles = [];
             }
-            
-            const pos = contexteConfig.contactsVisibles.indexOf(index);
+
+            const pos = contexteConfig.contactsVisibles.indexOf(contactId);
             if (pos > -1) {
                 contexteConfig.contactsVisibles.splice(pos, 1);
                 element.classList.remove('checked');
                 element.querySelector('.checkbox-icon').textContent = '⬜';
             } else {
-                contexteConfig.contactsVisibles.push(index);
+                // Limite de 3 contacts
+                if (contexteConfig.contactsVisibles.length >= 3) {
+                    alert('⚠️ Vous ne pouvez sélectionner que 3 contacts maximum');
+                    return;
+                }
+                contexteConfig.contactsVisibles.push(contactId);
                 element.classList.add('checked');
                 element.querySelector('.checkbox-icon').textContent = '✅';
             }
-            
+
             saveConfig();
         }
 

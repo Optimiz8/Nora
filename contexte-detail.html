@@ -1209,7 +1209,7 @@
                 const isChecked = contextData.contacts.selection.includes(contact.id);
                 return `
                     <div class="contact-row">
-                        <div class="contact-checkbox" onclick="toggleContact('${contact.id}')">
+                        <div class="contact-checkbox" onclick='toggleContact("${contact.id}")'>
                             ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="contact-info">
