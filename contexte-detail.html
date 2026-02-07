@@ -680,7 +680,9 @@
                         <button class="select-btn" onclick="selectAll('capacites')">👁️ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('capacites')">⚪ Tout masquer</button>
                     </div>
-                    <!-- Liste générée en JS -->
+                    <div id="capacitesItems">
+                        <!-- Liste générée en JS -->
+                    </div>
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('capacite')">
                     ➕ Ajouter une capacité personnalisée
@@ -709,7 +711,9 @@
                         <button class="select-btn" onclick="selectAll('besoins')">👁️ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('besoins')">⚪ Tout masquer</button>
                     </div>
-                    <!-- Liste générée en JS -->
+                    <div id="besoinsItems">
+                        <!-- Liste générée en JS -->
+                    </div>
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('besoin')">
                     ➕ Ajouter un besoin personnalisé
@@ -738,7 +742,9 @@
                         <button class="select-btn" onclick="selectAll('etats')">👁️ Tout afficher</button>
                         <button class="select-btn" onclick="deselectAll('etats')">⚪ Tout masquer</button>
                     </div>
-                    <!-- Liste générée en JS -->
+                    <div id="etatsItems">
+                        <!-- Liste générée en JS -->
+                    </div>
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('etat')">
                     ➕ Ajouter un état personnalisé
@@ -852,20 +858,19 @@
             
             <div style="margin-bottom: 16px;">
                 <div style="font-size: 14px; font-weight: 600; color: #2E3A59; margin-bottom: 8px;">Emoji</div>
-                <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px;">
-                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('🎯')">🎯</div>
-                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('🤲')">🤲</div>
-                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('😶')">😶</div>
-                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('💪')">💪</div>
-                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('🧠')">🧠</div>
-                    <div style="font-size: 28px; padding: 8px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center;" onclick="selectItemEmoji('❤️')">❤️</div>
+                <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px;">
+                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🎯')">🎯</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🤲')">🤲</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('😶')">😶</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('💪')">💪</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🧠')">🧠</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('❤️')">❤️</div>
                 </div>
                 <div style="font-size: 14px; color: #2E3A59; margin-bottom: 8px;">Ou tapez directement :</div>
-                <input type="text" 
-                       style="width: 100%; padding: 12px 14px; border: 2px solid rgba(46, 58, 89, 0.2); border-radius: 8px; font-size: 16px; color: #2E3A59; background-color: white; font-family: inherit;" 
-                       id="itemEmojiInput" 
-                       placeholder="🎯"
-                       maxlength="2">
+                <input type="text"
+                       style="width: 100%; padding: 12px 14px; border: 2px solid rgba(46, 58, 89, 0.2); border-radius: 8px; font-size: 16px; color: #2E3A59; background-color: white; font-family: inherit;"
+                       id="itemEmojiInput"
+                       placeholder="🎯">
             </div>
             
             <input type="text" 
@@ -1123,13 +1128,13 @@
 
         // RENDER LISTES
         function renderCapacites() {
-            const container = document.getElementById('listCapacites');
+            const container = document.getElementById('capacitesItems');
             const items = [...CAPACITES, ...contextData.capacites.personnalisees];
-            
+
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.capacites.visibles.includes(item.id);
                 const isCustom = item.custom || false;
-                
+
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
@@ -1146,7 +1151,7 @@
         }
 
         function renderBesoins() {
-            const container = document.getElementById('listBesoins');
+            const container = document.getElementById('besoinsItems');
             const items = [...BESOINS, ...contextData.besoins.personnalisees];
             
             container.innerHTML = items.map(item => {
@@ -1169,9 +1174,9 @@
         }
 
         function renderEtats() {
-            const container = document.getElementById('listEtats');
+            const container = document.getElementById('etatsItems');
             const items = [...ETATS, ...contextData.etats.personnalisees];
-            
+
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.etats.visibles.includes(item.id);
                 const isCustom = item.custom || false;
@@ -1200,11 +1205,11 @@
                 return;
             }
 
-            container.innerHTML = contacts.map((contact, index) => {
-                const isChecked = contextData.contacts.selection.includes(index);
+            container.innerHTML = contacts.map((contact) => {
+                const isChecked = contextData.contacts.selection.includes(contact.id);
                 return `
                     <div class="contact-row">
-                        <div class="contact-checkbox" onclick="toggleContact(${index})">
+                        <div class="contact-checkbox" onclick="toggleContact('${contact.id}')">
                             ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="contact-info">
@@ -1234,8 +1239,8 @@
         }
 
         // TOGGLE CONTACT
-        function toggleContact(index) {
-            const pos = contextData.contacts.selection.indexOf(index);
+        function toggleContact(contactId) {
+            const pos = contextData.contacts.selection.indexOf(contactId);
             if (pos > -1) {
                 contextData.contacts.selection.splice(pos, 1);
             } else {
@@ -1244,7 +1249,7 @@
                     alert('⚠️ Vous ne pouvez sélectionner que 3 contacts maximum');
                     return;
                 }
-                contextData.contacts.selection.push(index);
+                contextData.contacts.selection.push(contactId);
             }
 
             renderContacts();
@@ -1329,7 +1334,7 @@
         function addCustomItem() {
             const name = document.getElementById('itemNameInput').value.trim();
             const emoji = document.getElementById('itemEmojiInput').value.trim() || '🎯';
-            
+
             if (!name) {
                 alert('⚠️ Veuillez entrer un nom');
                 return;
@@ -1358,7 +1363,23 @@
 
             updateCounts();
             markAsModified();
+
+            // Réinitialiser les champs
+            document.getElementById('itemNameInput').value = '';
+            document.getElementById('itemEmojiInput').value = '';
+
+            // Fermer la modale
             closeAddItemModal();
+
+            // Afficher un toast de confirmation
+            const toast = document.getElementById('toast');
+            const oldText = toast.textContent;
+            toast.textContent = '✅ Item ajouté';
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+                toast.textContent = oldText;
+            }, 1500);
         }
 
         // SUPPRIMER ITEM PERSONNALISÉ
@@ -1551,7 +1572,7 @@
             // Récupérer les vraies données
             const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
             const selectedContactIds = contextData.contacts.selection || [];
-            const contactsToShow = allContacts.filter((c, i) => selectedContactIds.includes(i));
+            const contactsToShow = allContacts.filter(c => selectedContactIds.includes(c.id));
 
             const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
 

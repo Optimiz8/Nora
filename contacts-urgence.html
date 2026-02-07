@@ -383,6 +383,19 @@
         function loadContacts() {
             const saved = localStorage.getItem('contactsUrgence');
             contacts = saved ? JSON.parse(saved) : [];
+
+            // Migration : ajouter un ID aux contacts qui n'en ont pas
+            let needsSave = false;
+            contacts.forEach(contact => {
+                if (!contact.id) {
+                    contact.id = 'contact_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    needsSave = true;
+                }
+            });
+
+            if (needsSave) {
+                saveToStorage();
+            }
         }
 
         function saveToStorage() {
@@ -513,13 +526,20 @@
 
             console.log('✅ Validation passée');
 
-            const contact = { nom, lien, telephone };
+            const contact = {
+                id: '', // Sera défini ci-dessous
+                nom,
+                lien,
+                telephone
+            };
 
             if (editingIndex !== null) {
-                // Modification
+                // Modification : garder l'ID existant
+                contact.id = contacts[editingIndex].id;
                 contacts[editingIndex] = contact;
             } else {
-                // Ajout
+                // Ajout : générer un nouvel ID unique
+                contact.id = 'contact_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 contacts.push(contact);
             }
 
