@@ -59,9 +59,26 @@ body{
 
 .capacity-item:active{transform:scale(.97)}
 
+/* Couleurs subtiles selon l'état */
+.capacity-item[data-state="possible"]{
+  background:linear-gradient(to right, rgba(76, 175, 80, 0.15), var(--light));
+}
+
+.capacity-item[data-state="difficult"]{
+  background:linear-gradient(to right, rgba(255, 152, 0, 0.15), var(--light));
+}
+
+.capacity-item[data-state="impossible"]{
+  background:linear-gradient(to right, rgba(244, 67, 54, 0.15), var(--light));
+}
+
+.capacity-item[data-state="unknown"]{
+  background:linear-gradient(to right, rgba(158, 158, 158, 0.15), var(--light));
+}
+
+.capacity-state{font-size:24px;min-width:32px;text-align:center}
 .capacity-icon{font-size:24px}
 .capacity-text{flex:1;font-size:16px}
-.capacity-state{font-size:24px}
 
 .more-toggle{
   margin:22px 0;
@@ -133,33 +150,33 @@ Appuyez pour changer l'état. Appui long pour remettre à zéro.
 
 <!-- CAPACITÉS ESSENTIELLES -->
 <div class="capacity-item" data-state="empty" data-label="Parler" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">💬</div>
   <div class="capacity-text">Parler</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Être touchée" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🤝</div>
   <div class="capacity-text">Être touchée</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Bouger" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🚶</div>
   <div class="capacity-text">Bouger</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Rester ici" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">📍</div>
   <div class="capacity-text">Rester ici</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Comprendre ce qu'on me dit" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🧠</div>
   <div class="capacity-text">Comprendre ce qu'on me dit</div>
-  <div class="capacity-state"></div>
 </div>
 
 <button class="more-toggle" onclick="toggleMore()">➕ Voir plus de capacités</button>
@@ -167,75 +184,81 @@ Appuyez pour changer l'état. Appui long pour remettre à zéro.
 <div id="moreCapacities" style="display:none">
 
 <div class="capacity-item" data-state="empty" data-label="Écrire / taper sur un clavier" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">⌨️</div>
   <div class="capacity-text">Écrire / taper sur un clavier</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Lire" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">📖</div>
   <div class="capacity-text">Lire</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Répondre à des questions" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">💭</div>
   <div class="capacity-text">Répondre à des questions</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Marcher" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🚶‍♀️</div>
   <div class="capacity-text">Marcher</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Rester debout" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🧍</div>
   <div class="capacity-text">Rester debout</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="M'asseoir" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🪑</div>
   <div class="capacity-text">M'asseoir</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Me lever" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">⬆️</div>
   <div class="capacity-text">Me lever</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Être proche des autres" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">👥</div>
   <div class="capacity-text">Être proche des autres</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Attendre" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">⏳</div>
   <div class="capacity-text">Attendre</div>
-  <div class="capacity-state"></div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Me concentrer" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🎯</div>
   <div class="capacity-text">Me concentrer</div>
-  <div class="capacity-state"></div>
 </div>
 
-<div class="capacity-item" data-state="empty" data-label="Regarder dans les yeux" onclick="cycleState(this)">
-  <div class="capacity-icon">👁️</div>
-  <div class="capacity-text">Regarder dans les yeux</div>
+<div class="capacity-item" data-state="empty" data-label="Prendre une décision" onclick="cycleState(this)">
   <div class="capacity-state"></div>
+  <div class="capacity-icon">🤔</div>
+  <div class="capacity-text">Prendre une décision</div>
+</div>
+
+<div class="capacity-item" data-state="empty" data-label="Arrêter ce que je fais" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
+  <div class="capacity-icon">🛑</div>
+  <div class="capacity-text">Arrêter ce que je fais</div>
 </div>
 
 <div class="capacity-item" data-state="empty" data-label="Manger" onclick="cycleState(this)">
+  <div class="capacity-state"></div>
   <div class="capacity-icon">🍽️</div>
   <div class="capacity-text">Manger</div>
-  <div class="capacity-state"></div>
 </div>
 
 </div>

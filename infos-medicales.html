@@ -9,7 +9,7 @@
     <title>Informations médicales - TSA App</title>
     <style>
         body {
-            padding-bottom: 20px;
+            padding-bottom: calc(var(--footer-height) + 20px);
         }
 
         .main-content {
@@ -69,23 +69,6 @@
             line-height: 1.5;
         }
 
-        .save-button {
-            background-color: var(--accent);
-            color: var(--dark);
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-        }
-
-        .save-button:active {
-            transform: scale(0.98);
-            background-color: rgba(247, 184, 156, 0.9);
-        }
 
         /* Message de succès en position fixe */
         .success-toast {
@@ -196,11 +179,13 @@
                 ></textarea>
             </div>
         </div>
+    </main>
 
-        <button class="save-button" onclick="saveInfos()">
+    <footer class="footer">
+        <button class="footer-button center" onclick="saveInfos()">
             💾 Enregistrer
         </button>
-    </main>
+    </footer>
 
     <!-- Toast de succès en bas de l'écran -->
     <div class="success-toast" id="successToast">
@@ -248,7 +233,14 @@
         }
 
         function goBack() {
-            window.location.href = 'parametres.html';
+            // Vérifier s'il y a une page de retour enregistrée
+            const returnTo = localStorage.getItem('returnTo');
+            if (returnTo) {
+                localStorage.removeItem('returnTo'); // Nettoyer
+                window.location.href = returnTo.replace('?', '.html?'); // Convertir contexte-detail?id=xxx en contexte-detail.html?id=xxx
+            } else {
+                window.location.href = 'parametres.html';
+            }
         }
     </script>
 </body>

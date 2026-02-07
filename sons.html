@@ -307,8 +307,9 @@ input[type=range]::-moz-range-thumb {
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="window.location.href='index.html'">⬅️</button>
+  <button class="back-button" onclick="window.location.href='index.html#calm'">⬅️</button>
   <h1 class="page-title">Sons relaxants</h1>
+  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;">🏠</button>
 </header>
 
 <div class="mix-cta" id="openMixer">
@@ -415,7 +416,19 @@ const mixSounds = [
   "nuit d'été",
   "orage",
   "pluie",
-  "train"
+  "train",
+  "balade au bord du ruisseau",
+  "chant des baleines",
+  "chant des grillons",
+  "doux ronronnements",
+  "gouttes du ciel",
+  "l'appel de la forêt",
+  "l'appel lointain",
+  "libre comme l'air",
+  "marée basse",
+  "paisibles flottements",
+  "promenade en bord de mer",
+  "voyage interieur"
 ];
 
 // Éléments DOM
@@ -636,19 +649,51 @@ function initMixer() {
     `;
     
     const slider = div.querySelector("input");
-    
+
     // Appliquer le volume initial
     if (initialVolume > 0) {
       a.volume = initialVolume / 100;
     }
-    
+
+    // Détection de geste pour éviter les changements accidentels lors du scroll
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = null;
+
+    slider.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+      isScrolling = null;
+    }, { passive: true });
+
+    slider.addEventListener('touchmove', (e) => {
+      if (isScrolling === null) {
+        const touchY = e.touches[0].clientY;
+        const touchX = e.touches[0].clientX;
+        const deltaY = Math.abs(touchY - touchStartY);
+        const deltaX = Math.abs(touchX - touchStartX);
+
+        // Si le mouvement vertical est plus important que l'horizontal, c'est un scroll
+        isScrolling = deltaY > deltaX;
+      }
+
+      // Si c'est un scroll vertical, empêcher le slider de bouger
+      if (isScrolling) {
+        e.preventDefault();
+        return false;
+      }
+    }, { passive: false });
+
     slider.oninput = (e) => {
+      // Ne rien faire si c'est un scroll
+      if (isScrolling) return;
+
       const volume = e.target.value / 100;
       a.volume = volume;
-      
+
       // Sauvegarder dans localStorage
       localStorage.setItem(`mixer_${fileName}`, e.target.value);
-      
+
       if (volume > 0) {
         if (!mixerTimerStarted) {
           mixerTimerStarted = true;
@@ -663,7 +708,7 @@ function initMixer() {
         checkAllSlidersZero();
       }
     };
-    
+
     mixerList.appendChild(div);
   });
 }

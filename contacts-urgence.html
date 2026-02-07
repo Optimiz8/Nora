@@ -215,6 +215,26 @@
         .modal-button:active {
             transform: scale(0.96);
         }
+
+        /* Bouton import contacts */
+        .import-contact-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(247, 184, 156, 0.15);
+            border: 2px dashed var(--accent);
+            border-radius: 10px;
+            color: var(--dark);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        .import-contact-btn:active {
+            transform: scale(0.98);
+            background: rgba(247, 184, 156, 0.25);
+        }
     </style>
 </head>
 <body>
@@ -245,32 +265,45 @@
             </div>
 
             <div class="input-group">
-                <label class="input-label">Nom</label>
-                <input 
-                    type="text" 
-                    class="input-field" 
+                <label class="input-label">Nom/Prénom *</label>
+                <input
+                    type="text"
+                    class="input-field"
                     id="inputNom"
-                    placeholder="Ex : Erica Dupond"
+                    placeholder="Ex : Maman, Dr Dupont, Marie..."
+                    required
                 >
             </div>
 
-            <div class="input-group">
-                <label class="input-label">Lien</label>
-                <input 
-                    type="text" 
-                    class="input-field" 
-                    id="inputLien"
-                    placeholder="Ex : Sœur, Ami(e), Médecin..."
-                >
-            </div>
+            <!-- Bouton import contacts -->
+            <button
+                class="import-contact-btn"
+                id="importContactBtn"
+                type="button"
+                onclick="importFromContacts()"
+                style="display: none;"
+            >
+                📱 Importer depuis les contacts
+            </button>
 
             <div class="input-group">
-                <label class="input-label">Téléphone</label>
-                <input 
-                    type="tel" 
-                    class="input-field" 
+                <label class="input-label">Téléphone *</label>
+                <input
+                    type="tel"
+                    class="input-field"
                     id="inputTelephone"
                     placeholder="Ex : 06 12 34 56 78"
+                    required
+                >
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Lien (optionnel)</label>
+                <input
+                    type="text"
+                    class="input-field"
+                    id="inputLien"
+                    placeholder="Ex : Sœur, Ami(e), Médecin..."
                 >
             </div>
 
@@ -290,7 +323,62 @@
             loadContacts();
             renderContacts();
             updateAddButton();
+            checkContactPickerSupport();
         });
+
+        // Vérifier si l'API Contact Picker est disponible
+        function checkContactPickerSupport() {
+            console.log('Vérification Contact Picker API...');
+            console.log('navigator.contacts existe:', 'contacts' in navigator);
+            console.log('ContactsManager existe:', 'ContactsManager' in window);
+            console.log('Protocol:', window.location.protocol);
+
+            if ('contacts' in navigator && 'ContactsManager' in window) {
+                console.log('✅ API Contact Picker supportée !');
+                document.getElementById('importContactBtn').style.display = 'block';
+            } else {
+                console.log('❌ API Contact Picker non supportée');
+                // Afficher un message d'info temporaire pour debug
+                console.log('Raison possible: contexte non-HTTPS ou navigateur non compatible');
+            }
+        }
+
+        // Importer un contact depuis le téléphone
+        async function importFromContacts() {
+            if (!('contacts' in navigator)) {
+                alert('Cette fonctionnalité n\'est pas disponible sur votre navigateur');
+                return;
+            }
+
+            try {
+                const props = ['name', 'tel'];
+                const opts = { multiple: false };
+
+                const contacts = await navigator.contacts.select(props, opts);
+
+                if (contacts.length > 0) {
+                    const contact = contacts[0];
+
+                    // Remplir le champ nom
+                    if (contact.name && contact.name.length > 0) {
+                        document.getElementById('inputNom').value = contact.name[0];
+                    }
+
+                    // Remplir le champ téléphone
+                    if (contact.tel && contact.tel.length > 0) {
+                        // Nettoyer le numéro (enlever les espaces et tirets inutiles)
+                        const phone = contact.tel[0].replace(/[-\s]/g, '');
+                        document.getElementById('inputTelephone').value = phone;
+                    }
+                }
+            } catch (error) {
+                // L'utilisateur a annulé ou une erreur s'est produite
+                if (error.name !== 'AbortError') {
+                    console.error('Erreur lors de l\'import du contact:', error);
+                    alert('Impossible d\'importer le contact');
+                }
+            }
+        }
 
         function loadContacts() {
             const saved = localStorage.getItem('contactsUrgence');
@@ -384,10 +472,46 @@
             const lien = document.getElementById('inputLien').value.trim();
             const telephone = document.getElementById('inputTelephone').value.trim();
 
-            if (!nom && !telephone) {
-                alert('Veuillez renseigner au moins un nom ou un téléphone');
+            // Validation : Nom/Prénom ET Téléphone obligatoires
+            if (!nom) {
+                alert('Veuillez renseigner un nom ou un prénom');
                 return;
             }
+
+            if (!telephone) {
+                alert('Veuillez renseigner un numéro de téléphone');
+                return;
+            }
+
+            // Validation du format du numéro de téléphone
+            // On extrait uniquement les chiffres pour vérifier
+            const digitsOnly = telephone.replace(/\D/g, '');
+
+            console.log('Téléphone saisi:', telephone);
+            console.log('Chiffres uniquement:', digitsOnly);
+            console.log('Nombre de chiffres:', digitsOnly.length);
+
+            // Vérifier si c'est un numéro international (commence par + ou 00 dans l'original)
+            const isInternational = telephone.trim().startsWith('+') || telephone.trim().startsWith('00');
+            console.log('Est international?', isInternational);
+
+            // Pour un numéro français normal : exactement 10 chiffres
+            if (!isInternational && digitsOnly.length !== 10) {
+                if (digitsOnly.length < 10) {
+                    alert('Le numéro de téléphone est incomplet. Un numéro français doit contenir exactement 10 chiffres. Vous avez saisi ' + digitsOnly.length + ' chiffres.');
+                } else {
+                    alert('Le numéro de téléphone est trop long. Un numéro français doit contenir exactement 10 chiffres. Vous avez saisi ' + digitsOnly.length + ' chiffres.');
+                }
+                return;
+            }
+
+            // Pour un numéro international : au moins 10 chiffres (après 00 ou +33)
+            if (isInternational && digitsOnly.length < 10) {
+                alert('Le numéro de téléphone international est incomplet. Vous avez saisi ' + digitsOnly.length + ' chiffres.');
+                return;
+            }
+
+            console.log('✅ Validation passée');
 
             const contact = { nom, lien, telephone };
 

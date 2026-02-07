@@ -203,6 +203,12 @@
         const open = id => document.getElementById(id).classList.add('visible');
         const close = id => document.getElementById(id).classList.remove('visible');
 
+        // Ouvrir automatiquement la modale si hash présent
+        if (location.hash === '#calm') {
+            open('calmModal');
+            history.replaceState(null, '', location.pathname); // Nettoyer le hash
+        }
+
         btnHelp.onclick = () => open('helpModal');
         btnCalm.onclick = () => open('calmModal');
 
