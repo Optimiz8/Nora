@@ -632,13 +632,15 @@
 
             localStorage.setItem('contextes', JSON.stringify(contextes));
 
-            // Créer un contexte vide dans localStorage
+            // Créer un contexte vide dans localStorage avec la nouvelle structure
             const newContexteData = {
+                id: id,
                 emoji: emoji,
                 nom: nom,
-                visible: true,
-                textePresentation: '',
-                afficherPresentation: true,
+                presentation: {
+                    inclure: true,
+                    texte: ''
+                },
                 capacites: {
                     inclure: true,
                     visibles: [],
@@ -654,8 +656,13 @@
                     visibles: [],
                     personnalisees: []
                 },
-                contactsVisibles: [],
-                afficherMedical: true
+                contacts: {
+                    inclure: true,
+                    selection: []
+                },
+                medical: {
+                    inclure: true
+                }
             };
 
             localStorage.setItem(`contexte_${id}`, JSON.stringify(newContexteData));

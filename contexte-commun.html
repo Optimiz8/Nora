@@ -661,7 +661,7 @@
             { id: 'attendre', emoji: '⏳', nom: 'Attendre' },
             { id: 'concentrer', emoji: '🎯', nom: 'Me concentrer' },
             { id: 'prendre-decision', emoji: '🤔', nom: 'Prendre une décision' },
-            { id: 'arreter-activite', emoji: '🛑', nom: 'Arrêter ce que je fais' }
+            { id: 'arreter', emoji: '🛑', nom: 'Arrêter ce que je fais' }
         ];
 
         // BESOINS PAR DÉFAUT (21 items)
@@ -713,8 +713,10 @@
         let currentItemType = '';
         let hasUnsavedChanges = false;
         let contextData = {
-            textePresentation: '',
-            afficherPresentation: true,
+            presentation: {
+                inclure: true,
+                texte: ''
+            },
             capacites: {
                 inclure: true,
                 visibles: [],
@@ -730,9 +732,13 @@
                 visibles: [],
                 personnalisees: []
             },
-            contactsVisibles: [],
-            afficherContacts: true,
-            afficherMedical: true
+            contacts: {
+                inclure: true,
+                selection: []
+            },
+            medical: {
+                inclure: true
+            }
         };
 
         // INITIALISATION
@@ -756,8 +762,35 @@
         // CHARGER DONNÉES
         function loadData() {
             const saved = localStorage.getItem('contexte_commun');
+
             if (saved) {
                 contextData = JSON.parse(saved);
+
+                // Migration de l'ancienne structure vers la nouvelle
+                if (contextData.textePresentation !== undefined && !contextData.presentation) {
+                    contextData.presentation = {
+                        inclure: contextData.afficherPresentation !== undefined ? contextData.afficherPresentation : true,
+                        texte: contextData.textePresentation || ''
+                    };
+                    delete contextData.textePresentation;
+                    delete contextData.afficherPresentation;
+                }
+
+                if (contextData.afficherMedical !== undefined && !contextData.medical) {
+                    contextData.medical = {
+                        inclure: contextData.afficherMedical
+                    };
+                    delete contextData.afficherMedical;
+                }
+
+                if (contextData.contactsVisibles !== undefined && !contextData.contacts) {
+                    contextData.contacts = {
+                        inclure: contextData.afficherContacts !== undefined ? contextData.afficherContacts : true,
+                        selection: contextData.contactsVisibles
+                    };
+                    delete contextData.contactsVisibles;
+                    delete contextData.afficherContacts;
+                }
             } else {
                 // PREMIÈRE FOIS : Tout cocher par défaut
                 contextData.capacites.visibles = CAPACITES.map(c => c.id);
@@ -766,25 +799,22 @@
             }
 
             // Charger texte présentation
-            document.getElementById('textePresentationField').value = contextData.textePresentation || '';
-            
+            document.getElementById('textePresentationField').value = contextData.presentation.texte || '';
+
             // Charger toggles
-            updateToggle('togglePresentation', contextData.afficherPresentation);
+            updateToggle('togglePresentation', contextData.presentation.inclure);
             updateToggle('toggleCapacites', contextData.capacites.inclure);
             updateToggle('toggleBesoins', contextData.besoins.inclure);
             updateToggle('toggleEtats', contextData.etats.inclure);
-            updateToggle('toggleContacts', contextData.afficherContacts !== undefined ? contextData.afficherContacts : true);
-            updateToggle('toggleMedical', contextData.afficherMedical);
+            updateToggle('toggleContacts', contextData.contacts.inclure);
+            updateToggle('toggleMedical', contextData.medical.inclure);
 
             // Afficher/masquer les boutons selon les toggles
             document.getElementById('btnCapacites').classList.toggle('hidden', !contextData.capacites.inclure);
             document.getElementById('btnBesoins').classList.toggle('hidden', !contextData.besoins.inclure);
             document.getElementById('btnEtats').classList.toggle('hidden', !contextData.etats.inclure);
-            document.getElementById('selectCapacites').classList.toggle('hidden', !contextData.capacites.inclure);
-            document.getElementById('selectBesoins').classList.toggle('hidden', !contextData.besoins.inclure);
-            document.getElementById('selectEtats').classList.toggle('hidden', !contextData.etats.inclure);
-            document.getElementById('textePresentationField').classList.toggle('hidden', !contextData.afficherPresentation);
-            document.getElementById('contactsContainer').classList.toggle('hidden', !contextData.afficherContacts);
+            document.getElementById('textePresentationField').classList.toggle('hidden', !contextData.presentation.inclure);
+            document.getElementById('contactsContainer').classList.toggle('hidden', !contextData.contacts.inclure);
         }
 
         function updateToggle(id, active) {
@@ -802,25 +832,22 @@
             const isActive = toggle.classList.toggle('active');
 
             if (section === 'presentation') {
-                contextData.afficherPresentation = isActive;
+                contextData.presentation.inclure = isActive;
                 document.getElementById('textePresentationField').classList.toggle('hidden', !isActive);
             } else if (section === 'capacites') {
                 contextData.capacites.inclure = isActive;
                 document.getElementById('btnCapacites').classList.toggle('hidden', !isActive);
-                document.getElementById('selectCapacites').classList.toggle('hidden', !isActive);
             } else if (section === 'besoins') {
                 contextData.besoins.inclure = isActive;
                 document.getElementById('btnBesoins').classList.toggle('hidden', !isActive);
-                document.getElementById('selectBesoins').classList.toggle('hidden', !isActive);
             } else if (section === 'etats') {
                 contextData.etats.inclure = isActive;
                 document.getElementById('btnEtats').classList.toggle('hidden', !isActive);
-                document.getElementById('selectEtats').classList.toggle('hidden', !isActive);
             } else if (section === 'contacts') {
-                contextData.afficherContacts = isActive;
+                contextData.contacts.inclure = isActive;
                 document.getElementById('contactsContainer').classList.toggle('hidden', !isActive);
             } else if (section === 'medical') {
-                contextData.afficherMedical = isActive;
+                contextData.medical.inclure = isActive;
             }
 
             markAsModified();
@@ -921,7 +948,7 @@
             }
 
             container.innerHTML = contacts.map((contact, index) => {
-                const isChecked = contextData.contactsVisibles.includes(index);
+                const isChecked = contextData.contacts.selection.includes(index);
                 return `
                     <div class="contact-row">
                         <div class="contact-checkbox" onclick="toggleContact(${index})">
@@ -982,16 +1009,16 @@
 
         // TOGGLE CONTACT
         function toggleContact(index) {
-            const pos = contextData.contactsVisibles.indexOf(index);
+            const pos = contextData.contacts.selection.indexOf(index);
             if (pos > -1) {
-                contextData.contactsVisibles.splice(pos, 1);
+                contextData.contacts.selection.splice(pos, 1);
             } else {
                 // Limite de 3 contacts
-                if (contextData.contactsVisibles.length >= 3) {
+                if (contextData.contacts.selection.length >= 3) {
                     alert('⚠️ Vous ne pouvez sélectionner que 3 contacts maximum');
                     return;
                 }
-                contextData.contactsVisibles.push(index);
+                contextData.contacts.selection.push(index);
             }
 
             renderContacts();
@@ -1103,11 +1130,11 @@
         // SAUVEGARDE
         function markAsModified() {
             hasUnsavedChanges = true;
-            contextData.textePresentation = document.getElementById('textePresentationField').value;
+            contextData.presentation.texte = document.getElementById('textePresentationField').value;
         }
 
         function saveData() {
-            contextData.textePresentation = document.getElementById('textePresentationField').value;
+            contextData.presentation.texte = document.getElementById('textePresentationField').value;
             localStorage.setItem('contexte_commun', JSON.stringify(contextData));
             hasUnsavedChanges = false;
             showToast();
@@ -1130,8 +1157,10 @@
 
         function resetToDefaults() {
             contextData = {
-                textePresentation: '',
-                afficherPresentation: true,
+                presentation: {
+                    inclure: true,
+                    texte: ''
+                },
                 capacites: {
                     inclure: true,
                     visibles: CAPACITES.map(c => c.id),
@@ -1147,9 +1176,13 @@
                     visibles: ETATS.map(e => e.id),
                     personnalisees: []
                 },
-                contactsVisibles: [],
-                afficherContacts: true,
-                afficherMedical: true
+                contacts: {
+                    inclure: true,
+                    selection: []
+                },
+                medical: {
+                    inclure: true
+                }
             };
 
             localStorage.setItem('contexte_commun', JSON.stringify(contextData));
@@ -1183,14 +1216,14 @@
 
             // Récupérer les vraies données
             const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
-            const selectedContactIds = contextData.contactsVisibles || [];
+            const selectedContactIds = contextData.contacts.selection || [];
             const contactsToShow = allContacts.filter((c, i) => selectedContactIds.includes(i));
 
             const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
 
             // Générer un récap avec vraies données
             const exempleDonnees = {
-                textePresentation: contextData.textePresentation || '',
+                textePresentation: contextData.presentation.texte || '',
                 capacites: {
                     // Pour l'exemple, montrer toutes les capacités visibles comme "possible"
                     impossible: [],
@@ -1216,12 +1249,12 @@
                 })),
                 medical: infosMed,
                 // Flags d'inclusion
-                inclurePresentation: contextData.afficherPresentation,
+                inclurePresentation: contextData.presentation.inclure,
                 inclureCapacites: contextData.capacites.inclure,
                 inclureBesoins: contextData.besoins.inclure,
                 inclureEtats: contextData.etats.inclure,
-                inclureContacts: contextData.afficherContacts,
-                inclureMedical: contextData.afficherMedical
+                inclureContacts: contextData.contacts.inclure,
+                inclureMedical: contextData.medical.inclure
             };
 
             // Sauvegarder dans localStorage temporaire
