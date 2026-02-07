@@ -124,12 +124,14 @@
             padding-left: 20px;
             position: relative;
             line-height: 1.4;
+            color: var(--dark);
         }
 
         .info-important li:before {
             content: "•";
             position: absolute;
             left: 8px;
+            color: var(--dark);
         }
 
         .collapsible-section {
@@ -426,10 +428,10 @@
                 
                 // Charger contacts
                 loadContacts(data.contacts);
-                
+
                 // Charger médical
-                loadMedical(data.medical);
-                
+                loadMedical(data.inclureMedical, data.medical);
+
                 // Masquer sections vides
                 hideEmptySections(data);
                 
@@ -602,19 +604,23 @@
             container.innerHTML = html;
         }
 
-        function loadMedical(afficher) {
+        function loadMedical(afficher, infosMed) {
             if (!afficher) {
                 document.getElementById('medicalSection').style.display = 'none';
                 return;
             }
 
-            const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
+            // Si les données médicales ne sont pas passées, les lire depuis localStorage
+            if (!infosMed) {
+                infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
+            }
 
             // Médicaments/Traitements
             const medicElem = document.getElementById('medicaments');
             if (infosMed.traitements && infosMed.traitements.trim()) {
                 medicElem.textContent = infosMed.traitements;
                 medicElem.style.opacity = '1';
+                medicElem.style.fontStyle = 'normal';
             } else {
                 medicElem.textContent = 'Aucun traitement renseigné';
                 medicElem.style.opacity = '0.6';
@@ -630,6 +636,7 @@
             if (allergies.length > 0) {
                 allergiesElem.textContent = allergies.join(', ');
                 allergiesElem.style.opacity = '1';
+                allergiesElem.style.fontStyle = 'normal';
             } else {
                 allergiesElem.textContent = 'Aucune allergie renseignée';
                 allergiesElem.style.opacity = '0.6';
@@ -641,6 +648,7 @@
             if (infosMed.autresInfos && infosMed.autresInfos.trim()) {
                 infosElem.textContent = infosMed.autresInfos;
                 infosElem.style.opacity = '1';
+                infosElem.style.fontStyle = 'normal';
             } else {
                 infosElem.textContent = 'Aucune information complémentaire';
                 infosElem.style.opacity = '0.6';

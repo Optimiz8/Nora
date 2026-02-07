@@ -1205,20 +1205,36 @@
                 return;
             }
 
-            container.innerHTML = contacts.map((contact) => {
+            container.innerHTML = '';
+
+            contacts.forEach((contact) => {
                 const isChecked = contextData.contacts.selection.includes(contact.id);
-                return `
-                    <div class="contact-row">
-                        <div class="contact-checkbox" onclick='toggleContact("${contact.id}")'>
-                            ${isChecked ? '👁️' : '⚪'}
-                        </div>
-                        <div class="contact-info">
-                            <div class="contact-name">${contact.nom}</div>
-                            <div class="contact-relation">${contact.lien}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+
+                const row = document.createElement('div');
+                row.className = 'contact-row';
+
+                const checkbox = document.createElement('div');
+                checkbox.className = 'contact-checkbox';
+                checkbox.textContent = isChecked ? '👁️' : '⚪';
+                checkbox.onclick = () => toggleContact(contact.id);
+
+                const info = document.createElement('div');
+                info.className = 'contact-info';
+
+                const name = document.createElement('div');
+                name.className = 'contact-name';
+                name.textContent = contact.nom;
+
+                const relation = document.createElement('div');
+                relation.className = 'contact-relation';
+                relation.textContent = contact.lien;
+
+                info.appendChild(name);
+                info.appendChild(relation);
+                row.appendChild(checkbox);
+                row.appendChild(info);
+                container.appendChild(row);
+            });
         }
 
         // TOGGLE ITEM
