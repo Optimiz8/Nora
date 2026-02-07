@@ -68,10 +68,18 @@
             font-size: 17px;
             font-weight: 700;
             color: #F5E4CC;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .section-hint {
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.7);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            font-style: italic;
         }
 
         .section-card {
@@ -346,6 +354,30 @@
             background-color: rgba(247, 184, 156, 0.3);
         }
 
+        /* Boutons sélection multiple */
+        .select-buttons {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0 8px 0;
+        }
+
+        .select-btn {
+            flex: 1;
+            background: rgba(247, 184, 156, 0.1);
+            border: 1px solid rgba(247, 184, 156, 0.3);
+            color: #2E3A59;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .select-btn:active {
+            transform: scale(0.97);
+            background: rgba(247, 184, 156, 0.2);
+        }
+
         /* CONTACTS */
         .contact-row {
             display: flex;
@@ -594,7 +626,7 @@
                            id="nameInput" 
                            placeholder="Nom du contexte"
                            maxlength="30"
-                           oninput="autoSave()">
+                           oninput="markAsModified()">
                 </div>
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher ce contexte à l'accueil</div>
@@ -611,6 +643,7 @@
         <!-- TEXTE DE PRÉSENTATION -->
         <section class="config-section">
             <h2 class="section-title">✍️ Texte de présentation</h2>
+            <p class="section-hint">Ce texte s'affichera en haut de la carte pour vous présenter</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher la présentation</div>
@@ -621,13 +654,14 @@
                 <textarea class="textarea-field" 
                           id="textePresentationField" 
                           placeholder="Exemple : Je m'appelle Marine, je suis autiste. En cas de crise..."
-                          oninput="autoSave()"></textarea>
+                          oninput="markAsModified()"></textarea>
             </div>
         </section>
 
         <!-- CAPACITÉS -->
         <section class="config-section">
             <h2 class="section-title">💬 Capacités</h2>
+            <p class="section-hint">Ce que vous êtes capable de faire selon ce contexte</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les capacités</div>
@@ -637,10 +671,14 @@
                 </div>
                 <button class="manage-button" id="btnCapacites" onclick="toggleExpandable('capacites')">
                     <span class="manage-button-text">Gérer les capacités</span>
-                    <span class="manage-button-count" id="countCapacites">(0/16)</span>
+                    <span class="manage-button-count" id="countCapacites">(0/18)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listCapacites">
+                    <div class="select-buttons" id="selectCapacites">
+                        <button class="select-btn" onclick="selectAll('capacites')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="deselectAll('capacites')">⚪ Tout masquer</button>
+                    </div>
                     <!-- Liste générée en JS -->
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('capacite')">
@@ -652,6 +690,7 @@
         <!-- BESOINS -->
         <section class="config-section">
             <h2 class="section-title">🤲 Besoins</h2>
+            <p class="section-hint">Section "Ce qui va m'aider" - vos besoins pour vous apaiser</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les besoins</div>
@@ -665,6 +704,10 @@
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listBesoins">
+                    <div class="select-buttons" id="selectBesoins">
+                        <button class="select-btn" onclick="selectAll('besoins')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="deselectAll('besoins')">⚪ Tout masquer</button>
+                    </div>
                     <!-- Liste générée en JS -->
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('besoin')">
@@ -676,6 +719,7 @@
         <!-- ÉTATS / RESSENTIS -->
         <section class="config-section">
             <h2 class="section-title">😰 États / Ressentis</h2>
+            <p class="section-hint">Section "Comment je me sens" - vos états émotionnels et sensations</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les états</div>
@@ -689,6 +733,10 @@
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listEtats">
+                    <div class="select-buttons" id="selectEtats">
+                        <button class="select-btn" onclick="selectAll('etats')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="deselectAll('etats')">⚪ Tout masquer</button>
+                    </div>
                     <!-- Liste générée en JS -->
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('etat')">
@@ -700,10 +748,14 @@
         <!-- CONTACTS D'URGENCE -->
         <section class="config-section">
             <h2 class="section-title">📞 Contacts d'urgence</h2>
+            <p class="section-hint">Sélectionnez jusqu'à 3 contacts à afficher dans ce contexte</p>
             <div class="section-card">
-                <p style="font-size: 14px; color: #2E3A59; opacity: 0.8; margin-bottom: 16px; line-height: 1.5;">
-                    Sélectionnez jusqu'à 3 contacts à afficher dans ce contexte
-                </p>
+                <div class="toggle-row">
+                    <div class="toggle-label">Inclure les contacts</div>
+                    <div class="toggle-switch active" id="toggleContacts" onclick="toggleSection('contacts')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
                 <div id="contactsContainer">
                     <div class="empty-message">Aucun contact défini. Ajoutez-en dans "Mon profil".</div>
                 </div>
@@ -713,6 +765,7 @@
         <!-- INFORMATIONS MÉDICALES -->
         <section class="config-section">
             <h2 class="section-title">🚑 Informations médicales</h2>
+            <p class="section-hint">Section "Important" - vos informations médicales pour les secours</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les infos médicales</div>
@@ -749,8 +802,8 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button footer-back" onclick="goBack()">
-            ⬅️ Retour
+        <button class="footer-button" onclick="confirmReset()" style="flex: 0.8; background: rgba(244, 67, 54, 0.15); color: var(--light); font-size: 14px;">
+            ↻ Réinitialiser
         </button>
         <button class="footer-button footer-save" onclick="saveData()">
             💾 Enregistrer
@@ -859,7 +912,9 @@
             { id: 'proche-autres', emoji: '👥', nom: 'Être proche des autres' },
             { id: 'changer-endroit', emoji: '🔄', nom: 'Changer d\'endroit' },
             { id: 'attendre', emoji: '⏳', nom: 'Attendre' },
-            { id: 'concentrer', emoji: '🎯', nom: 'Me concentrer' }
+            { id: 'concentrer', emoji: '🎯', nom: 'Me concentrer' },
+            { id: 'prendre-decision', emoji: '🤔', nom: 'Prendre une décision' },
+            { id: 'arreter', emoji: '🛑', nom: 'Arrêter ce que je fais' }
         ];
 
         // BESOINS PAR DÉFAUT (21 items)
@@ -964,14 +1019,41 @@
         // CHARGER DONNÉES DU CONTEXTE
         function loadData() {
             const saved = localStorage.getItem(`contexte_${currentContexteId}`);
-            
+
             if (saved) {
                 contextData = JSON.parse(saved);
+                // Migration ancienne structure si nécessaire
+                if (contextData.textePresentation !== undefined && !contextData.presentation) {
+                    contextData.presentation = {
+                        inclure: contextData.afficherPresentation !== undefined ? contextData.afficherPresentation : true,
+                        texte: contextData.textePresentation || ''
+                    };
+                    delete contextData.textePresentation;
+                    delete contextData.afficherPresentation;
+                }
+                if (contextData.afficherMedical !== undefined && !contextData.medical) {
+                    contextData.medical = {
+                        inclure: contextData.afficherMedical
+                    };
+                    delete contextData.afficherMedical;
+                }
+                if (contextData.contactsVisibles !== undefined && !contextData.contacts) {
+                    contextData.contacts = {
+                        inclure: true,
+                        selection: contextData.contactsVisibles
+                    };
+                    delete contextData.contactsVisibles;
+                }
             } else {
                 // PREMIÈRE FOIS : Tout cocher par défaut
                 contextData = {
-                    textePresentation: '',
-                    afficherPresentation: true,
+                    id: currentContexteId,
+                    emoji: '',
+                    nom: '',
+                    presentation: {
+                        inclure: true,
+                        texte: ''
+                    },
                     capacites: {
                         inclure: true,
                         visibles: CAPACITES.map(c => c.id),
@@ -987,27 +1069,34 @@
                         visibles: ETATS.map(e => e.id),
                         personnalisees: []
                     },
-                    contactsVisibles: [],
-                    afficherMedical: true
+                    contacts: {
+                        inclure: true,
+                        selection: []
+                    },
+                    medical: {
+                        inclure: true
+                    }
                 };
             }
 
             // Charger texte présentation
-            document.getElementById('textePresentationField').value = contextData.textePresentation || '';
-            
+            document.getElementById('textePresentationField').value = contextData.presentation.texte || '';
+
             // Charger toggles
-            updateToggle('togglePresentation', contextData.afficherPresentation);
+            updateToggle('togglePresentation', contextData.presentation.inclure);
             updateToggle('toggleCapacites', contextData.capacites.inclure);
             updateToggle('toggleBesoins', contextData.besoins.inclure);
             updateToggle('toggleEtats', contextData.etats.inclure);
-            updateToggle('toggleMedical', contextData.afficherMedical);
+            updateToggle('toggleContacts', contextData.contacts.inclure);
+            updateToggle('toggleMedical', contextData.medical.inclure);
             updateToggle('toggleVisible', true); // Sera géré par la liste des contextes
-            
-            // Afficher/masquer les boutons selon les toggles
+
+            // Afficher/masquer les éléments selon les toggles
             document.getElementById('btnCapacites').classList.toggle('hidden', !contextData.capacites.inclure);
             document.getElementById('btnBesoins').classList.toggle('hidden', !contextData.besoins.inclure);
             document.getElementById('btnEtats').classList.toggle('hidden', !contextData.etats.inclure);
-            document.getElementById('textePresentationField').classList.toggle('hidden', !contextData.afficherPresentation);
+            document.getElementById('textePresentationField').classList.toggle('hidden', !contextData.presentation.inclure);
+            document.getElementById('contactsContainer').classList.toggle('hidden', !contextData.contacts.inclure);
         }
 
         function updateToggle(id, active) {
@@ -1025,7 +1114,7 @@
             const isActive = toggle.classList.toggle('active');
 
             if (section === 'presentation') {
-                contextData.afficherPresentation = isActive;
+                contextData.presentation.inclure = isActive;
                 document.getElementById('textePresentationField').classList.toggle('hidden', !isActive);
             } else if (section === 'capacites') {
                 contextData.capacites.inclure = isActive;
@@ -1036,11 +1125,14 @@
             } else if (section === 'etats') {
                 contextData.etats.inclure = isActive;
                 document.getElementById('btnEtats').classList.toggle('hidden', !isActive);
+            } else if (section === 'contacts') {
+                contextData.contacts.inclure = isActive;
+                document.getElementById('contactsContainer').classList.toggle('hidden', !isActive);
             } else if (section === 'medical') {
-                contextData.afficherMedical = isActive;
+                contextData.medical.inclure = isActive;
             }
 
-            autoSave();
+            markAsModified();
         }
 
         // TOGGLE VISIBILITÉ
@@ -1060,7 +1152,37 @@
         // TOGGLE EXPANDABLE
         function toggleExpandable(type) {
             const list = document.getElementById(`list${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const selectButtons = document.getElementById(`select${type.charAt(0).toUpperCase() + type.slice(1)}`);
             list.classList.toggle('hidden');
+            if (selectButtons) {
+                selectButtons.classList.toggle('hidden');
+            }
+        }
+
+        function selectAll(type) {
+            const allItems = type === 'capacites' ? [...CAPACITES, ...contextData.capacites.personnalisees] :
+                            type === 'besoins' ? [...BESOINS, ...contextData.besoins.personnalisees] :
+                            [...ETATS, ...contextData.etats.personnalisees];
+
+            contextData[type].visibles = allItems.map(item => item.id);
+
+            if (type === 'capacites') renderCapacites();
+            else if (type === 'besoins') renderBesoins();
+            else renderEtats();
+
+            updateCounts();
+            markAsModified();
+        }
+
+        function deselectAll(type) {
+            contextData[type].visibles = [];
+
+            if (type === 'capacites') renderCapacites();
+            else if (type === 'besoins') renderBesoins();
+            else renderEtats();
+
+            updateCounts();
+            markAsModified();
         }
 
         // RENDER LISTES
@@ -1075,7 +1197,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -1098,7 +1220,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -1121,7 +1243,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -1136,18 +1258,18 @@
         function renderContacts() {
             const contacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
             const container = document.getElementById('contactsContainer');
-            
+
             if (contacts.length === 0) {
                 container.innerHTML = '<div class="empty-message">Aucun contact défini. Ajoutez-en dans "Mon profil".</div>';
                 return;
             }
 
             container.innerHTML = contacts.map((contact, index) => {
-                const isChecked = contextData.contactsVisibles.includes(index);
+                const isChecked = contextData.contacts.selection.includes(index);
                 return `
                     <div class="contact-row">
                         <div class="contact-checkbox" onclick="toggleContact(${index})">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="contact-info">
                             <div class="contact-name">${contact.nom}</div>
@@ -1172,20 +1294,25 @@
             if (type === 'etats') renderEtats();
 
             updateCounts();
-            autoSave();
+            markAsModified();
         }
 
         // TOGGLE CONTACT
         function toggleContact(index) {
-            const pos = contextData.contactsVisibles.indexOf(index);
+            const pos = contextData.contacts.selection.indexOf(index);
             if (pos > -1) {
-                contextData.contactsVisibles.splice(pos, 1);
+                contextData.contacts.selection.splice(pos, 1);
             } else {
-                contextData.contactsVisibles.push(index);
+                // Limite de 3 contacts
+                if (contextData.contacts.selection.length >= 3) {
+                    alert('⚠️ Vous ne pouvez sélectionner que 3 contacts maximum');
+                    return;
+                }
+                contextData.contacts.selection.push(index);
             }
 
             renderContacts();
-            autoSave();
+            markAsModified();
         }
 
         // UPDATE COUNTS
@@ -1230,7 +1357,7 @@
             }
             
             closeEmojiModal();
-            autoSave();
+            markAsModified();
         }
 
         // MODAL AJOUT ITEM
@@ -1294,7 +1421,7 @@
             if (currentItemType === 'etat') renderEtats();
 
             updateCounts();
-            autoSave();
+            markAsModified();
             closeAddItemModal();
         }
 
@@ -1317,7 +1444,7 @@
             if (type === 'etats') renderEtats();
 
             updateCounts();
-            autoSave();
+            markAsModified();
         }
 
         // MODIFIER NOM DU CONTEXTE
@@ -1357,14 +1484,21 @@
         }
 
         // SAUVEGARDE
-        function autoSave() {
-            contextData.textePresentation = document.getElementById('textePresentationField').value;
+        let hasUnsavedChanges = false;
+
+        function markAsModified() {
+            hasUnsavedChanges = true;
+            // Mettre à jour contextData en mémoire sans sauvegarder
+            contextData.presentation.texte = document.getElementById('textePresentationField').value;
             updateContexteName();
-            localStorage.setItem(`contexte_${currentContexteId}`, JSON.stringify(contextData));
         }
 
         function saveData() {
-            autoSave();
+            // Sauvegarder réellement dans localStorage
+            contextData.presentation.texte = document.getElementById('textePresentationField').value;
+            updateContexteName();
+            localStorage.setItem(`contexte_${currentContexteId}`, JSON.stringify(contextData));
+            hasUnsavedChanges = false;
             showToast();
         }
 
@@ -1378,11 +1512,94 @@
 
         // NAVIGATION
         function goBack() {
-            autoSave();
+            if (hasUnsavedChanges) {
+                if (confirm('⚠️ Modifications non enregistrées\n\nVous avez des modifications non enregistrées. Voulez-vous quitter sans enregistrer ?')) {
+                    window.location.href = 'contextes-liste.html';
+                }
+            } else {
+                window.location.href = 'contextes-liste.html';
+            }
+        }
+
+        function confirmReset() {
+            if (confirm('⚠️ Réinitialiser ce contexte ?\n\nToutes les modifications seront perdues et les paramètres par défaut seront restaurés.')) {
+                resetToDefaults();
+            }
+        }
+
+        function resetToDefaults() {
+            // Réinitialiser aux valeurs par défaut
+            const defaultEmoji = getDefaultEmoji(currentContexteId);
+            const defaultNom = getDefaultName(currentContexteId);
+
+            contextData = {
+                id: currentContexteId,
+                emoji: defaultEmoji,
+                nom: defaultNom,
+                presentation: {
+                    inclure: true,
+                    texte: ''
+                },
+                capacites: {
+                    inclure: true,
+                    visibles: CAPACITES.map(c => c.id),
+                    personnalisees: []
+                },
+                besoins: {
+                    inclure: true,
+                    visibles: BESOINS.map(b => b.id),
+                    personnalisees: []
+                },
+                etats: {
+                    inclure: true,
+                    visibles: ETATS.map(e => e.id),
+                    personnalisees: []
+                },
+                contacts: {
+                    inclure: true,
+                    selection: []
+                },
+                medical: {
+                    inclure: true
+                }
+            };
+
+            // Mettre à jour aussi la liste des contextes pour l'emoji et le nom
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const ctxIndex = contextes.findIndex(c => c.id === currentContexteId);
+            if (ctxIndex > -1) {
+                contextes[ctxIndex].emoji = defaultEmoji;
+                contextes[ctxIndex].nom = defaultNom;
+                localStorage.setItem('contextes', JSON.stringify(contextes));
+            }
+
+            // Sauvegarder et recharger la page
+            localStorage.setItem(`contexte_${currentContexteId}`, JSON.stringify(contextData));
+            hasUnsavedChanges = false;
             showToast();
             setTimeout(() => {
-                window.location.href = 'contextes-liste.html';
+                location.reload();
             }, 500);
+        }
+
+        function getDefaultEmoji(id) {
+            const defaults = {
+                'maison': '🏠',
+                'exterieur': '🌍',
+                'travail': '💼',
+                'secours': '🙏'
+            };
+            return defaults[id] || '🏠';
+        }
+
+        function getDefaultName(id) {
+            const defaults = {
+                'maison': 'Maison',
+                'exterieur': 'Extérieur',
+                'travail': 'Travail / École',
+                'secours': 'Secours'
+            };
+            return defaults[id] || 'Contexte';
         }
 
         function goToInfosMedicales() {
@@ -1393,47 +1610,69 @@
 
         function afficherExemple() {
             // Sauvegarder les données actuelles
-            autoSave();
-            
-            // Générer un récap de test
+            markAsModified();
+
+            // Récupérer les vraies données
+            const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+            const selectedContactIds = contextData.contacts.selection || [];
+            const contactsToShow = allContacts.filter((c, i) => selectedContactIds.includes(i));
+
+            const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
+
+            // Générer un récap avec vraies données
             const exempleDonnees = {
-                textePresentation: contextData.textePresentation || '',
+                textePresentation: contextData.presentation.texte || '',
                 capacites: {
-                    impossible: contextData.capacites.visibles.slice(0, 3).map(id => {
-                        const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
-                        return item ? item.nom : id;
-                    }),
-                    difficile: contextData.capacites.visibles.slice(3, 6).map(id => {
-                        const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
-                        return item ? item.nom : id;
-                    }),
-                    possible: contextData.capacites.visibles.slice(6, 9).map(id => {
+                    // Pour l'exemple, montrer toutes les capacités visibles comme "possible"
+                    impossible: [],
+                    difficile: [],
+                    possible: contextData.capacites.visibles.map(id => {
                         const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
                         return item ? item.nom : id;
                     }),
                     incertain: []
                 },
-                besoins: contextData.besoins.visibles.slice(0, 5).map(id => {
+                besoins: contextData.besoins.visibles.map(id => {
                     const item = [...BESOINS, ...contextData.besoins.personnalisees].find(b => b.id === id);
                     return { icon: item?.emoji || '•', label: item?.nom || id };
                 }),
-                etats: contextData.etats.visibles.slice(0, 4).map(id => {
+                etats: contextData.etats.visibles.map(id => {
                     const item = [...ETATS, ...contextData.etats.personnalisees].find(e => e.id === id);
                     return { icon: item?.emoji || '😔', label: item?.nom || id };
                 }),
-                contacts: contextData.contactsVisibles || [],
-                medical: contextData.afficherMedical
+                contacts: contactsToShow.map(c => ({
+                    nom: c.nom || 'Contact',
+                    lien: c.lien || '',
+                    telephone: c.telephone || ''
+                })),
+                medical: infosMed,
+                // Flags d'inclusion
+                inclurePresentation: contextData.presentation.inclure,
+                inclureCapacites: contextData.capacites.inclure,
+                inclureBesoins: contextData.besoins.inclure,
+                inclureEtats: contextData.etats.inclure,
+                inclureContacts: contextData.contacts.inclure,
+                inclureMedical: contextData.medical.inclure
             };
-            
+
             // Sauvegarder dans localStorage temporaire
             localStorage.setItem('exempleCrise', JSON.stringify(exempleDonnees));
-            
+
             // Ouvrir recap-exemple.html
             window.open('recap-exemple.html', '_blank');
         }
 
         // INIT
         window.addEventListener('DOMContentLoaded', init);
+
+        // Prévenir la perte de données si on quitte avec modifications non sauvegardées
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = ''; // Chrome nécessite cette ligne
+                return ''; // Pour les anciens navigateurs
+            }
+        });
     </script>
 </body>
 </html>

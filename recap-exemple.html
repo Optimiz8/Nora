@@ -101,7 +101,7 @@
         }
 
         .info-important {
-            background-color: rgba(56, 70, 87, 0.1);
+            background-color: rgba(245, 228, 204, 0.5);
             padding: 12px;
             border-radius: 8px;
             margin: 10px 0 6px 0;
@@ -111,6 +111,7 @@
             font-size: 16px;
             margin-bottom: 8px;
             color: var(--dark);
+            font-weight: 700;
         }
 
         .info-important ul {
@@ -624,22 +625,31 @@
         }
 
         function hideEmptySections(data) {
-            if (!data.capacites || 
-                (!data.capacites.impossible?.length && !data.capacites.difficile?.length && 
+            // Masquer les sections désactivées OU vides
+            if (data.inclurePresentation === false) {
+                document.getElementById('presentationSection').style.display = 'none';
+            }
+
+            if (data.inclureCapacites === false || !data.capacites ||
+                (!data.capacites.impossible?.length && !data.capacites.difficile?.length &&
                  !data.capacites.possible?.length && !data.capacites.incertain?.length)) {
                 document.getElementById('capacitesSection').style.display = 'none';
             }
-            
-            if (!data.besoins || data.besoins.length === 0) {
+
+            if (data.inclureBesoins === false || !data.besoins || data.besoins.length === 0) {
                 document.getElementById('besoinsSection').style.display = 'none';
             }
-            
-            if (!data.etats || data.etats.length === 0) {
+
+            if (data.inclureEtats === false || !data.etats || data.etats.length === 0) {
                 document.getElementById('etatsSection').style.display = 'none';
             }
-            
-            if (!data.contacts || data.contacts.length === 0) {
+
+            if (data.inclureContacts === false || !data.contacts || data.contacts.length === 0) {
                 document.getElementById('contactSection').style.display = 'none';
+            }
+
+            if (data.inclureMedical === false) {
+                document.getElementById('medicalSection').style.display = 'none';
             }
         }
 

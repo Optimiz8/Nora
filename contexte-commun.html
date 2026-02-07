@@ -376,6 +376,52 @@
             padding: 20px;
             font-style: italic;
         }
+
+        /* HINTS SOUS-TITRES */
+        .section-hint {
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.9);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        /* BOUTONS SELECT ALL / DESELECT ALL */
+        .select-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .select-buttons.hidden {
+            display: none;
+        }
+
+        .select-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            background-color: rgba(46, 58, 89, 0.05);
+            color: var(--dark);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .select-btn:active {
+            transform: scale(0.96);
+            background-color: rgba(46, 58, 89, 0.15);
+        }
+
+        /* FOOTER - RESET BUTTON */
+        .footer-reset {
+            flex: 0.8;
+            background: rgba(244, 67, 54, 0.15) !important;
+            color: var(--light) !important;
+            border: 2px solid rgba(244, 67, 54, 0.3) !important;
+        }
     </style>
 </head>
 <body>
@@ -389,6 +435,7 @@
         <!-- TEXTE DE PRÉSENTATION -->
         <section class="config-section">
             <h2 class="section-title">✍️ Texte de présentation</h2>
+            <p class="section-hint">Ce texte s'affichera en haut de la carte pour vous présenter</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher la présentation</div>
@@ -396,15 +443,17 @@
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <textarea class="textarea-field" 
-                          id="textePresentationField" 
-                          placeholder="Exemple : Je m'appelle Marine, je suis autiste. En cas de crise..."></textarea>
+                <textarea class="textarea-field"
+                          id="textePresentationField"
+                          placeholder="Exemple : Je m'appelle Marine, je suis autiste. En cas de crise..."
+                          oninput="markAsModified()"></textarea>
             </div>
         </section>
 
         <!-- CAPACITÉS -->
         <section class="config-section">
             <h2 class="section-title">💬 Capacités</h2>
+            <p class="section-hint">Ce que vous êtes capable de faire selon ce contexte</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les capacités</div>
@@ -414,10 +463,14 @@
                 </div>
                 <button class="manage-button" id="btnCapacites" onclick="toggleExpandable('capacites')">
                     <span class="manage-button-text">Gérer les capacités</span>
-                    <span class="manage-button-count" id="countCapacites">(0/16)</span>
+                    <span class="manage-button-count" id="countCapacites">(0/18)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listCapacites">
+                    <div class="select-buttons" id="selectCapacites">
+                        <button class="select-btn" onclick="selectAll('capacites')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="deselectAll('capacites')">⚪ Tout masquer</button>
+                    </div>
                     <!-- Liste générée en JS -->
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('capacite')">
@@ -429,6 +482,7 @@
         <!-- BESOINS -->
         <section class="config-section">
             <h2 class="section-title">🤲 Besoins</h2>
+            <p class="section-hint">Section "Ce qui va m'aider" - vos besoins pour vous apaiser</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les besoins</div>
@@ -442,6 +496,10 @@
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listBesoins">
+                    <div class="select-buttons" id="selectBesoins">
+                        <button class="select-btn" onclick="selectAll('besoins')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="deselectAll('besoins')">⚪ Tout masquer</button>
+                    </div>
                     <!-- Liste générée en JS -->
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('besoin')">
@@ -453,6 +511,7 @@
         <!-- ÉTATS / RESSENTIS -->
         <section class="config-section">
             <h2 class="section-title">😰 États / Ressentis</h2>
+            <p class="section-hint">Section "Comment je me sens" - vos ressentis</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les états</div>
@@ -466,6 +525,10 @@
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listEtats">
+                    <div class="select-buttons" id="selectEtats">
+                        <button class="select-btn" onclick="selectAll('etats')">👁️ Tout afficher</button>
+                        <button class="select-btn" onclick="deselectAll('etats')">⚪ Tout masquer</button>
+                    </div>
                     <!-- Liste générée en JS -->
                 </div>
                 <button class="add-item-button" onclick="openAddItemModal('etat')">
@@ -477,10 +540,14 @@
         <!-- CONTACTS D'URGENCE -->
         <section class="config-section">
             <h2 class="section-title">📞 Contacts d'urgence</h2>
+            <p class="section-hint">Sélectionnez jusqu'à 3 contacts à afficher dans ce contexte</p>
             <div class="section-card">
-                <p style="font-size: 14px; color: var(--dark); opacity: 0.8; margin-bottom: 16px; line-height: 1.5;">
-                    Sélectionnez jusqu'à 3 contacts à afficher dans ce contexte
-                </p>
+                <div class="toggle-row">
+                    <div class="toggle-label">Inclure les contacts</div>
+                    <div class="toggle-switch active" id="toggleContacts" onclick="toggleSection('contacts')">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
                 <div id="contactsContainer">
                     <div class="empty-message">Aucun contact défini. Ajoutez-en dans "Mon profil".</div>
                 </div>
@@ -490,6 +557,7 @@
         <!-- INFORMATIONS MÉDICALES -->
         <section class="config-section">
             <h2 class="section-title">🚑 Informations médicales</h2>
+            <p class="section-hint">Informations importantes pour les secours</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les infos médicales</div>
@@ -526,8 +594,8 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button footer-back" onclick="goBack()">
-            ⬅️ Retour
+        <button onclick="confirmReset()" class="footer-button footer-reset">
+            ↻ Réinitialiser
         </button>
         <button class="footer-button footer-save" onclick="saveData()">
             💾 Enregistrer
@@ -574,7 +642,7 @@
     </div>
 
     <script>
-        // CAPACITÉS PAR DÉFAUT (16 items)
+        // CAPACITÉS PAR DÉFAUT (18 items)
         const CAPACITES = [
             { id: 'parler', emoji: '💬', nom: 'Parler' },
             { id: 'etre-touchee', emoji: '🤝', nom: 'Être touchée' },
@@ -591,7 +659,9 @@
             { id: 'proche-autres', emoji: '👥', nom: 'Être proche des autres' },
             { id: 'changer-endroit', emoji: '🔄', nom: 'Changer d\'endroit' },
             { id: 'attendre', emoji: '⏳', nom: 'Attendre' },
-            { id: 'concentrer', emoji: '🎯', nom: 'Me concentrer' }
+            { id: 'concentrer', emoji: '🎯', nom: 'Me concentrer' },
+            { id: 'prendre-decision', emoji: '🤔', nom: 'Prendre une décision' },
+            { id: 'arreter-activite', emoji: '🛑', nom: 'Arrêter ce que je fais' }
         ];
 
         // BESOINS PAR DÉFAUT (21 items)
@@ -641,6 +711,7 @@
 
         // État de la page
         let currentItemType = '';
+        let hasUnsavedChanges = false;
         let contextData = {
             textePresentation: '',
             afficherPresentation: true,
@@ -660,6 +731,7 @@
                 personnalisees: []
             },
             contactsVisibles: [],
+            afficherContacts: true,
             afficherMedical: true
         };
 
@@ -701,13 +773,18 @@
             updateToggle('toggleCapacites', contextData.capacites.inclure);
             updateToggle('toggleBesoins', contextData.besoins.inclure);
             updateToggle('toggleEtats', contextData.etats.inclure);
+            updateToggle('toggleContacts', contextData.afficherContacts !== undefined ? contextData.afficherContacts : true);
             updateToggle('toggleMedical', contextData.afficherMedical);
-            
+
             // Afficher/masquer les boutons selon les toggles
             document.getElementById('btnCapacites').classList.toggle('hidden', !contextData.capacites.inclure);
             document.getElementById('btnBesoins').classList.toggle('hidden', !contextData.besoins.inclure);
             document.getElementById('btnEtats').classList.toggle('hidden', !contextData.etats.inclure);
+            document.getElementById('selectCapacites').classList.toggle('hidden', !contextData.capacites.inclure);
+            document.getElementById('selectBesoins').classList.toggle('hidden', !contextData.besoins.inclure);
+            document.getElementById('selectEtats').classList.toggle('hidden', !contextData.etats.inclure);
             document.getElementById('textePresentationField').classList.toggle('hidden', !contextData.afficherPresentation);
+            document.getElementById('contactsContainer').classList.toggle('hidden', !contextData.afficherContacts);
         }
 
         function updateToggle(id, active) {
@@ -730,17 +807,23 @@
             } else if (section === 'capacites') {
                 contextData.capacites.inclure = isActive;
                 document.getElementById('btnCapacites').classList.toggle('hidden', !isActive);
+                document.getElementById('selectCapacites').classList.toggle('hidden', !isActive);
             } else if (section === 'besoins') {
                 contextData.besoins.inclure = isActive;
                 document.getElementById('btnBesoins').classList.toggle('hidden', !isActive);
+                document.getElementById('selectBesoins').classList.toggle('hidden', !isActive);
             } else if (section === 'etats') {
                 contextData.etats.inclure = isActive;
                 document.getElementById('btnEtats').classList.toggle('hidden', !isActive);
+                document.getElementById('selectEtats').classList.toggle('hidden', !isActive);
+            } else if (section === 'contacts') {
+                contextData.afficherContacts = isActive;
+                document.getElementById('contactsContainer').classList.toggle('hidden', !isActive);
             } else if (section === 'medical') {
                 contextData.afficherMedical = isActive;
             }
 
-            autoSave();
+            markAsModified();
         }
 
         // TOGGLE EXPANDABLE
@@ -768,7 +851,7 @@
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -778,22 +861,22 @@
                     </div>
                 `;
             }).join('');
-            
+
             console.log('HTML généré, longueur:', container.innerHTML.length);
         }
 
         function renderBesoins() {
             const container = document.getElementById('listBesoins');
             const items = [...BESOINS, ...contextData.besoins.personnalisees];
-            
+
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.besoins.visibles.includes(item.id);
                 const isCustom = item.custom || false;
-                
+
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -808,15 +891,15 @@
         function renderEtats() {
             const container = document.getElementById('listEtats');
             const items = [...ETATS, ...contextData.etats.personnalisees];
-            
+
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.etats.visibles.includes(item.id);
                 const isCustom = item.custom || false;
-                
+
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="item-emoji">${item.emoji || ''}</div>
                         <div class="item-text">${item.nom}</div>
@@ -842,7 +925,7 @@
                 return `
                     <div class="contact-row">
                         <div class="contact-checkbox" onclick="toggleContact(${index})">
-                            ${isChecked ? '☑️' : '⬜'}
+                            ${isChecked ? '👁️' : '⚪'}
                         </div>
                         <div class="contact-info">
                             <div class="contact-name">${contact.nom}</div>
@@ -867,7 +950,34 @@
             if (type === 'etats') renderEtats();
 
             updateCounts();
-            autoSave();
+            markAsModified();
+        }
+
+        // SELECT ALL / DESELECT ALL
+        function selectAll(type) {
+            const allItems = type === 'capacites' ? [...CAPACITES, ...contextData.capacites.personnalisees] :
+                            type === 'besoins' ? [...BESOINS, ...contextData.besoins.personnalisees] :
+                            [...ETATS, ...contextData.etats.personnalisees];
+
+            contextData[type].visibles = allItems.map(item => item.id);
+
+            if (type === 'capacites') renderCapacites();
+            if (type === 'besoins') renderBesoins();
+            if (type === 'etats') renderEtats();
+
+            updateCounts();
+            markAsModified();
+        }
+
+        function deselectAll(type) {
+            contextData[type].visibles = [];
+
+            if (type === 'capacites') renderCapacites();
+            if (type === 'besoins') renderBesoins();
+            if (type === 'etats') renderEtats();
+
+            updateCounts();
+            markAsModified();
         }
 
         // TOGGLE CONTACT
@@ -876,11 +986,16 @@
             if (pos > -1) {
                 contextData.contactsVisibles.splice(pos, 1);
             } else {
+                // Limite de 3 contacts
+                if (contextData.contactsVisibles.length >= 3) {
+                    alert('⚠️ Vous ne pouvez sélectionner que 3 contacts maximum');
+                    return;
+                }
                 contextData.contactsVisibles.push(index);
             }
 
             renderContacts();
-            autoSave();
+            markAsModified();
         }
 
         // UPDATE COUNTS
@@ -959,7 +1074,7 @@
             if (currentItemType === 'etat') renderEtats();
 
             updateCounts();
-            autoSave();
+            markAsModified();
             closeAddItemModal();
         }
 
@@ -982,17 +1097,19 @@
             if (type === 'etats') renderEtats();
 
             updateCounts();
-            autoSave();
+            markAsModified();
         }
 
         // SAUVEGARDE
-        function autoSave() {
+        function markAsModified() {
+            hasUnsavedChanges = true;
             contextData.textePresentation = document.getElementById('textePresentationField').value;
-            localStorage.setItem('contexte_commun', JSON.stringify(contextData));
         }
 
         function saveData() {
-            autoSave();
+            contextData.textePresentation = document.getElementById('textePresentationField').value;
+            localStorage.setItem('contexte_commun', JSON.stringify(contextData));
+            hasUnsavedChanges = false;
             showToast();
         }
 
@@ -1004,13 +1121,54 @@
             }, 2000);
         }
 
-        // NAVIGATION
-        function goBack() {
-            autoSave();
+        // RÉINITIALISER
+        function confirmReset() {
+            if (confirm('⚠️ Réinitialiser le profil commun ?\n\nToutes les modifications seront perdues et les paramètres par défaut seront restaurés.')) {
+                resetToDefaults();
+            }
+        }
+
+        function resetToDefaults() {
+            contextData = {
+                textePresentation: '',
+                afficherPresentation: true,
+                capacites: {
+                    inclure: true,
+                    visibles: CAPACITES.map(c => c.id),
+                    personnalisees: []
+                },
+                besoins: {
+                    inclure: true,
+                    visibles: BESOINS.map(b => b.id),
+                    personnalisees: []
+                },
+                etats: {
+                    inclure: true,
+                    visibles: ETATS.map(e => e.id),
+                    personnalisees: []
+                },
+                contactsVisibles: [],
+                afficherContacts: true,
+                afficherMedical: true
+            };
+
+            localStorage.setItem('contexte_commun', JSON.stringify(contextData));
+            hasUnsavedChanges = false;
             showToast();
             setTimeout(() => {
-                window.location.href = 'contextes-liste.html';
+                location.reload();
             }, 500);
+        }
+
+        // NAVIGATION
+        function goBack() {
+            if (hasUnsavedChanges) {
+                if (confirm('⚠️ Modifications non enregistrées\n\nVoulez-vous quitter sans enregistrer ?')) {
+                    window.location.href = 'contextes-liste.html';
+                }
+            } else {
+                window.location.href = 'contextes-liste.html';
+            }
         }
 
         function goToInfosMedicales() {
@@ -1021,41 +1179,54 @@
 
         function afficherExemple() {
             // Sauvegarder les données actuelles
-            autoSave();
-            
-            // Générer un récap de test
+            markAsModified();
+
+            // Récupérer les vraies données
+            const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+            const selectedContactIds = contextData.contactsVisibles || [];
+            const contactsToShow = allContacts.filter((c, i) => selectedContactIds.includes(i));
+
+            const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
+
+            // Générer un récap avec vraies données
             const exempleDonnees = {
                 textePresentation: contextData.textePresentation || '',
                 capacites: {
-                    impossible: contextData.capacites.visibles.slice(0, 3).map(id => {
-                        const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
-                        return item ? item.nom : id;
-                    }),
-                    difficile: contextData.capacites.visibles.slice(3, 6).map(id => {
-                        const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
-                        return item ? item.nom : id;
-                    }),
-                    possible: contextData.capacites.visibles.slice(6, 9).map(id => {
+                    // Pour l'exemple, montrer toutes les capacités visibles comme "possible"
+                    impossible: [],
+                    difficile: [],
+                    possible: contextData.capacites.visibles.map(id => {
                         const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
                         return item ? item.nom : id;
                     }),
                     incertain: []
                 },
-                besoins: contextData.besoins.visibles.slice(0, 5).map(id => {
+                besoins: contextData.besoins.visibles.map(id => {
                     const item = [...BESOINS, ...contextData.besoins.personnalisees].find(b => b.id === id);
                     return { icon: item?.emoji || '•', label: item?.nom || id };
                 }),
-                etats: contextData.etats.visibles.slice(0, 4).map(id => {
+                etats: contextData.etats.visibles.map(id => {
                     const item = [...ETATS, ...contextData.etats.personnalisees].find(e => e.id === id);
                     return { icon: item?.emoji || '😔', label: item?.nom || id };
                 }),
-                contacts: contextData.contactsVisibles || [],
-                medical: contextData.afficherMedical
+                contacts: contactsToShow.map(c => ({
+                    nom: c.nom || 'Contact',
+                    lien: c.lien || '',
+                    telephone: c.telephone || ''
+                })),
+                medical: infosMed,
+                // Flags d'inclusion
+                inclurePresentation: contextData.afficherPresentation,
+                inclureCapacites: contextData.capacites.inclure,
+                inclureBesoins: contextData.besoins.inclure,
+                inclureEtats: contextData.etats.inclure,
+                inclureContacts: contextData.afficherContacts,
+                inclureMedical: contextData.afficherMedical
             };
-            
+
             // Sauvegarder dans localStorage temporaire
             localStorage.setItem('exempleCrise', JSON.stringify(exempleDonnees));
-            
+
             // Ouvrir recap-exemple.html
             window.open('recap-exemple.html', '_blank');
         }
@@ -1063,8 +1234,13 @@
         // INIT
         window.addEventListener('DOMContentLoaded', init);
 
-        // Auto-save sur changement textarea
-        document.getElementById('textePresentationField').addEventListener('input', autoSave);
+        // Confirmation avant fermeture si modifications non enregistrées
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     </script>
 </body>
 </html>
