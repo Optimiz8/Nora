@@ -39,7 +39,7 @@
         }
 
         .input-label {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--dark);
             margin-bottom: 6px;
@@ -234,11 +234,17 @@
         }
 
         function goBack() {
-            // Vérifier s'il y a une page de retour enregistrée
             const returnTo = localStorage.getItem('returnTo');
             if (returnTo) {
-                localStorage.removeItem('returnTo'); // Nettoyer
-                window.location.href = returnTo.replace('?', '.html?'); // Convertir contexte-detail?id=xxx en contexte-detail.html?id=xxx
+                localStorage.removeItem('returnTo');
+                // Convertir le returnTo en URL valide
+                if (returnTo.includes('?')) {
+                    // Ex: contexte-detail?id=xxx → contexte-detail.html?id=xxx
+                    window.location.href = returnTo.replace('?', '.html?');
+                } else {
+                    // Ex: carte-config → carte-config.html
+                    window.location.href = returnTo + '.html';
+                }
             } else {
                 window.location.href = 'parametres.html';
             }

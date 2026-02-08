@@ -32,7 +32,7 @@
 
         .section-description {
             color: rgba(245, 228, 204, 0.7);
-            font-size: 14px;
+            font-size: 15px;
             margin-bottom: 16px;
             line-height: 1.4;
         }
@@ -82,7 +82,7 @@
         }
 
         .settings-sublabel {
-            font-size: 13px;
+            font-size: 15px;
             opacity: 0.65;
             line-height: 1.3;
         }
@@ -230,8 +230,8 @@
                 <div class="settings-card-content">
                     <div class="settings-icon">✏️</div>
                     <div class="settings-text">
-                        <div class="settings-label">Mon prénom</div>
-                        <div class="settings-sublabel">Prénom utilisé dans l'application</div>
+                        <div class="settings-label">Mon identité</div>
+                        <div class="settings-sublabel">Prénom et nom utilisés dans l'application</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
@@ -254,6 +254,17 @@
                     <div class="settings-text">
                         <div class="settings-label">Informations médicales</div>
                         <div class="settings-sublabel">Allergies, traitements, groupe sanguin</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
+            <div class="settings-card" onclick="goToPage('carte-config.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">🪪</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Ma carte d'urgence</div>
+                        <div class="settings-sublabel">Texte de présentation et contacts affichés</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
@@ -368,19 +379,27 @@
 
         // Export des données
         function exportData() {
+            // Récupérer la liste des contextes et leurs configs
+            const contextesList = JSON.parse(localStorage.getItem('contextes') || '[]');
+            const contextesConfigs = {};
+            contextesList.forEach(ctx => {
+                const config = localStorage.getItem(`contexte_${ctx.id}`);
+                if (config) contextesConfigs[ctx.id] = JSON.parse(config);
+            });
+
             const data = {
-                version: '1.0',
+                version: '2.0',
                 dateExport: new Date().toISOString(),
                 prenom: localStorage.getItem('userPrenom') || '',
-                textePresentationDefaut: localStorage.getItem('textePresentationDefaut') || '',
+                nom: localStorage.getItem('userNom') || '',
                 contacts: JSON.parse(localStorage.getItem('contactsUrgence') || '[]'),
+                carteContacts: JSON.parse(localStorage.getItem('carteContacts') || '[]'),
                 infosMedicales: JSON.parse(localStorage.getItem('infosMedicales') || '{}'),
                 contextes: {
                     messageUnique: localStorage.getItem('contexte_messageUnique') === 'true',
-                    maison: JSON.parse(localStorage.getItem('contexte_maison') || '{}'),
-                    exterieur: JSON.parse(localStorage.getItem('contexte_exterieur') || '{}'),
-                    travail: JSON.parse(localStorage.getItem('contexte_travail') || '{}'),
-                    secours: JSON.parse(localStorage.getItem('contexte_secours') || '{}')
+                    liste: contextesList,
+                    commun: JSON.parse(localStorage.getItem('contexte_commun') || '{}'),
+                    configs: contextesConfigs
                 },
                 journalCrises: JSON.parse(localStorage.getItem('journalCrises') || '[]')
             };
@@ -389,10 +408,10 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `tsa-app-sauvegarde-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `nora-sauvegarde-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            
+
             alert('✅ Données exportées avec succès !');
         }
 
@@ -401,38 +420,58 @@
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '.json';
-            
+
             input.onchange = e => {
                 const file = e.target.files[0];
                 if (!file) return;
-                
+
                 const reader = new FileReader();
                 reader.onload = event => {
                     try {
                         const data = JSON.parse(event.target.result);
-                        
+
                         if (!data.version) {
                             alert('❌ Fichier invalide');
                             return;
                         }
-                        
-                        // Import des données
+
+                        if (!confirm('⚠️ L\'import va remplacer toutes vos données actuelles.\n\nVoulez-vous continuer ?')) {
+                            return;
+                        }
+
+                        // Profil
                         localStorage.setItem('userPrenom', data.prenom || '');
-                        localStorage.setItem('textePresentationDefaut', data.textePresentationDefaut || '');
+                        localStorage.setItem('userNom', data.nom || '');
                         localStorage.setItem('contactsUrgence', JSON.stringify(data.contacts || []));
+                        localStorage.setItem('carteContacts', JSON.stringify(data.carteContacts || []));
                         localStorage.setItem('infosMedicales', JSON.stringify(data.infosMedicales || {}));
-                        
+
                         // Contextes
                         if (data.contextes) {
                             localStorage.setItem('contexte_messageUnique', data.contextes.messageUnique ? 'true' : 'false');
-                            localStorage.setItem('contexte_maison', JSON.stringify(data.contextes.maison || {}));
-                            localStorage.setItem('contexte_exterieur', JSON.stringify(data.contextes.exterieur || {}));
-                            localStorage.setItem('contexte_travail', JSON.stringify(data.contextes.travail || {}));
-                            localStorage.setItem('contexte_secours', JSON.stringify(data.contextes.secours || {}));
+
+                            if (data.version === '2.0') {
+                                // Nouveau format v2
+                                localStorage.setItem('contextes', JSON.stringify(data.contextes.liste || []));
+                                localStorage.setItem('contexte_commun', JSON.stringify(data.contextes.commun || {}));
+                                // Configs individuelles
+                                const configs = data.contextes.configs || {};
+                                Object.keys(configs).forEach(id => {
+                                    localStorage.setItem(`contexte_${id}`, JSON.stringify(configs[id]));
+                                });
+                            } else {
+                                // Ancien format v1 : migration
+                                const oldContextes = ['maison', 'exterieur', 'travail', 'secours'];
+                                oldContextes.forEach(id => {
+                                    if (data.contextes[id] && Object.keys(data.contextes[id]).length > 0) {
+                                        localStorage.setItem(`contexte_${id}`, JSON.stringify(data.contextes[id]));
+                                    }
+                                });
+                            }
                         }
-                        
+
                         localStorage.setItem('journalCrises', JSON.stringify(data.journalCrises || []));
-                        
+
                         alert('✅ Données importées avec succès !');
                         location.reload();
                     } catch (err) {
@@ -442,7 +481,7 @@
                 };
                 reader.readAsText(file);
             };
-            
+
             input.click();
         }
 

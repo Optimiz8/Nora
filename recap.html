@@ -423,7 +423,7 @@
         }
 
         .questionnaire-subtitle {
-            font-size: 14px;
+            font-size: 15px;
             color: var(--dark);
             opacity: 0.7;
         }
@@ -646,7 +646,7 @@
             font-weight: 400;
             color: var(--dark);
             opacity: 0.8;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         @media (max-width: 360px) {
@@ -1389,7 +1389,10 @@ ${presentationText}${capacitesText}${besoinsText}${etatsText}${contactText}`.tri
                     title: '🚨 Crise autistique en cours',
                     text: text
                 }).catch(err => {
-                    copyToClipboard(text);
+                    // L'utilisateur a annulé ou le partage a échoué → copier
+                    if (err.name !== 'AbortError') {
+                        copyToClipboard(text);
+                    }
                 });
             } else {
                 copyToClipboard(text);
@@ -1397,15 +1400,33 @@ ${presentationText}${capacitesText}${besoinsText}${etatsText}${contactText}`.tri
         }
 
         function copyToClipboard(text) {
-            if (navigator.clipboard) {
+            // Essayer l'API Clipboard moderne
+            if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('✅ Récapitulatif copié !');
+                    alert('✅ Récapitulatif copié dans le presse-papier !');
                 }).catch(() => {
-                    alert('❌ Impossible de copier. Faites une capture d\'écran.');
+                    fallbackCopy(text);
                 });
             } else {
-                alert('❌ Fonction de copie non disponible.');
+                fallbackCopy(text);
             }
+        }
+
+        function fallbackCopy(text) {
+            // Fallback : textarea temporaire + execCommand
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('✅ Récapitulatif copié dans le presse-papier !');
+            } catch (e) {
+                alert('❌ Impossible de copier automatiquement. Faites une capture d\'écran.');
+            }
+            document.body.removeChild(textarea);
         }
 
         function showQRCode() {

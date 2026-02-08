@@ -144,7 +144,7 @@
         }
 
         .manage-button-count {
-            font-size: 13px;
+            font-size: 15px;
             opacity: 0.7;
             margin-left: 8px;
         }
@@ -191,7 +191,7 @@
 
         .item-text {
             flex: 1;
-            font-size: 14px;
+            font-size: 15px;
             color: var(--dark);
         }
 
@@ -217,7 +217,7 @@
             color: var(--dark);
             padding: 12px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
@@ -262,7 +262,7 @@
         }
 
         .contact-relation {
-            font-size: 13px;
+            font-size: 15px;
             color: rgba(46, 58, 89, 0.6);
         }
 
@@ -373,14 +373,14 @@
         .empty-message {
             text-align: center;
             color: rgba(46, 58, 89, 0.5);
-            font-size: 14px;
+            font-size: 15px;
             padding: 20px;
             font-style: italic;
         }
 
         /* HINTS SOUS-TITRES */
         .section-hint {
-            font-size: 13px;
+            font-size: 15px;
             color: rgba(245, 228, 204, 0.9);
             margin-bottom: 12px;
             line-height: 1.4;
@@ -405,7 +405,7 @@
             background-color: rgba(46, 58, 89, 0.05);
             color: var(--dark);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -457,7 +457,7 @@
             background: rgba(244, 67, 54, 0.15) !important;
             color: var(--light) !important;
             border: 2px solid rgba(244, 67, 54, 0.3) !important;
-            font-size: 14px;
+            font-size: 15px;
         }
     </style>
 </head>
@@ -486,8 +486,8 @@
                           placeholder="Votre texte de présentation..."
                           oninput="markAsModified()"></textarea>
                 <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: center;">
-                    <button onclick="insertDefaultPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:12px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
-                    <button onclick="clearPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:12px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
+                    <button onclick="insertDefaultPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
+                    <button onclick="clearPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
                 </div>
             </div>
         </section>
@@ -659,7 +659,7 @@
             <h2 class="modal-title" id="modalTitle">Ajouter un item</h2>
             
             <div style="margin-bottom: 16px;">
-                <div style="font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 8px;">Emoji</div>
+                <div style="font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 8px;">Emoji</div>
                 <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px;">
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🎯')">🎯</div>
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🤲')">🤲</div>
@@ -668,7 +668,7 @@
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🧠')">🧠</div>
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('❤️')">❤️</div>
                 </div>
-                <div style="font-size: 14px; color: var(--dark); margin-bottom: 8px;">Ou tapez directement :</div>
+                <div style="font-size: 15px; color: var(--dark); margin-bottom: 8px;">Ou tapez directement :</div>
                 <input type="text"
                        style="width: 100%; padding: 12px 14px; border: 2px solid rgba(46, 58, 89, 0.2); border-radius: 8px; font-size: 16px; color: var(--dark); background-color: white; font-family: inherit;"
                        id="itemEmojiInput"
@@ -1190,14 +1190,22 @@
             markAsModified();
         }
 
+        // Compare le texte au texte par défaut pour ne pas sauvegarder le défaut comme "personnalisé"
+        function getPresentationTexteToSave() {
+            const texte = document.getElementById('textePresentationField').value;
+            // Si le texte est identique au texte par défaut, on sauvegarde vide (= utiliser le défaut)
+            if (texte.trim() === getDefaultPresentationText().trim()) return '';
+            return texte;
+        }
+
         // SAUVEGARDE
         function markAsModified() {
             hasUnsavedChanges = true;
-            contextData.presentation.texte = document.getElementById('textePresentationField').value;
+            contextData.presentation.texte = getPresentationTexteToSave();
         }
 
         function saveData() {
-            contextData.presentation.texte = document.getElementById('textePresentationField').value;
+            contextData.presentation.texte = getPresentationTexteToSave();
             localStorage.setItem('contexte_commun', JSON.stringify(contextData));
             hasUnsavedChanges = false;
             showToast();

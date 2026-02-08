@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="stylesheet" href="nora-common.css">
+    <script src="nora-data.js"></script>
+    <title>Carte d'urgence - TSA App</title>
+    <style>
+        body {
+            padding-bottom: 100px;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        .intro-text {
+            color: rgba(245, 228, 204, 0.8);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        /* SECTIONS */
+        .config-section {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-hint {
+            font-size: 15px;
+            color: rgba(245, 228, 204, 0.9);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .section-card {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        .section-label {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .section-help {
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.65);
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .section-example {
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.5);
+            font-style: italic;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        /* Textarea */
+        .text-field {
+            width: 100%;
+            background-color: rgba(46, 58, 89, 0.05);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 10px;
+            padding: 14px;
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--dark);
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .text-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            background-color: rgba(247, 184, 156, 0.05);
+        }
+
+        .text-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            justify-content: center;
+        }
+
+        .text-action-btn {
+            background: rgba(46, 58, 89, 0.08);
+            border: 1px solid rgba(46, 58, 89, 0.15);
+            color: var(--dark);
+            font-size: 15px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .text-action-btn:active {
+            background: rgba(46, 58, 89, 0.15);
+        }
+
+        /* Contacts */
+        .contacts-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .contacts-help {
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.65);
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .contact-item {
+            background-color: rgba(46, 58, 89, 0.05);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .contact-item.selected {
+            border-color: var(--accent);
+            background-color: rgba(247, 184, 156, 0.1);
+        }
+
+        .contact-check {
+            font-size: 20px;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .contact-info {
+            flex: 1;
+            color: var(--dark);
+        }
+
+        .contact-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .contact-phone {
+            font-size: 15px;
+            opacity: 0.65;
+        }
+
+        .contact-limit {
+            text-align: center;
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.5);
+            margin-top: 8px;
+        }
+
+        .no-contacts-msg {
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.5);
+            font-style: italic;
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        .add-contacts-btn {
+            background-color: rgba(247, 184, 156, 0.2);
+            border: 2px dashed var(--accent);
+            color: var(--dark);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .add-contacts-btn:active {
+            transform: scale(0.98);
+            background-color: rgba(247, 184, 156, 0.3);
+        }
+
+        /* Bouton gérer (infos médicales) */
+        .manage-button {
+            background-color: rgba(46, 58, 89, 0.1);
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            color: var(--dark);
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .manage-button:active {
+            transform: scale(0.98);
+            background-color: rgba(46, 58, 89, 0.15);
+        }
+
+        .manage-button-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .manage-button-arrow {
+            font-size: 18px;
+            opacity: 0.5;
+        }
+
+        /* Toggle */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .toggle-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .toggle-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 30px;
+            background-color: rgba(46, 58, 89, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background-color: var(--accent);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+
+        /* FOOTER */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg);
+            border-top: 1px solid rgba(245, 228, 204, 0.1);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .footer-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .footer-preview {
+            background-color: rgba(245, 228, 204, 0.1);
+            color: var(--light);
+        }
+
+        .footer-save {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+
+        .footer-button:active {
+            transform: scale(0.96);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 58, 89, 0.95);
+            color: var(--light);
+            padding: 14px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()">⬅️</button>
+        <h1 class="page-title" style="flex:1">Carte d'urgence</h1>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;">🏠</button>
+    </header>
+
+    <main class="main-content">
+
+        <p class="intro-text">
+            Configurez ici votre carte d'urgence. Elle pourra être montrée à une personne qui vous aide en cas de crise. Vous pouvez personnaliser le texte de présentation, choisir les contacts affichés et les informations médicales.
+        </p>
+
+        <!-- TEXTE DE PRÉSENTATION -->
+        <section class="config-section">
+            <h2 class="section-title">✍️ Texte de présentation</h2>
+            <p class="section-hint">Ce texte apparaît sous votre identité sur la carte d'urgence</p>
+            <div class="section-card">
+                <div class="section-help">
+                    Il permet de donner des informations complémentaires à la personne qui vous aide.
+                </div>
+                <div class="section-example">
+                    Ex : « Je suis autiste et en situation de crise. Je ne peux probablement pas parler mais je vous entends. »
+                </div>
+                <textarea class="text-field" id="presentationField" placeholder="Votre texte de présentation..." oninput="markAsModified()"></textarea>
+                <div class="text-actions">
+                    <button class="text-action-btn" onclick="insertDefault()">📝 Message par défaut</button>
+                    <button class="text-action-btn" onclick="clearField()">🗑️ Effacer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACTS -->
+        <section class="config-section">
+            <h2 class="section-title">📞 <span id="contactsSectionTitle">Contact(s) affiché(s) sur la carte</span></h2>
+            <p class="section-hint">Sélectionnez jusqu'à 3 contacts d'urgence à afficher sur votre carte avec leur numéro de téléphone</p>
+            <div class="section-card">
+                <div id="contactsList">
+                    <!-- Généré dynamiquement -->
+                </div>
+                <div class="contact-limit" id="contactLimit"></div>
+            </div>
+        </section>
+
+        <!-- INFORMATIONS MÉDICALES -->
+        <section class="config-section">
+            <h2 class="section-title">🚑 Informations médicales</h2>
+            <p class="section-hint">Informations importantes pour les secours, accessibles depuis la carte</p>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher les infos médicales</div>
+                    <div class="toggle-switch active" id="toggleMedical" onclick="toggleMedical()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <button class="manage-button" id="btnMedical" onclick="goToInfosMedicales()">
+                    <span class="manage-button-text">Modifier les informations médicales</span>
+                    <span class="manage-button-arrow">›</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <button class="footer-button footer-preview" onclick="window.location.href='carte.html'">
+            🪪 Voir ma carte
+        </button>
+        <button class="footer-button footer-save" onclick="saveData()">
+            💾 Enregistrer
+        </button>
+    </footer>
+
+    <div class="toast" id="toast">✅ Enregistré !</div>
+
+    <script>
+        const MAX_CARTE_CONTACTS = 3;
+        let carteContacts = [];
+        let allContacts = [];
+        let showMedical = true;
+        let hasUnsavedChanges = false;
+
+        const DEFAULT_PRESENTATION = `Je suis autiste verbale sans déficience intellectuelle.
+Je peux vous entendre mais probablement pas parler.`;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderContacts();
+            updateContactsTitle();
+        });
+
+        function loadData() {
+            // Charger le texte de présentation
+            const texte = localStorage.getItem('cartePresentation') || '';
+            document.getElementById('presentationField').value = texte || DEFAULT_PRESENTATION;
+
+            // Charger les contacts
+            allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+            carteContacts = JSON.parse(localStorage.getItem('carteContacts') || '[]');
+
+            // Nettoyer les orphelins
+            carteContacts = carteContacts.filter(id => allContacts.some(c => c.id === id));
+
+            // Charger le toggle médical
+            showMedical = localStorage.getItem('carteMedical') !== 'false';
+            updateToggle('toggleMedical', showMedical);
+            document.getElementById('btnMedical').style.display = showMedical ? 'flex' : 'none';
+        }
+
+        function updateContactsTitle() {
+            const count = carteContacts.length;
+            const titleEl = document.getElementById('contactsSectionTitle');
+            if (count <= 1) {
+                titleEl.textContent = 'Contact affiché sur la carte';
+            } else {
+                titleEl.textContent = 'Contacts affichés sur la carte';
+            }
+        }
+
+        function renderContacts() {
+            const container = document.getElementById('contactsList');
+            const limitEl = document.getElementById('contactLimit');
+
+            if (allContacts.length === 0) {
+                container.innerHTML = `
+                    <div class="no-contacts-msg">Aucun contact d'urgence enregistré.</div>
+                    <button class="add-contacts-btn" onclick="goToContacts()">
+                        ➕ Ajouter des contacts d'urgence
+                    </button>
+                `;
+                limitEl.textContent = '';
+                return;
+            }
+
+            container.innerHTML = allContacts.map(contact => {
+                const isSelected = carteContacts.includes(contact.id);
+                const lien = contact.lien ? ` (${contact.lien})` : '';
+                return `
+                    <div class="contact-item ${isSelected ? 'selected' : ''}" onclick="toggleContact('${contact.id}')">
+                        <div class="contact-check">${isSelected ? '✅' : '⚪'}</div>
+                        <div class="contact-info">
+                            <div class="contact-name">${contact.nom}${lien}</div>
+                            <div class="contact-phone">${contact.telephone || ''}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            limitEl.textContent = `${carteContacts.length} / ${MAX_CARTE_CONTACTS} sélectionné${carteContacts.length > 1 ? 's' : ''}`;
+        }
+
+        function toggleContact(contactId) {
+            const idx = carteContacts.indexOf(contactId);
+            if (idx >= 0) {
+                carteContacts.splice(idx, 1);
+            } else {
+                if (carteContacts.length >= MAX_CARTE_CONTACTS) {
+                    alert(`Vous ne pouvez sélectionner que ${MAX_CARTE_CONTACTS} contacts maximum.`);
+                    return;
+                }
+                carteContacts.push(contactId);
+            }
+            markAsModified();
+            renderContacts();
+            updateContactsTitle();
+        }
+
+        function toggleMedical() {
+            const toggle = document.getElementById('toggleMedical');
+            showMedical = !showMedical;
+            updateToggle('toggleMedical', showMedical);
+            document.getElementById('btnMedical').style.display = showMedical ? 'flex' : 'none';
+            markAsModified();
+        }
+
+        function updateToggle(id, active) {
+            const toggle = document.getElementById(id);
+            if (active) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        function markAsModified() {
+            hasUnsavedChanges = true;
+        }
+
+        function saveData() {
+            // Sauvegarder le texte (si identique au défaut, on sauvegarde vide)
+            const texte = document.getElementById('presentationField').value;
+            if (texte.trim() === DEFAULT_PRESENTATION.trim()) {
+                localStorage.setItem('cartePresentation', '');
+            } else {
+                localStorage.setItem('cartePresentation', texte);
+            }
+
+            // Sauvegarder les contacts
+            localStorage.setItem('carteContacts', JSON.stringify(carteContacts));
+
+            // Sauvegarder le toggle médical
+            localStorage.setItem('carteMedical', showMedical ? 'true' : 'false');
+
+            hasUnsavedChanges = false;
+            showToast();
+        }
+
+        function insertDefault() {
+            document.getElementById('presentationField').value = DEFAULT_PRESENTATION;
+            markAsModified();
+        }
+
+        function clearField() {
+            document.getElementById('presentationField').value = '';
+            markAsModified();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 1500);
+        }
+
+        function goToContacts() {
+            localStorage.setItem('returnTo', 'carte-config');
+            window.location.href = 'contacts-urgence.html';
+        }
+
+        function goToInfosMedicales() {
+            localStorage.setItem('returnTo', 'carte-config');
+            window.location.href = 'infos-medicales.html';
+        }
+
+        function goBack() {
+            if (hasUnsavedChanges) {
+                if (confirm('⚠️ Modifications non enregistrées\n\nVoulez-vous quitter sans enregistrer ?')) {
+                    window.location.href = 'parametres.html';
+                }
+            } else {
+                window.location.href = 'parametres.html';
+            }
+        }
+
+        // Confirmation avant fermeture si modifications non enregistrées
+        window.addEventListener('beforeunload', (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>

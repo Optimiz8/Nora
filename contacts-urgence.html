@@ -71,7 +71,7 @@
         }
 
         .contact-number {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             color: rgba(46, 58, 89, 0.6);
             text-transform: uppercase;
@@ -235,6 +235,7 @@
             transform: scale(0.98);
             background: rgba(247, 184, 156, 0.25);
         }
+
     </style>
 </head>
 <body>
@@ -256,6 +257,7 @@
         <div class="contacts-list" id="contactsList">
             <!-- Généré dynamiquement -->
         </div>
+
     </main>
 
     <!-- Modal Ajout/Modification -->
@@ -555,7 +557,14 @@
         }
 
         function goBack() {
-            window.location.href = 'parametres.html';
+            const returnTo = localStorage.getItem('returnTo');
+            if (returnTo === 'carte-config') {
+                localStorage.removeItem('returnTo');
+                window.location.href = 'carte-config.html';
+            } else {
+                localStorage.removeItem('returnTo');
+                window.location.href = 'parametres.html';
+            }
         }
     </script>
 </body>
