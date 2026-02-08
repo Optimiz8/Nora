@@ -112,38 +112,51 @@
             ✅ Profil enregistré avec succès !
         </div>
 
-        <!-- Prénom -->
         <div class="form-section">
-            <label class="form-label">Mon prénom dans l'application</label>
+            <label class="form-label">Mon identité</label>
             <p class="form-help">
-                Ce prénom sera utilisé dans l'application. Vous pouvez le modifier à tout moment.
+                Ces informations seront utilisées dans l'application. Vous pouvez les modifier à tout moment.
             </p>
-            <input 
-                type="text" 
-                class="form-input" 
-                id="prenomInput" 
+
+            <label class="form-label" style="font-size:14px; margin-top:8px;">Prénom</label>
+            <input
+                type="text"
+                class="form-input"
+                id="prenomInput"
                 placeholder="Ex : Marine"
                 maxlength="50"
             >
-        </div>
 
-        <!-- Bouton sauvegarder -->
-        <button class="save-button" onclick="saveProfil()">
-            💾 Enregistrer
-        </button>
+            <label class="form-label" style="font-size:14px; margin-top:8px;">Nom</label>
+            <input
+                type="text"
+                class="form-input"
+                id="nomInput"
+                placeholder="Ex : Dupont"
+                maxlength="50"
+            >
+
+            <button class="save-button" onclick="saveProfil()">
+                💾 Enregistrer
+            </button>
+        </div>
     </main>
 
     <script>
         // Charger les données au démarrage
         window.addEventListener('DOMContentLoaded', () => {
             const prenom = localStorage.getItem('userPrenom') || '';
+            const nom = localStorage.getItem('userNom') || '';
             document.getElementById('prenomInput').value = prenom;
+            document.getElementById('nomInput').value = nom;
         });
 
         // Sauvegarder
         function saveProfil() {
             const prenom = document.getElementById('prenomInput').value.trim();
+            const nom = document.getElementById('nomInput').value.trim();
             localStorage.setItem('userPrenom', prenom);
+            localStorage.setItem('userNom', nom);
             
             // Afficher message de succès
             const successMsg = document.getElementById('successMessage');

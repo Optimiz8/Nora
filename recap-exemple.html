@@ -6,6 +6,7 @@
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
     <link rel="stylesheet" href="nora-common.css">
+    <script src="nora-data.js"></script>
     <title>Aperçu - TSA App</title>
     <style>
         body {
@@ -465,8 +466,10 @@
                 const paragraphs = texte.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('');
                 container.innerHTML = paragraphs;
             } else {
-                // Texte par défaut
+                // Texte par défaut avec identité
                 container.innerHTML = `
+                    <p style="font-size: 17px; margin-bottom: 12px;">${getIdentiteLine()}</p>
+
                     <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
                     Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
 

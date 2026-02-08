@@ -655,13 +655,12 @@
                 </div>
                 <textarea class="textarea-field"
                           id="textePresentationField"
-                          placeholder="Laissez vide pour utiliser le message par défaut, ou écrivez votre propre texte..."
+                          placeholder="Votre texte de présentation..."
                           oninput="markAsModified()"></textarea>
-                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <button class="manage-button" style="flex: 1; font-size: 13px; padding: 8px 12px;" onclick="insertDefaultPresentation()">📝 Insérer le message par défaut</button>
-                    <button class="manage-button" style="font-size: 13px; padding: 8px 12px; opacity: 0.7;" onclick="clearPresentation()">✕ Effacer</button>
+                <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: center;">
+                    <button onclick="insertDefaultPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:12px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
+                    <button onclick="clearPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:12px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
                 </div>
-                <p class="section-hint" style="margin-top: 6px; font-size: 12px;">Si le champ est vide, un message par défaut sera utilisé automatiquement.</p>
             </div>
         </section>
 
@@ -1055,8 +1054,9 @@
                 };
             }
 
-            // Charger texte présentation
-            document.getElementById('textePresentationField').value = contextData.presentation.texte || '';
+            // Charger texte présentation (pré-remplir avec le texte par défaut si vide)
+            const textePres = contextData.presentation.texte || '';
+            document.getElementById('textePresentationField').value = textePres || getDefaultPresentationText();
 
             // Charger toggles
             updateToggle('togglePresentation', contextData.presentation.inclure);
@@ -1629,20 +1629,7 @@
         }
 
         function insertDefaultPresentation() {
-            const defaultText = `Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
-Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.
-
-Ce n'est pas volontaire.
-Ce n'est pas dangereux.
-Ce n'est pas un malaise médical classique.
-
-Mon état est involontaire et lié à une surcharge du système nerveux.
-Il peut fluctuer : je peux aller un peu mieux puis moins bien.
-Une crise peut durer de quelques dizaines de minutes à plusieurs heures.
-
-Je peux pleurer, trembler, crier, me figer, avoir des mouvements involontaires ou de réassurance (stim)...
-N'essayez pas de m'empêcher de bouger, cela m'aide à me réguler.`;
-            document.getElementById('textePresentationField').value = defaultText;
+            document.getElementById('textePresentationField').value = getDefaultPresentationText();
             markAsModified();
         }
 

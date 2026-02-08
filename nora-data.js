@@ -157,6 +157,40 @@ function getFlowPages(config) {
     return pages;
 }
 
+// Retourne le texte de présentation par défaut avec prénom/nom
+function getDefaultPresentationText() {
+    const prenom = localStorage.getItem('userPrenom') || '';
+    const nom = localStorage.getItem('userNom') || '';
+    const prenomAffiche = prenom || '[Prénom]';
+    const nomAffiche = nom || '[Nom]';
+
+    return `Bonjour,
+Je m'appelle ${prenomAffiche} ${nomAffiche}.
+
+Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
+Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.
+
+Ce n'est pas volontaire.
+Ce n'est pas dangereux.
+Ce n'est pas un malaise médical classique.
+
+Mon état est involontaire et lié à une surcharge du système nerveux.
+Il peut fluctuer : je peux aller un peu mieux puis moins bien.
+Une crise peut durer de quelques dizaines de minutes à plusieurs heures.
+
+Je peux pleurer, trembler, crier, me figer, avoir des mouvements involontaires ou de réassurance (stim)...
+N'essayez pas de m'empêcher de bouger, cela m'aide à me réguler.`;
+}
+
+// Retourne le texte d'intro "Bonjour, je m'appelle..." pour le récap
+function getIdentiteLine() {
+    const prenom = localStorage.getItem('userPrenom') || '';
+    const nom = localStorage.getItem('userNom') || '';
+    const prenomAffiche = prenom || '[Prénom]';
+    const nomAffiche = nom || '[Nom]';
+    return `Bonjour,<br>Je m'appelle ${prenomAffiche} ${nomAffiche}.`;
+}
+
 // Retourne la page suivante dans le flux (ou null)
 function getNextPage(currentPage, config) {
     const pages = getFlowPages(config);
