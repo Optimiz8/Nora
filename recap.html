@@ -52,6 +52,21 @@
             text-align: center;
         }
 
+        .alert-block, .alert-block p, .alert-block li, .intro-text,
+        .collapsible-section .section-inner,
+        .collapsible-section .section-inner p,
+        .collapsible-section .section-inner span,
+        .collapsible-section .section-inner li,
+        .collapsible-section .section-inner div,
+        .collapsible-section .section-header,
+        .section-header span,
+        .capacity-group-title,
+        .capacity-inline-list,
+        .need-item,
+        .state-item {
+            color: #2E3A59 !important;
+        }
+
         .intro-text {
             margin-bottom: 12px;
         }
@@ -292,6 +307,11 @@
 
         .modal-text {
             line-height: 1.7;
+            color: var(--dark);
+        }
+
+        .modal-text p, .modal-text li, .modal-text ul {
+            color: var(--dark) !important;
         }
 
         .modal-text h3 {
@@ -651,36 +671,13 @@
     </div>
 
     <div class="content">
-        <div class="alert-block">
+        <div class="alert-block" id="presentationSection">
             <div class="alert-title">
                 🚨 JE SUIS EN CRISE AUTISTIQUE
             </div>
-            
-            <div class="intro-text">
-                <p><strong>Bonjour,</strong>
-                Je m'appelle Marine.
-                Je suis autiste, verbale, sans déficience intellectuelle.</p>
 
-                <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
-                Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
-
-                <div class="highlight-box">
-                    <p>Ce n'est pas volontaire.</p>
-                    <p>Ce n'est pas dangereux.</p>
-                    <p>Ce n'est pas un malaise médical classique.</p>
-                </div>
-
-                <div class="info-important">
-                    <h3>ℹ️ Ce que vous devez savoir (important)</h3>
-                    <ul>
-                        <li>Mon état est involontaire et lié à une surcharge du système nerveux.</li>
-                        <li>Il peut fluctuer : je peux aller un peu mieux puis moins bien.</li>
-                        <li>Une crise peut durer de quelques dizaines de minutes à plusieurs heures.</li>
-                    </ul>
-                    
-                    <p style="margin-top: 12px;">Je peux pleurer, trembler, crier, me figer, avoir des mouvements involontaires ou de réassurance (stim)...</p>
-                    <p style="margin-top: 6px; font-weight: 600;">👉 N'essayez pas de m'empêcher de bouger, cela m'aide à me réguler.</p>
-                </div>
+            <div class="intro-text" id="presentationText">
+                <!-- Généré dynamiquement -->
             </div>
         </div>
 
@@ -724,45 +721,27 @@
         </div>
 
         <!-- Section Contact d'urgence -->
-        <div class="collapsible-section">
+        <div class="collapsible-section" id="contactsSection">
             <button class="section-header" onclick="toggleSection(this)">
                 <span>📞 Contact d'urgence</span>
                 <span class="chevron">▼</span>
             </button>
             <div class="section-content">
-                <div class="section-inner">
-                    <p style="margin-bottom: 12px;"><strong>Personne de confiance</strong></p>
-                    <p style="margin-bottom: 12px;">Nom du contact</p>
-                    <div class="contact-buttons">
-                        <button class="contact-btn" onclick="callContact()">
-                            <span>📞</span>
-                            <span>Appeler</span>
-                        </button>
-                        <button class="contact-btn" onclick="messageContact()">
-                            <span>💬</span>
-                            <span>Message</span>
-                        </button>
-                    </div>
+                <div class="section-inner" id="contactsContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
 
         <!-- Section Informations médicales -->
-        <div class="collapsible-section">
+        <div class="collapsible-section" id="medicalSection">
             <button class="section-header" onclick="toggleSection(this)">
                 <span>🚑 Informations médicales (pour les secours)</span>
                 <span class="chevron">▼</span>
             </button>
             <div class="section-content">
-                <div class="section-inner">
-                    <p style="margin-bottom: 8px;"><strong>Médicaments :</strong></p>
-                    <p style="margin-bottom: 16px;">À compléter dans les paramètres</p>
-                    
-                    <p style="margin-bottom: 8px;"><strong>Allergies :</strong></p>
-                    <p style="margin-bottom: 16px;">À compléter dans les paramètres</p>
-                    
-                    <p style="margin-bottom: 8px;"><strong>Informations utiles :</strong></p>
-                    <p>À compléter dans les paramètres</p>
+                <div class="section-inner" id="medicalContent">
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
@@ -986,40 +965,226 @@
             }
         }
 
+        let profileConfig = null;
+
         function loadRecapData() {
             try {
+                const profilId = localStorage.getItem('profilActuel') || 'commun';
+                profileConfig = getProfileConfig(profilId);
+
+                // Présentation dynamique
+                loadPresentation(profileConfig);
+
                 const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
                 const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
                 const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
-                
-                console.log('Données chargées:', {capacites, besoins, etats});
-                
+
                 updateCapacitesDisplay(capacites);
                 updateBesoinsDisplay(besoins);
                 updateEtatsDisplay(etats);
-                hideEmptySections(capacites, besoins, etats);
-                
+                hideEmptySections(profileConfig, capacites, besoins, etats);
+
+                // Contacts dynamiques
+                loadContacts(profileConfig);
+
+                // Infos médicales dynamiques
+                loadMedical(profileConfig);
+
             } catch (error) {
                 console.error('Erreur chargement:', error);
             }
         }
 
-        function hideEmptySections(capacites, besoins, etats) {
-            const hasCapacites = (capacites.impossible?.length > 0) ||
-                                (capacites.difficile?.length > 0) ||
-                                (capacites.possible?.length > 0) ||
-                                (capacites.incertain?.length > 0);
-            
-            if (!hasCapacites) {
-                document.getElementById('capacitesSection').style.display = 'none';
+        function loadPresentation(config) {
+            const container = document.getElementById('presentationText');
+            if (!container) return;
+
+            // Si la présentation est désactivée dans le profil, cacher le bloc
+            if (config.presentation && config.presentation.inclure === false) {
+                document.getElementById('presentationSection').style.display = 'none';
+                return;
             }
-            
-            if (besoins.length === 0) {
-                document.getElementById('besoinsSection').style.display = 'none';
+
+            const texte = config.presentation?.texte || '';
+
+            if (texte.trim()) {
+                // Texte personnalisé : on le convertit en paragraphes
+                const paragraphs = texte.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('');
+                container.innerHTML = paragraphs;
+            } else {
+                // Texte par défaut
+                container.innerHTML = `
+                    <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
+                    Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
+
+                    <div class="highlight-box">
+                        <p>Ce n'est pas volontaire.</p>
+                        <p>Ce n'est pas dangereux.</p>
+                        <p>Ce n'est pas un malaise médical classique.</p>
+                    </div>
+
+                    <div class="info-important">
+                        <h3>ℹ️ Ce que vous devez savoir (important)</h3>
+                        <ul>
+                            <li>Mon état est involontaire et lié à une surcharge du système nerveux.</li>
+                            <li>Il peut fluctuer : je peux aller un peu mieux puis moins bien.</li>
+                            <li>Une crise peut durer de quelques dizaines de minutes à plusieurs heures.</li>
+                        </ul>
+
+                        <p style="margin-top: 12px;">Je peux pleurer, trembler, crier, me figer, avoir des mouvements involontaires ou de réassurance (stim)...</p>
+                        <p style="margin-top: 6px; font-weight: 600;">👉 N'essayez pas de m'empêcher de bouger, cela m'aide à me réguler.</p>
+                    </div>`;
             }
-            
-            if (etats.length === 0) {
-                document.getElementById('etatsSection').style.display = 'none';
+        }
+
+        function loadContacts(config) {
+            const section = document.getElementById('contactsSection');
+            const container = document.getElementById('contactsContent');
+            if (!section || !container) return;
+
+            // Si contacts désactivés dans le profil
+            if (config.contacts && config.contacts.inclure === false) {
+                section.style.display = 'none';
+                return;
+            }
+
+            // Charger les contacts d'urgence depuis localStorage
+            const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+
+            // Migration : ajouter un ID aux contacts qui n'en ont pas
+            let needsSave = false;
+            allContacts.forEach(contact => {
+                if (!contact.id) {
+                    contact.id = 'contact_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    needsSave = true;
+                }
+            });
+            if (needsSave) {
+                localStorage.setItem('contactsUrgence', JSON.stringify(allContacts));
+            }
+
+            const selection = config.contacts?.selection || [];
+
+            // Filtrer les contacts sélectionnés dans le profil
+            let contactsToShow = allContacts;
+            if (selection.length > 0) {
+                contactsToShow = allContacts.filter(c => selection.includes(c.id || c.nom));
+            }
+
+            if (contactsToShow.length === 0) {
+                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact configuré</p>';
+                return;
+            }
+
+            let html = '';
+            contactsToShow.forEach(contact => {
+                const nom = contact.nom || 'Contact';
+                const relation = contact.lien || contact.relation || '';
+                const tel = contact.telephone || contact.tel || '';
+
+                html += `<div style="margin-bottom: 16px;">`;
+                if (relation) {
+                    html += `<p style="margin-bottom: 4px;"><strong>${relation}</strong></p>`;
+                }
+                html += `<p style="margin-bottom: 8px;">${nom}</p>`;
+                if (tel) {
+                    html += `<div class="contact-buttons">
+                        <button class="contact-btn" onclick="window.location.href='tel:${tel}'">
+                            <span>📞</span><span>Appeler</span>
+                        </button>
+                        <button class="contact-btn" onclick="window.location.href='sms:${tel}'">
+                            <span>💬</span><span>Message</span>
+                        </button>
+                    </div>`;
+                }
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function loadMedical(config) {
+            const section = document.getElementById('medicalSection');
+            const container = document.getElementById('medicalContent');
+            if (!section || !container) return;
+
+            // Si médical désactivé dans le profil
+            if (config.medical && config.medical.inclure === false) {
+                section.style.display = 'none';
+                return;
+            }
+
+            // Charger les infos médicales depuis localStorage
+            const infos = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
+
+            let html = '';
+
+            // Groupe sanguin
+            if (infos.groupeSanguin) {
+                html += `<p style="margin-bottom: 8px;"><strong>Groupe sanguin :</strong></p>
+                         <p style="margin-bottom: 16px;">${infos.groupeSanguin}</p>`;
+            }
+
+            // Traitements / Médicaments
+            if (infos.traitements) {
+                html += `<p style="margin-bottom: 8px;"><strong>Traitements en cours :</strong></p>
+                         <p style="margin-bottom: 16px;">${infos.traitements}</p>`;
+            }
+
+            // Allergies (médicamenteuses + autres)
+            const allergies = [];
+            if (infos.allergiesMedic) allergies.push(infos.allergiesMedic);
+            if (infos.autresAllergies) allergies.push(infos.autresAllergies);
+            if (allergies.length > 0) {
+                html += `<p style="margin-bottom: 8px;"><strong>Allergies :</strong></p>
+                         <p style="margin-bottom: 16px;">${allergies.join(', ')}</p>`;
+            }
+
+            // Antécédents
+            if (infos.antecedents) {
+                html += `<p style="margin-bottom: 8px;"><strong>Antécédents :</strong></p>
+                         <p style="margin-bottom: 16px;">${infos.antecedents}</p>`;
+            }
+
+            // Autres infos
+            if (infos.autresInfos) {
+                html += `<p style="margin-bottom: 8px;"><strong>Informations utiles :</strong></p>
+                         <p>${infos.autresInfos}</p>`;
+            }
+
+            if (!html) {
+                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucune information médicale configurée</p>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function hideEmptySections(config, capacites, besoins, etats) {
+            // Cacher selon le profil (inclure = false) OU si pas de données
+            const capSection = document.getElementById('capacitesSection');
+            const besSection = document.getElementById('besoinsSection');
+            const etatSection = document.getElementById('etatsSection');
+
+            if (!config.capacites.inclure) {
+                capSection.style.display = 'none';
+            } else {
+                const hasCapacites = (capacites.impossible?.length > 0) ||
+                                    (capacites.difficile?.length > 0) ||
+                                    (capacites.possible?.length > 0) ||
+                                    (capacites.incertain?.length > 0);
+                if (!hasCapacites) capSection.style.display = 'none';
+            }
+
+            if (!config.besoins.inclure) {
+                besSection.style.display = 'none';
+            } else {
+                if (besoins.length === 0) besSection.style.display = 'none';
+            }
+
+            if (!config.etats.inclure) {
+                etatSection.style.display = 'none';
+            } else {
+                if (etats.length === 0) etatSection.style.display = 'none';
             }
         }
 
@@ -1120,49 +1285,76 @@
 
         function modifyRecap() {
             if (confirm('Retourner modifier vos informations ?')) {
-                window.location.href = 'capacites.html';
+                const config = profileConfig || getProfileConfig(localStorage.getItem('profilActuel') || 'commun');
+                const pages = getFlowPages(config);
+                // Aller à la première page du flow (pas recap)
+                const firstPage = pages.length > 1 ? pages[0] : 'capacites.html';
+                window.location.href = firstPage;
             }
         }
 
         function shareRecap() {
+            const config = profileConfig || getProfileConfig(localStorage.getItem('profilActuel') || 'commun');
             const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
             const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
             const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
-            
+
+            // Présentation dynamique
+            let presentationText = '';
+            if (config.presentation?.inclure !== false && config.presentation?.texte?.trim()) {
+                presentationText = config.presentation.texte.trim() + '\n\n';
+            }
+
             let capacitesText = '';
-            if (capacites.impossible?.length > 0) {
-                capacitesText += `⛔ Ce qui m'est impossible actuellement :\n${capacites.impossible.join(', ')}\n\n`;
+            if (config.capacites.inclure) {
+                if (capacites.impossible?.length > 0) {
+                    capacitesText += `⛔ Ce qui m'est impossible actuellement :\n${capacites.impossible.join(', ')}\n\n`;
+                }
+                if (capacites.difficile?.length > 0) {
+                    capacitesText += `⚠️ Ce qui m'est difficile actuellement :\n${capacites.difficile.join(', ')}\n\n`;
+                }
+                if (capacites.possible?.length > 0) {
+                    capacitesText += `✅ Ce qui m'est actuellement possible :\n${capacites.possible.join(', ')}\n\n`;
+                }
+                if (capacites.incertain?.length > 0) {
+                    capacitesText += `❓ Ce que je ne sais pas si je suis en capacité :\n${capacites.incertain.join(', ')}\n\n`;
+                }
             }
-            if (capacites.difficile?.length > 0) {
-                capacitesText += `⚠️ Ce qui m'est difficile actuellement :\n${capacites.difficile.join(', ')}\n\n`;
-            }
-            if (capacites.possible?.length > 0) {
-                capacitesText += `✅ Ce qui m'est actuellement possible :\n${capacites.possible.join(', ')}\n\n`;
-            }
-            if (capacites.incertain?.length > 0) {
-                capacitesText += `❓ Ce que je ne sais pas si je suis en capacité :\n${capacites.incertain.join(', ')}\n\n`;
-            }
-            
+
             let besoinsText = '';
-            if (besoins.length > 0) {
+            if (config.besoins.inclure && besoins.length > 0) {
                 const besoinsLabels = besoins.map(b => b.label || b);
                 besoinsText = `CE QUI VA M'AIDER :\n${besoinsLabels.join(', ')}\n\n`;
             }
-            
+
             let etatsText = '';
-            if (etats.length > 0) {
+            if (config.etats.inclure && etats.length > 0) {
                 const etatsLabels = etats.map(e => e.label || e);
                 etatsText = `COMMENT JE ME SENS :\n${etatsLabels.join(', ')}\n\n`;
             }
-            
-            const shareText = `🚨 Marine est en crise autistique
 
-${capacitesText}---
-${besoinsText}---
-${etatsText}---
-CONTACT D'URGENCE :
-[Nom du contact]
-[Numéro à ajouter]`;
+            // Contacts dynamiques pour le partage
+            let contactText = '';
+            if (config.contacts?.inclure !== false) {
+                const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+                const selection = config.contacts?.selection || [];
+                let contactsToShow = allContacts;
+                if (selection.length > 0) {
+                    contactsToShow = allContacts.filter(c => selection.includes(c.id || c.nom));
+                }
+                if (contactsToShow.length > 0) {
+                    contactText = 'CONTACT D\'URGENCE :\n';
+                    contactsToShow.forEach(c => {
+                        contactText += `${c.nom || 'Contact'}`;
+                        if (c.telephone || c.tel) contactText += ` - ${c.telephone || c.tel}`;
+                        contactText += '\n';
+                    });
+                }
+            }
+
+            const shareText = `🚨 JE SUIS EN CRISE AUTISTIQUE
+
+${presentationText}${capacitesText}${besoinsText}${etatsText}${contactText}`.trim();
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -1355,7 +1547,7 @@ CONTACT D'URGENCE :
                 const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
                 const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
                 const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
-                const profil = localStorage.getItem('currentProfil') || 'maison';
+                const profil = localStorage.getItem('profilActuel') || 'commun';
                 
                 // Créer l'horodatage
                 const timeInput = document.getElementById('crisisTime').value;
@@ -1369,9 +1561,12 @@ CONTACT D'URGENCE :
                     horodatage = dateOnly.toISOString();
                 }
 
+                const profilInfo = getContexteInfo(profil);
                 const crisisEntry = {
                     horodatage: horodatage,
                     profil: profil,
+                    profilNom: profilInfo.nom,
+                    profilEmoji: profilInfo.emoji,
                     capacites: capacites,
                     besoins: besoins,
                     etats: etats,
@@ -1416,18 +1611,18 @@ CONTACT D'URGENCE :
             }
         }
 
-        function callContact() {
-            window.location.href = 'tel:'; // À compléter avec le numéro
-        }
-
-        function messageContact() {
-            window.location.href = 'sms:'; // À compléter avec le numéro
-        }
 
         function goBack() {
             if (confirm('Retourner à l\'accueil ?')) {
                 window.location.href = 'index.html';
             }
+        }
+
+        // Mettre aussi à jour le profil dans le journal
+        function getCurrentProfilName() {
+            const profilId = localStorage.getItem('profilActuel') || 'commun';
+            const info = getContexteInfo(profilId);
+            return info.nom;
         }
 
         document.addEventListener('DOMContentLoaded', loadRecapData);

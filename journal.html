@@ -595,11 +595,12 @@
 </head>
 <body>
     <header class="header">
-        <div class="header-left">
+        <div class="header-left" style="flex:1">
             <button class="back-button" onclick="goHome()">⬅️</button>
             <h1 class="page-title">Journal de crises</h1>
         </div>
         <button class="export-button" onclick="showExportOptions()">📤 Exporter</button>
+        <button class="back-button" onclick="window.location.href='index.html'">🏠</button>
     </header>
 
     <main class="main-content">
@@ -754,12 +755,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     
     <script>
-        const PROFILES = {
-            maison: { icon: '🏠', name: 'Maison' },
-            exterieur: { icon: '🌍', name: 'Extérieur' },
-            travail: { icon: '💼', name: 'Travail' },
-            secours: { icon: '🚑', name: 'Secours' }
-        };
+        // Profils statiques par défaut + dynamiques depuis localStorage
+        function getProfiles() {
+            const profiles = {
+                commun: { icon: '🌐', name: 'Profil commun' },
+                maison: { icon: '🏠', name: 'Maison' },
+                exterieur: { icon: '🌍', name: 'Extérieur' },
+                travail: { icon: '💼', name: 'Travail' },
+                secours: { icon: '🚑', name: 'Secours' }
+            };
+            // Ajouter les contextes personnalisés
+            const contextes = JSON.parse(localStorage.getItem('contextes') || '[]');
+            contextes.forEach(ctx => {
+                if (ctx.id && !profiles[ctx.id]) {
+                    profiles[ctx.id] = { icon: ctx.emoji || '📍', name: ctx.nom || ctx.id };
+                }
+            });
+            return profiles;
+        }
+        const PROFILES = getProfiles();
 
         const TRIGGERS = {
             "Hypersensibilité et Surcharges Sensorielles": [
@@ -824,9 +838,9 @@
             const dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
             const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
             
-            const profile = PROFILES[entry.profil] || { icon: '📍', name: '?' };
-            
-            const capsCount = (entry.capacites?.impossible?.length || 0) + 
+            const profile = PROFILES[entry.profil] || { icon: entry.profilEmoji || '📍', name: entry.profilNom || '?' };
+
+            const capsCount = (entry.capacites?.impossible?.length || 0) +
                             (entry.capacites?.difficile?.length || 0) + 
                             (entry.capacites?.possible?.length || 0) + 
                             (entry.capacites?.incertain?.length || 0);
@@ -896,7 +910,7 @@
             const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
             const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
             
-            const profile = PROFILES[entry.profil] || { icon: '📍', name: '?' };
+            const profile = PROFILES[entry.profil] || { icon: entry.profilEmoji || '📍', name: entry.profilNom || '?' };
             
             let intensityText = '-';
             if (entry.intensite !== undefined && entry.intensite !== '') {
@@ -1200,7 +1214,7 @@
                 const dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
                 const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
                 
-                const profile = PROFILES[entry.profil] || { name: '?' };
+                const profile = PROFILES[entry.profil] || { icon: entry.profilEmoji || '📍', name: entry.profilNom || '?' };
                 
                 // Détail des capacités
                 let capsDetail = '';

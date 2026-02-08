@@ -290,6 +290,22 @@
         .hidden {
             display: none !important;
         }
+
+        /* Fix couleur texte en dark mode */
+        .alert-block, .alert-block p, .alert-block li, .intro-text,
+        .collapsible-section .section-inner,
+        .collapsible-section .section-inner p,
+        .collapsible-section .section-inner span,
+        .collapsible-section .section-inner li,
+        .collapsible-section .section-inner div,
+        .collapsible-section .section-header,
+        .section-header span,
+        .capacity-group-title,
+        .capacity-inline-list,
+        .need-item,
+        .state-item {
+            color: #2E3A59 !important;
+        }
     </style>
 </head>
 <body>
@@ -306,11 +322,11 @@
     </div>
 
     <div class="content">
-        <div class="alert-block">
+        <div class="alert-block" id="presentationSection">
             <div class="alert-title">
                 🚨 JE SUIS EN CRISE AUTISTIQUE
             </div>
-            
+
             <div class="intro-text" id="presentationText">
                 <!-- Sera rempli par JS -->
             </div>
@@ -376,14 +392,7 @@
             </button>
             <div class="section-content">
                 <div class="section-inner" id="medicalContent">
-                    <p style="margin-bottom: 8px;"><strong>Médicaments :</strong></p>
-                    <p style="margin-bottom: 16px;" id="medicaments">À compléter dans les paramètres</p>
-                    
-                    <p style="margin-bottom: 8px;"><strong>Allergies :</strong></p>
-                    <p style="margin-bottom: 16px;" id="allergies">À compléter dans les paramètres</p>
-                    
-                    <p style="margin-bottom: 8px;"><strong>Informations utiles :</strong></p>
-                    <p id="infosUtiles">À compléter dans les paramètres</p>
+                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
@@ -449,39 +458,36 @@
 
         function loadPresentation(data) {
             const container = document.getElementById('presentationText');
-            const prenom = localStorage.getItem('userPrenom') || 'Marine';
-            
-            let html = `
-                <p><strong>Bonjour,</strong>
-                Je m'appelle ${prenom}.
-                Je suis autiste, verbale, sans déficience intellectuelle.</p>
+            const texte = data.textePresentation || '';
 
-                <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
-                Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
-            `;
+            if (texte.trim()) {
+                // Texte personnalisé : on le convertit en paragraphes
+                const paragraphs = texte.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('');
+                container.innerHTML = paragraphs;
+            } else {
+                // Texte par défaut
+                container.innerHTML = `
+                    <p>Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
+                    Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.</p>
 
-            if (data.textePresentation) {
-                html += `<p style="margin: 16px 0; padding: 12px; background: rgba(247, 184, 156, 0.15); border-left: 4px solid var(--accent); border-radius: 4px;">${data.textePresentation}</p>`;
+                    <div class="highlight-box">
+                        <p>Ce n'est pas volontaire.</p>
+                        <p>Ce n'est pas dangereux.</p>
+                        <p>Ce n'est pas un malaise médical classique.</p>
+                    </div>
+
+                    <div class="info-important">
+                        <h3>ℹ️ Ce que vous devez savoir (important)</h3>
+                        <ul>
+                            <li>Mon état est involontaire et lié à une surcharge du système nerveux.</li>
+                            <li>Il peut fluctuer : je peux aller un peu mieux puis moins bien.</li>
+                            <li>Une crise peut durer de quelques dizaines de minutes à plusieurs heures.</li>
+                        </ul>
+
+                        <p style="margin-top: 12px;">Je peux pleurer, trembler, crier, me figer, avoir des mouvements involontaires ou de réassurance (stim)...</p>
+                        <p style="margin-top: 6px; font-weight: 600;">👉 N'essayez pas de m'empêcher de bouger, cela m'aide à me réguler.</p>
+                    </div>`;
             }
-
-            html += `
-                <div class="highlight-box">
-                    <p>Ce n'est pas volontaire.</p>
-                    <p>Ce n'est pas dangereux.</p>
-                    <p>Ce n'est pas un malaise médical classique.</p>
-                </div>
-
-                <div class="info-important">
-                    <h3>ℹ️ Ce que vous devez savoir (important)</h3>
-                    <ul>
-                        <li>Mon état est involontaire et lié à une surcharge du système nerveux.</li>
-                        <li>Il peut fluctuer : je peux aller un peu mieux puis moins bien.</li>
-                        <li>Une crise peut durer de quelques dizaines de minutes à plusieurs heures.</li>
-                    </ul>
-                </div>
-            `;
-            
-            container.innerHTML = html;
         }
 
         function loadCapacites(capacites) {
@@ -490,43 +496,40 @@
                 container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucune capacité configurée</p>';
                 return;
             }
-            
+
+            const categories = [
+                { key: 'impossible', emoji: '⛔', label: 'Ce qui m\'est impossible actuellement' },
+                { key: 'difficile', emoji: '⚠️', label: 'Ce qui m\'est difficile actuellement' },
+                { key: 'possible', emoji: '✅', label: 'Ce qui m\'est actuellement possible' },
+                { key: 'incertain', emoji: '❓', label: 'Ce que je ne sais pas si je suis en capacité' }
+            ];
+
             let html = '';
-            
-            if (capacites.impossible?.length > 0) {
+
+            // Afficher les 4 catégories avec placeholder
+            categories.forEach(cat => {
+                const items = capacites[cat.key] || [];
                 html += `
                     <div class="capacity-group">
                         <p class="capacity-group-title">
-                            <span class="item-status">⛔</span> Ce qui m'est impossible actuellement :
+                            <span class="item-status">${cat.emoji}</span> ${cat.label} :
                         </p>
-                        <p class="capacity-inline-list">${capacites.impossible.join(', ')}</p>
+                        <p class="capacity-inline-list" style="${items.length === 0 ? 'opacity: 0.5; font-style: italic;' : ''}">
+                            ${items.length > 0 ? items.join(', ') : '(Les capacités classées ici apparaîtront lors d\'une crise)'}
+                        </p>
                     </div>`;
-            }
-            
-            if (capacites.difficile?.length > 0) {
+            });
+
+            // Liste des capacités visibles pour ce profil
+            const visibleNames = capacites._visibleNames || [];
+            if (visibleNames.length > 0) {
                 html += `
-                    <div class="capacity-group">
-                        <p class="capacity-group-title">
-                            <span class="item-status">⚠️</span> Ce qui m'est difficile actuellement :
-                        </p>
-                        <p class="capacity-inline-list">${capacites.difficile.join(', ')}</p>
+                    <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid rgba(46,58,89,0.15);">
+                        <p style="font-weight: 600; margin-bottom: 6px;">Capacités à choisir lors d'une crise :</p>
+                        <p style="opacity: 0.7; font-size: 14px;">${visibleNames.join(', ')}</p>
                     </div>`;
             }
-            
-            if (capacites.possible?.length > 0) {
-                html += `
-                    <div class="capacity-group">
-                        <p class="capacity-group-title">
-                            <span class="item-status">✅</span> Ce qui m'est actuellement possible :
-                        </p>
-                        <p class="capacity-inline-list">${capacites.possible.join(', ')}</p>
-                    </div>`;
-            }
-            
-            if (html === '') {
-                html = '<p style="color: #2E3A59; opacity: 0.6; font-style: italic;">Les capacités sélectionnées lors d\'une crise apparaîtront ici. Vous pourrez choisir ce qui vous est impossible, difficile ou possible lors de la personnalisation de votre récapitulatif de crise.</p>';
-            }
-            
+
             container.innerHTML = html;
         }
 
@@ -607,78 +610,76 @@
         }
 
         function loadMedical(afficher, infosMed) {
-            if (!afficher) {
-                document.getElementById('medicalSection').style.display = 'none';
+            const section = document.getElementById('medicalSection');
+            const container = document.getElementById('medicalContent');
+
+            if (afficher === false) {
+                section.style.display = 'none';
                 return;
             }
 
             // Si les données médicales ne sont pas passées, les lire depuis localStorage
-            if (!infosMed) {
+            if (!infosMed || Object.keys(infosMed).length === 0) {
                 infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
             }
 
-            // Médicaments/Traitements
-            const medicElem = document.getElementById('medicaments');
-            if (infosMed.traitements && infosMed.traitements.trim()) {
-                medicElem.textContent = infosMed.traitements;
-                medicElem.style.opacity = '1';
-                medicElem.style.fontStyle = 'normal';
-            } else {
-                medicElem.textContent = 'Aucun traitement renseigné';
-                medicElem.style.opacity = '0.6';
-                medicElem.style.fontStyle = 'italic';
+            let html = '';
+
+            if (infosMed.groupeSanguin) {
+                html += `<p style="margin-bottom: 8px;"><strong>Groupe sanguin :</strong></p>
+                         <p style="margin-bottom: 16px;">${infosMed.groupeSanguin}</p>`;
             }
 
-            // Allergies
-            const allergiesElem = document.getElementById('allergies');
-            let allergies = [];
-            if (infosMed.allergiesMedic && infosMed.allergiesMedic.trim()) allergies.push(infosMed.allergiesMedic);
-            if (infosMed.autresAllergies && infosMed.autresAllergies.trim()) allergies.push(infosMed.autresAllergies);
+            if (infosMed.traitements) {
+                html += `<p style="margin-bottom: 8px;"><strong>Traitements en cours :</strong></p>
+                         <p style="margin-bottom: 16px;">${infosMed.traitements}</p>`;
+            }
 
+            const allergies = [];
+            if (infosMed.allergiesMedic) allergies.push(infosMed.allergiesMedic);
+            if (infosMed.autresAllergies) allergies.push(infosMed.autresAllergies);
             if (allergies.length > 0) {
-                allergiesElem.textContent = allergies.join(', ');
-                allergiesElem.style.opacity = '1';
-                allergiesElem.style.fontStyle = 'normal';
-            } else {
-                allergiesElem.textContent = 'Aucune allergie renseignée';
-                allergiesElem.style.opacity = '0.6';
-                allergiesElem.style.fontStyle = 'italic';
+                html += `<p style="margin-bottom: 8px;"><strong>Allergies :</strong></p>
+                         <p style="margin-bottom: 16px;">${allergies.join(', ')}</p>`;
             }
 
-            // Autres infos
-            const infosElem = document.getElementById('infosUtiles');
-            if (infosMed.autresInfos && infosMed.autresInfos.trim()) {
-                infosElem.textContent = infosMed.autresInfos;
-                infosElem.style.opacity = '1';
-                infosElem.style.fontStyle = 'normal';
-            } else {
-                infosElem.textContent = 'Aucune information complémentaire';
-                infosElem.style.opacity = '0.6';
-                infosElem.style.fontStyle = 'italic';
+            if (infosMed.antecedents) {
+                html += `<p style="margin-bottom: 8px;"><strong>Antécédents :</strong></p>
+                         <p style="margin-bottom: 16px;">${infosMed.antecedents}</p>`;
             }
+
+            if (infosMed.autresInfos) {
+                html += `<p style="margin-bottom: 8px;"><strong>Informations utiles :</strong></p>
+                         <p>${infosMed.autresInfos}</p>`;
+            }
+
+            if (!html) {
+                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucune information médicale configurée</p>';
+            }
+
+            container.innerHTML = html;
         }
 
         function hideEmptySections(data) {
-            // Masquer les sections désactivées OU vides
+            // Masquer les sections désactivées
             if (data.inclurePresentation === false) {
-                document.getElementById('presentationSection').style.display = 'none';
+                const el = document.getElementById('presentationSection');
+                if (el) el.style.display = 'none';
             }
 
-            if (data.inclureCapacites === false || !data.capacites ||
-                (!data.capacites.impossible?.length && !data.capacites.difficile?.length &&
-                 !data.capacites.possible?.length && !data.capacites.incertain?.length)) {
+            if (data.inclureCapacites === false) {
                 document.getElementById('capacitesSection').style.display = 'none';
             }
 
-            if (data.inclureBesoins === false || !data.besoins || data.besoins.length === 0) {
+            if (data.inclureBesoins === false) {
                 document.getElementById('besoinsSection').style.display = 'none';
             }
 
-            if (data.inclureEtats === false || !data.etats || data.etats.length === 0) {
+            if (data.inclureEtats === false) {
                 document.getElementById('etatsSection').style.display = 'none';
             }
 
-            if (data.inclureContacts === false || !data.contacts || data.contacts.length === 0) {
+            if (data.inclureContacts === false) {
                 document.getElementById('contactSection').style.display = 'none';
             }
 

@@ -96,13 +96,32 @@ function getProfileConfig(profilId) {
 
     if (saved) {
         const data = JSON.parse(saved);
-        // Fallbacks de sécurité
-        data.capacites = data.capacites || { inclure: true, visibles: CAPACITES.map(c => c.id), personnalisees: [] };
-        data.besoins = data.besoins || { inclure: true, visibles: BESOINS.map(b => b.id), personnalisees: [] };
-        data.etats = data.etats || { inclure: true, visibles: ETATS.map(e => e.id), personnalisees: [] };
-        data.presentation = data.presentation || { inclure: true, texte: '' };
-        data.contacts = data.contacts || { inclure: true, selection: [] };
-        data.medical = data.medical || { inclure: true };
+        // Fallbacks de sécurité (gère aussi l'ancien format où capacites/besoins/etats sont des booléens)
+        if (!data.presentation || typeof data.presentation !== 'object') {
+            data.presentation = { inclure: data.presentation !== false && data.afficherPresentation !== false, texte: data.textePresentation || '' };
+        }
+        if (!data.capacites || typeof data.capacites !== 'object') {
+            data.capacites = { inclure: data.capacites !== false, visibles: CAPACITES.map(c => c.id), personnalisees: [] };
+        }
+        if (!data.besoins || typeof data.besoins !== 'object') {
+            data.besoins = { inclure: data.besoins !== false, visibles: BESOINS.map(b => b.id), personnalisees: [] };
+        }
+        if (!data.etats || typeof data.etats !== 'object') {
+            data.etats = { inclure: data.etats !== false, visibles: ETATS.map(e => e.id), personnalisees: [] };
+        }
+        if (!data.contacts || typeof data.contacts !== 'object') {
+            data.contacts = { inclure: true, selection: data.contactsVisibles || [] };
+        }
+        if (!data.medical || typeof data.medical !== 'object') {
+            data.medical = { inclure: data.medical !== false && data.afficherMedical !== false };
+        }
+        if (!data.capacites.visibles) data.capacites.visibles = CAPACITES.map(c => c.id);
+        if (!data.capacites.personnalisees) data.capacites.personnalisees = [];
+        if (!data.besoins.visibles) data.besoins.visibles = BESOINS.map(b => b.id);
+        if (!data.besoins.personnalisees) data.besoins.personnalisees = [];
+        if (!data.etats.visibles) data.etats.visibles = ETATS.map(e => e.id);
+        if (!data.etats.personnalisees) data.etats.personnalisees = [];
+        if (!data.contacts.selection) data.contacts.selection = [];
         return data;
     }
 

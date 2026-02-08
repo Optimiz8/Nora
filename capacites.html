@@ -16,28 +16,42 @@ body{
 
 .header-context-name{font-size:18px;font-weight:600}
 
-.main-content{padding:24px 20px}
+.main-content{padding:10px 20px}
 
 .page-title{
-  font-size:26px;
-  margin-bottom:8px;
+  font-size:22px;
+  margin-bottom:2px;
 }
 
 .instruction-text{
   color:var(--accent);
-  font-size:15px;
-  margin-bottom:20px;
+  font-size:14px;
+  margin-bottom:8px;
+  margin-top:2px;
 }
 
-.reset-button{
-  background:rgba(245,228,204,.2);
-  border:1px solid rgba(245,228,204,.3);
-  color:var(--light);
-  border-radius:12px;
-  font-size:26px;
-  padding:8px 14px;
-  cursor:pointer;
+.title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
 }
+
+.reset-btn{
+  background:rgba(245,228,204,.15);
+  border:1px solid rgba(245,228,204,.2);
+  color:var(--accent);
+  border-radius:10px;
+  padding:6px 10px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  line-height:1;
+}
+.reset-btn .reset-icon{font-size:18px}
+.reset-btn .reset-label{font-size:10px;opacity:0.8}
+.reset-btn:active{background:rgba(245,228,204,.3)}
 
 .capacity-item{
   background:var(--light);
@@ -127,19 +141,22 @@ body{
 <body>
 
 <header class="header">
-  <h1 class="header-context-name" id="headerContextName">Contexte</h1>
+  <h1 class="header-context-name" id="headerContextName" style="flex:1">Contexte</h1>
+  <button onclick="window.location.href='index.html'" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🏠</button>
 </header>
 
 <main class="main-content">
 
-<div style="display:flex;justify-content:space-between;align-items:center">
-  <h2 class="page-title">Mes capacités actuelles</h2>
-  <button class="reset-button" onclick="resetAllCapacities()">↻</button>
+<div class="title-row">
+  <div>
+    <h2 class="page-title">Mes capacités actuelles</h2>
+    <p class="instruction-text">Appuyez pour changer l'état.<br>Appui long pour remettre à zéro.</p>
+  </div>
+  <button class="reset-btn" onclick="resetAllCapacities()">
+    <span class="reset-icon">↻</span>
+    <span class="reset-label">Réinit.</span>
+  </button>
 </div>
-
-<p class="instruction-text">
-Appuyez pour changer l'état. Appui long pour remettre à zéro.
-</p>
 
 <div id="capacitiesContainer">
 <!-- Généré dynamiquement -->

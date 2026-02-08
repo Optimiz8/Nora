@@ -608,6 +608,7 @@
     <header class="header">
         <button class="back-button" onclick="goBack()">⬅️</button>
         <h1 class="page-title" id="pageTitle">Configuration</h1>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;">🏠</button>
     </header>
 
     <main class="main-content">
@@ -652,10 +653,15 @@
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <textarea class="textarea-field" 
-                          id="textePresentationField" 
-                          placeholder="Exemple : Je m'appelle Marine, je suis autiste. En cas de crise..."
+                <textarea class="textarea-field"
+                          id="textePresentationField"
+                          placeholder="Laissez vide pour utiliser le message par défaut, ou écrivez votre propre texte..."
                           oninput="markAsModified()"></textarea>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button class="manage-button" style="flex: 1; font-size: 13px; padding: 8px 12px;" onclick="insertDefaultPresentation()">📝 Insérer le message par défaut</button>
+                    <button class="manage-button" style="font-size: 13px; padding: 8px 12px; opacity: 0.7;" onclick="clearPresentation()">✕ Effacer</button>
+                </div>
+                <p class="section-hint" style="margin-top: 6px; font-size: 12px;">Si le champ est vide, un message par défaut sera utilisé automatiquement.</p>
             </div>
         </section>
 
@@ -963,6 +969,35 @@
 
             if (saved) {
                 contextData = JSON.parse(saved);
+
+                // Fallbacks de sécurité pour les propriétés manquantes
+                // Note : l'ancien format utilise des booléens (capacites: true), le nouveau utilise des objets
+                if (!contextData.presentation || typeof contextData.presentation !== 'object') {
+                    contextData.presentation = { inclure: contextData.presentation !== false && contextData.afficherPresentation !== false, texte: contextData.textePresentation || '' };
+                }
+                if (!contextData.capacites || typeof contextData.capacites !== 'object') {
+                    contextData.capacites = { inclure: contextData.capacites !== false, visibles: CAPACITES.map(c => c.id), personnalisees: [] };
+                }
+                if (!contextData.besoins || typeof contextData.besoins !== 'object') {
+                    contextData.besoins = { inclure: contextData.besoins !== false, visibles: BESOINS.map(b => b.id), personnalisees: [] };
+                }
+                if (!contextData.etats || typeof contextData.etats !== 'object') {
+                    contextData.etats = { inclure: contextData.etats !== false, visibles: ETATS.map(e => e.id), personnalisees: [] };
+                }
+                if (!contextData.contacts || typeof contextData.contacts !== 'object') {
+                    contextData.contacts = { inclure: true, selection: contextData.contactsVisibles || [] };
+                }
+                if (!contextData.medical || typeof contextData.medical !== 'object') {
+                    contextData.medical = { inclure: contextData.medical !== false && contextData.afficherMedical !== false };
+                }
+                if (!contextData.capacites.personnalisees) contextData.capacites.personnalisees = [];
+                if (!contextData.besoins.personnalisees) contextData.besoins.personnalisees = [];
+                if (!contextData.etats.personnalisees) contextData.etats.personnalisees = [];
+                if (!contextData.contacts.selection) contextData.contacts.selection = [];
+                if (!contextData.capacites.visibles) contextData.capacites.visibles = CAPACITES.map(c => c.id);
+                if (!contextData.besoins.visibles) contextData.besoins.visibles = BESOINS.map(b => b.id);
+                if (!contextData.etats.visibles) contextData.etats.visibles = ETATS.map(e => e.id);
+
                 // Migration ancienne structure si nécessaire
                 if (contextData.textePresentation !== undefined && !contextData.presentation) {
                     contextData.presentation = {
@@ -1203,6 +1238,18 @@
             if (contacts.length === 0) {
                 container.innerHTML = '<div class="empty-message">Aucun contact défini. Ajoutez-en dans "Mon profil".</div>';
                 return;
+            }
+
+            // Migration : ajouter un ID aux contacts qui n'en ont pas
+            let needsSave = false;
+            contacts.forEach(contact => {
+                if (!contact.id) {
+                    contact.id = 'contact_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    needsSave = true;
+                }
+            });
+            if (needsSave) {
+                localStorage.setItem('contactsUrgence', JSON.stringify(contacts));
             }
 
             container.innerHTML = '';
@@ -1581,14 +1628,41 @@
             window.location.href = 'infos-medicales.html';
         }
 
+        function insertDefaultPresentation() {
+            const defaultText = `Si vous voyez ce message, je suis actuellement en difficulté ou en crise autistique.
+Dans cet état, je peux être dans l'incapacité de parler ou de réagir normalement.
+
+Ce n'est pas volontaire.
+Ce n'est pas dangereux.
+Ce n'est pas un malaise médical classique.
+
+Mon état est involontaire et lié à une surcharge du système nerveux.
+Il peut fluctuer : je peux aller un peu mieux puis moins bien.
+Une crise peut durer de quelques dizaines de minutes à plusieurs heures.
+
+Je peux pleurer, trembler, crier, me figer, avoir des mouvements involontaires ou de réassurance (stim)...
+N'essayez pas de m'empêcher de bouger, cela m'aide à me réguler.`;
+            document.getElementById('textePresentationField').value = defaultText;
+            markAsModified();
+        }
+
+        function clearPresentation() {
+            document.getElementById('textePresentationField').value = '';
+            markAsModified();
+        }
+
         function afficherExemple() {
             // Sauvegarder les données actuelles
             markAsModified();
 
             // Récupérer les vraies données
             const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
+            // Migration locale si nécessaire
+            allContacts.forEach(c => {
+                if (!c.id) c.id = 'contact_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            });
             const selectedContactIds = contextData.contacts.selection || [];
-            const contactsToShow = allContacts.filter(c => selectedContactIds.includes(c.id));
+            const contactsToShow = allContacts.filter(c => selectedContactIds.includes(c.id) || selectedContactIds.includes(c.nom));
 
             const infosMed = JSON.parse(localStorage.getItem('infosMedicales') || '{}');
 
@@ -1596,13 +1670,14 @@
             const exempleDonnees = {
                 textePresentation: contextData.presentation.texte || '',
                 capacites: {
-                    // Pour l'exemple, montrer toutes les capacités visibles comme "possible"
-                    impossible: [],
-                    difficile: [],
-                    possible: contextData.capacites.visibles.map(id => {
+                    // Pour l'exemple, distribuer les capacités visibles dans les 4 catégories
+                    _visibleNames: contextData.capacites.visibles.map(id => {
                         const item = [...CAPACITES, ...contextData.capacites.personnalisees].find(c => c.id === id);
                         return item ? item.nom : id;
                     }),
+                    impossible: [],
+                    difficile: [],
+                    possible: [],
                     incertain: []
                 },
                 besoins: contextData.besoins.visibles.map(id => {
