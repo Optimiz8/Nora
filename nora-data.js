@@ -95,7 +95,11 @@ function getProfileConfig(profilId) {
     const saved = localStorage.getItem(key);
 
     if (saved) {
-        const data = JSON.parse(saved);
+        let data;
+        try { data = JSON.parse(saved); } catch(e) {
+            localStorage.removeItem(key);
+            return getProfileConfig(profilId);
+        }
         // Fallbacks de sécurité (gère aussi l'ancien format où capacites/besoins/etats sont des booléens)
         if (!data.presentation || typeof data.presentation !== 'object') {
             data.presentation = { inclure: data.presentation !== false && data.afficherPresentation !== false, texte: data.textePresentation || '' };
@@ -141,7 +145,8 @@ function getContexteInfo(profilId) {
     if (profilId === 'commun') {
         return { emoji: '🌐', nom: 'Profil commun' };
     }
-    const contextes = JSON.parse(localStorage.getItem('contextes') || '[]');
+    let contextes;
+    try { contextes = JSON.parse(localStorage.getItem('contextes') || '[]'); } catch(e) { contextes = []; }
     const ctx = contextes.find(c => c.id === profilId);
     if (ctx) return { emoji: ctx.emoji, nom: ctx.nom };
     return { emoji: '📍', nom: 'Contexte' };

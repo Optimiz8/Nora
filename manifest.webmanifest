@@ -1,0 +1,11 @@
+{
+  "name": "Nora - Aide de crise",
+  "short_name": "Nora",
+  "description": "Application d'aide en situation de crise pour personnes autistes",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#384657",
+  "theme_color": "#384657",
+  "lang": "fr",
+  "orientation": "portrait"
+}

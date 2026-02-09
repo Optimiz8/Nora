@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
     <script src="nora-data.js"></script>
     <title>Récapitulatif - Crise Autistique</title>
@@ -756,19 +757,19 @@
     </div>
 
     <!-- Modal informations -->
-    <div class="modal" id="infoModal" onclick="closeModalOnOutside(event)">
+    <div class="modal" id="infoModal" onclick="closeModalOnOutside(event)" role="dialog" aria-modal="true" aria-label="Information">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <div class="modal-title">Qu'est-ce qu'une crise autistique ?</div>
-                <button class="close-modal" onclick="closeModal()">×</button>
+                <button class="close-modal" onclick="closeModal()" aria-label="Fermer">×</button>
             </div>
             <div class="modal-text">
-                <h3>Définition</h3>
+                <h2>Définition</h2>
                 <p>Une crise autistique, aussi appelée "meltdown", est une réaction involontaire du système nerveux face à une surcharge.</p>
                 
                 <p>Ce n'est <strong>ni un caprice, ni une colère, ni une manipulation</strong>. C'est un processus neurologique automatique qui se déclenche quand le cerveau ne peut plus gérer les informations sensorielles, émotionnelles ou cognitives.</p>
 
-                <h3>Causes fréquentes</h3>
+                <h2>Causes fréquentes</h2>
                 <ul>
                     <li><strong>Surcharge sensorielle</strong> (bruit, lumière, foule, textures)</li>
                     <li><strong>Stress émotionnel</strong> intense ou prolongé</li>
@@ -777,7 +778,7 @@
                     <li><strong>Trop de sollicitations</strong> cognitives ou sociales</li>
                 </ul>
 
-                <h3>Comment ça se manifeste ?</h3>
+                <h2>Comment ça se manifeste ?</h2>
                 <p>Les manifestations varient d'une personne à l'autre et peuvent inclure :</p>
                 <ul>
                     <li>Incapacité totale ou partielle de parler</li>
@@ -788,7 +789,7 @@
                     <li>Désorientation, confusion</li>
                 </ul>
 
-                <h3>Ce qui aide</h3>
+                <h2>Ce qui aide</h2>
                 <ul>
                     <li><strong>Réduire les stimulations</strong> : lumière, bruit, sollicitations</li>
                     <li><strong>Ne pas toucher</strong> sans autorisation claire</li>
@@ -798,10 +799,10 @@
                     <li><strong>Attendre</strong> que ça passe, sans forcer</li>
                 </ul>
 
-                <h3>Durée</h3>
+                <h2>Durée</h2>
                 <p>Une crise peut durer de quelques minutes à plusieurs heures. La récupération peut prendre plusieurs jours.</p>
 
-                <h3>Ce que ce n'est PAS</h3>
+                <h2>Ce que ce n'est PAS</h2>
                 <ul>
                     <li>Ce n'est pas un danger pour autrui</li>
                     <li>Ce n'est pas une urgence médicale classique (sauf complications)</li>
@@ -815,7 +816,7 @@
     </div>
 
     <!-- Modale questionnaire ajout au journal -->
-    <div class="questionnaire-modal" id="questionnaireModal" onclick="closeQuestionnaireOnOutside(event)">
+    <div class="questionnaire-modal" id="questionnaireModal" onclick="closeQuestionnaireOnOutside(event)" role="dialog" aria-modal="true" aria-label="Questionnaire">
         <div class="questionnaire-content" onclick="event.stopPropagation()">
             <div class="questionnaire-header">
                 <div class="questionnaire-title">Ajouter cette crise au journal</div>
@@ -875,7 +876,7 @@
     </div>
 
     <!-- Modale déclencheurs -->
-    <div class="questionnaire-modal triggers-modal" id="triggersModal" onclick="closeTriggersOnOutside(event)">
+    <div class="questionnaire-modal triggers-modal" id="triggersModal" onclick="closeTriggersOnOutside(event)" role="dialog" aria-modal="true" aria-label="Déclencheurs">
         <div class="questionnaire-content" onclick="event.stopPropagation()">
             <div class="questionnaire-header">
                 <div class="questionnaire-title">Sélectionner les déclencheurs</div>
@@ -1026,7 +1027,7 @@
                     </div>
 
                     <div class="info-important">
-                        <h3>ℹ️ Ce que vous devez savoir (important)</h3>
+                        <h2>ℹ️ Ce que vous devez savoir (important)</h2>
                         <ul>
                             <li>Mon état est involontaire et lié à une surcharge du système nerveux.</li>
                             <li>Il peut fluctuer : je peux aller un peu mieux puis moins bien.</li>
@@ -1417,7 +1418,7 @@
                 <div class="modal-content" onclick="event.stopPropagation()">
                     <div class="modal-header">
                         <div class="modal-title">QR Code du récapitulatif</div>
-                        <button class="close-modal" onclick="this.closest('.modal').remove()">×</button>
+                        <button class="close-modal" onclick="this.closest('.modal').remove()" aria-label="Fermer">×</button>
                     </div>
                     <div style="text-align: center; padding: 20px;">
                         <img src="${qrCodeUrl}" alt="QR Code" style="max-width: 100%; height: auto; border-radius: 8px;">
@@ -1640,6 +1641,7 @@
             e.returnValue = '';
         });
     </script>
+        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeQuestionnaire(); document.getElementById('triggersModal').classList.remove('open'); } });
     <script src="nora-scroll.js"></script>
 </body>
 </html>

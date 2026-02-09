@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="nora-common.css">
 <script src="nora-data.js"></script>
 <title>TSA App – Capacités</title>
@@ -152,7 +153,7 @@ body{
     <h2 class="page-title">Mes capacités actuelles</h2>
     <p class="instruction-text">Appuyez pour changer l'état.<br>Appui long pour remettre à zéro.</p>
   </div>
-  <button class="reset-btn" onclick="resetAllCapacities()">
+  <button class="reset-btn" onclick="resetAllCapacities()" aria-label="Réinitialiser">
     <span class="reset-icon">↻</span>
     <span class="reset-label">Réinit.</span>
   </button>
@@ -165,14 +166,14 @@ body{
 </main>
 
 <footer class="footer">
-  <button class="footer-button icon" onclick="goBack()">⬅️</button>
+  <button class="footer-button icon" onclick="goBack()" aria-label="Précédent">⬅️</button>
   <button class="footer-button center" onclick="finish()">Voir le récapitulatif</button>
-  <button class="footer-button icon" onclick="goNext()">➡️</button>
+  <button class="footer-button icon" onclick="goNext()" aria-label="Suivant">➡️</button>
 </footer>
 
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-dialog">
-    <h3>Réinitialiser ?</h3>
+    <h2>Réinitialiser ?</h2>
     <p>Toutes les capacités seront effacées.</p>
     <div class="confirm-buttons">
       <button class="confirm-btn cancel" onclick="hideConfirm()">Annuler</button>

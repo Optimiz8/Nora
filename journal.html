@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
     <title>TSA App - Journal de crises</title>
     <style>
@@ -596,7 +597,7 @@
 <body>
     <header class="header">
         <div class="header-left" style="flex:1">
-            <button class="back-button" onclick="goHome()">⬅️</button>
+            <button class="back-button" onclick="goHome()" aria-label="Retour">⬅️</button>
             <h1 class="page-title">Journal de crises</h1>
         </div>
         <button class="export-button" onclick="showExportOptions()">📤 Exporter</button>
@@ -636,11 +637,11 @@
         </div>
     </main>
 
-    <div class="modal" id="detailModal" onclick="closeModal(event, 'detailModal')">
+    <div class="modal" id="detailModal" onclick="closeModal(event, 'detailModal')" role="dialog" aria-modal="true" aria-label="Détail de la crise">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h2 class="modal-title">Détail de la crise</h2>
-                <button class="close-button" onclick="closeModal(null, 'detailModal')">×</button>
+                <button class="close-button" onclick="closeModal(null, 'detailModal')" aria-label="Fermer">×</button>
             </div>
             <div id="detailContent"></div>
             <div class="modal-actions">
@@ -651,11 +652,11 @@
         </div>
     </div>
 
-    <div class="modal" id="formModal" onclick="closeModal(event, 'formModal')">
+    <div class="modal" id="formModal" onclick="closeModal(event, 'formModal')" role="dialog" aria-modal="true" aria-label="Nouvelle entrée">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h2 class="modal-title" id="formModalTitle">Ajouter une crise</h2>
-                <button class="close-button" onclick="closeModal(null, 'formModal')">×</button>
+                <button class="close-button" onclick="closeModal(null, 'formModal')" aria-label="Fermer">×</button>
             </div>
             
             <div class="form-group" id="dateGroup">
@@ -710,11 +711,11 @@
         </div>
     </div>
 
-    <div class="modal triggers-modal" id="triggersModal" onclick="closeModal(event, 'triggersModal')">
+    <div class="modal triggers-modal" id="triggersModal" onclick="closeModal(event, 'triggersModal')" role="dialog" aria-modal="true" aria-label="Déclencheurs">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h2 class="modal-title">Sélectionner les déclencheurs</h2>
-                <button class="close-button" onclick="closeModal(null, 'triggersModal')">×</button>
+                <button class="close-button" onclick="closeModal(null, 'triggersModal')" aria-label="Fermer">×</button>
             </div>
             <p class="triggers-info">💡 Vous pouvez sélectionner plusieurs déclencheurs</p>
 
@@ -726,11 +727,11 @@
         </div>
     </div>
 
-    <div class="modal" id="exportModal" onclick="closeModal(event, 'exportModal')">
+    <div class="modal" id="exportModal" onclick="closeModal(event, 'exportModal')" role="dialog" aria-modal="true" aria-label="Exporter">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h2 class="modal-title">Exporter le journal</h2>
-                <button class="close-button" onclick="closeModal(null, 'exportModal')">×</button>
+                <button class="close-button" onclick="closeModal(null, 'exportModal')" aria-label="Fermer">×</button>
             </div>
 
             <div class="export-options">
@@ -1325,6 +1326,7 @@
 
         loadJournal();
     </script>
+        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); } });
     <script src="nora-scroll.js"></script>
 </body>
 </html>

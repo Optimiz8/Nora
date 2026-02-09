@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
     <title>Contacts d'urgence - TSA App</title>
     <style>
@@ -247,9 +248,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()">⬅️</button>
+        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Contacts d'urgence</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;">🏠</button>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -268,7 +269,7 @@
     </main>
 
     <!-- Modal Ajout/Modification -->
-    <div class="modal" id="contactModal">
+    <div class="modal" id="contactModal" role="dialog" aria-modal="true" aria-label="Contact d'urgence">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="modalTitle">Ajouter un contact</h2>
@@ -348,18 +349,11 @@
 
         // Vérifier si l'API Contact Picker est disponible
         function checkContactPickerSupport() {
-            console.log('Vérification Contact Picker API...');
-            console.log('navigator.contacts existe:', 'contacts' in navigator);
-            console.log('ContactsManager existe:', 'ContactsManager' in window);
-            console.log('Protocol:', window.location.protocol);
 
             if ('contacts' in navigator && 'ContactsManager' in window) {
-                console.log('✅ API Contact Picker supportée !');
                 document.getElementById('importContactBtn').style.display = 'block';
             } else {
-                console.log('❌ API Contact Picker non supportée');
                 // Afficher un message d'info temporaire pour debug
-                console.log('Raison possible: contexte non-HTTPS ou navigateur non compatible');
             }
         }
 
@@ -526,13 +520,9 @@
             // On extrait uniquement les chiffres pour vérifier
             const digitsOnly = telephone.replace(/\D/g, '');
 
-            console.log('Téléphone saisi:', telephone);
-            console.log('Chiffres uniquement:', digitsOnly);
-            console.log('Nombre de chiffres:', digitsOnly.length);
 
             // Vérifier si c'est un numéro international (commence par + ou 00 dans l'original)
             const isInternational = telephone.trim().startsWith('+') || telephone.trim().startsWith('00');
-            console.log('Est international?', isInternational);
 
             // Pour un numéro français normal : exactement 10 chiffres
             if (!isInternational && digitsOnly.length !== 10) {
@@ -550,7 +540,6 @@
                 return;
             }
 
-            console.log('✅ Validation passée');
 
             const contact = {
                 id: '', // Sera défini ci-dessous
@@ -591,6 +580,7 @@
             }
         }
     </script>
+        document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
     <script src="nora-scroll.js"></script>
 </body>
 </html>

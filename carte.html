@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="nora-common.css">
 <script src="nora-data.js"></script>
 <title>Carte d'urgence – TSA App</title>
@@ -339,7 +340,7 @@ body {
 
 <body>
 
-<button class="close-btn" onclick="closeCarte()">×</button>
+<button class="close-btn" onclick="closeCarte()" aria-label="Fermer">×</button>
 
 <div class="content">
     <h1 class="main-title">URGENCE : CRISE AUTISTIQUE</h1>
@@ -396,9 +397,9 @@ body {
 </div>
 
 <!-- MODALE INFORMATIONS MÉDICALES (lecture seule) -->
-<div class="modal" id="medicalModal">
+<div class="modal" id="medicalModal" role="dialog" aria-modal="true" aria-label="Informations médicales">
     <div class="modal-content">
-        <button class="modal-close" onclick="closeMedical()">×</button>
+        <button class="modal-close" onclick="closeMedical()" aria-label="Fermer">×</button>
         <div class="modal-title">Informations médicales<br><small style="font-size:15px;font-weight:400;opacity:0.8;">(secours uniquement)</small></div>
         <div id="medicalContent">
             <!-- Généré dynamiquement -->
@@ -407,9 +408,9 @@ body {
 </div>
 
 <!-- MODALE QR CODE -->
-<div class="modal" id="qrModal">
+<div class="modal" id="qrModal" role="dialog" aria-modal="true" aria-label="QR Code">
     <div class="modal-content" style="text-align: center;">
-        <button class="modal-close" onclick="closeQR()">×</button>
+        <button class="modal-close" onclick="closeQR()" aria-label="Fermer">×</button>
         <div class="modal-title">Scannez ce QR Code</div>
         <div id="qrcode"></div>
         <button class="qr-close-btn" onclick="closeQR()">Fermer</button>

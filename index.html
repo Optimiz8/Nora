@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
     <script src="nora-data.js"></script>
     <title>TSA App – Accueil</title>
@@ -184,8 +185,8 @@
 <body>
 
     <header class="header">
-        <button class="header-icon" id="btnJournal">📔</button>
-        <button class="header-icon" id="btnSettings">⚙️</button>
+        <button class="header-icon" id="btnJournal" aria-label="Journal">📔</button>
+        <button class="header-icon" id="btnSettings" aria-label="Paramètres">⚙️</button>
     </header>
 
     <main class="main">
@@ -204,7 +205,7 @@
         </div>
     </main>
 
-    <div class="modal" id="helpModal">
+    <div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-label="Comment souhaites-tu communiquer">
         <div class="modal-content">
             <div class="modal-close" data-close="helpModal">×</div>
             <div class="modal-title">Comment souhaites-tu communiquer&nbsp;?</div>
@@ -219,7 +220,7 @@
         </div>
     </div>
 
-    <div class="modal" id="contextModal">
+    <div class="modal" id="contextModal" role="dialog" aria-modal="true" aria-label="Choix du contexte">
         <div class="modal-content">
             <div class="modal-close" data-close="contextModal">×</div>
             <div class="modal-title">Où es-tu&nbsp;?</div>
@@ -229,7 +230,7 @@
         </div>
     </div>
 
-    <div class="modal" id="calmModal">
+    <div class="modal" id="calmModal" role="dialog" aria-modal="true" aria-label="Me calmer">
         <div class="modal-content">
             <div class="modal-close" data-close="calmModal">×</div>
             <div class="modal-title">Comment veux-tu t'apaiser&nbsp;?</div>
@@ -243,7 +244,7 @@
     </div>
 
     <!-- Modale fin de crise : étape 1 -->
-    <div class="modal" id="crisisEndModal">
+    <div class="modal" id="crisisEndModal" role="dialog" aria-modal="true" aria-label="Fin de crise">
         <div class="modal-content">
             <div class="modal-close" data-close-crisis="crisisEndModal">×</div>
             <div class="modal-title">Fin de crise ?</div>
@@ -258,7 +259,7 @@
     </div>
 
     <!-- Modale fin de crise : étape 2 (choix enregistrement) -->
-    <div class="modal" id="crisisRegisterModal">
+    <div class="modal" id="crisisRegisterModal" role="dialog" aria-modal="true" aria-label="Enregistrer la crise">
         <div class="modal-content">
             <div class="modal-close" data-close-crisis="crisisRegisterModal">×</div>
             <div class="modal-title">Enregistrer la crise</div>
@@ -488,6 +489,7 @@
         setTimeout(checkCrisisEnd, 500);
     });
     </script>
+        document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".modal.visible").forEach(m => m.classList.remove("visible")); });
 
     <script src="nora-scroll.js"></script>
 </body>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
     <title>TSA App - Paramètres des contextes</title>
     <style>
@@ -388,9 +389,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()">⬅️</button>
+        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Paramètres des contextes</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;">🏠</button>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -448,7 +449,7 @@
     </main>
 
     <!-- MODAL AJOUT CONTEXTE -->
-    <div class="modal" id="addContexteModal">
+    <div class="modal" id="addContexteModal" role="dialog" aria-modal="true" aria-label="Ajouter un contexte">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title">Ajouter un contexte</h2>
@@ -693,6 +694,7 @@
         // INIT AU CHARGEMENT
         window.addEventListener('DOMContentLoaded', init);
     </script>
+        document.addEventListener("keydown", e => { if (e.key === "Escape") closeAddContexteModal(); });
     <script src="nora-scroll.js"></script>
 </body>
 </html>

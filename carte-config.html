@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
     <script src="nora-data.js"></script>
     <title>Carte d'urgence numérique - TSA App</title>
@@ -357,9 +358,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()">⬅️</button>
+        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Carte d'urgence numérique</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;">🏠</button>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">

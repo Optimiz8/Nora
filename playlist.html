@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="nora-common.css">
 <title>Ma playlist apaisante</title>
 
@@ -217,9 +218,9 @@
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="window.location.href='index.html#calm'">⬅️</button>
+  <button class="back-button" onclick="window.location.href='index.html#calm'" aria-label="Retour">⬅️</button>
   <h1 class="page-title">Ma playlist apaisante</h1>
-  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;">🏠</button>
+  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>
 
 <main class="main">
@@ -299,7 +300,7 @@
       </div>
 
       <div class="platform-examples">
-        <h3>📱 Exemples de liens :</h3>
+        <h2>📱 Exemples de liens :</h2>
         <div class="platform-example">
           <strong>Spotify :</strong> https://open.spotify.com/playlist/...
         </div>

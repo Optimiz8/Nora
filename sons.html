@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="nora-common.css">
 
 <style>
@@ -307,9 +308,9 @@ input[type=range]::-moz-range-thumb {
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="window.location.href='index.html#calm'">⬅️</button>
+  <button class="back-button" onclick="window.location.href='index.html#calm'" aria-label="Retour">⬅️</button>
   <h1 class="page-title">Sons relaxants</h1>
-  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;">🏠</button>
+  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>
 
 <div class="mix-cta" id="openMixer">
@@ -320,9 +321,9 @@ input[type=range]::-moz-range-thumb {
 <div class="grid" id="content"></div>
 
 <!-- ===== MODALE LECTEUR SIMPLE ===== -->
-<div class="modal" id="playerModal">
+<div class="modal" id="playerModal" role="dialog" aria-modal="true" aria-label="Lecteur audio">
   <div class="modal-content">
-    <div class="close" id="closePlayer">✕</div>
+    <div class="close" id="closePlayer" role="button" aria-label="Fermer">✕</div>
     <img id="playerImage" alt="">
     <div class="player">
       <h2 id="playerTitle"></h2>
@@ -333,9 +334,9 @@ input[type=range]::-moz-range-thumb {
 </div>
 
 <!-- ===== MINI MODALE TIMER ===== -->
-<div class="timer-modal" id="timerModal">
+<div class="timer-modal" id="timerModal" role="dialog" aria-modal="true" aria-label="Minuterie">
   <div class="timer-box">
-    <div class="timer-close" id="closeTimer">✕</div>
+    <div class="timer-close" id="closeTimer" role="button" aria-label="Fermer">✕</div>
     <strong>Minuterie</strong>
     <div class="timer-buttons">
       <button id="addTime5">+5 min</button>
@@ -352,11 +353,11 @@ input[type=range]::-moz-range-thumb {
 <audio id="audio"></audio>
 
 <!-- ===== MODALE MIXEUR ===== -->
-<div class="mixer-modal" id="mixerModal">
+<div class="mixer-modal" id="mixerModal" role="dialog" aria-modal="true" aria-label="Mixeur de sons">
   <div class="mixer-box">
     <div class="mixer-header">
       <strong>Ambiance personnalisée</strong>
-      <span id="closeMixer">✕</span>
+      <span id="closeMixer" role="button" aria-label="Fermer">✕</span>
     </div>
     <div class="mixer-center">
       <div class="mixer-time" id="mixTime">⏱️ 10:00</div>
@@ -700,7 +701,7 @@ function initMixer() {
           startTimer('mixer');
         }
         if (mixerPlaying) {
-          a.play().catch(err => console.log('Erreur lecture:', err));
+          a.play().catch(() => {});
         }
       } else {
         a.pause();
@@ -784,7 +785,7 @@ mixPlayBtn.onclick = () => {
     let hasSound = false;
     Object.values(audioMap).forEach(a => {
       if (a.volume > 0) {
-        a.play().catch(err => console.log('Erreur lecture:', err));
+        a.play().catch(() => {});
         hasSound = true;
       }
     });
@@ -848,6 +849,7 @@ timerModal.onclick = (e) => {
 };
 </script>
 
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closePlayer(); closeMixer(); document.getElementById('timerModal').style.display = 'none'; } });
     <script src="nora-scroll.js"></script>
 </body>
 </html>

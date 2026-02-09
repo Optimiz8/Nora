@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
     <title>TSA App - Configuration contexte</title>
     <script src="nora-data.js"></script>
     <style>
@@ -606,9 +607,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()">⬅️</button>
+        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
         <h1 class="page-title" id="pageTitle">Configuration</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;">🏠</button>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -826,7 +827,7 @@
     <div class="toast" id="toast">✅ Modifications enregistrées</div>
 
     <!-- MODAL EMOJI PICKER -->
-    <div class="modal" id="emojiModal">
+    <div class="modal" id="emojiModal" role="dialog" aria-modal="true" aria-label="Choisir un emoji">
         <div class="modal-content">
             <h2 class="modal-title">Choisir un emoji</h2>
             <div class="emoji-suggestions">
@@ -857,7 +858,7 @@
     </div>
 
     <!-- MODAL AJOUT ITEM -->
-    <div class="modal" id="addItemModal">
+    <div class="modal" id="addItemModal" role="dialog" aria-modal="true" aria-label="Ajouter un élément">
         <div class="modal-content">
             <h2 class="modal-title" id="modalTitle">Ajouter un item</h2>
             
@@ -892,7 +893,7 @@
     </div>
 
     <!-- MODAL CONFIRMATION SUPPRESSION -->
-    <div class="modal" id="deleteModal">
+    <div class="modal" id="deleteModal" role="dialog" aria-modal="true" aria-label="Confirmer la suppression">
         <div class="modal-content">
             <h2 class="modal-title">⚠️ Supprimer ce contexte ?</h2>
             <p style="color: #2E3A59; margin-bottom: 20px; line-height: 1.5;">
@@ -1718,6 +1719,7 @@
             }
         });
     </script>
+        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeEmojiModal(); closeAddItemModal(); closeDeleteModal(); } });
     <script src="nora-scroll.js"></script>
 </body>
 </html>
