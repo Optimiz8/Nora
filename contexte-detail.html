@@ -1270,14 +1270,18 @@
 
                 const name = document.createElement('div');
                 name.className = 'contact-name';
-                name.textContent = contact.nom;
-
-                const relation = document.createElement('div');
-                relation.className = 'contact-relation';
-                relation.textContent = contact.lien;
+                const lien = contact.lien ? ` (${contact.lien})` : '';
+                name.textContent = contact.nom + lien;
 
                 info.appendChild(name);
-                info.appendChild(relation);
+
+                if (contact.remarque) {
+                    const remarque = document.createElement('div');
+                    remarque.className = 'contact-relation';
+                    remarque.style.fontStyle = 'italic';
+                    remarque.textContent = contact.remarque;
+                    info.appendChild(remarque);
+                }
                 row.appendChild(checkbox);
                 row.appendChild(info);
                 container.appendChild(row);
@@ -1714,5 +1718,6 @@
             }
         });
     </script>
+    <script src="nora-scroll.js"></script>
 </body>
 </html>

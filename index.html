@@ -131,6 +131,53 @@
             grid-template-columns: 1fr 1fr;
             gap: 12px; /* Réduit */
         }
+
+        /* MODALE FIN DE CRISE */
+        .crisis-modal-text {
+            text-align: center;
+            font-size: 17px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            color: var(--light);
+        }
+
+        .crisis-modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .crisis-btn {
+            border: none;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .crisis-btn:active {
+            transform: scale(0.97);
+        }
+
+        .crisis-btn.primary {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+
+        .crisis-btn.secondary {
+            background-color: rgba(245, 228, 204, 0.15);
+            color: var(--light);
+        }
+
+        .crisis-btn-desc {
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
     </style>
 </head>
 
@@ -195,6 +242,46 @@
         </div>
     </div>
 
+    <!-- Modale fin de crise : étape 1 -->
+    <div class="modal" id="crisisEndModal">
+        <div class="modal-content">
+            <div class="modal-close" data-close-crisis="crisisEndModal">×</div>
+            <div class="modal-title">Fin de crise ?</div>
+            <div class="crisis-modal-text">
+                Une crise semble être en cours.<br>Est-elle terminée ?
+            </div>
+            <div class="crisis-modal-actions">
+                <button class="crisis-btn primary" onclick="crisisIsOver()">Oui, elle est terminée</button>
+                <button class="crisis-btn secondary" onclick="crisisNotOver()">Non, pas encore</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale fin de crise : étape 2 (choix enregistrement) -->
+    <div class="modal" id="crisisRegisterModal">
+        <div class="modal-content">
+            <div class="modal-close" data-close-crisis="crisisRegisterModal">×</div>
+            <div class="modal-title">Enregistrer la crise</div>
+            <div class="crisis-modal-text">
+                Souhaites-tu enregistrer cette crise dans ton journal ?
+            </div>
+            <div class="crisis-modal-actions">
+                <button class="crisis-btn primary" onclick="registerCrisisNow()">
+                    Enregistrer maintenant
+                    <div class="crisis-btn-desc">Ajouter au journal avec les données de la crise</div>
+                </button>
+                <button class="crisis-btn secondary" onclick="registerCrisisLater()">
+                    Plus tard
+                    <div class="crisis-btn-desc">On te redemandera demain</div>
+                </button>
+                <button class="crisis-btn secondary" onclick="enableAutoRegister()">
+                    Toujours enregistrer automatiquement
+                    <div class="crisis-btn-desc">Les prochaines crises seront ajoutées au journal sans demander</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
     function startCrisis(profilId) {
         localStorage.setItem('profilActuel', profilId);
@@ -227,6 +314,121 @@
         grid.querySelectorAll('[data-profile]').forEach(el =>
             el.onclick = () => startCrisis(el.dataset.profile)
         );
+    }
+
+    // ===== LOGIQUE FIN DE CRISE =====
+    function getTodayStr() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    function checkCrisisEnd() {
+        const criseEnCours = localStorage.getItem('criseEnCours') === 'true';
+        if (!criseEnCours) return;
+
+        const lastCheck = localStorage.getItem('lastCrisisCheck') || '';
+        const today = getTodayStr();
+        if (lastCheck === today) return;
+
+        // Auto-register activé ?
+        if (localStorage.getItem('autoRegisterCrise') === 'true') {
+            createJournalEntry();
+            cleanupCrisisData();
+            return;
+        }
+
+        // Afficher la modale
+        document.getElementById('crisisEndModal').classList.add('visible');
+    }
+
+    function crisisNotOver() {
+        localStorage.setItem('lastCrisisCheck', getTodayStr());
+        document.getElementById('crisisEndModal').classList.remove('visible');
+    }
+
+    function crisisIsOver() {
+        document.getElementById('crisisEndModal').classList.remove('visible');
+        document.getElementById('crisisRegisterModal').classList.add('visible');
+    }
+
+    function registerCrisisNow() {
+        createJournalEntry();
+        cleanupCrisisData();
+        document.getElementById('crisisRegisterModal').classList.remove('visible');
+        alert('✅ Crise enregistrée dans le journal !');
+    }
+
+    function registerCrisisLater() {
+        localStorage.setItem('lastCrisisCheck', getTodayStr());
+        // Marquer comme "à traiter" pour ne pas perdre les données
+        localStorage.setItem('criseATraiter', 'true');
+        document.getElementById('crisisRegisterModal').classList.remove('visible');
+    }
+
+    function enableAutoRegister() {
+        localStorage.setItem('autoRegisterCrise', 'true');
+        createJournalEntry();
+        cleanupCrisisData();
+        document.getElementById('crisisRegisterModal').classList.remove('visible');
+        alert('✅ Crise enregistrée ! Les prochaines seront enregistrées automatiquement.');
+    }
+
+    function createJournalEntry() {
+        const profil = localStorage.getItem('profilActuel') || 'commun';
+        const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
+        const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
+        const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
+        const startTime = localStorage.getItem('crisisStartTime');
+
+        // Calculer la durée si possible
+        let duree = '';
+        if (startTime) {
+            const durationMs = Date.now() - parseInt(startTime);
+            const minutes = Math.round(durationMs / 60000);
+            if (minutes < 60) {
+                duree = minutes + ' min';
+            } else {
+                const h = Math.floor(minutes / 60);
+                const m = minutes % 60;
+                duree = m > 0 ? h + 'h' + (m < 10 ? '0' : '') + m : h + 'h';
+            }
+        }
+
+        // Horodatage = moment du début de crise si disponible, sinon maintenant
+        const horodatage = startTime
+            ? new Date(parseInt(startTime)).toISOString()
+            : new Date().toISOString();
+
+        const profilInfo = getContexteInfo(profil);
+
+        const entry = {
+            horodatage: horodatage,
+            profil: profil,
+            profilNom: profilInfo.nom,
+            profilEmoji: profilInfo.emoji,
+            capacites: capacites,
+            besoins: besoins,
+            etats: etats,
+            typeCrise: '',
+            intensite: '',
+            duree: duree,
+            declencheurs: [],
+            remarques: '',
+            manual: false
+        };
+
+        const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+        journal.push(entry);
+        localStorage.setItem('journalCrises', JSON.stringify(journal));
+    }
+
+    function cleanupCrisisData() {
+        localStorage.removeItem('criseEnCours');
+        localStorage.removeItem('crisisStartTime');
+        localStorage.removeItem('currentCapacites');
+        localStorage.removeItem('currentBesoins');
+        localStorage.removeItem('currentEtats');
+        localStorage.removeItem('lastCrisisCheck');
+        localStorage.removeItem('criseATraiter');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -271,8 +473,22 @@
 
         btnJournal.onclick = () => location.href='journal.html';
         btnSettings.onclick = () => location.href='parametres.html';
+
+        // Fermeture des modales de crise
+        document.querySelectorAll('[data-close-crisis]').forEach(el =>
+            el.onclick = () => {
+                const modalId = el.getAttribute('data-close-crisis');
+                document.getElementById(modalId).classList.remove('visible');
+                // Si on ferme sans répondre, on repose la question demain
+                localStorage.setItem('lastCrisisCheck', getTodayStr());
+            }
+        );
+
+        // Vérifier fin de crise après un court délai (laisser la page se charger)
+        setTimeout(checkCrisisEnd, 500);
     });
     </script>
 
+    <script src="nora-scroll.js"></script>
 </body>
 </html>

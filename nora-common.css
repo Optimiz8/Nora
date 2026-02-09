@@ -149,3 +149,40 @@ body {
 html, body, *, *::before, *::after {
   -webkit-text-fill-color: inherit;
 }
+
+/* ===== SCROLL INDICATOR ===== */
+.scroll-indicator {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: linear-gradient(transparent, rgba(56, 70, 87, 0.85));
+  pointer-events: none;
+  z-index: 90;
+  transition: opacity 0.4s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+
+.scroll-indicator.above-footer {
+  bottom: var(--footer-height);
+}
+
+.scroll-indicator.hidden {
+  opacity: 0;
+}
+
+.scroll-indicator span {
+  color: var(--light);
+  opacity: 0.5;
+  font-size: 12px;
+  animation: scrollHintBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes scrollHintBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}

@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#384657">
     <link rel="stylesheet" href="nora-common.css">
     <script src="nora-data.js"></script>
-    <title>Carte d'urgence - TSA App</title>
+    <title>Carte d'urgence numérique - TSA App</title>
     <style>
         body {
             padding-bottom: 100px;
@@ -358,20 +358,22 @@
 <body>
     <header class="header">
         <button class="back-button" onclick="goBack()">⬅️</button>
-        <h1 class="page-title" style="flex:1">Carte d'urgence</h1>
+        <h1 class="page-title" style="flex:1">Carte d'urgence numérique</h1>
         <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;">🏠</button>
     </header>
 
     <main class="main-content">
 
         <p class="intro-text">
-            Configurez ici votre carte d'urgence. Elle pourra être montrée à une personne qui vous aide en cas de crise. Vous pouvez personnaliser le texte de présentation, choisir les contacts affichés et les informations médicales.
+            Configurez ici le support qui parle pour vous quand ça devient difficile. 
+
+Sélectionnez vos contacts de confiance et vos informations clés pour disposer d'un outil d'aide à la communication prêt à l'emploi.
         </p>
 
         <!-- TEXTE DE PRÉSENTATION -->
         <section class="config-section">
             <h2 class="section-title">✍️ Texte de présentation</h2>
-            <p class="section-hint">Ce texte apparaît sous votre identité sur la carte d'urgence</p>
+            <p class="section-hint">Ce texte apparaît sous votre identité sur la carte d'urgence numérique</p>
             <div class="section-card">
                 <div class="section-help">
                     Il permet de donner des informations complémentaires à la personne qui vous aide.
@@ -387,15 +389,63 @@
             </div>
         </section>
 
+        <!-- CONSIGNES -->
+        <section class="config-section">
+            <h2 class="section-title">📋 Consignes</h2>
+            <p class="section-hint">Listez les consignes essentielles que la personne qui vous aide doit connaître. Une consigne par ligne.</p>
+            <div class="section-card">
+                <div class="section-help">
+                    Ces consignes apparaissent en haut de votre carte, juste après votre identité.
+                </div>
+                <textarea class="text-field" id="consignesField" placeholder="Ex : NE PAS ME TOUCHER&#10;METTEZ-MOI AU CALME..." oninput="markAsModified()"></textarea>
+                <div class="text-actions">
+                    <button class="text-action-btn" onclick="insertDefaultConsignes()">📝 Message par défaut</button>
+                    <button class="text-action-btn" onclick="clearConsignes()">🗑️ Effacer</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- INFORMATIONS -->
+        <section class="config-section">
+            <h2 class="section-title">💬 Informations</h2>
+            <p class="section-hint">Expliquez votre situation en quelques lignes. Ces informations aident à rassurer la personne qui vous aide.</p>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher les informations</div>
+                    <div class="toggle-switch active" id="toggleInformations" onclick="toggleInformations()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div id="informationsContent">
+                    <div class="section-help">
+                        Ce texte apparaît dans la section "Informations" de votre carte.
+                    </div>
+                    <textarea class="text-field" id="informationsField" placeholder="Ex : Je ne suis pas dangereuse...&#10;Normalement, je vous entends et comprends." oninput="markAsModified()"></textarea>
+                    <div class="text-actions">
+                        <button class="text-action-btn" onclick="insertDefaultInformations()">📝 Message par défaut</button>
+                        <button class="text-action-btn" onclick="clearInformations()">🗑️ Effacer</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- CONTACTS -->
         <section class="config-section">
             <h2 class="section-title">📞 <span id="contactsSectionTitle">Contact(s) affiché(s) sur la carte</span></h2>
             <p class="section-hint">Sélectionnez jusqu'à 3 contacts d'urgence à afficher sur votre carte avec leur numéro de téléphone</p>
             <div class="section-card">
-                <div id="contactsList">
-                    <!-- Généré dynamiquement -->
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher les contacts</div>
+                    <div class="toggle-switch active" id="toggleContacts" onclick="toggleContacts()">
+                        <div class="toggle-slider"></div>
+                    </div>
                 </div>
-                <div class="contact-limit" id="contactLimit"></div>
+                <div id="contactsContent">
+                    <div id="contactsList">
+                        <!-- Généré dynamiquement -->
+                    </div>
+                    <div class="contact-limit" id="contactLimit"></div>
+                </div>
             </div>
         </section>
 
@@ -414,6 +464,23 @@
                     <span class="manage-button-text">Modifier les informations médicales</span>
                     <span class="manage-button-arrow">›</span>
                 </button>
+            </div>
+        </section>
+
+        <!-- REMARQUES -->
+        <section class="config-section">
+            <h2 class="section-title">📝 Remarques</h2>
+            <p class="section-hint">Ajoutez des notes complémentaires visibles sur votre carte (ex : horaires, précautions, préférences).</p>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher les remarques</div>
+                    <div class="toggle-switch active" id="toggleRemarques" onclick="toggleRemarques()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div id="remarquesContent">
+                    <textarea class="text-field" id="remarquesField" placeholder="Notes complémentaires (optionnel)..." oninput="markAsModified()"></textarea>
+                </div>
             </div>
         </section>
 
@@ -436,10 +503,24 @@
         let carteContacts = [];
         let allContacts = [];
         let showMedical = true;
+        let showInformations = true;
+        let showContacts = true;
+        let showRemarques = true;
         let hasUnsavedChanges = false;
 
         const DEFAULT_PRESENTATION = `Je suis autiste verbale sans déficience intellectuelle.
 Je peux vous entendre mais probablement pas parler.`;
+
+        const DEFAULT_CONSIGNES = `NE PAS ME TOUCHER
+METTEZ-MOI AU CALME (sombre, silencieux, seule)
+NE PAS M'EMMENER AUX URGENCES (sauf blessure grave)
+Si agitée → endroit froid pour me calmer
+Si calme → me couvrir si possible
+Si je porte un casque/écouteurs → ne pas les retirer, ils m'aident
+Patienter (la crise peut durer de 30 min à plusieurs heures)`;
+
+        const DEFAULT_INFORMATIONS = `Je ne suis pas dangereuse. Je peux me figer, pleurer, crier, faire des gestes involontaires.
+Normalement, je vous entends et comprends.`;
 
         window.addEventListener('DOMContentLoaded', () => {
             loadData();
@@ -452,6 +533,18 @@ Je peux vous entendre mais probablement pas parler.`;
             const texte = localStorage.getItem('cartePresentation') || '';
             document.getElementById('presentationField').value = texte || DEFAULT_PRESENTATION;
 
+            // Charger les consignes
+            const consignes = localStorage.getItem('carteConsignes') || '';
+            document.getElementById('consignesField').value = consignes || DEFAULT_CONSIGNES;
+
+            // Charger les informations
+            const informations = localStorage.getItem('carteInformations') || '';
+            document.getElementById('informationsField').value = informations || DEFAULT_INFORMATIONS;
+
+            // Charger les remarques
+            const remarques = localStorage.getItem('carteRemarques') || '';
+            document.getElementById('remarquesField').value = remarques;
+
             // Charger les contacts
             allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
             carteContacts = JSON.parse(localStorage.getItem('carteContacts') || '[]');
@@ -459,10 +552,22 @@ Je peux vous entendre mais probablement pas parler.`;
             // Nettoyer les orphelins
             carteContacts = carteContacts.filter(id => allContacts.some(c => c.id === id));
 
-            // Charger le toggle médical
+            // Charger les toggles
+            showInformations = localStorage.getItem('carteShowInformations') !== 'false';
+            updateToggle('toggleInformations', showInformations);
+            document.getElementById('informationsContent').style.display = showInformations ? 'block' : 'none';
+
+            showContacts = localStorage.getItem('carteShowContacts') !== 'false';
+            updateToggle('toggleContacts', showContacts);
+            document.getElementById('contactsContent').style.display = showContacts ? 'block' : 'none';
+
             showMedical = localStorage.getItem('carteMedical') !== 'false';
             updateToggle('toggleMedical', showMedical);
             document.getElementById('btnMedical').style.display = showMedical ? 'flex' : 'none';
+
+            showRemarques = localStorage.getItem('carteShowRemarques') !== 'false';
+            updateToggle('toggleRemarques', showRemarques);
+            document.getElementById('remarquesContent').style.display = showRemarques ? 'block' : 'none';
         }
 
         function updateContactsTitle() {
@@ -523,11 +628,31 @@ Je peux vous entendre mais probablement pas parler.`;
             updateContactsTitle();
         }
 
+        function toggleInformations() {
+            showInformations = !showInformations;
+            updateToggle('toggleInformations', showInformations);
+            document.getElementById('informationsContent').style.display = showInformations ? 'block' : 'none';
+            markAsModified();
+        }
+
+        function toggleContacts() {
+            showContacts = !showContacts;
+            updateToggle('toggleContacts', showContacts);
+            document.getElementById('contactsContent').style.display = showContacts ? 'block' : 'none';
+            markAsModified();
+        }
+
         function toggleMedical() {
-            const toggle = document.getElementById('toggleMedical');
             showMedical = !showMedical;
             updateToggle('toggleMedical', showMedical);
             document.getElementById('btnMedical').style.display = showMedical ? 'flex' : 'none';
+            markAsModified();
+        }
+
+        function toggleRemarques() {
+            showRemarques = !showRemarques;
+            updateToggle('toggleRemarques', showRemarques);
+            document.getElementById('remarquesContent').style.display = showRemarques ? 'block' : 'none';
             markAsModified();
         }
 
@@ -553,6 +678,30 @@ Je peux vous entendre mais probablement pas parler.`;
                 localStorage.setItem('cartePresentation', texte);
             }
 
+            // Sauvegarder les consignes (si identique au défaut, on sauvegarde vide)
+            const consignes = document.getElementById('consignesField').value;
+            if (consignes.trim() === DEFAULT_CONSIGNES.trim()) {
+                localStorage.setItem('carteConsignes', '');
+            } else {
+                localStorage.setItem('carteConsignes', consignes);
+            }
+
+            // Sauvegarder les informations (si identique au défaut, on sauvegarde vide)
+            const informations = document.getElementById('informationsField').value;
+            if (informations.trim() === DEFAULT_INFORMATIONS.trim()) {
+                localStorage.setItem('carteInformations', '');
+            } else {
+                localStorage.setItem('carteInformations', informations);
+            }
+
+            // Sauvegarder les remarques
+            localStorage.setItem('carteRemarques', document.getElementById('remarquesField').value.trim());
+
+            // Sauvegarder les toggles
+            localStorage.setItem('carteShowInformations', showInformations ? 'true' : 'false');
+            localStorage.setItem('carteShowContacts', showContacts ? 'true' : 'false');
+            localStorage.setItem('carteShowRemarques', showRemarques ? 'true' : 'false');
+
             // Sauvegarder les contacts
             localStorage.setItem('carteContacts', JSON.stringify(carteContacts));
 
@@ -570,6 +719,26 @@ Je peux vous entendre mais probablement pas parler.`;
 
         function clearField() {
             document.getElementById('presentationField').value = '';
+            markAsModified();
+        }
+
+        function insertDefaultConsignes() {
+            document.getElementById('consignesField').value = DEFAULT_CONSIGNES;
+            markAsModified();
+        }
+
+        function clearConsignes() {
+            document.getElementById('consignesField').value = '';
+            markAsModified();
+        }
+
+        function insertDefaultInformations() {
+            document.getElementById('informationsField').value = DEFAULT_INFORMATIONS;
+            markAsModified();
+        }
+
+        function clearInformations() {
+            document.getElementById('informationsField').value = '';
             markAsModified();
         }
 
@@ -607,5 +776,6 @@ Je peux vous entendre mais probablement pas parler.`;
             }
         });
     </script>
+    <script src="nora-scroll.js"></script>
 </body>
 </html>

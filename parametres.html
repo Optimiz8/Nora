@@ -210,6 +210,37 @@
         .modal-button:active {
             transform: scale(0.96);
         }
+
+        /* Toggle switch */
+        .toggle-switch {
+            width: 48px;
+            height: 28px;
+            background: rgba(46, 58, 89, 0.25);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent);
+        }
+
+        .toggle-knob {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(20px);
+        }
     </style>
 </head>
 <body>
@@ -263,11 +294,30 @@
                 <div class="settings-card-content">
                     <div class="settings-icon">🪪</div>
                     <div class="settings-text">
-                        <div class="settings-label">Ma carte d'urgence</div>
-                        <div class="settings-sublabel">Texte de présentation et contacts affichés</div>
+                        <div class="settings-label">Ma carte d'urgence numérique</div>
+                        <div class="settings-sublabel">Consignes, informations et contacts affichés</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
+            </div>
+        </section>
+
+        <!-- JOURNAL AUTOMATIQUE -->
+        <section class="section">
+            <h2 class="section-title">📔 Journal de crises</h2>
+            <p class="section-description">Options d'enregistrement des crises</p>
+
+            <div class="settings-card" style="cursor: default;" onclick="event.stopPropagation()">
+                <div class="settings-card-content">
+                    <div class="settings-icon">⚡</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Enregistrement automatique</div>
+                        <div class="settings-sublabel">Ajouter les crises au journal sans demander</div>
+                    </div>
+                </div>
+                <div class="toggle-switch" id="toggleAutoRegister" onclick="toggleAutoRegister()">
+                    <div class="toggle-knob"></div>
+                </div>
             </div>
         </section>
 
@@ -394,6 +444,12 @@
                 nom: localStorage.getItem('userNom') || '',
                 contacts: JSON.parse(localStorage.getItem('contactsUrgence') || '[]'),
                 carteContacts: JSON.parse(localStorage.getItem('carteContacts') || '[]'),
+                carteConsignes: localStorage.getItem('carteConsignes') || '',
+                carteInformations: localStorage.getItem('carteInformations') || '',
+                carteRemarques: localStorage.getItem('carteRemarques') || '',
+                carteShowInformations: localStorage.getItem('carteShowInformations') || 'true',
+                carteShowContacts: localStorage.getItem('carteShowContacts') || 'true',
+                carteShowRemarques: localStorage.getItem('carteShowRemarques') || 'true',
                 infosMedicales: JSON.parse(localStorage.getItem('infosMedicales') || '{}'),
                 contextes: {
                     messageUnique: localStorage.getItem('contexte_messageUnique') === 'true',
@@ -401,7 +457,8 @@
                     commun: JSON.parse(localStorage.getItem('contexte_commun') || '{}'),
                     configs: contextesConfigs
                 },
-                journalCrises: JSON.parse(localStorage.getItem('journalCrises') || '[]')
+                journalCrises: JSON.parse(localStorage.getItem('journalCrises') || '[]'),
+                autoRegisterCrise: localStorage.getItem('autoRegisterCrise') || 'false'
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -444,6 +501,12 @@
                         localStorage.setItem('userNom', data.nom || '');
                         localStorage.setItem('contactsUrgence', JSON.stringify(data.contacts || []));
                         localStorage.setItem('carteContacts', JSON.stringify(data.carteContacts || []));
+                        if (data.carteConsignes) localStorage.setItem('carteConsignes', data.carteConsignes);
+                        if (data.carteInformations) localStorage.setItem('carteInformations', data.carteInformations);
+                        if (data.carteRemarques) localStorage.setItem('carteRemarques', data.carteRemarques);
+                        if (data.carteShowInformations) localStorage.setItem('carteShowInformations', data.carteShowInformations);
+                        if (data.carteShowContacts) localStorage.setItem('carteShowContacts', data.carteShowContacts);
+                        if (data.carteShowRemarques) localStorage.setItem('carteShowRemarques', data.carteShowRemarques);
                         localStorage.setItem('infosMedicales', JSON.stringify(data.infosMedicales || {}));
 
                         // Contextes
@@ -471,6 +534,10 @@
                         }
 
                         localStorage.setItem('journalCrises', JSON.stringify(data.journalCrises || []));
+
+                        if (data.autoRegisterCrise) {
+                            localStorage.setItem('autoRegisterCrise', data.autoRegisterCrise);
+                        }
 
                         alert('✅ Données importées avec succès !');
                         location.reload();
@@ -501,6 +568,21 @@
                 window.location.href = 'index.html';
             }
         }
+
+        // Toggle enregistrement automatique
+        function toggleAutoRegister() {
+            const toggle = document.getElementById('toggleAutoRegister');
+            const isActive = toggle.classList.toggle('active');
+            localStorage.setItem('autoRegisterCrise', isActive ? 'true' : 'false');
+        }
+
+        // Initialiser le toggle au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('autoRegisterCrise') === 'true') {
+                document.getElementById('toggleAutoRegister').classList.add('active');
+            }
+        });
     </script>
+    <script src="nora-scroll.js"></script>
 </body>
 </html>

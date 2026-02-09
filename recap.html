@@ -1081,15 +1081,18 @@
             let html = '';
             contactsToShow.forEach(contact => {
                 const nom = contact.nom || 'Contact';
-                const relation = contact.lien || contact.relation || '';
+                const lien = contact.lien || contact.relation || '';
+                const lienText = lien ? ` (${lien})` : '';
                 const tel = contact.telephone || contact.tel || '';
+                const remarque = contact.remarque || '';
 
                 html += `<div style="margin-bottom: 16px;">`;
-                if (relation) {
-                    html += `<p style="margin-bottom: 4px;"><strong>${relation}</strong></p>`;
+                html += `<p style="margin-bottom: 4px;"><strong>${nom}</strong>${lienText}</p>`;
+                if (remarque) {
+                    html += `<p style="margin-bottom: 4px; font-style: italic; opacity: 0.7; font-size: 15px;">${remarque}</p>`;
                 }
-                html += `<p style="margin-bottom: 8px;">${nom}</p>`;
                 if (tel) {
+                    html += `<p style="margin-bottom: 8px;">📞 ${tel}</p>`;
                     html += `<div class="contact-buttons">
                         <button class="contact-btn" onclick="window.location.href='tel:${tel}'">
                             <span>📞</span><span>Appeler</span>
@@ -1301,76 +1304,51 @@
             const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
             const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
 
-            // Présentation dynamique
-            let presentationText = '';
-            if (config.presentation?.inclure !== false) {
-                if (config.presentation?.texte?.trim()) {
-                    presentationText = config.presentation.texte.trim() + '\n\n';
-                } else {
-                    // Texte par défaut avec identité
-                    const prenom = localStorage.getItem('userPrenom') || '[Prénom]';
-                    const nom = localStorage.getItem('userNom') || '[Nom]';
-                    presentationText = `Bonjour,\nJe m'appelle ${prenom} ${nom}.\n\n`;
-                }
-            }
+            // Texte simplifié pour proche
+            const prenom = localStorage.getItem('userPrenom') || '';
+            const header = prenom
+                ? `🚨 ${prenom} est en train de faire une crise autistique.`
+                : `🚨 Je suis en train de faire une crise autistique.`;
 
-            let capacitesText = '';
+            let parts = [header];
+
+            // Capacités
             if (config.capacites.inclure) {
+                let capText = '';
                 if (capacites.impossible?.length > 0) {
-                    capacitesText += `⛔ Ce qui m'est impossible actuellement :\n${capacites.impossible.join(', ')}\n\n`;
+                    capText += `⛔ Ce qui m'est impossible : ${capacites.impossible.join(', ')}\n`;
                 }
                 if (capacites.difficile?.length > 0) {
-                    capacitesText += `⚠️ Ce qui m'est difficile actuellement :\n${capacites.difficile.join(', ')}\n\n`;
+                    capText += `⚠️ Ce qui m'est difficile : ${capacites.difficile.join(', ')}\n`;
                 }
                 if (capacites.possible?.length > 0) {
-                    capacitesText += `✅ Ce qui m'est actuellement possible :\n${capacites.possible.join(', ')}\n\n`;
+                    capText += `✅ Ce qui m'est possible : ${capacites.possible.join(', ')}\n`;
                 }
-                if (capacites.incertain?.length > 0) {
-                    capacitesText += `❓ Ce que je ne sais pas si je suis en capacité :\n${capacites.incertain.join(', ')}\n\n`;
+                if (capText) {
+                    parts.push(`MES CAPACITÉS ACTUELLES :\n${capText.trim()}`);
                 }
             }
 
-            let besoinsText = '';
+            // Besoins
             if (config.besoins.inclure && besoins.length > 0) {
                 const besoinsLabels = besoins.map(b => b.label || b);
-                besoinsText = `CE QUI VA M'AIDER :\n${besoinsLabels.join(', ')}\n\n`;
+                parts.push(`CE QUI VA M'AIDER :\n${besoinsLabels.join(', ')}`);
             }
 
-            let etatsText = '';
+            // États
             if (config.etats.inclure && etats.length > 0) {
                 const etatsLabels = etats.map(e => e.label || e);
-                etatsText = `COMMENT JE ME SENS :\n${etatsLabels.join(', ')}\n\n`;
+                parts.push(`COMMENT JE ME SENS :\n${etatsLabels.join(', ')}`);
             }
 
-            // Contacts dynamiques pour le partage
-            let contactText = '';
-            if (config.contacts?.inclure !== false) {
-                const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
-                const selection = config.contacts?.selection || [];
-                let contactsToShow = allContacts;
-                if (selection.length > 0) {
-                    contactsToShow = allContacts.filter(c => selection.includes(c.id || c.nom));
-                }
-                if (contactsToShow.length > 0) {
-                    contactText = 'CONTACT D\'URGENCE :\n';
-                    contactsToShow.forEach(c => {
-                        contactText += `${c.nom || 'Contact'}`;
-                        if (c.telephone || c.tel) contactText += ` - ${c.telephone || c.tel}`;
-                        contactText += '\n';
-                    });
-                }
-            }
-
-            const shareText = `🚨 JE SUIS EN CRISE AUTISTIQUE
-
-${presentationText}${capacitesText}${besoinsText}${etatsText}${contactText}`.trim();
+            const shareText = parts.join('\n\n');
 
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        const locationText = `\n---\n📍 MA POSITION :\nhttps://www.google.com/maps?q=${lat},${lon}`;
+                        const locationText = `\n\n📍 MA POSITION :\nhttps://www.google.com/maps?q=${lat},${lon}`;
                         doShare(shareText + locationText);
                     },
                     function(error) {
@@ -1662,5 +1640,6 @@ ${presentationText}${capacitesText}${besoinsText}${etatsText}${contactText}`.tri
             e.returnValue = '';
         });
     </script>
+    <script src="nora-scroll.js"></script>
 </body>
 </html>

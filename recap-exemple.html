@@ -586,10 +586,12 @@
 
             let html = '';
             contacts.forEach(contact => {
+                const lien = contact.lien ? ` (${contact.lien})` : '';
+                const remarque = contact.remarque ? `<p style="margin-bottom: 4px; font-style: italic; opacity: 0.6; font-size: 15px; color: var(--dark);">${contact.remarque}</p>` : '';
                 html += `
                     <div style="margin-bottom: 20px;">
-                        <p style="margin-bottom: 8px; color: var(--dark);"><strong>${contact.lien || 'Contact'}</strong></p>
-                        <p style="margin-bottom: 12px; font-size: 16px; color: var(--dark);">${contact.nom}</p>
+                        <p style="margin-bottom: 4px; font-size: 16px; color: var(--dark);"><strong>${contact.nom}</strong>${lien}</p>
+                        ${remarque}
                         ${contact.telephone ? `<p style="margin-bottom: 12px; color: #2E3A59;">📞 ${contact.telephone}</p>` : ''}
                         <div class="contact-buttons">
                             <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
@@ -694,5 +696,6 @@
         // Chargement au démarrage
         document.addEventListener('DOMContentLoaded', loadExempleData);
     </script>
+    <script src="nora-scroll.js"></script>
 </body>
 </html>

@@ -141,6 +141,13 @@ body {
     text-decoration: none;
 }
 
+.contact-remarque {
+    font-size: 15px;
+    font-style: italic;
+    opacity: 0.75;
+    margin-top: 2px;
+}
+
 .no-contacts {
     font-size: 15px;
     opacity: 0.7;
@@ -332,7 +339,7 @@ body {
 
 <body>
 
-<button class="close-btn" onclick="location.href='index.html'">×</button>
+<button class="close-btn" onclick="closeCarte()">×</button>
 
 <div class="content">
     <h1 class="main-title">URGENCE : CRISE AUTISTIQUE</h1>
@@ -348,20 +355,20 @@ body {
     <div class="section">
         <div class="section-title">Consignes</div>
         <div class="list" id="consignesBlock">
-            <div class="list-item"><strong>NE PAS ME TOUCHER</strong></div>
-            <div class="list-item"><strong>METTEZ-MOI AU CALME</strong> (sombre, silencieux, seule)</div>
-            <div class="list-item"><strong>NE PAS M'EMMENER AUX URGENCES</strong> (sauf blessure grave)</div>
-            <div class="list-item">Si agitée → endroit froid pour me calmer</div>
-            <div class="list-item">Si calme → me couvrir si possible</div>
-            <div class="list-item">Si je porte un casque/écouteurs → ne pas les retirer, ils m'aident</div>
-            <div class="list-item">Patienter (la crise peut durer de 30 min à plusieurs heures)</div>
+            <!-- Généré dynamiquement -->
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">Informations</div>
-        <div class="text">Je ne suis pas dangereuse. Je peux me figer, pleurer, crier, faire des gestes involontaires.</div>
-        <div class="text">Normalement, je vous entends et comprends.</div>
+        <div id="informationsBlock">
+            <!-- Généré dynamiquement -->
+        </div>
+    </div>
+
+    <div class="section" id="remarquesSection" style="display:none;">
+        <div class="section-title">Remarques</div>
+        <div class="text" id="remarquesBlock"></div>
     </div>
 
     <div class="section" id="contactSection">
@@ -415,12 +422,77 @@ body {
 <script>
 let qrCodeInstance = null;
 
+const DEFAULT_CONSIGNES = `NE PAS ME TOUCHER
+METTEZ-MOI AU CALME (sombre, silencieux, seule)
+NE PAS M'EMMENER AUX URGENCES (sauf blessure grave)
+Si agitée → endroit froid pour me calmer
+Si calme → me couvrir si possible
+Si je porte un casque/écouteurs → ne pas les retirer, ils m'aident
+Patienter (la crise peut durer de 30 min à plusieurs heures)`;
+
+const DEFAULT_INFORMATIONS = `Je ne suis pas dangereuse. Je peux me figer, pleurer, crier, faire des gestes involontaires.
+Normalement, je vous entends et comprends.`;
+
 window.addEventListener('DOMContentLoaded', () => {
     loadIdentity();
     loadPresentation();
+    loadConsignes();
+    loadInformations();
+    loadRemarques();
     loadContacts();
     loadMedicalData();
 });
+
+function closeCarte() {
+    if (document.referrer.includes('carte-config')) {
+        history.back();
+    } else {
+        location.href = 'carte-config.html';
+    }
+}
+
+function loadConsignes() {
+    const texte = localStorage.getItem('carteConsignes') || DEFAULT_CONSIGNES;
+    const container = document.getElementById('consignesBlock');
+    const lines = texte.split('\n').filter(l => l.trim());
+
+    container.innerHTML = lines.map(line => {
+        // Lignes en MAJUSCULES → en gras
+        const trimmed = line.trim();
+        const isUpperCase = trimmed === trimmed.toUpperCase() && /[A-ZÀ-Ú]/.test(trimmed);
+        if (isUpperCase) {
+            // Séparer la partie majuscule de la parenthèse si présente
+            const match = trimmed.match(/^([^(]+)(\(.+\))?$/);
+            if (match && match[2]) {
+                return `<div class="list-item"><strong>${match[1].trim()}</strong> ${match[2]}</div>`;
+            }
+            return `<div class="list-item"><strong>${trimmed}</strong></div>`;
+        }
+        return `<div class="list-item">${trimmed}</div>`;
+    }).join('');
+}
+
+function loadInformations() {
+    if (localStorage.getItem('carteShowInformations') === 'false') {
+        document.getElementById('informationsBlock').parentElement.style.display = 'none';
+        return;
+    }
+    const texte = localStorage.getItem('carteInformations') || DEFAULT_INFORMATIONS;
+    const container = document.getElementById('informationsBlock');
+    const lines = texte.split('\n').filter(l => l.trim());
+    container.innerHTML = lines.map(line => `<div class="text">${line.trim()}</div>`).join('');
+}
+
+function loadRemarques() {
+    if (localStorage.getItem('carteShowRemarques') === 'false') return;
+    const texte = localStorage.getItem('carteRemarques') || '';
+    if (texte.trim()) {
+        document.getElementById('remarquesSection').style.display = 'block';
+        const container = document.getElementById('remarquesBlock');
+        container.style.whiteSpace = 'pre-line';
+        container.textContent = texte;
+    }
+}
 
 // Charger l'identité depuis localStorage
 function loadIdentity() {
@@ -456,6 +528,10 @@ function loadPresentation() {
 
 // Charger les contacts sélectionnés pour la carte
 function loadContacts() {
+    if (localStorage.getItem('carteShowContacts') === 'false') {
+        document.getElementById('contactSection').style.display = 'none';
+        return;
+    }
     const container = document.getElementById('contactsBlock');
     const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
     const carteSelection = JSON.parse(localStorage.getItem('carteContacts') || '[]');
@@ -484,10 +560,12 @@ function loadContacts() {
     container.innerHTML = selectedContacts.map(contact => {
         const lien = contact.lien ? ` (${contact.lien})` : '';
         const tel = contact.telephone || '';
+        const remarque = contact.remarque ? `<div class="contact-remarque">${contact.remarque}</div>` : '';
         return `
             <div class="contact-entry">
                 <div class="contact-name">${contact.nom}${lien}</div>
                 ${tel ? `<div class="contact-phone"><a href="tel:${tel.replace(/\s/g, '')}">${tel}</a></div>` : ''}
+                ${remarque}
             </div>
         `;
     }).join('');
@@ -602,5 +680,6 @@ document.addEventListener('keydown', (e) => {
 });
 </script>
 
+    <script src="nora-scroll.js"></script>
 </body>
 </html>

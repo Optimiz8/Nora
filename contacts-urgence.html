@@ -112,6 +112,13 @@
             opacity: 0.8;
         }
 
+        .contact-remarque {
+            font-size: 15px;
+            font-style: italic;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+
         .empty-state {
             text-align: center;
             color: rgba(245, 228, 204, 0.6);
@@ -310,6 +317,16 @@
                 >
             </div>
 
+            <div class="input-group">
+                <label class="input-label">Remarque (optionnel)</label>
+                <input
+                    type="text"
+                    class="input-field"
+                    id="inputRemarque"
+                    placeholder="Ex : Travail de nuit, contact prioritaire..."
+                >
+            </div>
+
             <div class="modal-actions">
                 <button class="modal-button secondary" onclick="closeModal()">Annuler</button>
                 <button class="modal-button primary" onclick="saveContact()">Enregistrer</button>
@@ -434,6 +451,8 @@
                 const lien = contact.lien ? ` (${contact.lien})` : '';
                 const telephone = contact.telephone ? ` - ${contact.telephone}` : '';
 
+                const remarque = contact.remarque ? `<div class="contact-remarque">${contact.remarque}</div>` : '';
+
                 card.innerHTML = `
                     <div class="contact-header">
                         <div class="contact-number">Contact ${index + 1}</div>
@@ -445,6 +464,7 @@
                     <div class="contact-info">
                         <div class="contact-main">${nomComplet}${lien}</div>
                         <div class="contact-phone">${telephone.replace(' - ', '')}</div>
+                        ${remarque}
                     </div>
                 `;
 
@@ -461,6 +481,7 @@
             document.getElementById('inputNom').value = '';
             document.getElementById('inputLien').value = '';
             document.getElementById('inputTelephone').value = '';
+            document.getElementById('inputRemarque').value = '';
             document.getElementById('contactModal').classList.add('visible');
         }
 
@@ -471,6 +492,7 @@
             document.getElementById('inputNom').value = contact.nom || '';
             document.getElementById('inputLien').value = contact.lien || '';
             document.getElementById('inputTelephone').value = contact.telephone || '';
+            document.getElementById('inputRemarque').value = contact.remarque || '';
             document.getElementById('contactModal').classList.add('visible');
         }
 
@@ -487,6 +509,7 @@
             const nom = document.getElementById('inputNom').value.trim();
             const lien = document.getElementById('inputLien').value.trim();
             const telephone = document.getElementById('inputTelephone').value.trim();
+            const remarque = document.getElementById('inputRemarque').value.trim();
 
             // Validation : Nom/Prénom ET Téléphone obligatoires
             if (!nom) {
@@ -533,7 +556,8 @@
                 id: '', // Sera défini ci-dessous
                 nom,
                 lien,
-                telephone
+                telephone,
+                remarque
             };
 
             if (editingIndex !== null) {
@@ -567,5 +591,6 @@
             }
         }
     </script>
+    <script src="nora-scroll.js"></script>
 </body>
 </html>
