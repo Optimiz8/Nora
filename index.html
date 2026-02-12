@@ -253,7 +253,14 @@
             </div>
             <div class="crisis-modal-actions">
                 <button class="crisis-btn primary" onclick="crisisIsOver()">Oui, elle est terminée</button>
-                <button class="crisis-btn secondary" onclick="crisisNotOver()">Non, pas encore</button>
+                <button class="crisis-btn secondary" onclick="goToRecap()">
+                    Non, voir mon récapitulatif
+                    <div class="crisis-btn-desc">Retourner à l'écran de crise</div>
+                </button>
+                <button class="crisis-btn secondary" onclick="goToCalm()">
+                    Non, m'apaiser
+                    <div class="crisis-btn-desc">Accéder aux outils d'apaisement</div>
+                </button>
             </div>
         </div>
     </div>
@@ -344,6 +351,18 @@
     function crisisNotOver() {
         localStorage.setItem('lastCrisisCheck', getTodayStr());
         document.getElementById('crisisEndModal').classList.remove('visible');
+    }
+
+    function goToRecap() {
+        localStorage.setItem('lastCrisisCheck', getTodayStr());
+        document.getElementById('crisisEndModal').classList.remove('visible');
+        location.href = 'recap.html';
+    }
+
+    function goToCalm() {
+        localStorage.setItem('lastCrisisCheck', getTodayStr());
+        document.getElementById('crisisEndModal').classList.remove('visible');
+        document.getElementById('calmModal').classList.add('visible');
     }
 
     function crisisIsOver() {
@@ -465,12 +484,17 @@
             el.onclick = () => close(el.dataset.close)
         );
 
-        btnConseils.onclick = () => location.href='conseils.html';
-        btnBreathing.onclick = () => location.href='coherence.html';
-        btnSounds.onclick = () => location.href='sons.html';
-        btnPlaylist.onclick = () => location.href='playlist.html';
-        btnFidget.onclick = () => location.href='fidgets.html';
-        btnLava.onclick = () => location.href='harmonie-visuelle.html';
+        function goCalm(url) {
+            // Mettre #calm dans l'historique pour que le bouton retour rouvre la modale
+            history.replaceState(null, '', '#calm');
+            location.href = url;
+        }
+        btnConseils.onclick = () => goCalm('conseils.html');
+        btnBreathing.onclick = () => goCalm('coherence.html');
+        btnSounds.onclick = () => goCalm('sons.html');
+        btnPlaylist.onclick = () => goCalm('playlist.html');
+        btnFidget.onclick = () => goCalm('fidgets.html');
+        btnLava.onclick = () => goCalm('harmonie-visuelle.html');
 
         btnJournal.onclick = () => location.href='journal.html';
         btnSettings.onclick = () => location.href='parametres.html';
@@ -489,8 +513,7 @@
         setTimeout(checkCrisisEnd, 500);
     });
     </script>
-        document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".modal.visible").forEach(m => m.classList.remove("visible")); });
-
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".modal.visible").forEach(m => m.classList.remove("visible")); });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

@@ -381,6 +381,71 @@
             display: none !important;
         }
 
+        /* Modale confirmation fin de crise */
+        .crisis-confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(46, 58, 89, 0.9);
+            z-index: 500;
+        }
+
+        .crisis-confirm-modal.open {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .crisis-confirm-content {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .crisis-confirm-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .crisis-confirm-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .crisis-confirm-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .crisis-confirm-btn.yes {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+
+        .crisis-confirm-btn.no {
+            background-color: rgba(46, 58, 89, 0.15);
+            color: var(--dark);
+        }
+
+        .crisis-confirm-btn:active {
+            transform: scale(0.97);
+        }
+
         /* Modale questionnaire ajout journal */
         .questionnaire-modal {
             display: none;
@@ -666,7 +731,7 @@
 <body>
     <div class="header">
         <button class="back-btn" onclick="goBack()">
-            <span>⬅️</span>
+            <span>🏠</span>
             <span>Accueil</span>
         </button>
     </div>
@@ -891,6 +956,17 @@
         </div>
     </div>
 
+    <!-- Modale confirmation fin de crise -->
+    <div class="crisis-confirm-modal" id="crisisConfirmModal">
+        <div class="crisis-confirm-content">
+            <div class="crisis-confirm-text">Cette crise est-elle terminée ?</div>
+            <div class="crisis-confirm-actions">
+                <button class="crisis-confirm-btn no" onclick="closeCrisisConfirm()">Non</button>
+                <button class="crisis-confirm-btn yes" onclick="confirmCrisisEnd()">Oui</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer optimisé -->
     <div class="footer">
         <button class="footer-btn" onclick="modifyRecap()">
@@ -908,6 +984,10 @@
         <button class="footer-btn" onclick="addToJournal()">
             <span>➕</span>
             <span class="footer-btn-text">Journal</span>
+        </button>
+        <button class="footer-btn" onclick="goToCalm()">
+            <span>🌸</span>
+            <span class="footer-btn-text">Apaiser</span>
         </button>
     </div>
 
@@ -1605,13 +1685,11 @@
                 try {
                     localStorage.setItem('journalCrises', JSON.stringify(journal));
                     closeQuestionnaire();
-                    
+
                     alert('✅ Crise enregistrée dans le journal !');
-                    
-                    // Proposer d'aller au journal
-                    if (confirm('Voulez-vous consulter le journal ?')) {
-                        window.location.href = 'journal.html';
-                    }
+
+                    // Demander si la crise est terminée via modale custom
+                    document.getElementById('crisisConfirmModal').classList.add('open');
                 } catch (e) {
                     alert('❌ Erreur lors de la sauvegarde : ' + e.message);
                 }
@@ -1625,6 +1703,29 @@
             if (confirm('Retourner à l\'accueil ?')) {
                 window.location.href = 'index.html';
             }
+        }
+
+        function closeCrisisConfirm() {
+            document.getElementById('crisisConfirmModal').classList.remove('open');
+        }
+
+        function confirmCrisisEnd() {
+            // Crise terminée : nettoyer les données
+            localStorage.removeItem('criseEnCours');
+            localStorage.removeItem('crisisStartTime');
+            localStorage.removeItem('currentCapacites');
+            localStorage.removeItem('currentBesoins');
+            localStorage.removeItem('currentEtats');
+            localStorage.removeItem('lastCrisisCheck');
+            localStorage.removeItem('criseATraiter');
+            window.location.href = 'index.html';
+        }
+
+        function goToCalm() {
+            // Marquer la vérification de crise pour aujourd'hui
+            // pour éviter le popup de fin de crise sur index.html
+            localStorage.setItem('lastCrisisCheck', new Date().toISOString().split('T')[0]);
+            location.href = 'index.html#calm';
         }
 
         // Mettre aussi à jour le profil dans le journal
@@ -1641,7 +1742,7 @@
             e.returnValue = '';
         });
     </script>
-        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeQuestionnaire(); document.getElementById('triggersModal').classList.remove('open'); } });
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeQuestionnaire(); document.getElementById('triggersModal').classList.remove('open'); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

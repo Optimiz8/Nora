@@ -84,6 +84,33 @@ const CAPACITES = NORA_DATA.CAPACITES;
 const BESOINS = NORA_DATA.BESOINS;
 const ETATS = NORA_DATA.ETATS;
 
+// Contextes par défaut (toujours présents)
+const DEFAULT_CONTEXTES = [
+    { id: 'maison', emoji: '🏠', nom: 'Maison', default: true },
+    { id: 'exterieur', emoji: '🌍', nom: 'Extérieur', default: true },
+    { id: 'travail', emoji: '💼', nom: 'Travail', default: true },
+    { id: 'secours', emoji: '🚑', nom: 'Secours', default: true }
+];
+
+// Garantit que les 4 contextes par défaut existent dans localStorage
+function ensureDefaultContextes() {
+    let contextes;
+    try { contextes = JSON.parse(localStorage.getItem('contextes') || '[]'); } catch(e) { contextes = []; }
+
+    let modified = false;
+    DEFAULT_CONTEXTES.forEach(def => {
+        if (!contextes.find(c => c.id === def.id)) {
+            contextes.push(def);
+            modified = true;
+        }
+    });
+
+    if (modified) {
+        localStorage.setItem('contextes', JSON.stringify(contextes));
+    }
+    return contextes;
+}
+
 /**
  * Fonctions utilitaires pour le flux de crise
  */

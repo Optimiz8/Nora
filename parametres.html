@@ -263,7 +263,7 @@
                     <div class="settings-icon">✏️</div>
                     <div class="settings-text">
                         <div class="settings-label">Mon identité</div>
-                        <div class="settings-sublabel">Prénom et nom utilisés dans l'application</div>
+                        <div class="settings-sublabel">Prénom et nom utilisés dans l'app</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
@@ -540,6 +540,9 @@
                             localStorage.setItem('autoRegisterCrise', data.autoRegisterCrise);
                         }
 
+                        // Garantir que les 4 contextes par défaut existent
+                        ensureDefaultContextes();
+
                         alert('✅ Données importées avec succès !');
                         location.reload();
                     } catch (err) {
@@ -563,11 +566,14 @@
         }
 
         function resetAllData() {
-            if (confirm('Êtes-vous VRAIMENT sûr(e) ? Cette action est définitive.')) {
-                localStorage.clear();
-                alert('✅ Toutes les données ont été supprimées');
-                window.location.href = 'index.html';
-            }
+            // Fermer la modale
+            closeResetModal();
+            // Supprimer toutes les données
+            localStorage.clear();
+            // Recréer les contextes par défaut
+            ensureDefaultContextes();
+            alert('✅ Toutes les données ont été supprimées');
+            window.location.href = 'index.html';
         }
 
         // Toggle enregistrement automatique
@@ -584,7 +590,7 @@
             }
         });
     </script>
-        document.addEventListener("keydown", e => { if (e.key === "Escape") closeResetModal(); });
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") closeResetModal(); });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

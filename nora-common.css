@@ -24,6 +24,7 @@ body {
   background-color: var(--bg);
   color: var(--light);
   min-height: 100vh;
+  touch-action: manipulation;
 }
 
 /* ===== HEADER (plus fin) ===== */
@@ -153,22 +154,23 @@ html, body, *, *::before, *::after {
 /* ===== SCROLL INDICATOR ===== */
 .scroll-indicator {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 28px;
-  background: linear-gradient(transparent, rgba(56, 70, 87, 0.85));
+  bottom: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(46, 58, 89, 0.7);
+  border-radius: 50%;
   pointer-events: none;
   z-index: 90;
   transition: opacity 0.4s ease;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding-bottom: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .scroll-indicator.above-footer {
-  bottom: var(--footer-height);
+  bottom: calc(var(--footer-height) + 12px);
 }
 
 .scroll-indicator.hidden {
@@ -177,14 +179,13 @@ html, body, *, *::before, *::after {
 
 .scroll-indicator span {
   color: var(--light);
-  opacity: 0.5;
-  font-size: 12px;
+  font-size: 16px;
   animation: scrollHintBounce 1.5s ease-in-out infinite;
 }
 
 @keyframes scrollHintBounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+  50% { transform: translateY(3px); }
 }
 
 /* ===== REDUCED MOTION ===== */

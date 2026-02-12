@@ -500,21 +500,14 @@
     </div>
 
     <script>
-        // CONTEXTES PAR DÉFAUT
-        const DEFAULT_CONTEXTES = [
-            { id: 'maison', emoji: '🏠', nom: 'Maison', default: true },
-            { id: 'exterieur', emoji: '🌍', nom: 'Extérieur', default: true },
-            { id: 'travail', emoji: '💼', nom: 'Travail', default: true },
-            { id: 'secours', emoji: '🚑', nom: 'Secours', default: true }
-        ];
+        // DEFAULT_CONTEXTES est défini dans nora-data.js
 
         const MAX_CONTEXTES = 6;
 
         // INITIALISATION
         function init() {
-            // Charger les contextes depuis localStorage ou utiliser les défauts
-            let contextes = JSON.parse(localStorage.getItem('contextes')) || DEFAULT_CONTEXTES;
-            localStorage.setItem('contextes', JSON.stringify(contextes));
+            // Charger les contextes et garantir les 4 par défaut
+            let contextes = ensureDefaultContextes();
 
             // Charger l'état du mode simplifié
             const modeSimple = localStorage.getItem('contexte_messageUnique') === 'true';
@@ -694,7 +687,7 @@
         // INIT AU CHARGEMENT
         window.addEventListener('DOMContentLoaded', init);
     </script>
-        document.addEventListener("keydown", e => { if (e.key === "Escape") closeAddContexteModal(); });
+    <script>        document.addEventListener("keydown", e => { if (e.key === "Escape") closeAddContexteModal(); });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>
