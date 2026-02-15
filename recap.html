@@ -715,6 +715,36 @@
             font-size: 15px;
         }
 
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Toast */
+        .recap-toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 58, 89, 0.95);
+            color: var(--light);
+            padding: 14px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .recap-toast.visible {
+            opacity: 1;
+        }
+
         @media (max-width: 360px) {
             .footer {
                 padding: 10px 12px;
@@ -813,11 +843,27 @@
         </div>
 
         <!-- Lien information en bas de page -->
-        <div style="text-align: center; padding: 20px 0;">
+        <div style="text-align: center; padding: 20px 0 8px;">
             <a href="#" onclick="openModal(); return false;" style="color: #F7B89C; text-decoration: none; font-size: 15px; display: inline-flex; align-items: center; gap: 6px;">
                 <span>ℹ️</span>
                 <span>Qu'est-ce qu'une crise autistique ?</span>
             </a>
+        </div>
+
+        <!-- Section Statut de crise (tout en bas) -->
+        <div id="crisisStatusSection" style="display:none; margin-top: 8px;">
+            <div style="background: rgba(247,184,156,0.15); border: 2px solid rgba(247,184,156,0.4); border-radius: 12px; padding: 14px; text-align: center;">
+                <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
+                    <div style="width:10px;height:10px;border-radius:50%;background:var(--accent);animation:dotPulse 1.5s ease-in-out infinite;flex-shrink:0;"></div>
+                    <div style="font-size:16px;font-weight:600;color:var(--light);">Crise en cours</div>
+                </div>
+                <div style="font-size:14px;margin-bottom:10px;color:var(--light);opacity:0.7;" id="crisisDurationText">
+                    Durée : calcul...
+                </div>
+                <button onclick="endCrisisFromRecap()" style="background:var(--accent);color:var(--dark);border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;width:100%;">
+                    Terminer la crise
+                </button>
+            </div>
         </div>
     </div>
 
@@ -956,16 +1002,40 @@
         </div>
     </div>
 
-    <!-- Modale confirmation fin de crise -->
-    <div class="crisis-confirm-modal" id="crisisConfirmModal">
-        <div class="crisis-confirm-content">
-            <div class="crisis-confirm-text">Cette crise est-elle terminée ?</div>
-            <div class="crisis-confirm-actions">
-                <button class="crisis-confirm-btn no" onclick="closeCrisisConfirm()">Non</button>
-                <button class="crisis-confirm-btn yes" onclick="confirmCrisisEnd()">Oui</button>
+    <!-- Modale outils d'apaisement -->
+    <div class="modal" id="calmModal" onclick="if(event.target===this)this.classList.remove('open')">
+        <div onclick="event.stopPropagation()" style="background:var(--bg);border-radius:36px;padding:24px 20px;width:100%;max-width:520px;position:relative;">
+            <button onclick="document.getElementById('calmModal').classList.remove('open')" aria-label="Fermer" style="position:absolute;top:18px;right:20px;font-size:26px;cursor:pointer;background:none;border:none;color:var(--light);">×</button>
+            <div style="text-align:center;font-size:19px;font-weight:500;margin-bottom:20px;color:var(--light);">Comment veux-tu t'apaiser ?</div>
+            <div id="calmOptions" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+    </div>
+
+    <!-- Modale enregistrement de crise (quand on termine depuis recap) -->
+    <div class="crisis-confirm-modal" id="crisisRegisterRecapModal">
+        <div class="crisis-confirm-content" style="text-align:left; max-width:420px;">
+            <div style="font-size:20px; font-weight:700; color:var(--dark); margin-bottom:8px; text-align:center;">Enregistrer la crise</div>
+            <div style="font-size:15px; color:var(--dark); opacity:0.8; margin-bottom:20px; text-align:center; line-height:1.4;">
+                Souhaites-tu enregistrer cette crise dans ton journal ?
+            </div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button onclick="recapRegisterNow()" style="background:var(--accent);color:var(--dark);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;">
+                    Enregistrer maintenant
+                    <div style="font-size:13px;font-weight:400;opacity:0.7;margin-top:2px;">Ajouter au journal avec les données de la crise</div>
+                </button>
+                <button onclick="recapRegisterSkip()" style="background:rgba(46,58,89,0.1);color:var(--dark);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;">
+                    Ne pas enregistrer
+                    <div style="font-size:13px;font-weight:400;opacity:0.7;margin-top:2px;">Terminer sans ajouter au journal</div>
+                </button>
+                <button onclick="recapEnableAutoRegister()" style="background:rgba(46,58,89,0.1);color:var(--dark);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;">
+                    Toujours enregistrer automatiquement
+                    <div style="font-size:13px;font-weight:400;opacity:0.7;margin-top:2px;">Les prochaines crises seront ajoutées au journal sans demander</div>
+                </button>
             </div>
         </div>
     </div>
+
+    <div class="recap-toast" id="recapToast"></div>
 
     <!-- Footer optimisé -->
     <div class="footer">
@@ -1155,7 +1225,7 @@
             }
 
             if (contactsToShow.length === 0) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact configuré</p>';
+                section.style.display = 'none';
                 return;
             }
 
@@ -1170,7 +1240,14 @@
                 html += `<div style="margin-bottom: 16px;">`;
                 html += `<p style="margin-bottom: 4px;"><strong>${nom}</strong>${lienText}</p>`;
                 if (remarque) {
-                    html += `<p style="margin-bottom: 4px; font-style: italic; opacity: 0.7; font-size: 15px;">${remarque}</p>`;
+                    let fmtRemarque;
+                    try {
+                        var emojiRx = new RegExp('(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})', 'gu');
+                        fmtRemarque = '<span style="font-style:italic">' + remarque.replace(emojiRx, '</span>$1<span style="font-style:italic">') + '</span>';
+                    } catch(e) {
+                        fmtRemarque = '<span style="font-style:italic">' + remarque + '</span>';
+                    }
+                    html += `<p style="margin-bottom: 4px; opacity: 0.7; font-size: 15px;">${fmtRemarque}</p>`;
                 }
                 if (tel) {
                     html += `<p style="margin-bottom: 8px;">📞 ${tel}</p>`;
@@ -1239,7 +1316,8 @@
             }
 
             if (!html) {
-                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucune information médicale configurée</p>';
+                section.style.display = 'none';
+                return;
             }
 
             container.innerHTML = html;
@@ -1705,27 +1783,34 @@
             }
         }
 
-        function closeCrisisConfirm() {
-            document.getElementById('crisisConfirmModal').classList.remove('open');
-        }
-
-        function confirmCrisisEnd() {
-            // Crise terminée : nettoyer les données
-            localStorage.removeItem('criseEnCours');
-            localStorage.removeItem('crisisStartTime');
-            localStorage.removeItem('currentCapacites');
-            localStorage.removeItem('currentBesoins');
-            localStorage.removeItem('currentEtats');
-            localStorage.removeItem('lastCrisisCheck');
-            localStorage.removeItem('criseATraiter');
-            window.location.href = 'index.html';
+        function closeRegisterRecapModal() {
+            document.getElementById('crisisRegisterRecapModal').classList.remove('open');
         }
 
         function goToCalm() {
-            // Marquer la vérification de crise pour aujourd'hui
-            // pour éviter le popup de fin de crise sur index.html
+            // Ouvrir la modale d'apaisement directement sur le récap
+            const calmTools = [
+                { icon: '✓', label: 'Conseils', url: 'conseils.html' },
+                { icon: '🫁', label: 'Respiration apaisante', url: 'coherence.html' },
+                { icon: '🎧', label: 'Sons relaxants', url: 'sons.html' },
+                { icon: '🎵', label: 'Playlist', url: 'playlist.html' },
+                { icon: '🧩', label: 'Fidget', url: 'fidgets.html' },
+                { icon: '☁️', label: 'Harmonie visuelle', url: 'harmonie-visuelle.html' }
+            ];
+            const container = document.getElementById('calmOptions');
+            container.innerHTML = calmTools.map(t => `
+                <button onclick="navigateToCalm('${t.url}')" style="background:rgba(245,228,204,0.12);border:2px solid rgba(247,184,156,0.5);border-radius:22px;padding:14px 12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:16px;color:var(--light);font-weight:400;text-align:center;">
+                    <span style="font-size:26px;color:var(--accent);">${t.icon}</span>
+                    <span>${t.label}</span>
+                </button>
+            `).join('');
+            document.getElementById('calmModal').classList.add('open');
+        }
+
+        function navigateToCalm(url) {
+            localStorage.setItem('calmSource', 'recap');
             localStorage.setItem('lastCrisisCheck', new Date().toISOString().split('T')[0]);
-            location.href = 'index.html#calm';
+            location.href = url;
         }
 
         // Mettre aussi à jour le profil dans le journal
@@ -1735,7 +1820,120 @@
             return info.nom;
         }
 
-        document.addEventListener('DOMContentLoaded', loadRecapData);
+        // === STATUT DE CRISE ===
+        let crisisDurationInterval = null;
+
+        function initCrisisStatus() {
+            if (localStorage.getItem('criseEnCours') !== 'true') return;
+
+            document.getElementById('crisisStatusSection').style.display = 'block';
+            updateCrisisDuration();
+            crisisDurationInterval = setInterval(updateCrisisDuration, 60000);
+        }
+
+        function updateCrisisDuration() {
+            const startTime = localStorage.getItem('crisisStartTime');
+            if (!startTime) {
+                document.getElementById('crisisDurationText').textContent = 'Durée : inconnue';
+                return;
+            }
+            const durationMs = Date.now() - parseInt(startTime);
+            const minutes = Math.floor(durationMs / 60000);
+            let text;
+            if (minutes < 1) {
+                text = "moins d'une minute";
+            } else if (minutes < 60) {
+                text = minutes + ' min';
+            } else {
+                const h = Math.floor(minutes / 60);
+                const m = minutes % 60;
+                text = h + 'h' + (m > 0 ? (m < 10 ? '0' : '') + m : '');
+            }
+            document.getElementById('crisisDurationText').textContent = 'Durée : ' + text;
+        }
+
+        function createJournalEntryFromRecap() {
+            var profil = localStorage.getItem('profilActuel') || 'commun';
+            var capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
+            var besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
+            var etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
+            var startTime = localStorage.getItem('crisisStartTime');
+            var duree = '';
+            if (startTime) {
+                var dMs = Date.now() - parseInt(startTime);
+                var mins = Math.round(dMs / 60000);
+                if (mins < 60) { duree = mins + ' min'; }
+                else { var hh = Math.floor(mins / 60); var mm = mins % 60; duree = mm > 0 ? hh + 'h' + (mm < 10 ? '0' : '') + mm : hh + 'h'; }
+            }
+            var horodatage = startTime ? new Date(parseInt(startTime)).toISOString() : new Date().toISOString();
+            var profilInfo = getContexteInfo(profil);
+            var entry = {
+                horodatage: horodatage, profil: profil, profilNom: profilInfo.nom, profilEmoji: profilInfo.emoji,
+                capacites: capacites, besoins: besoins, etats: etats,
+                typeCrise: '', intensite: '', duree: duree, declencheurs: [], remarques: '', manual: false
+            };
+            var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            journal.push(entry);
+            localStorage.setItem('journalCrises', JSON.stringify(journal));
+        }
+
+        function endCrisisFromRecap() {
+            // Si auto-register activé, enregistrer directement
+            if (localStorage.getItem('autoRegisterCrise') === 'true') {
+                createJournalEntryFromRecap();
+                cleanupCrisisFromRecap();
+                showRecapToast('✅ Crise enregistrée dans le journal !');
+                return;
+            }
+
+            // Sinon, ouvrir la modale d'enregistrement
+            document.getElementById('crisisRegisterRecapModal').classList.add('open');
+        }
+
+        function recapRegisterNow() {
+            createJournalEntryFromRecap();
+            cleanupCrisisFromRecap();
+            document.getElementById('crisisRegisterRecapModal').classList.remove('open');
+            showRecapToast('✅ Crise enregistrée dans le journal !');
+        }
+
+        function recapRegisterSkip() {
+            cleanupCrisisFromRecap();
+            localStorage.removeItem('currentCapacites');
+            localStorage.removeItem('currentBesoins');
+            localStorage.removeItem('currentEtats');
+            document.getElementById('crisisRegisterRecapModal').classList.remove('open');
+            showRecapToast('Crise terminée');
+        }
+
+        function recapEnableAutoRegister() {
+            localStorage.setItem('autoRegisterCrise', 'true');
+            createJournalEntryFromRecap();
+            cleanupCrisisFromRecap();
+            document.getElementById('crisisRegisterRecapModal').classList.remove('open');
+            showRecapToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
+        }
+
+        function cleanupCrisisFromRecap() {
+            localStorage.removeItem('criseEnCours');
+            localStorage.removeItem('crisisStartTime');
+            localStorage.removeItem('lastCrisisCheck');
+            localStorage.removeItem('criseATraiter');
+            if (crisisDurationInterval) clearInterval(crisisDurationInterval);
+            document.getElementById('crisisStatusSection').style.display = 'none';
+        }
+
+        function showRecapToast(message) {
+            var toast = document.getElementById('recapToast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+            setTimeout(function() { toast.classList.remove('visible'); }, 2800);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecapData();
+            initCrisisStatus();
+        });
 
         window.addEventListener('beforeunload', function(e) {
             e.preventDefault();

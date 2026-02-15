@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#384657">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
+    <script src="nora-data.js"></script>
     <title>TSA App - Paramètres des contextes</title>
     <style>
         body {
@@ -638,17 +639,17 @@
                 },
                 capacites: {
                     inclure: true,
-                    visibles: [],
+                    visibles: CAPACITES.map(c => c.id),
                     personnalisees: []
                 },
                 besoins: {
                     inclure: true,
-                    visibles: [],
+                    visibles: BESOINS.map(b => b.id),
                     personnalisees: []
                 },
                 etats: {
                     inclure: true,
-                    visibles: [],
+                    visibles: ETATS.map(e => e.id),
                     personnalisees: []
                 },
                 contacts: {

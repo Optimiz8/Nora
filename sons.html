@@ -308,7 +308,7 @@ input[type=range]::-moz-range-thumb {
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="window.location.href='index.html#calm'" aria-label="Retour">⬅️</button>
+  <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
   <h1 class="page-title">Sons relaxants</h1>
   <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>

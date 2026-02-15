@@ -179,6 +179,81 @@
             opacity: 0.7;
             margin-top: 2px;
         }
+
+        /* Bandeau crise en cours */
+        .crisis-banner {
+            display: none;
+            background: linear-gradient(135deg, var(--accent), #e8967a);
+            color: var(--dark);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(247, 184, 156, 0.3);
+            animation: crisisPulse 2s ease-in-out infinite;
+        }
+
+        .crisis-banner.visible {
+            display: flex;
+        }
+
+        @keyframes crisisPulse {
+            0%, 100% { box-shadow: 0 4px 12px rgba(247, 184, 156, 0.3); }
+            50% { box-shadow: 0 4px 20px rgba(247, 184, 156, 0.6); }
+        }
+
+        .crisis-banner-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d9534f;
+            flex-shrink: 0;
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .crisis-banner-text {
+            flex: 1;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .crisis-banner-arrow {
+            font-size: 20px;
+            opacity: 0.6;
+        }
+
+        /* Toast */
+        .crisis-toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 58, 89, 0.95);
+            color: var(--light);
+            padding: 14px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2000;
+            pointer-events: none;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .crisis-toast.visible {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -190,6 +265,11 @@
     </header>
 
     <main class="main">
+        <div class="crisis-banner" id="crisisBanner" onclick="document.getElementById('crisisEndModal').classList.add('visible')">
+            <div class="crisis-banner-dot"></div>
+            <div class="crisis-banner-text">Crise en cours</div>
+            <div class="crisis-banner-arrow">›</div>
+        </div>
         <h1 class="main-title">De quoi as-tu besoin&nbsp;?</h1>
 
         <div class="choices">
@@ -290,7 +370,16 @@
         </div>
     </div>
 
+    <div class="crisis-toast" id="crisisToast"></div>
+
     <script>
+    function showCrisisToast(message) {
+        var toast = document.getElementById('crisisToast');
+        toast.textContent = message;
+        toast.classList.add('visible');
+        setTimeout(function() { toast.classList.remove('visible'); }, 2800);
+    }
+
     function startCrisis(profilId) {
         localStorage.setItem('profilActuel', profilId);
         localStorage.setItem('criseEnCours', 'true');
@@ -367,6 +456,15 @@
 
     function crisisIsOver() {
         document.getElementById('crisisEndModal').classList.remove('visible');
+
+        // Si enregistrement automatique activé, skip la modale de choix
+        if (localStorage.getItem('autoRegisterCrise') === 'true') {
+            createJournalEntry();
+            cleanupCrisisData();
+            showCrisisToast('✅ Crise enregistrée dans le journal !');
+            return;
+        }
+
         document.getElementById('crisisRegisterModal').classList.add('visible');
     }
 
@@ -374,7 +472,7 @@
         createJournalEntry();
         cleanupCrisisData();
         document.getElementById('crisisRegisterModal').classList.remove('visible');
-        alert('✅ Crise enregistrée dans le journal !');
+        showCrisisToast('✅ Crise enregistrée dans le journal !');
     }
 
     function registerCrisisLater() {
@@ -389,7 +487,7 @@
         createJournalEntry();
         cleanupCrisisData();
         document.getElementById('crisisRegisterModal').classList.remove('visible');
-        alert('✅ Crise enregistrée ! Les prochaines seront enregistrées automatiquement.');
+        showCrisisToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
     }
 
     function createJournalEntry() {
@@ -449,6 +547,9 @@
         localStorage.removeItem('currentEtats');
         localStorage.removeItem('lastCrisisCheck');
         localStorage.removeItem('criseATraiter');
+        // Masquer le bandeau crise
+        var banner = document.getElementById('crisisBanner');
+        if (banner) banner.classList.remove('visible');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -508,6 +609,11 @@
                 localStorage.setItem('lastCrisisCheck', getTodayStr());
             }
         );
+
+        // Afficher le bandeau crise en cours si applicable
+        if (localStorage.getItem('criseEnCours') === 'true') {
+            document.getElementById('crisisBanner').classList.add('visible');
+        }
 
         // Vérifier fin de crise après un court délai (laisser la page se charger)
         setTimeout(checkCrisisEnd, 500);

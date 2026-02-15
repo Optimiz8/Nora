@@ -372,21 +372,43 @@
 Sélectionnez vos contacts de confiance et vos informations clés pour disposer d'un outil d'aide à la communication prêt à l'emploi.
         </p>
 
+        <!-- IDENTITÉ -->
+        <section class="config-section">
+            <h2 class="section-title">👤 Identité</h2>
+            <p class="section-hint">Votre nom et prénom affichés en haut de la carte d'urgence numérique</p>
+            <div class="section-card">
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher mon identité</div>
+                    <div class="toggle-switch active" id="toggleIdentity" onclick="toggleIdentity()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- TEXTE DE PRÉSENTATION -->
         <section class="config-section">
             <h2 class="section-title">✍️ Texte de présentation</h2>
             <p class="section-hint">Ce texte apparaît sous votre identité sur la carte d'urgence numérique</p>
             <div class="section-card">
-                <div class="section-help">
-                    Il permet de donner des informations complémentaires à la personne qui vous aide.
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher la présentation</div>
+                    <div class="toggle-switch active" id="togglePresentation" onclick="togglePresentation()">
+                        <div class="toggle-slider"></div>
+                    </div>
                 </div>
-                <div class="section-example">
-                    Ex : « Je suis autiste et en situation de crise. Je ne peux probablement pas parler mais je vous entends. »
-                </div>
-                <textarea class="text-field" id="presentationField" placeholder="Votre texte de présentation..." oninput="markAsModified()"></textarea>
-                <div class="text-actions">
-                    <button class="text-action-btn" onclick="insertDefault()">📝 Message par défaut</button>
-                    <button class="text-action-btn" onclick="clearField()">🗑️ Effacer</button>
+                <div id="presentationContent">
+                    <div class="section-help">
+                        Il permet de donner des informations complémentaires à la personne qui vous aide.
+                    </div>
+                    <div class="section-example">
+                        Ex : « Je suis autiste et en situation de crise. Je ne peux probablement pas parler mais je vous entends. »
+                    </div>
+                    <textarea class="text-field" id="presentationField" placeholder="Votre texte de présentation..." oninput="markAsModified()"></textarea>
+                    <div class="text-actions">
+                        <button class="text-action-btn" onclick="insertDefault()">📝 Message par défaut</button>
+                        <button class="text-action-btn" onclick="clearField()">🗑️ Effacer</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -396,13 +418,21 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
             <h2 class="section-title">📋 Consignes</h2>
             <p class="section-hint">Listez les consignes essentielles que la personne qui vous aide doit connaître. Une consigne par ligne.</p>
             <div class="section-card">
-                <div class="section-help">
-                    Ces consignes apparaissent en haut de votre carte, juste après votre identité.
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher les consignes</div>
+                    <div class="toggle-switch active" id="toggleConsignes" onclick="toggleConsignes()">
+                        <div class="toggle-slider"></div>
+                    </div>
                 </div>
-                <textarea class="text-field" id="consignesField" placeholder="Ex : NE PAS ME TOUCHER&#10;METTEZ-MOI AU CALME..." oninput="markAsModified()"></textarea>
-                <div class="text-actions">
-                    <button class="text-action-btn" onclick="insertDefaultConsignes()">📝 Message par défaut</button>
-                    <button class="text-action-btn" onclick="clearConsignes()">🗑️ Effacer</button>
+                <div id="consignesContent">
+                    <div class="section-help">
+                        Ces consignes apparaissent en haut de votre carte, juste après votre identité.
+                    </div>
+                    <textarea class="text-field" id="consignesField" placeholder="Ex : NE PAS ME TOUCHER&#10;METTEZ-MOI AU CALME..." oninput="markAsModified()"></textarea>
+                    <div class="text-actions">
+                        <button class="text-action-btn" onclick="insertDefaultConsignes()">📝 Message par défaut</button>
+                        <button class="text-action-btn" onclick="clearConsignes()">🗑️ Effacer</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -490,7 +520,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button footer-preview" onclick="window.location.href='carte.html'">
+        <button class="footer-button footer-preview" onclick="saveData(); window.location.href='carte.html'">
             🪪 Voir ma carte
         </button>
         <button class="footer-button footer-save" onclick="saveData()">
@@ -504,6 +534,9 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
         const MAX_CARTE_CONTACTS = 3;
         let carteContacts = [];
         let allContacts = [];
+        let showIdentity = true;
+        let showPresentation = true;
+        let showConsignes = true;
         let showMedical = true;
         let showInformations = true;
         let showContacts = true;
@@ -555,6 +588,17 @@ Normalement, je vous entends et comprends.`;
             carteContacts = carteContacts.filter(id => allContacts.some(c => c.id === id));
 
             // Charger les toggles
+            showIdentity = localStorage.getItem('carteShowIdentity') !== 'false';
+            updateToggle('toggleIdentity', showIdentity);
+
+            showPresentation = localStorage.getItem('carteShowPresentation') !== 'false';
+            updateToggle('togglePresentation', showPresentation);
+            document.getElementById('presentationContent').style.display = showPresentation ? 'block' : 'none';
+
+            showConsignes = localStorage.getItem('carteShowConsignes') !== 'false';
+            updateToggle('toggleConsignes', showConsignes);
+            document.getElementById('consignesContent').style.display = showConsignes ? 'block' : 'none';
+
             showInformations = localStorage.getItem('carteShowInformations') !== 'false';
             updateToggle('toggleInformations', showInformations);
             document.getElementById('informationsContent').style.display = showInformations ? 'block' : 'none';
@@ -562,6 +606,15 @@ Normalement, je vous entends et comprends.`;
             showContacts = localStorage.getItem('carteShowContacts') !== 'false';
             updateToggle('toggleContacts', showContacts);
             document.getElementById('contactsContent').style.display = showContacts ? 'block' : 'none';
+
+            // Auto-sélectionner les premiers contacts UNIQUEMENT au premier usage
+            const contactsInitialized = localStorage.getItem('carteContactsInitialized') === 'true';
+            if (!contactsInitialized && showContacts && carteContacts.length === 0 && allContacts.length > 0) {
+                const max = Math.min(allContacts.length, MAX_CARTE_CONTACTS);
+                for (let i = 0; i < max; i++) {
+                    carteContacts.push(allContacts[i].id);
+                }
+            }
 
             showMedical = localStorage.getItem('carteMedical') !== 'false';
             updateToggle('toggleMedical', showMedical);
@@ -630,6 +683,26 @@ Normalement, je vous entends et comprends.`;
             updateContactsTitle();
         }
 
+        function toggleIdentity() {
+            showIdentity = !showIdentity;
+            updateToggle('toggleIdentity', showIdentity);
+            markAsModified();
+        }
+
+        function togglePresentation() {
+            showPresentation = !showPresentation;
+            updateToggle('togglePresentation', showPresentation);
+            document.getElementById('presentationContent').style.display = showPresentation ? 'block' : 'none';
+            markAsModified();
+        }
+
+        function toggleConsignes() {
+            showConsignes = !showConsignes;
+            updateToggle('toggleConsignes', showConsignes);
+            document.getElementById('consignesContent').style.display = showConsignes ? 'block' : 'none';
+            markAsModified();
+        }
+
         function toggleInformations() {
             showInformations = !showInformations;
             updateToggle('toggleInformations', showInformations);
@@ -641,6 +714,18 @@ Normalement, je vous entends et comprends.`;
             showContacts = !showContacts;
             updateToggle('toggleContacts', showContacts);
             document.getElementById('contactsContent').style.display = showContacts ? 'block' : 'none';
+
+            // Auto-sélectionner les premiers contacts uniquement si jamais initialisé
+            const contactsInit = localStorage.getItem('carteContactsInitialized') === 'true';
+            if (!contactsInit && showContacts && carteContacts.length === 0 && allContacts.length > 0) {
+                const max = Math.min(allContacts.length, MAX_CARTE_CONTACTS);
+                for (let i = 0; i < max; i++) {
+                    carteContacts.push(allContacts[i].id);
+                }
+                renderContacts();
+                updateContactsTitle();
+            }
+
             markAsModified();
         }
 
@@ -672,13 +757,9 @@ Normalement, je vous entends et comprends.`;
         }
 
         function saveData() {
-            // Sauvegarder le texte (si identique au défaut, on sauvegarde vide)
+            // Toujours sauvegarder le texte tel quel
             const texte = document.getElementById('presentationField').value;
-            if (texte.trim() === DEFAULT_PRESENTATION.trim()) {
-                localStorage.setItem('cartePresentation', '');
-            } else {
-                localStorage.setItem('cartePresentation', texte);
-            }
+            localStorage.setItem('cartePresentation', texte);
 
             // Sauvegarder les consignes (si identique au défaut, on sauvegarde vide)
             const consignes = document.getElementById('consignesField').value;
@@ -700,12 +781,16 @@ Normalement, je vous entends et comprends.`;
             localStorage.setItem('carteRemarques', document.getElementById('remarquesField').value.trim());
 
             // Sauvegarder les toggles
+            localStorage.setItem('carteShowIdentity', showIdentity ? 'true' : 'false');
+            localStorage.setItem('carteShowPresentation', showPresentation ? 'true' : 'false');
+            localStorage.setItem('carteShowConsignes', showConsignes ? 'true' : 'false');
             localStorage.setItem('carteShowInformations', showInformations ? 'true' : 'false');
             localStorage.setItem('carteShowContacts', showContacts ? 'true' : 'false');
             localStorage.setItem('carteShowRemarques', showRemarques ? 'true' : 'false');
 
             // Sauvegarder les contacts
             localStorage.setItem('carteContacts', JSON.stringify(carteContacts));
+            localStorage.setItem('carteContactsInitialized', 'true');
 
             // Sauvegarder le toggle médical
             localStorage.setItem('carteMedical', showMedical ? 'true' : 'false');
@@ -747,7 +832,7 @@ Normalement, je vous entends et comprends.`;
         function showToast() {
             const toast = document.getElementById('toast');
             toast.classList.add('visible');
-            setTimeout(() => toast.classList.remove('visible'), 1500);
+            setTimeout(() => toast.classList.remove('visible'), 2800);
         }
 
         function goToContacts() {

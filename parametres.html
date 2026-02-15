@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#384657">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
+    <script src="nora-data.js"></script>
     <title>TSA App - Paramètres</title>
     <style>
         body {
@@ -242,6 +243,29 @@
         .toggle-switch.active .toggle-knob {
             transform: translateX(20px);
         }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 58, 89, 0.95);
+            color: var(--light);
+            padding: 14px 24px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.visible {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -418,7 +442,16 @@
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 2800);
+        }
+
         // Navigation
         function goHome() {
             window.location.href = 'index.html';
@@ -448,9 +481,15 @@
                 carteConsignes: localStorage.getItem('carteConsignes') || '',
                 carteInformations: localStorage.getItem('carteInformations') || '',
                 carteRemarques: localStorage.getItem('carteRemarques') || '',
+                cartePresentation: localStorage.getItem('cartePresentation') || '',
+                carteShowIdentity: localStorage.getItem('carteShowIdentity') || 'true',
+                carteShowPresentation: localStorage.getItem('carteShowPresentation') || 'true',
+                carteShowConsignes: localStorage.getItem('carteShowConsignes') || 'true',
                 carteShowInformations: localStorage.getItem('carteShowInformations') || 'true',
                 carteShowContacts: localStorage.getItem('carteShowContacts') || 'true',
                 carteShowRemarques: localStorage.getItem('carteShowRemarques') || 'true',
+                carteMedical: localStorage.getItem('carteMedical') || 'true',
+                carteContactsInitialized: localStorage.getItem('carteContactsInitialized') || 'false',
                 infosMedicales: JSON.parse(localStorage.getItem('infosMedicales') || '{}'),
                 contextes: {
                     messageUnique: localStorage.getItem('contexte_messageUnique') === 'true',
@@ -470,7 +509,7 @@
             a.click();
             URL.revokeObjectURL(url);
 
-            alert('✅ Données exportées avec succès !');
+            showToast('✅ Données exportées avec succès !');
         }
 
         // Import des données
@@ -505,9 +544,15 @@
                         if (data.carteConsignes) localStorage.setItem('carteConsignes', data.carteConsignes);
                         if (data.carteInformations) localStorage.setItem('carteInformations', data.carteInformations);
                         if (data.carteRemarques) localStorage.setItem('carteRemarques', data.carteRemarques);
+                        if (data.cartePresentation) localStorage.setItem('cartePresentation', data.cartePresentation);
+                        if (data.carteShowIdentity) localStorage.setItem('carteShowIdentity', data.carteShowIdentity);
+                        if (data.carteShowPresentation) localStorage.setItem('carteShowPresentation', data.carteShowPresentation);
+                        if (data.carteShowConsignes) localStorage.setItem('carteShowConsignes', data.carteShowConsignes);
                         if (data.carteShowInformations) localStorage.setItem('carteShowInformations', data.carteShowInformations);
                         if (data.carteShowContacts) localStorage.setItem('carteShowContacts', data.carteShowContacts);
                         if (data.carteShowRemarques) localStorage.setItem('carteShowRemarques', data.carteShowRemarques);
+                        if (data.carteMedical) localStorage.setItem('carteMedical', data.carteMedical);
+                        if (data.carteContactsInitialized) localStorage.setItem('carteContactsInitialized', data.carteContactsInitialized);
                         localStorage.setItem('infosMedicales', JSON.stringify(data.infosMedicales || {}));
 
                         // Contextes
@@ -543,10 +588,10 @@
                         // Garantir que les 4 contextes par défaut existent
                         ensureDefaultContextes();
 
-                        alert('✅ Données importées avec succès !');
-                        location.reload();
+                        showToast('✅ Données importées avec succès !');
+                        setTimeout(() => location.reload(), 2000);
                     } catch (err) {
-                        alert('❌ Erreur lors de l\'import : fichier corrompu');
+                        showToast('❌ Erreur lors de l\'import : fichier corrompu');
                         console.error(err);
                     }
                 };
@@ -572,8 +617,8 @@
             localStorage.clear();
             // Recréer les contextes par défaut
             ensureDefaultContextes();
-            alert('✅ Toutes les données ont été supprimées');
-            window.location.href = 'index.html';
+            showToast('✅ Toutes les données ont été supprimées');
+            setTimeout(() => { window.location.href = 'index.html'; }, 2000);
         }
 
         // Toggle enregistrement automatique

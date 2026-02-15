@@ -369,8 +369,8 @@ h2 {
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="window.location.href='index.html#calm'" aria-label="Retour">⬅️</button>
-  <h1 class="page-title">Exercice de respiration</h1>
+  <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
+  <h1 class="page-title">Exercices de respiration</h1>
   <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>
 
@@ -382,9 +382,9 @@ h2 {
       <div class="carousel" id="program">
         <div class="carousel-spacer"></div>
         <div class="item active" data-in="5" data-out="5">Cohérence<br>cardiaque<br>5s / 5s</div>
-        <div class="item" data-in="4" data-out="8">Apaisement<br>4s / 8s</div>
+        <div class="item" data-in="4" data-out="8">Apaisement<br>4s / 8s<br><small style="opacity:0.6">~2 min</small></div>
         <div class="item" data-in="custom" data-out="custom" id="customProgram">
-          <span id="customLabel">Personnalisé</span>
+          <span id="customLabel">Personnalisé<br><small style="opacity:0.6">~2 min</small></span>
           <span class="edit-btn">Modifier</span>
         </div>
         <div class="carousel-spacer"></div>

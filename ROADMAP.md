@@ -44,6 +44,11 @@ L'app ne serait plus limitee a la crise, mais deviendrait un compagnon au quotid
 - Suggestions adaptees au niveau
 - Utile pour la prevention, pas pour tout le monde
 
+### Playlists multiples (jusqu'a 5)
+- Possibilite de creer jusqu'a 5 playlists apaisantes
+- Chaque playlist avec son propre nom et ses liens
+- Selection rapide depuis les outils d'apaisement
+
 ### Chronometre de crise visible
 - Afficher la duree ecoulee sur le recap
 - Aide l'entourage a evaluer la situation

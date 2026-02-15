@@ -115,9 +115,12 @@
 
         .contact-remarque {
             font-size: 15px;
-            font-style: italic;
             opacity: 0.6;
             margin-top: 4px;
+        }
+
+        .contact-remarque .remark-text {
+            font-style: italic;
         }
 
         .empty-state {
@@ -445,7 +448,17 @@
                 const lien = contact.lien ? ` (${contact.lien})` : '';
                 const telephone = contact.telephone ? ` - ${contact.telephone}` : '';
 
-                const remarque = contact.remarque ? `<div class="contact-remarque">${contact.remarque}</div>` : '';
+                let remarque = '';
+                if (contact.remarque) {
+                    let fmtR;
+                    try {
+                        var eRx = new RegExp('(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})', 'gu');
+                        fmtR = '<span class="remark-text">' + contact.remarque.replace(eRx, '</span>$1<span class="remark-text">') + '</span>';
+                    } catch(e) {
+                        fmtR = '<span class="remark-text">' + contact.remarque + '</span>';
+                    }
+                    remarque = '<div class="contact-remarque">' + fmtR + '</div>';
+                }
 
                 card.innerHTML = `
                     <div class="contact-header">

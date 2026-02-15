@@ -144,9 +144,12 @@ body {
 
 .contact-remarque {
     font-size: 15px;
-    font-style: italic;
     opacity: 0.75;
     margin-top: 2px;
+}
+
+.contact-remarque .remark-text {
+    font-style: italic;
 }
 
 .no-contacts {
@@ -392,7 +395,7 @@ body {
 </div>
 
 <!-- FOOTER FIXE : QR Code -->
-<div class="carte-footer">
+<div class="carte-footer footer">
     <button class="qr-btn" onclick="generateQR()">📱 Partager via QR Code</button>
 </div>
 
@@ -454,6 +457,10 @@ function closeCarte() {
 }
 
 function loadConsignes() {
+    if (localStorage.getItem('carteShowConsignes') === 'false') {
+        document.getElementById('consignesBlock').parentElement.style.display = 'none';
+        return;
+    }
     const texte = localStorage.getItem('carteConsignes') || DEFAULT_CONSIGNES;
     const container = document.getElementById('consignesBlock');
     const lines = texte.split('\n').filter(l => l.trim());
@@ -498,9 +505,16 @@ function loadRemarques() {
 
 // Charger l'identité depuis localStorage
 function loadIdentity() {
+    const container = document.getElementById('identityBlock');
+
+    // Si l'identité est désactivée, masquer le bloc
+    if (localStorage.getItem('carteShowIdentity') === 'false') {
+        container.style.display = 'none';
+        return;
+    }
+
     const prenom = localStorage.getItem('userPrenom') || '';
     const nom = localStorage.getItem('userNom') || '';
-    const container = document.getElementById('identityBlock');
 
     if (prenom || nom) {
         const fullName = [prenom, nom.toUpperCase()].filter(Boolean).join(' ');
@@ -519,12 +533,24 @@ function loadIdentity() {
 
 // Charger la présentation personnalisée
 function loadPresentation() {
+    if (localStorage.getItem('carteShowPresentation') === 'false') return;
     const texte = localStorage.getItem('cartePresentation') || '';
     const block = document.getElementById('presentationBlock');
     if (texte.trim()) {
         block.style.display = 'block';
         block.className = 'presentation';
         block.textContent = texte;
+    }
+}
+
+// Sépare emojis (non italique) du texte (italique)
+function formatRemarque(text) {
+    try {
+        var emojiRegex = new RegExp('(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})', 'gu');
+        return '<span class="remark-text">' + text.replace(emojiRegex, '</span>$1<span class="remark-text">') + '</span>';
+    } catch(e) {
+        // Fallback : tout en italique si le navigateur ne supporte pas \p{}
+        return '<span class="remark-text">' + text + '</span>';
     }
 }
 
@@ -546,13 +572,9 @@ function loadContacts() {
             .filter(Boolean);
     }
 
-    // Fallback : si aucune sélection, prendre les 3 premiers contacts
-    if (selectedContacts.length === 0 && allContacts.length > 0) {
-        selectedContacts = allContacts.slice(0, 3);
-    }
-
     if (selectedContacts.length === 0) {
-        container.innerHTML = '<div class="no-contacts">Aucun contact configuré.<br>Ajoutez des contacts dans les paramètres.</div>';
+        // Masquer toute la section contacts si rien n'est sélectionné
+        document.getElementById('contactSection').style.display = 'none';
         return;
     }
 
@@ -562,7 +584,7 @@ function loadContacts() {
     container.innerHTML = selectedContacts.map(contact => {
         const lien = contact.lien ? ` (${contact.lien})` : '';
         const tel = contact.telephone || '';
-        const remarque = contact.remarque ? `<div class="contact-remarque">${contact.remarque}</div>` : '';
+        const remarque = contact.remarque ? `<div class="contact-remarque">${formatRemarque(contact.remarque)}</div>` : '';
         return `
             <div class="contact-entry">
                 <div class="contact-name">${contact.nom}${lien}</div>
