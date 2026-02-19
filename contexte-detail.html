@@ -280,6 +280,7 @@
             flex: 1;
             font-size: 15px;
             color: #2E3A59;
+            cursor: pointer;
         }
 
         .item-delete {
@@ -756,28 +757,28 @@
 
     </main>
 
-    <!-- Bouton Afficher l'exemple -->
+    <!-- Bouton Réinitialiser -->
     <div style="padding: 0 20px 20px 20px;">
         <button style="
             width: 100%;
-            background-color: rgba(247, 184, 156, 0.2);
-            border: 2px dashed #F7B89C;
+            background: rgba(244, 67, 54, 0.15);
+            border: 2px solid rgba(244, 67, 54, 0.3);
             color: #F5E4CC;
-            padding: 16px;
+            padding: 14px;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-        " onclick="afficherExemple()">
-            ✅ Afficher l'exemple avec ces réglages
+        " onclick="confirmReset()">
+            ↻ Réinitialiser les paramètres
         </button>
     </div>
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button" onclick="confirmReset()" style="flex: 0.8; background: rgba(244, 67, 54, 0.15); color: var(--light); font-size: 15px;">
-            ↻ Réinitialiser
+        <button class="footer-button footer-back" onclick="afficherExemple()">
+            👁️ Voir l'exemple
         </button>
         <button class="footer-button footer-save" onclick="saveData()">
             💾 Enregistrer
@@ -955,9 +956,16 @@
                 if (!contextData.besoins.personnalisees) contextData.besoins.personnalisees = [];
                 if (!contextData.etats.personnalisees) contextData.etats.personnalisees = [];
                 if (!contextData.contacts.selection) contextData.contacts.selection = [];
-                if (!contextData.capacites.visibles) contextData.capacites.visibles = CAPACITES.map(c => c.id);
-                if (!contextData.besoins.visibles) contextData.besoins.visibles = BESOINS.map(b => b.id);
-                if (!contextData.etats.visibles) contextData.etats.visibles = ETATS.map(e => e.id);
+                // Migration : si visibles est absent ou vide (ancien format), initialiser avec tous les items
+                if (!contextData.capacites.visibles || (Array.isArray(contextData.capacites.visibles) && contextData.capacites.visibles.length === 0 && !contextData._userConfigured)) {
+                    contextData.capacites.visibles = CAPACITES.map(c => c.id);
+                }
+                if (!contextData.besoins.visibles || (Array.isArray(contextData.besoins.visibles) && contextData.besoins.visibles.length === 0 && !contextData._userConfigured)) {
+                    contextData.besoins.visibles = BESOINS.map(b => b.id);
+                }
+                if (!contextData.etats.visibles || (Array.isArray(contextData.etats.visibles) && contextData.etats.visibles.length === 0 && !contextData._userConfigured)) {
+                    contextData.etats.visibles = ETATS.map(e => e.id);
+                }
 
                 // Migration ancienne structure si nécessaire
                 if (contextData.textePresentation !== undefined && !contextData.presentation) {
@@ -1137,8 +1145,8 @@
                         <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji">${item.emoji || ''}</div>
-                        <div class="item-text">${item.nom}</div>
+                        <div class="item-emoji" onclick="toggleItem('capacites', '${item.id}')">${item.emoji || ''}</div>
+                        <div class="item-text" onclick="toggleItem('capacites', '${item.id}')">${item.nom}</div>
                         <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('capacites', '${item.id}')">
                             🗑️
                         </div>
@@ -1154,14 +1162,14 @@
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.besoins.visibles.includes(item.id);
                 const isCustom = item.custom || false;
-                
+
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji">${item.emoji || ''}</div>
-                        <div class="item-text">${item.nom}</div>
+                        <div class="item-emoji" onclick="toggleItem('besoins', '${item.id}')">${item.emoji || ''}</div>
+                        <div class="item-text" onclick="toggleItem('besoins', '${item.id}')">${item.nom}</div>
                         <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('besoins', '${item.id}')">
                             🗑️
                         </div>
@@ -1177,14 +1185,14 @@
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.etats.visibles.includes(item.id);
                 const isCustom = item.custom || false;
-                
+
                 return `
                     <div class="item-row">
                         <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji">${item.emoji || ''}</div>
-                        <div class="item-text">${item.nom}</div>
+                        <div class="item-emoji" onclick="toggleItem('etats', '${item.id}')">${item.emoji || ''}</div>
+                        <div class="item-text" onclick="toggleItem('etats', '${item.id}')">${item.nom}</div>
                         <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('etats', '${item.id}')">
                             🗑️
                         </div>
@@ -1488,6 +1496,7 @@
         function saveData() {
             contextData.presentation.texte = getPresentationTexteToSave();
             updateContexteName();
+            contextData._userConfigured = true;
             localStorage.setItem(`contexte_${currentContexteId}`, JSON.stringify(contextData));
             hasUnsavedChanges = false;
             showToast();

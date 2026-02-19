@@ -53,6 +53,14 @@ L'app ne serait plus limitee a la crise, mais deviendrait un compagnon au quotid
 - Afficher la duree ecoulee sur le recap
 - Aide l'entourage a evaluer la situation
 
+### Timer visuel anti-cecite temporelle
+- Cercle SVG qui se vide progressivement (plus lisible cognitivement qu'une horloge classique)
+- Alertes vocales a des seuils cles (30min, 15min, 10min, 5min, 1min) via speechSynthesis
+- Prereglages rapides (15min, 30min, 1h...)
+- Page autonome, accessible depuis les outils d'apaisement ou l'accueil
+- Particulierement utile pour l'hyperfocus et la cecite temporelle (symptome TSA frequent)
+- Complexite faible a moyenne : SVG + setInterval + speechSynthesis, pas de librairie externe
+
 ---
 
 ## V3 - Application native Android
