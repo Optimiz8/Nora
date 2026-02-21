@@ -1768,6 +1768,7 @@
                     closeQuestionnaire();
                     cleanupCrisisFromRecap();
                     showRecapToast('✅ Crise enregistrée dans le journal !');
+                    setTimeout(function() { window.location.href = 'index.html'; }, 2200);
                 } catch (e) {
                     alert('❌ Erreur lors de la sauvegarde : ' + e.message);
                 }
@@ -1891,10 +1892,9 @@
         }
 
         function recapRegisterNow() {
-            createJournalEntryFromRecap();
-            cleanupCrisisFromRecap();
             document.getElementById('crisisRegisterRecapModal').classList.remove('open');
-            showRecapToast('✅ Crise enregistrée dans le journal !');
+            // Ouvrir le questionnaire pour ajouter les détails (déclencheurs, intensité, etc.)
+            document.getElementById('questionnaireModal').classList.add('open');
         }
 
         function recapRegisterSkip() {
@@ -1904,6 +1904,7 @@
             localStorage.removeItem('currentEtats');
             document.getElementById('crisisRegisterRecapModal').classList.remove('open');
             showRecapToast('Crise terminée');
+            setTimeout(function() { window.location.href = 'index.html'; }, 2200);
         }
 
         function recapEnableAutoRegister() {
@@ -1912,6 +1913,7 @@
             cleanupCrisisFromRecap();
             document.getElementById('crisisRegisterRecapModal').classList.remove('open');
             showRecapToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
+            setTimeout(function() { window.location.href = 'index.html'; }, 2200);
         }
 
         function cleanupCrisisFromRecap() {

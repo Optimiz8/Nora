@@ -162,6 +162,28 @@
         }
 
         requestAnimationFrame(animate);
+
+        // Wake lock : empêcher la mise en veille pendant 30 minutes
+        let wakeLock = null;
+        const WAKE_LOCK_DURATION = 30 * 60 * 1000;
+
+        async function requestWakeLock() {
+            if (!('wakeLock' in navigator)) return;
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                setTimeout(() => {
+                    if (wakeLock) { wakeLock.release(); wakeLock = null; }
+                }, WAKE_LOCK_DURATION);
+            } catch (e) { /* non supporté ou refusé */ }
+        }
+
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible' && !wakeLock) {
+                await requestWakeLock();
+            }
+        });
+
+        requestWakeLock();
     </script>
 
 </body>
