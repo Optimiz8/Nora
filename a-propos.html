@@ -35,10 +35,11 @@
         }
 
         .app-logo img {
-            width: 100px;
-            height: 100px;
+            width: 180px;
+            height: 80px;
             border-radius: 16px;
-            object-fit: contain;
+            object-fit: cover;
+            object-position: center;
         }
 
         .app-version {
@@ -180,7 +181,7 @@
                 </div>
                 <div class="app-version">Version 1.0</div>
                 <div class="app-description">
-                    Application d'aide à la gestion des surcharges et crises autistiques
+                    Ton compagnon discret pour les moments difficiles — communication, régulation et contacts d'urgence réunis en un seul endroit.
                 </div>
 
                 <div class="divider"></div>
@@ -193,7 +194,7 @@
                 <div class="info-group">
                     <div class="info-title">🎯 Objectif</div>
                     <div class="info-text">
-                        Fournir un outil simple et accessible pour communiquer ses besoins en situation de crise ou de surcharge sensorielle.
+                        Permettre de communiquer son état et ses besoins, accéder à des outils de régulation sensorielle (sons, respiration, fidgets), et partager un récapitulatif de crise avec les personnes de confiance — sans avoir à parler.
                     </div>
                 </div>
 
@@ -245,8 +246,8 @@
                         <span class="faq-icon" id="faqIcon2">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer2">
-                        Allez dans Paramètres > Mon profil > Contacts d'urgence. 
-                        Vous pouvez modifier, ajouter ou supprimer jusqu'à 3 contacts.
+                        Allez dans Paramètres > Contacts d'urgence.
+                        Vous pouvez modifier, ajouter ou supprimer vos contacts depuis cet écran.
                     </div>
                 </div>
 
@@ -256,8 +257,7 @@
                         <span class="faq-icon" id="faqIcon3">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer3">
-                        Oui ! L'application fonctionne entièrement hors ligne. 
-                        Une fois chargée, vous n'avez pas besoin de connexion internet.
+                        Oui ! Une fois installée ou chargée une première fois, l'application fonctionne entièrement sans connexion internet.
                     </div>
                 </div>
 
@@ -267,8 +267,7 @@
                         <span class="faq-icon" id="faqIcon4">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer4">
-                        Oui ! Dans chaque contexte (Maison, Extérieur, Travail, Secours), 
-                        vous pouvez choisir quelles capacités, besoins et états afficher.
+                        Oui ! Dans Paramètres > Paramètres des contextes, vous pouvez choisir quelles capacités, besoins et états afficher, et en ajouter des personnalisés.
                     </div>
                 </div>
 
@@ -278,8 +277,28 @@
                         <span class="faq-icon" id="faqIcon5">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer5">
-                        Allez dans Paramètres > Données > Exporter mes données. 
-                        Vous téléchargerez un fichier JSON que vous pourrez réimporter plus tard.
+                        Allez dans Paramètres > Données > Exporter mes données.
+                        Vous téléchargerez un fichier de sauvegarde que vous pourrez réimporter sur n'importe quel appareil.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(6)">
+                        <span>Exporter mes données les supprime-t-il ?</span>
+                        <span class="faq-icon" id="faqIcon6">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer6">
+                        Non, pas du tout. L'export crée simplement une copie de vos données dans un fichier. Tout reste intact sur votre appareil. Vous ne perdrez rien.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(7)">
+                        <span>Le partage du récap demande des autorisations, pourquoi ?</span>
+                        <span class="faq-icon" id="faqIcon7">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer7">
+                        L'application peut proposer d'inclure votre localisation dans le récapitulatif pour aider les secours à vous trouver. Cette autorisation est demandée une seule fois — après l'avoir accordée, elle ne sera plus redemandée.
                     </div>
                 </div>
 

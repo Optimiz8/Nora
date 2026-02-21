@@ -728,19 +728,20 @@
             bottom: 90px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(46, 58, 89, 0.95);
+            background-color: rgba(46, 58, 89, 0.97);
             color: var(--light);
-            padding: 14px 24px;
+            padding: 18px 28px;
             border-radius: 24px;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 17px;
+            font-weight: 700;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1000;
             pointer-events: none;
             text-align: center;
             max-width: 90%;
+            border: 2px solid rgba(247, 184, 156, 0.4);
         }
 
         .recap-toast.visible {
@@ -1765,11 +1766,8 @@
                 try {
                     localStorage.setItem('journalCrises', JSON.stringify(journal));
                     closeQuestionnaire();
-
-                    alert('✅ Crise enregistrée dans le journal !');
-
-                    // Demander si la crise est terminée via modale custom
-                    document.getElementById('crisisConfirmModal').classList.add('open');
+                    cleanupCrisisFromRecap();
+                    showRecapToast('✅ Crise enregistrée dans le journal !');
                 } catch (e) {
                     alert('❌ Erreur lors de la sauvegarde : ' + e.message);
                 }
@@ -1929,7 +1927,7 @@
             var toast = document.getElementById('recapToast');
             toast.textContent = message;
             toast.classList.add('visible');
-            setTimeout(function() { toast.classList.remove('visible'); }, 2800);
+            setTimeout(function() { toast.classList.remove('visible'); }, 4500);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1937,10 +1935,6 @@
             initCrisisStatus();
         });
 
-        window.addEventListener('beforeunload', function(e) {
-            e.preventDefault();
-            e.returnValue = '';
-        });
     </script>
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeQuestionnaire(); document.getElementById('triggersModal').classList.remove('open'); } });</script>
     <script src="nora-scroll.js"></script>

@@ -6,14 +6,16 @@
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" href="assets/images/favicone.png" type="image/png">
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <title>TSA App - Configuration contexte</title>
     <link rel="stylesheet" href="nora-common.css">
     <script src="nora-data.js"></script>
-    <title>Nora – Profil commun</title>
     <style>
         body {
             padding-bottom: 100px;
+        }
+
+        .page-title {
+            flex: 1;
         }
 
         .main-content {
@@ -28,17 +30,99 @@
         .section-title {
             font-size: 17px;
             font-weight: 700;
-            color: var(--light);
-            margin-bottom: 12px;
+            color: #F5E4CC;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
+        .section-hint {
+            font-size: 15px;
+            color: rgba(245, 228, 204, 0.7);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
         .section-card {
-            background-color: var(--light);
+            background-color: #F5E4CC;
             border-radius: 12px;
             padding: 18px 20px;
+        }
+
+        /* IDENTITÉ DU CONTEXTE */
+        .identity-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .identity-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .identity-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2E3A59;
+            min-width: 70px;
+        }
+
+        .emoji-picker {
+            font-size: 32px;
+            padding: 10px 16px;
+            background-color: white;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .emoji-picker:hover {
+            border-color: #F7B89C;
+        }
+
+        .name-input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            color: #2E3A59;
+            background-color: white;
+            font-family: inherit;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: #F7B89C;
+        }
+
+        .delete-button {
+            background-color: rgba(255, 70, 70, 0.15);
+            color: #ff6b6b;
+            border: 2px solid rgba(255, 70, 70, 0.4);
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 16px;
+            transition: all 0.2s;
+        }
+
+        .delete-button:active {
+            transform: scale(0.98);
+            background-color: rgba(255, 70, 70, 0.25);
+        }
+
+        .delete-button.hidden {
+            display: none;
         }
 
         /* TOGGLE */
@@ -56,7 +140,7 @@
         .toggle-label {
             font-size: 15px;
             font-weight: 600;
-            color: var(--dark);
+            color: #2E3A59;
             flex: 1;
         }
 
@@ -72,7 +156,7 @@
         }
 
         .toggle-switch.active {
-            background-color: var(--accent);
+            background-color: #F7B89C;
         }
 
         .toggle-slider {
@@ -98,7 +182,7 @@
             border: 2px solid rgba(46, 58, 89, 0.2);
             border-radius: 8px;
             font-size: 15px;
-            color: var(--dark);
+            color: #2E3A59;
             background-color: white;
             font-family: inherit;
             resize: vertical;
@@ -107,7 +191,7 @@
 
         .textarea-field:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: #F7B89C;
         }
 
         .textarea-field.hidden {
@@ -118,7 +202,7 @@
         .manage-button {
             background-color: rgba(46, 58, 89, 0.1);
             border: 2px solid rgba(46, 58, 89, 0.2);
-            color: var(--dark);
+            color: #2E3A59;
             padding: 14px 18px;
             border-radius: 10px;
             font-size: 15px;
@@ -157,7 +241,7 @@
             opacity: 0.5;
         }
 
-        /* LISTE EXPANDABLE (plié/déplié) */
+        /* LISTE EXPANDABLE */
         .expandable-list {
             margin-top: 12px;
             border-top: 2px solid rgba(46, 58, 89, 0.1);
@@ -195,7 +279,7 @@
         .item-text {
             flex: 1;
             font-size: 15px;
-            color: var(--dark);
+            color: #2E3A59;
             cursor: pointer;
         }
 
@@ -217,8 +301,8 @@
         /* BOUTON AJOUTER */
         .add-item-button {
             background-color: rgba(247, 184, 156, 0.2);
-            border: 2px dashed var(--accent);
-            color: var(--dark);
+            border: 2px dashed #F7B89C;
+            color: #2E3A59;
             padding: 12px;
             border-radius: 8px;
             font-size: 15px;
@@ -232,6 +316,30 @@
         .add-item-button:active {
             transform: scale(0.98);
             background-color: rgba(247, 184, 156, 0.3);
+        }
+
+        /* Boutons sélection multiple */
+        .select-buttons {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0 8px 0;
+        }
+
+        .select-btn {
+            flex: 1;
+            background: rgba(247, 184, 156, 0.1);
+            border: 1px solid rgba(247, 184, 156, 0.3);
+            color: #2E3A59;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .select-btn:active {
+            transform: scale(0.97);
+            background: rgba(247, 184, 156, 0.2);
         }
 
         /* CONTACTS */
@@ -261,13 +369,53 @@
         .contact-name {
             font-size: 15px;
             font-weight: 600;
-            color: var(--dark);
+            color: #2E3A59;
             margin-bottom: 2px;
         }
 
         .contact-relation {
             font-size: 15px;
             color: rgba(46, 58, 89, 0.6);
+        }
+
+        /* FOOTER */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #384657;
+            border-top: 1px solid rgba(245, 228, 204, 0.1);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .footer-back {
+            background-color: rgba(245, 228, 204, 0.1);
+            color: #F5E4CC;
+        }
+
+        .footer-save {
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .footer-button:active {
+            transform: scale(0.96);
         }
 
         /* TOAST */
@@ -277,7 +425,7 @@
             left: 50%;
             transform: translateX(-50%);
             background-color: rgba(46, 58, 89, 0.95);
-            color: var(--light);
+            color: #F5E4CC;
             padding: 14px 24px;
             border-radius: 24px;
             font-size: 15px;
@@ -293,7 +441,7 @@
             opacity: 1;
         }
 
-        /* MODAL AJOUT ITEM */
+        /* MODALS */
         .modal {
             display: none;
             position: fixed;
@@ -313,7 +461,7 @@
         }
 
         .modal-content {
-            background-color: var(--light);
+            background-color: #F5E4CC;
             border-radius: 16px;
             padding: 28px 24px;
             max-width: 400px;
@@ -323,7 +471,7 @@
         .modal-title {
             font-size: 22px;
             font-weight: 700;
-            color: var(--dark);
+            color: #2E3A59;
             margin-bottom: 20px;
         }
 
@@ -333,14 +481,14 @@
             border: 2px solid rgba(46, 58, 89, 0.2);
             border-radius: 8px;
             font-size: 16px;
-            color: var(--dark);
+            color: #2E3A59;
             background-color: white;
             font-family: inherit;
         }
 
         .modal-input:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: #F7B89C;
         }
 
         .modal-actions {
@@ -362,12 +510,17 @@
 
         .modal-button.secondary {
             background-color: rgba(46, 58, 89, 0.1);
-            color: var(--dark);
+            color: #2E3A59;
         }
 
         .modal-button.primary {
-            background-color: var(--accent);
-            color: var(--dark);
+            background-color: #F7B89C;
+            color: #2E3A59;
+        }
+
+        .modal-button.danger {
+            background-color: rgba(255, 70, 70, 0.9);
+            color: white;
         }
 
         .modal-button:active {
@@ -382,97 +535,75 @@
             font-style: italic;
         }
 
-        /* HINTS SOUS-TITRES */
-        .section-hint {
-            font-size: 15px;
-            color: rgba(245, 228, 204, 0.9);
-            margin-bottom: 12px;
-            line-height: 1.4;
-            font-weight: 400;
-        }
-
-        /* BOUTONS SELECT ALL / DESELECT ALL */
-        .select-buttons {
-            display: flex;
+        /* EMOJI PICKER MODAL */
+        .emoji-suggestions {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
             gap: 8px;
-            margin-top: 12px;
+            margin-bottom: 16px;
         }
 
-        .select-buttons.hidden {
-            display: none;
-        }
-
-        .select-btn {
-            flex: 1;
-            padding: 10px 12px;
-            border: 2px solid rgba(46, 58, 89, 0.2);
-            background-color: rgba(46, 58, 89, 0.05);
-            color: var(--dark);
+        .emoji-suggestion {
+            font-size: 28px;
+            padding: 12px;
+            background-color: white;
+            border: 2px solid rgba(46, 58, 89, 0.1);
             border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
             cursor: pointer;
+            text-align: center;
             transition: all 0.2s;
         }
 
-        .select-btn:active {
-            transform: scale(0.96);
-            background-color: rgba(46, 58, 89, 0.15);
+        .emoji-suggestion:active {
+            transform: scale(0.95);
+            border-color: #F7B89C;
         }
 
-        /* FOOTER */
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #384657;
-            border-top: 1px solid rgba(245, 228, 204, 0.1);
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            z-index: 100;
-        }
-
-        .footer-button {
-            flex: 1;
-            padding: 14px;
-            border-radius: 10px;
+        .emoji-input-label {
             font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .footer-save {
-            background-color: #F7B89C;
             color: #2E3A59;
-        }
-
-        .footer-button:active {
-            transform: scale(0.96);
-        }
-
-        .footer-reset {
-            flex: 0.8;
-            background: rgba(244, 67, 54, 0.15) !important;
-            color: var(--light) !important;
-            border: 2px solid rgba(244, 67, 54, 0.3) !important;
-            font-size: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <header class="header">
         <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
-        <h1 class="page-title">Profil commun</h1>
+        <h1 class="page-title" id="pageTitle">Configuration</h1>
         <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
+
+        <!-- IDENTITÉ DU CONTEXTE -->
+        <section class="config-section">
+            <h2 class="section-title">📝 Identité du contexte</h2>
+            <div class="section-card">
+                <div class="identity-row">
+                    <div class="identity-label">Emoji :</div>
+                    <div class="emoji-picker" id="emojiPicker" onclick="openEmojiModal()">🏠</div>
+                </div>
+                <div class="identity-row">
+                    <div class="identity-label">Nom :</div>
+                    <input type="text" 
+                           class="name-input" 
+                           id="nameInput" 
+                           placeholder="Nom du contexte"
+                           maxlength="30"
+                           oninput="markAsModified()">
+                </div>
+                <div class="toggle-row">
+                    <div class="toggle-label">Afficher ce contexte à l'accueil</div>
+                    <div class="toggle-switch active" id="toggleVisible" onclick="toggleVisibility()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <button class="delete-button" id="deleteButton" onclick="confirmDelete()">
+                    🗑️ Supprimer ce contexte
+                </button>
+            </div>
+        </section>
 
         <!-- TEXTE DE PRÉSENTATION -->
         <section class="config-section">
@@ -490,8 +621,8 @@
                           placeholder="Votre texte de présentation..."
                           oninput="markAsModified()"></textarea>
                 <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: center;">
-                    <button onclick="insertDefaultPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
-                    <button onclick="clearPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
+                    <button onclick="insertDefaultPresentation()" style="background:rgba(46,58,89,0.18);border:1px solid rgba(46,58,89,0.3);color:#2E3A59;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
+                    <button onclick="clearPresentation()" style="background:rgba(46,58,89,0.18);border:1px solid rgba(46,58,89,0.3);color:#2E3A59;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
                 </div>
             </div>
         </section>
@@ -561,7 +692,7 @@
         <!-- ÉTATS / RESSENTIS -->
         <section class="config-section">
             <h2 class="section-title">😰 États / Ressentis</h2>
-            <p class="section-hint">Section "Comment je me sens" - vos ressentis</p>
+            <p class="section-hint">Section "Comment je me sens" - vos états émotionnels et sensations</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les états</div>
@@ -609,7 +740,7 @@
         <!-- INFORMATIONS MÉDICALES -->
         <section class="config-section">
             <h2 class="section-title">🚑 Informations médicales</h2>
-            <p class="section-hint">Informations importantes pour les secours</p>
+            <p class="section-hint">Section "Important" - vos informations médicales pour les secours</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les infos médicales</div>
@@ -632,7 +763,7 @@
             width: 100%;
             background: rgba(244, 67, 54, 0.15);
             border: 2px solid rgba(244, 67, 54, 0.3);
-            color: var(--light);
+            color: #F5E4CC;
             padding: 14px;
             border-radius: 12px;
             font-size: 15px;
@@ -646,7 +777,7 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button" style="flex:1;background:rgba(245,228,204,0.1);color:var(--light);" onclick="afficherExemple()">
+        <button class="footer-button footer-back" onclick="afficherExemple()">
             👁️ Voir l'exemple
         </button>
         <button class="footer-button footer-save" onclick="saveData()">
@@ -657,13 +788,44 @@
     <!-- TOAST -->
     <div class="toast" id="toast">✅ Modifications enregistrées</div>
 
+    <!-- MODAL EMOJI PICKER -->
+    <div class="modal" id="emojiModal" role="dialog" aria-modal="true" aria-label="Choisir un emoji">
+        <div class="modal-content">
+            <h2 class="modal-title">Choisir un emoji</h2>
+            <div class="emoji-suggestions">
+                <div class="emoji-suggestion" onclick="selectEmoji('🏠')">🏠</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('🌍')">🌍</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('💼')">💼</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('🚑')">🚑</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('🎯')">🎯</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('📍')">📍</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('🔔')">🔔</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('⚡')">⚡</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('🎧')">🎧</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('💡')">💡</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('✨')">✨</div>
+                <div class="emoji-suggestion" onclick="selectEmoji('🌙')">🌙</div>
+            </div>
+            <div class="emoji-input-label">Ou tapez directement :</div>
+            <input type="text" 
+                   class="modal-input" 
+                   id="emojiInputField" 
+                   placeholder="🏠"
+                   maxlength="2">
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeEmojiModal()">Annuler</button>
+                <button class="modal-button primary" onclick="saveEmoji()">Valider</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL AJOUT ITEM -->
     <div class="modal" id="addItemModal" role="dialog" aria-modal="true" aria-label="Ajouter un élément">
         <div class="modal-content">
             <h2 class="modal-title" id="modalTitle">Ajouter un item</h2>
             
             <div style="margin-bottom: 16px;">
-                <div style="font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 8px;">Emoji</div>
+                <div style="font-size: 15px; font-weight: 600; color: #2E3A59; margin-bottom: 8px;">Emoji</div>
                 <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px;">
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🎯')">🎯</div>
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🤲')">🤲</div>
@@ -672,9 +834,9 @@
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🧠')">🧠</div>
                     <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('❤️')">❤️</div>
                 </div>
-                <div style="font-size: 15px; color: var(--dark); margin-bottom: 8px;">Ou tapez directement :</div>
+                <div style="font-size: 15px; color: #2E3A59; margin-bottom: 8px;">Ou tapez directement :</div>
                 <input type="text"
-                       style="width: 100%; padding: 12px 14px; border: 2px solid rgba(46, 58, 89, 0.2); border-radius: 8px; font-size: 16px; color: var(--dark); background-color: white; font-family: inherit;"
+                       style="width: 100%; padding: 12px 14px; border: 2px solid rgba(46, 58, 89, 0.2); border-radius: 8px; font-size: 16px; color: #2E3A59; background-color: white; font-family: inherit;"
                        id="itemEmojiInput"
                        placeholder="🎯">
             </div>
@@ -692,56 +854,80 @@
         </div>
     </div>
 
+    <!-- MODAL CONFIRMATION SUPPRESSION -->
+    <div class="modal" id="deleteModal" role="dialog" aria-modal="true" aria-label="Confirmer la suppression">
+        <div class="modal-content">
+            <h2 class="modal-title">⚠️ Supprimer ce contexte ?</h2>
+            <p style="color: #2E3A59; margin-bottom: 20px; line-height: 1.5;">
+                Cette action est définitive. Toutes les données de ce contexte seront perdues.
+            </p>
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeDeleteModal()">Annuler</button>
+                <button class="modal-button danger" onclick="deleteContexte()">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Les constantes CAPACITES, BESOINS, ETATS sont chargées depuis nora-data.js
 
-        // État de la page
+        // VARIABLES GLOBALES
+        let currentContexteId = '';
         let currentItemType = '';
-        let hasUnsavedChanges = false;
-        let contextData = {
-            presentation: {
-                inclure: true,
-                texte: ''
-            },
-            capacites: {
-                inclure: true,
-                visibles: [],
-                personnalisees: []
-            },
-            besoins: {
-                inclure: true,
-                visibles: [],
-                personnalisees: []
-            },
-            etats: {
-                inclure: true,
-                visibles: [],
-                personnalisees: []
-            },
-            contacts: {
-                inclure: true,
-                selection: []
-            },
-            medical: {
-                inclure: true
-            }
-        };
+        let contextData = {};
+
+        // RÉCUPÉRER L'ID DU CONTEXTE DEPUIS L'URL
+        function getContexteIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || '';
+        }
 
         // INITIALISATION
         function init() {
+            currentContexteId = getContexteIdFromURL();
             
+            if (!currentContexteId) {
+                alert('❌ Erreur : contexte non spécifié');
+                window.location.href = 'contextes-liste.html';
+                return;
+            }
+
+            loadContexteInfo();
             loadData();
             renderCapacites();
             renderBesoins();
             renderEtats();
             renderContacts();
             updateCounts();
-            
         }
 
-        // CHARGER DONNÉES
+        // CHARGER INFOS DU CONTEXTE (emoji, nom, visible)
+        function loadContexteInfo() {
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const ctx = contextes.find(c => c.id === currentContexteId);
+            
+            if (!ctx) {
+                alert('❌ Contexte introuvable');
+                window.location.href = 'contextes-liste.html';
+                return;
+            }
+
+            // Afficher le titre
+            document.getElementById('pageTitle').textContent = ctx.nom;
+            
+            // Remplir les champs identité
+            document.getElementById('emojiPicker').textContent = ctx.emoji;
+            document.getElementById('nameInput').value = ctx.nom;
+            
+            // Cacher le bouton supprimer pour les contextes par défaut
+            if (ctx.default) {
+                document.getElementById('deleteButton').classList.add('hidden');
+            }
+        }
+
+        // CHARGER DONNÉES DU CONTEXTE
         function loadData() {
-            const saved = localStorage.getItem('contexte_commun');
+            const saved = localStorage.getItem(`contexte_${currentContexteId}`);
 
             if (saved) {
                 contextData = JSON.parse(saved);
@@ -781,7 +967,7 @@
                     contextData.etats.visibles = ETATS.map(e => e.id);
                 }
 
-                // Migration de l'ancienne structure vers la nouvelle
+                // Migration ancienne structure si nécessaire
                 if (contextData.textePresentation !== undefined && !contextData.presentation) {
                     contextData.presentation = {
                         inclure: contextData.afficherPresentation !== undefined ? contextData.afficherPresentation : true,
@@ -790,27 +976,52 @@
                     delete contextData.textePresentation;
                     delete contextData.afficherPresentation;
                 }
-
                 if (contextData.afficherMedical !== undefined && !contextData.medical) {
                     contextData.medical = {
                         inclure: contextData.afficherMedical
                     };
                     delete contextData.afficherMedical;
                 }
-
                 if (contextData.contactsVisibles !== undefined && !contextData.contacts) {
                     contextData.contacts = {
-                        inclure: contextData.afficherContacts !== undefined ? contextData.afficherContacts : true,
+                        inclure: true,
                         selection: contextData.contactsVisibles
                     };
                     delete contextData.contactsVisibles;
-                    delete contextData.afficherContacts;
                 }
             } else {
                 // PREMIÈRE FOIS : Tout cocher par défaut
-                contextData.capacites.visibles = CAPACITES.map(c => c.id);
-                contextData.besoins.visibles = BESOINS.map(b => b.id);
-                contextData.etats.visibles = ETATS.map(e => e.id);
+                contextData = {
+                    id: currentContexteId,
+                    emoji: '',
+                    nom: '',
+                    presentation: {
+                        inclure: true,
+                        texte: ''
+                    },
+                    capacites: {
+                        inclure: true,
+                        visibles: CAPACITES.map(c => c.id),
+                        personnalisees: []
+                    },
+                    besoins: {
+                        inclure: true,
+                        visibles: BESOINS.map(b => b.id),
+                        personnalisees: []
+                    },
+                    etats: {
+                        inclure: true,
+                        visibles: ETATS.map(e => e.id),
+                        personnalisees: []
+                    },
+                    contacts: {
+                        inclure: true,
+                        selection: []
+                    },
+                    medical: {
+                        inclure: true
+                    }
+                };
             }
 
             // Charger texte présentation (pré-remplir avec le texte par défaut si vide)
@@ -824,8 +1035,9 @@
             updateToggle('toggleEtats', contextData.etats.inclure);
             updateToggle('toggleContacts', contextData.contacts.inclure);
             updateToggle('toggleMedical', contextData.medical.inclure);
+            updateToggle('toggleVisible', true); // Sera géré par la liste des contextes
 
-            // Afficher/masquer les boutons selon les toggles
+            // Afficher/masquer les éléments selon les toggles
             document.getElementById('btnCapacites').classList.toggle('hidden', !contextData.capacites.inclure);
             document.getElementById('btnBesoins').classList.toggle('hidden', !contextData.besoins.inclure);
             document.getElementById('btnEtats').classList.toggle('hidden', !contextData.etats.inclure);
@@ -869,21 +1081,60 @@
             markAsModified();
         }
 
+        // TOGGLE VISIBILITÉ
+        function toggleVisibility() {
+            const toggle = document.getElementById('toggleVisible');
+            const isActive = toggle.classList.toggle('active');
+            
+            // Mettre à jour dans la liste des contextes
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const ctx = contextes.find(c => c.id === currentContexteId);
+            if (ctx) {
+                ctx.visible = isActive;
+                localStorage.setItem('contextes', JSON.stringify(contextes));
+            }
+        }
+
         // TOGGLE EXPANDABLE
         function toggleExpandable(type) {
             const list = document.getElementById(`list${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const selectButtons = document.getElementById(`select${type.charAt(0).toUpperCase() + type.slice(1)}`);
             list.classList.toggle('hidden');
+            if (selectButtons) {
+                selectButtons.classList.toggle('hidden');
+            }
+        }
+
+        function selectAll(type) {
+            const allItems = type === 'capacites' ? [...CAPACITES, ...contextData.capacites.personnalisees] :
+                            type === 'besoins' ? [...BESOINS, ...contextData.besoins.personnalisees] :
+                            [...ETATS, ...contextData.etats.personnalisees];
+
+            contextData[type].visibles = allItems.map(item => item.id);
+
+            if (type === 'capacites') renderCapacites();
+            else if (type === 'besoins') renderBesoins();
+            else renderEtats();
+
+            updateCounts();
+            markAsModified();
+        }
+
+        function deselectAll(type) {
+            contextData[type].visibles = [];
+
+            if (type === 'capacites') renderCapacites();
+            else if (type === 'besoins') renderBesoins();
+            else renderEtats();
+
+            updateCounts();
+            markAsModified();
         }
 
         // RENDER LISTES
         function renderCapacites() {
             const container = document.getElementById('capacitesItems');
-            if (!container) {
-                console.error('Container capacitesItems non trouvé !');
-                return;
-            }
-
-            const items = [...CAPACITES, ...(contextData.capacites.personnalisees || [])];
+            const items = [...CAPACITES, ...contextData.capacites.personnalisees];
 
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.capacites.visibles.includes(item.id);
@@ -902,13 +1153,12 @@
                     </div>
                 `;
             }).join('');
-
         }
 
         function renderBesoins() {
             const container = document.getElementById('besoinsItems');
             const items = [...BESOINS, ...contextData.besoins.personnalisees];
-
+            
             container.innerHTML = items.map(item => {
                 const isChecked = contextData.besoins.visibles.includes(item.id);
                 const isCustom = item.custom || false;
@@ -954,7 +1204,6 @@
         function renderContacts() {
             const contacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
             const container = document.getElementById('contactsContainer');
-            container.innerHTML = '';
 
             if (contacts.length === 0) {
                 container.innerHTML = '<div class="empty-message">Aucun contact défini. Ajoutez-en dans "Mon profil".</div>';
@@ -973,10 +1222,7 @@
                 localStorage.setItem('contactsUrgence', JSON.stringify(contacts));
             }
 
-            // Par défaut : sélectionner tous les contacts (jusqu'à 3) si aucun n'a encore été choisi
-            if (contextData.contacts.selection.length === 0) {
-                contextData.contacts.selection = contacts.slice(0, 3).map(c => c.id);
-            }
+            container.innerHTML = '';
 
             contacts.forEach((contact) => {
                 const isChecked = contextData.contacts.selection.includes(contact.id);
@@ -1029,40 +1275,8 @@
             markAsModified();
         }
 
-        // SELECT ALL / DESELECT ALL
-        function selectAll(type) {
-            const allItems = type === 'capacites' ? [...CAPACITES, ...contextData.capacites.personnalisees] :
-                            type === 'besoins' ? [...BESOINS, ...contextData.besoins.personnalisees] :
-                            [...ETATS, ...contextData.etats.personnalisees];
-
-            contextData[type].visibles = allItems.map(item => item.id);
-
-            if (type === 'capacites') renderCapacites();
-            if (type === 'besoins') renderBesoins();
-            if (type === 'etats') renderEtats();
-
-            updateCounts();
-            markAsModified();
-        }
-
-        function deselectAll(type) {
-            contextData[type].visibles = [];
-
-            if (type === 'capacites') renderCapacites();
-            if (type === 'besoins') renderBesoins();
-            if (type === 'etats') renderEtats();
-
-            updateCounts();
-            markAsModified();
-        }
-
         // TOGGLE CONTACT
         function toggleContact(contactId) {
-
-            if (!contactId) {
-                return;
-            }
-
             const pos = contextData.contacts.selection.indexOf(contactId);
             if (pos > -1) {
                 contextData.contacts.selection.splice(pos, 1);
@@ -1092,6 +1306,36 @@
             const etaCount = contextData.etats.visibles.length;
             const etaTotal = ETATS.length + contextData.etats.personnalisees.length;
             document.getElementById('countEtats').textContent = `(${etaCount}/${etaTotal})`;
+        }
+
+        // MODAL EMOJI
+        function openEmojiModal() {
+            document.getElementById('emojiInputField').value = document.getElementById('emojiPicker').textContent;
+            document.getElementById('emojiModal').classList.add('visible');
+        }
+
+        function closeEmojiModal() {
+            document.getElementById('emojiModal').classList.remove('visible');
+        }
+
+        function selectEmoji(emoji) {
+            document.getElementById('emojiInputField').value = emoji;
+        }
+
+        function saveEmoji() {
+            const emoji = document.getElementById('emojiInputField').value.trim() || '📍';
+            document.getElementById('emojiPicker').textContent = emoji;
+            
+            // Mettre à jour dans la liste des contextes
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const ctx = contextes.find(c => c.id === currentContexteId);
+            if (ctx) {
+                ctx.emoji = emoji;
+                localStorage.setItem('contextes', JSON.stringify(contextes));
+            }
+            
+            closeEmojiModal();
+            markAsModified();
         }
 
         // MODAL AJOUT ITEM
@@ -1197,24 +1441,63 @@
             markAsModified();
         }
 
+        // MODIFIER NOM DU CONTEXTE
+        function updateContexteName() {
+            const newName = document.getElementById('nameInput').value.trim();
+            if (!newName) return;
+
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const ctx = contextes.find(c => c.id === currentContexteId);
+            if (ctx) {
+                ctx.nom = newName;
+                localStorage.setItem('contextes', JSON.stringify(contextes));
+                document.getElementById('pageTitle').textContent = newName;
+            }
+        }
+
+        // SUPPRESSION DU CONTEXTE
+        function confirmDelete() {
+            document.getElementById('deleteModal').classList.add('visible');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('visible');
+        }
+
+        function deleteContexte() {
+            // Supprimer des données
+            localStorage.removeItem(`contexte_${currentContexteId}`);
+            
+            // Supprimer de la liste
+            let contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            contextes = contextes.filter(c => c.id !== currentContexteId);
+            localStorage.setItem('contextes', JSON.stringify(contextes));
+            
+            alert('✅ Contexte supprimé');
+            window.location.href = 'contextes-liste.html';
+        }
+
         // Compare le texte au texte par défaut pour ne pas sauvegarder le défaut comme "personnalisé"
         function getPresentationTexteToSave() {
             const texte = document.getElementById('textePresentationField').value;
-            // Si le texte est identique au texte par défaut, on sauvegarde vide (= utiliser le défaut)
             if (texte.trim() === getDefaultPresentationText().trim()) return '';
             return texte;
         }
 
         // SAUVEGARDE
+        let hasUnsavedChanges = false;
+
         function markAsModified() {
             hasUnsavedChanges = true;
             contextData.presentation.texte = getPresentationTexteToSave();
+            updateContexteName();
         }
 
         function saveData() {
             contextData.presentation.texte = getPresentationTexteToSave();
+            updateContexteName();
             contextData._userConfigured = true;
-            localStorage.setItem('contexte_commun', JSON.stringify(contextData));
+            localStorage.setItem(`contexte_${currentContexteId}`, JSON.stringify(contextData));
             hasUnsavedChanges = false;
             showToast();
         }
@@ -1227,15 +1510,32 @@
             }, 2000);
         }
 
-        // RÉINITIALISER
+        // NAVIGATION
+        function goBack() {
+            if (hasUnsavedChanges) {
+                if (confirm('⚠️ Modifications non enregistrées\n\nVous avez des modifications non enregistrées. Voulez-vous quitter sans enregistrer ?')) {
+                    window.location.href = 'contextes-liste.html';
+                }
+            } else {
+                window.location.href = 'contextes-liste.html';
+            }
+        }
+
         function confirmReset() {
-            if (confirm('⚠️ Réinitialiser le profil commun ?\n\nToutes les modifications seront perdues et les paramètres par défaut seront restaurés.')) {
+            if (confirm('⚠️ Réinitialiser ce contexte ?\n\nToutes les modifications seront perdues et les paramètres par défaut seront restaurés.')) {
                 resetToDefaults();
             }
         }
 
         function resetToDefaults() {
+            // Réinitialiser aux valeurs par défaut
+            const defaultEmoji = getDefaultEmoji(currentContexteId);
+            const defaultNom = getDefaultName(currentContexteId);
+
             contextData = {
+                id: currentContexteId,
+                emoji: defaultEmoji,
+                nom: defaultNom,
                 presentation: {
                     inclure: true,
                     texte: ''
@@ -1264,7 +1564,17 @@
                 }
             };
 
-            localStorage.setItem('contexte_commun', JSON.stringify(contextData));
+            // Mettre à jour aussi la liste des contextes pour l'emoji et le nom
+            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const ctxIndex = contextes.findIndex(c => c.id === currentContexteId);
+            if (ctxIndex > -1) {
+                contextes[ctxIndex].emoji = defaultEmoji;
+                contextes[ctxIndex].nom = defaultNom;
+                localStorage.setItem('contextes', JSON.stringify(contextes));
+            }
+
+            // Sauvegarder et recharger la page
+            localStorage.setItem(`contexte_${currentContexteId}`, JSON.stringify(contextData));
             hasUnsavedChanges = false;
             showToast();
             setTimeout(() => {
@@ -1272,20 +1582,29 @@
             }, 500);
         }
 
-        // NAVIGATION
-        function goBack() {
-            if (hasUnsavedChanges) {
-                if (confirm('⚠️ Modifications non enregistrées\n\nVoulez-vous quitter sans enregistrer ?')) {
-                    window.location.href = 'contextes-liste.html';
-                }
-            } else {
-                window.location.href = 'contextes-liste.html';
-            }
+        function getDefaultEmoji(id) {
+            const defaults = {
+                'maison': '🏠',
+                'exterieur': '🌍',
+                'travail': '💼',
+                'secours': '🙏'
+            };
+            return defaults[id] || '🏠';
+        }
+
+        function getDefaultName(id) {
+            const defaults = {
+                'maison': 'Maison',
+                'exterieur': 'Extérieur',
+                'travail': 'Travail / École',
+                'secours': 'Secours'
+            };
+            return defaults[id] || 'Contexte';
         }
 
         function goToInfosMedicales() {
             // Sauvegarder d'où on vient
-            localStorage.setItem('returnTo', 'contexte-commun');
+            localStorage.setItem('returnTo', `contexte-detail?id=${currentContexteId}`);
             window.location.href = 'infos-medicales.html';
         }
 
@@ -1361,15 +1680,16 @@
         // INIT
         window.addEventListener('DOMContentLoaded', init);
 
-        // Confirmation avant fermeture si modifications non enregistrées
+        // Prévenir la perte de données si on quitte avec modifications non sauvegardées
         window.addEventListener('beforeunload', (e) => {
             if (hasUnsavedChanges) {
                 e.preventDefault();
-                e.returnValue = '';
+                e.returnValue = ''; // Chrome nécessite cette ligne
+                return ''; // Pour les anciens navigateurs
             }
         });
     </script>
-    <script>        document.addEventListener("keydown", e => { if (e.key === "Escape") closeAddItemModal(); });</script>
+    <script>        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeEmojiModal(); closeAddItemModal(); closeDeleteModal(); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>
