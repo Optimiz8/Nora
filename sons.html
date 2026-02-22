@@ -15,27 +15,236 @@
 /* ===== BOUTON MIXEUR ===== */
 .mix-cta {
   margin: 16px;
-  padding: 18px;
+  padding: 14px 18px;
   background: var(--dark);
-  border-radius: 20px;
-  text-align: center;
+  border-radius: 16px;
   cursor: pointer;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid rgba(247, 184, 156, 0.25);
 }
 
 .mix-cta:active {
   background: #3d4a66;
 }
 
+.mix-cta-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.mix-cta-text {
+  flex: 1;
+}
+
 .mix-cta strong {
   display: block;
-  font-size: 1rem;
-  margin-bottom: 4px;
+  font-size: 0.95rem;
+  margin-bottom: 3px;
 }
 
 .mix-cta span {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.mix-cta-arrow {
+  font-size: 22px;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* ===== EN-TÊTE SECTION SONS ===== */
+.section-header {
+  padding: 8px 16px 4px;
+}
+
+.section-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--light);
+  margin-bottom: 2px;
+}
+
+.section-sublabel {
+  font-size: 0.8rem;
+  color: rgba(245, 228, 204, 0.6);
+}
+
+/* ===== PRÉRÉGLAGES MIXEUR ===== */
+.presets-section {
+  margin: 8px 16px 12px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.presets-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.presets-label {
+  font-size: 0.8rem;
+  opacity: 0.65;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.save-preset-btn {
+  background: rgba(247, 184, 156, 0.15);
+  border: 1px solid rgba(247, 184, 156, 0.35);
+  color: var(--light);
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.save-preset-btn:active {
+  background: rgba(247, 184, 156, 0.25);
+}
+
+.save-preset-btn:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.presets-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-chip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+  max-width: 180px;
+}
+
+.preset-chip.active {
+  border-color: var(--accent);
+}
+
+.preset-chip-name {
+  padding: 8px 10px;
   font-size: 0.85rem;
-  opacity: 0.75;
+  cursor: pointer;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preset-chip-delete {
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  opacity: 0.5;
+  cursor: pointer;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.preset-chip-delete:active {
+  opacity: 1;
+  background: rgba(255,80,80,0.2);
+}
+
+.presets-empty {
+  font-size: 0.8rem;
+  opacity: 0.45;
+  font-style: italic;
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* ===== MODALE NOMMAGE PRÉRÉGLAGE ===== */
+.preset-name-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1300;
+  padding: 20px;
+}
+
+.preset-name-modal.active {
+  display: flex;
+}
+
+.preset-name-box {
+  background: #020617;
+  border-radius: 16px;
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.preset-name-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+  text-align: center;
+  color: var(--light);
+}
+
+.preset-name-box input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #1e293b;
+  border: 1px solid rgba(247, 184, 156, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  color: var(--light);
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-bottom: 14px;
+  outline: none;
+}
+
+.preset-name-box input:focus {
+  border-color: var(--accent);
+}
+
+.preset-name-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.preset-name-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.preset-name-actions button.cancel-btn {
+  background: #1e293b;
+  color: var(--light);
+}
+
+.preset-name-actions button.confirm-btn {
+  background: var(--accent);
+  color: var(--dark);
 }
 
 /* ===== GRID DES SONS ===== */
@@ -316,8 +525,17 @@ input[type=range]::-moz-range-thumb {
 </header>
 
 <div class="mix-cta" id="openMixer">
-  <strong>Créer mon ambiance sonore</strong>
-  <span>Mélange plusieurs sons à ton rythme</span>
+  <span class="mix-cta-icon">🎛️</span>
+  <div class="mix-cta-text">
+    <strong>Créer mon ambiance sonore</strong>
+    <span>Mélange plusieurs sons à ton rythme</span>
+  </div>
+  <span class="mix-cta-arrow">›</span>
+</div>
+
+<div class="section-header">
+  <div class="section-label">🎵 Sons disponibles</div>
+  <div class="section-sublabel">Appuie sur un son pour l'écouter seul</div>
 </div>
 
 <div class="grid" id="content"></div>
@@ -366,7 +584,29 @@ input[type=range]::-moz-range-thumb {
       <button id="mixPlay">⏸</button>
       <button id="mixReset" style="font-size: 32px;">↻</button>
     </div>
+
+    <!-- PRÉRÉGLAGES -->
+    <div class="presets-section">
+      <div class="presets-header">
+        <span class="presets-label">Mes préréglages</span>
+        <button class="save-preset-btn" id="savePresetBtn" onclick="openSavePresetModal()">💾 Enregistrer ce mix</button>
+      </div>
+      <div class="presets-chips" id="presetsChips"></div>
+    </div>
+
     <div id="mixerList"></div>
+  </div>
+</div>
+
+<!-- MODALE NOMMAGE PRÉRÉGLAGE -->
+<div class="preset-name-modal" id="presetNameModal">
+  <div class="preset-name-box">
+    <div class="preset-name-title">Nommer ce mix</div>
+    <input type="text" id="presetNameInput" maxlength="24" placeholder="Ex : Soirée calme...">
+    <div class="preset-name-actions">
+      <button class="cancel-btn" onclick="cancelSavePreset()">Annuler</button>
+      <button class="confirm-btn" onclick="confirmSavePreset()">💾 Enregistrer</button>
+    </div>
   </div>
 </div>
 
@@ -533,6 +773,109 @@ function resetTimer() {
   remaining = 600;
   updateTimerDisplay();
 }
+
+// ===== GESTION DES PRÉRÉGLAGES =====
+const MAX_PRESETS = 4;
+
+function getPresets() {
+  return JSON.parse(localStorage.getItem('mixerPresets') || '[]');
+}
+
+function setPresets(presets) {
+  localStorage.setItem('mixerPresets', JSON.stringify(presets));
+}
+
+function renderPresets() {
+  const presets = getPresets();
+  const container = document.getElementById('presetsChips');
+  const saveBtn = document.getElementById('savePresetBtn');
+
+  if (presets.length === 0) {
+    container.innerHTML = '<div class="presets-empty">Aucun préréglage — règle les curseurs puis enregistre ton mix</div>';
+  } else {
+    container.innerHTML = presets.map(p => `
+      <div class="preset-chip" data-id="${p.id}">
+        <span class="preset-chip-name" onclick="loadPreset('${p.id}')">${p.name}</span>
+        <span class="preset-chip-delete" onclick="deletePreset('${p.id}')">✕</span>
+      </div>
+    `).join('');
+  }
+
+  saveBtn.disabled = presets.length >= MAX_PRESETS;
+}
+
+function loadPreset(id) {
+  const presets = getPresets();
+  const preset = presets.find(p => p.id === id);
+  if (!preset) return;
+
+  const sliders = mixerList.querySelectorAll('input[type=range]');
+  mixSounds.forEach((name, i) => {
+    const vol = preset.volumes[name] || 0;
+    const a = audioMap[name];
+    if (!a) return;
+    a.volume = vol / 100;
+    if (sliders[i]) sliders[i].value = vol;
+    localStorage.setItem(`mixer_${name.toLowerCase()}`, String(vol));
+    if (vol > 0) {
+      if (!mixerTimerStarted) { mixerTimerStarted = true; startTimer('mixer'); }
+      if (mixerPlaying) a.play().catch(() => {});
+    } else {
+      a.pause();
+    }
+  });
+
+  // Marquer le préréglage actif
+  document.querySelectorAll('.preset-chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.id === id);
+  });
+}
+
+function deletePreset(id) {
+  setPresets(getPresets().filter(p => p.id !== id));
+  renderPresets();
+}
+
+function openSavePresetModal() {
+  const hasSound = Object.values(audioMap).some(a => a.volume > 0);
+  if (!hasSound) {
+    // Rien à enregistrer — on pourrait ajouter un toast ici
+    return;
+  }
+  document.getElementById('presetNameInput').value = '';
+  document.getElementById('presetNameModal').classList.add('active');
+  setTimeout(() => document.getElementById('presetNameInput').focus(), 100);
+}
+
+function cancelSavePreset() {
+  document.getElementById('presetNameModal').classList.remove('active');
+}
+
+function confirmSavePreset() {
+  const name = document.getElementById('presetNameInput').value.trim();
+  if (!name) return;
+  const presets = getPresets();
+  if (presets.length >= MAX_PRESETS) return;
+
+  const volumes = {};
+  mixSounds.forEach(n => {
+    const a = audioMap[n];
+    if (a) volumes[n] = Math.round(a.volume * 100);
+  });
+
+  presets.push({ id: Date.now().toString(), name, volumes });
+  setPresets(presets);
+  renderPresets();
+  document.getElementById('presetNameModal').classList.remove('active');
+}
+
+// Valider avec Entrée dans le champ nom
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('presetNameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') confirmSavePreset();
+    if (e.key === 'Escape') cancelSavePreset();
+  });
+});
 
 // ===== CRÉATION DES CARTES DE SONS =====
 soundsData.forEach(name => {
@@ -757,10 +1100,11 @@ function openMixer() {
     audio.pause();
     playerModal.classList.remove("active");
   }
-  
+
   mixerModal.classList.add("active");
   currentMode = 'mixer';
-  
+  renderPresets();
+
   if (!mixerTimerStarted) {
     updateTimerDisplay();
   }
@@ -851,7 +1195,7 @@ timerModal.onclick = (e) => {
 };
 </script>
 
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closePlayer(); closeMixer(); document.getElementById('timerModal').style.display = 'none'; } });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closePlayer(); closeMixer(); document.getElementById('timerModal').classList.remove('active'); cancelSavePreset(); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

@@ -34,12 +34,33 @@
             margin-bottom: 12px;
         }
 
-        .app-logo img {
-            width: 160px;
-            height: 160px;
-            border-radius: 20px;
+        .app-logo-wrap {
+            display: inline-block;
+            width: 110px;
+            height: 110px;
+            border-radius: 18px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: default;
+        }
+
+        .app-logo-wrap:active {
+            transform: scale(1.08);
+        }
+
+        @media (hover: hover) {
+            .app-logo-wrap:hover {
+                transform: scale(1.08);
+            }
+        }
+
+        .app-logo-wrap img {
+            width: 120%;
+            height: 120%;
+            margin-left: -10%;
+            margin-top: -10%;
             object-fit: cover;
-            object-position: center;
+            display: block;
         }
 
         .app-version {
@@ -177,9 +198,11 @@
         <section class="section">
             <div class="section-card">
                 <div class="app-logo">
-                    <img src="assets/images/logo.png" alt="Nora">
+                    <div class="app-logo-wrap">
+                        <img src="assets/images/logo.png" alt="Nora">
+                    </div>
                 </div>
-                <div class="app-version">Version 1.0</div>
+                <div class="app-version">Version 1.2</div>
                 <div class="app-description">
                     Ton compagnon discret pour les moments difficiles — communication, régulation et contacts d'urgence réunis en un seul endroit.
                 </div>
@@ -201,126 +224,9 @@
             </div>
         </section>
 
-        <!-- Confidentialité -->
-        <section class="section">
-            <h2 class="section-title">🔒 Confidentialité</h2>
-            <div class="privacy-card">
-                <div class="privacy-title">🛡️ Vos données sont protégées</div>
-                <div class="privacy-text">
-                    Toutes tes données sont stockées <strong>localement sur ton appareil uniquement</strong>. 
-                    Rien n'est envoyé vers un serveur externe. Tu as le contrôle total de tes informations.
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ -->
-        <section class="section">
-            <h2 class="section-title">❓ Questions fréquentes</h2>
-            <div class="section-card">
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(0)">
-                        <span>Où sont stockées mes données ?</span>
-                        <span class="faq-icon" id="faqIcon0">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer0">
-                        Toutes tes données sont stockées localement dans le navigateur de ton appareil (Local Storage). 
-                        Elles ne quittent jamais ton téléphone et ne sont pas envoyées vers internet.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(1)">
-                        <span>Qui peut voir mes informations ?</span>
-                        <span class="faq-icon" id="faqIcon1">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer1">
-                        Personne ne peut voir tes informations à moins que tu ne les partages volontairement 
-                        (par exemple en montrant ton récapitulatif ou en exportant tes données).
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(2)">
-                        <span>Comment modifier mes contacts ?</span>
-                        <span class="faq-icon" id="faqIcon2">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer2">
-                        Allez dans Paramètres > Contacts d'urgence.
-                        Tu peux modifier, ajouter ou supprimer tes contacts depuis cet écran.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(3)">
-                        <span>L'app fonctionne-t-elle hors ligne ?</span>
-                        <span class="faq-icon" id="faqIcon3">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer3">
-                        Oui ! Une fois installée ou chargée une première fois, l'application fonctionne entièrement sans connexion internet.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(4)">
-                        <span>Puis-je personnaliser les listes ?</span>
-                        <span class="faq-icon" id="faqIcon4">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer4">
-                        Oui ! Dans Paramètres > Paramètres des contextes, tu peux choisir quelles capacités, besoins et états afficher, et en ajouter des personnalisés.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(5)">
-                        <span>Comment sauvegarder mes données ?</span>
-                        <span class="faq-icon" id="faqIcon5">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer5">
-                        Allez dans Paramètres > Données > Exporter mes données.
-                        Tu téléchargeras un fichier de sauvegarde que tu pourras réimporter sur n'importe quel appareil.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(6)">
-                        <span>Exporter mes données les supprime-t-il ?</span>
-                        <span class="faq-icon" id="faqIcon6">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer6">
-                        Non, pas du tout. L'export crée simplement une copie de tes données dans un fichier. Tout reste intact sur ton appareil. Tu ne perdras rien.
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(7)">
-                        <span>Le partage du récap demande des autorisations, pourquoi ?</span>
-                        <span class="faq-icon" id="faqIcon7">▼</span>
-                    </div>
-                    <div class="faq-answer" id="faqAnswer7">
-                        L'application peut proposer d'inclure ta localisation dans le récapitulatif pour aider les secours à te trouver. Cette autorisation est demandée une seule fois — après l'avoir accordée, elle ne sera plus redemandée.
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
     </main>
 
     <script>
-        function toggleFaq(index) {
-            const answer = document.getElementById(`faqAnswer${index}`);
-            const icon = document.getElementById(`faqIcon${index}`);
-
-            if (answer.classList.contains('visible')) {
-                answer.classList.remove('visible');
-                icon.classList.remove('open');
-            } else {
-                answer.classList.add('visible');
-                icon.classList.add('open');
-            }
-        }
-
         function goBack() {
             window.location.href = 'parametres.html';
         }

@@ -33,7 +33,166 @@ h2 {
   text-align: left;
 }
 
-/* ---------- CAROUSEL ---------- */
+/* ---------- PROGRAMME GRID ---------- */
+.prog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.prog-btn {
+  padding: 12px 8px;
+  border-radius: 14px;
+  background: rgba(245,228,204,0.07);
+  border: 1.5px solid rgba(245,228,204,0.12);
+  color: rgba(245,228,204,0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.prog-btn.active {
+  background: var(--light);
+  border-color: var(--light);
+  color: var(--dark);
+  font-weight: 700;
+}
+
+.prog-sub {
+  font-size: 10px;
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.prog-btn.active .prog-sub {
+  opacity: 0.5;
+}
+
+.edit-link {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.prog-btn.active .edit-link {
+  color: rgba(46,58,89,0.55);
+}
+
+/* ---------- TWO-COL SECTION ---------- */
+.two-col-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.toggle-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.toggle-btn {
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: rgba(245,228,204,0.07);
+  border: 1.5px solid rgba(245,228,204,0.12);
+  color: rgba(245,228,204,0.6);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toggle-btn.active {
+  background: var(--light);
+  border-color: var(--light);
+  color: var(--dark);
+  font-weight: 700;
+}
+
+/* ---------- PREVIEW ---------- */
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: -4px 0;
+}
+
+.preview-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: rgba(245,228,204,0.35);
+  text-align: center;
+}
+
+.preview-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 88px;
+}
+
+.preview-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(247,184,156,.9), rgba(247,184,156,.3));
+  box-shadow: 0 0 28px rgba(247,184,156,0.35);
+  animation: previewPulse 3s ease-in-out infinite;
+}
+
+@keyframes previewPulse {
+  0%, 100% { transform: scale(0.72); }
+  50% { transform: scale(1.08); }
+}
+
+.preview-oval {
+  width: 34px;
+  height: 74px;
+  border-radius: 9999px;
+  border: 2px solid rgba(245,228,204,.2);
+  background: rgba(245,228,204,.05);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+}
+
+.preview-bubble {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(to top, rgba(247,184,156,.4), rgba(247,184,156,.75));
+  animation: previewFloat 3s ease-in-out infinite;
+  position: absolute;
+  bottom: 0;
+}
+
+@keyframes previewFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-46px); }
+}
+
+/* ---------- DURATION CAROUSEL ---------- */
 .carousel-section {
   width: 100%;
   flex-shrink: 0;
@@ -58,110 +217,33 @@ h2 {
 .carousel::-webkit-scrollbar { display: none; }
 
 .carousel-spacer {
-  flex: 0 0 calc(50% - 65px);
-  min-width: calc(50% - 65px);
+  flex: 0 0 calc(50% - 34px);
+  min-width: calc(50% - 34px);
 }
 
 .item {
   flex: 0 0 auto;
-  min-width: 120px;
-  padding: 12px 16px;
+  min-width: 56px;
+  padding: 12px 8px;
   text-align: center;
-  border-radius: 20px;
+  border-radius: 16px;
   background: rgba(245,228,204,0.07);
-  border: 2px solid rgba(245,228,204,0.12);
+  border: 1.5px solid rgba(245,228,204,0.12);
   color: rgba(245,228,204,0.5);
   scroll-snap-align: center;
   transition: all 0.2s ease;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  font-weight: 500;
-  line-height: 1.4;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 17px;
 }
 
 .item.active {
-  background: rgba(247,184,156,0.18);
-  border-color: var(--accent);
-  color: var(--light);
+  background: var(--light);
+  border-color: var(--light);
+  color: var(--dark);
   font-weight: 700;
-  box-shadow: 0 0 0 1px rgba(247,184,156,0.25), 0 4px 12px rgba(247,184,156,0.15);
-}
-
-.item.small {
-  min-width: 58px;
-  padding: 12px 8px;
-  font-size: 17px;
-  font-weight: 600;
-}
-
-.item .edit-btn {
-  display: block;
-  margin-top: 5px;
-  font-size: 11px;
-  color: var(--accent);
-  text-decoration: underline;
-}
-
-/* ---------- PREVIEW ANIMATION ---------- */
-.preview-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-  height: 110px;
-}
-
-.preview-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: rgba(245,228,204,0.35);
-  margin-bottom: 6px;
-  text-align: center;
-}
-
-.preview-circle {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, rgba(247,184,156,.9), rgba(247,184,156,.3));
-  box-shadow: 0 0 28px rgba(247,184,156,0.35);
-  animation: previewPulse 3s ease-in-out infinite;
-}
-
-@keyframes previewPulse {
-  0%, 100% { transform: scale(0.72); }
-  50% { transform: scale(1.08); }
-}
-
-.preview-oval {
-  width: 42px;
-  height: 92px;
-  border-radius: 9999px;
-  border: 2px solid rgba(245,228,204,.2);
-  background: rgba(245,228,204,.05);
-  overflow: hidden;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  position: relative;
-}
-
-.preview-bubble {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: linear-gradient(to top, rgba(247,184,156,.4), rgba(247,184,156,.75));
-  animation: previewFloat 3s ease-in-out infinite;
-  position: absolute;
-  bottom: 0;
-}
-
-@keyframes previewFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-54px); }
 }
 
 /* ---------- START BUTTON ---------- */
@@ -186,7 +268,7 @@ h2 {
   box-shadow: 0 2px 8px rgba(247,184,156,0.2);
 }
 
-/* ---------- MODALE PERSONNALISATION ---------- */
+/* ---------- MODAL ---------- */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -276,6 +358,7 @@ h2 {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  font-family: inherit;
   transition: opacity 0.2s;
 }
 
@@ -396,59 +479,58 @@ h2 {
 
 <div class="main" id="setup">
 
-  <div class="carousel-section">
+  <!-- Programme -->
+  <div>
     <h2>Programme</h2>
-    <div class="carousel-wrapper">
-      <div class="carousel" id="program">
-        <div class="carousel-spacer"></div>
-        <div class="item active" data-in="5" data-out="5">Cohérence<br>cardiaque<br>5s / 5s</div>
-        <div class="item" data-in="4" data-out="8">Apaisement<br>4s / 8s<br><small style="opacity:0.6">~2 min</small></div>
-        <div class="item" data-in="custom" data-out="custom" id="customProgram">
-          <span id="customLabel">Personnalisé<br><small style="opacity:0.6">~2 min</small></span>
-          <span class="edit-btn">Modifier</span>
-        </div>
-        <div class="carousel-spacer"></div>
+    <div class="prog-grid">
+      <button class="prog-btn active" id="progCoherence">
+        <span>Cohérence<br>cardiaque</span>
+        <span class="prog-sub">5s / 5s</span>
+      </button>
+      <button class="prog-btn" id="progApaisement">
+        <span>Apaisement</span>
+        <span class="prog-sub">4s / 8s</span>
+      </button>
+      <button class="prog-btn" id="progCustom">
+        <span id="customLabel">Personnalisé</span>
+        <span class="prog-sub" id="customSub">5s / 5s</span>
+        <span class="edit-link" id="editLink">Modifier</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Animation + Son -->
+  <div class="two-col-section">
+    <div>
+      <h2>Animation</h2>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="animCircle">Cercle</button>
+        <button class="toggle-btn" id="animOval">Bulle</button>
+      </div>
+    </div>
+    <div>
+      <h2>Son</h2>
+      <div class="toggle-group">
+        <button class="toggle-btn active" id="btnSoundOn">Avec son</button>
+        <button class="toggle-btn" id="btnSoundOff">Sans son</button>
       </div>
     </div>
   </div>
 
-  <div class="carousel-section">
-    <h2>Animation</h2>
+  <!-- Preview -->
+  <div class="preview-section">
     <div class="preview-label">Prévisualisation</div>
     <div class="preview-container" id="previewContainer">
-      <div class="preview-circle" id="previewCircle"></div>
-    </div>
-    <div class="carousel-wrapper">
-      <div class="carousel" id="animation">
-        <div class="carousel-spacer"></div>
-        <div class="item active" data-type="circle">Cercle qui gonfle</div>
-        <div class="item" data-type="oval">Bulle dans l'ovale</div>
-        <div class="carousel-spacer"></div>
-      </div>
+      <div class="preview-circle"></div>
     </div>
   </div>
 
-  <div class="carousel-section">
-    <h2>Son</h2>
-    <div class="carousel-wrapper">
-      <div class="carousel" id="sound">
-        <div class="carousel-spacer"></div>
-        <div class="item active" data-sound="on">Avec son</div>
-        <div class="item" data-sound="off">Sans son</div>
-        <div class="carousel-spacer"></div>
-      </div>
-    </div>
-  </div>
-
+  <!-- Durée -->
   <div class="carousel-section">
     <h2>Durée (minutes)</h2>
     <div class="carousel-wrapper">
       <div class="carousel" id="duration">
         <div class="carousel-spacer"></div>
-        <div class="item small active" data-min="2">2</div>
-        <div class="item small" data-min="3">3</div>
-        <div class="item small" data-min="4">4</div>
-        <div class="item small" data-min="5">5</div>
         <div class="carousel-spacer"></div>
       </div>
     </div>
@@ -466,7 +548,7 @@ h2 {
   </div>
 </div>
 
-<!-- MODALE PERSONNALISATION -->
+<!-- MODAL PERSONNALISATION -->
 <div class="modal-overlay" id="customModal" role="dialog" aria-modal="true" aria-label="Programme personnalisé">
   <div class="modal-content">
     <div class="modal-close" onclick="closeCustomModal()" role="button" aria-label="Fermer">✕</div>
@@ -523,31 +605,28 @@ let currentProgram = 'coherence';
 
 let audioContext = null;
 
-// Durées disponibles selon le programme
 const durationsByProgram = {
   coherence: [2, 3, 4, 5],
   apaisement: [3, 4, 5, 6, 7, 8, 9, 10, 15, 20],
   custom: [3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
 };
 
-// Charger le programme personnalisé
+/* ---------- CUSTOM PROGRAM ---------- */
 function loadCustomProgram() {
   const savedIn = localStorage.getItem('customInhale');
   const savedOut = localStorage.getItem('customExhale');
-
   if (savedIn && savedOut) {
     const inVal = parseFloat(savedIn);
     const outVal = parseFloat(savedOut);
-    document.getElementById('customLabel').innerHTML =
-      `Personnalisé<br>${inVal}s / ${outVal}s`;
+    document.getElementById('customSub').textContent = `${inVal}s / ${outVal}s`;
     return { in: inVal, out: outVal };
   }
   return null;
 }
 
-// Initialiser le programme personnalisé au chargement
 loadCustomProgram();
 
+/* ---------- AUDIO ---------- */
 function initAudio() {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -580,11 +659,10 @@ function playDong() {
   osc.stop(audioContext.currentTime + 0.4);
 }
 
-/* ---------- PREVIEW ANIMATION ---------- */
+/* ---------- PREVIEW ---------- */
 function updatePreview() {
   const container = document.getElementById('previewContainer');
   container.innerHTML = '';
-
   if (animation === 'circle') {
     const circle = document.createElement('div');
     circle.className = 'preview-circle';
@@ -599,120 +677,130 @@ function updatePreview() {
   }
 }
 
-/* ---------- DURÉES DYNAMIQUES ---------- */
+/* ---------- DURATION CAROUSEL ---------- */
 function updateDurations(program) {
-  const durationCarousel = document.getElementById('duration');
-  const items = durationCarousel.querySelectorAll('.item');
-
-  items.forEach(item => {
-    if (!item.classList.contains('carousel-spacer')) {
-      item.remove();
-    }
-  });
+  const carousel = document.getElementById('duration');
+  Array.from(carousel.querySelectorAll('.item')).forEach(el => el.remove());
 
   const durations = durationsByProgram[program] || [2, 3, 4, 5];
-  const spacers = durationCarousel.querySelectorAll('.carousel-spacer');
+  const lastSpacer = carousel.querySelectorAll('.carousel-spacer')[1];
 
   durations.forEach((min, index) => {
     const item = document.createElement('div');
-    item.className = 'item small';
+    item.className = 'item';
     if (index === 0) item.classList.add('active');
     item.dataset.min = min;
     item.textContent = min;
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      durationCarousel.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
+    item.addEventListener('click', () => {
+      carousel.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
       item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      minutes = parseInt(item.dataset.min);
+      minutes = parseFloat(item.dataset.min);
     });
-    spacers[0].after(item);
+    lastSpacer.before(item);
   });
 
   minutes = durations[0];
 
   setTimeout(() => {
-    const active = durationCarousel.querySelector('.item.active');
-    if (active) {
-      active.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
-    }
+    const active = carousel.querySelector('.item.active');
+    if (active) active.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
   }, 100);
 }
 
-/* ---------- CAROUSEL ---------- */
-function setupCarousel(id, onChange) {
-  const carousel = document.getElementById(id);
-  const items = Array.from(carousel.querySelectorAll('.item'));
-
-  if (items.length === 0) return;
-
-  setTimeout(() => {
-    const active = carousel.querySelector('.item.active');
-    if (active) {
-      active.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
-    }
-  }, 100);
-
-  function findCenteredItem() {
-    const carouselRect = carousel.getBoundingClientRect();
-    const centerX = carouselRect.left + carouselRect.width / 2;
-
-    let closest = null;
-    let minDist = Infinity;
-
-    items.forEach(item => {
-      const itemRect = item.getBoundingClientRect();
-      const itemCenterX = itemRect.left + itemRect.width / 2;
-      const dist = Math.abs(centerX - itemCenterX);
-
-      if (dist < minDist) {
-        minDist = dist;
-        closest = item;
-      }
-    });
-
-    return closest;
-  }
-
-  function activateCentered() {
-    const centered = findCenteredItem();
-    if (centered && !centered.classList.contains('active')) {
-      items.forEach(i => i.classList.remove('active'));
-      centered.classList.add('active');
-      onChange(centered);
-    }
-  }
-
+// Scroll-snap listener for duration carousel
+(function() {
+  const carousel = document.getElementById('duration');
   let scrollTimeout;
   carousel.addEventListener('scroll', () => {
     clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(activateCentered, 100);
+    scrollTimeout = setTimeout(() => {
+      const items = Array.from(carousel.querySelectorAll('.item'));
+      const rect = carousel.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      let closest = null, minDist = Infinity;
+      items.forEach(item => {
+        const r = item.getBoundingClientRect();
+        const dist = Math.abs(r.left + r.width / 2 - centerX);
+        if (dist < minDist) { minDist = dist; closest = item; }
+      });
+      if (closest && !closest.classList.contains('active')) {
+        items.forEach(i => i.classList.remove('active'));
+        closest.classList.add('active');
+        minutes = parseFloat(closest.dataset.min);
+      }
+    }, 100);
   }, { passive: true });
+})();
 
-  items.forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      items.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      onChange(item);
-    });
+/* ---------- PROGRAMME BUTTONS ---------- */
+function setActiveProg(id) {
+  ['progCoherence', 'progApaisement', 'progCustom'].forEach(bid => {
+    document.getElementById(bid).classList.toggle('active', bid === id);
   });
 }
 
-// Gestion du clic sur "Modifier"
-document.getElementById('customProgram').addEventListener('click', (e) => {
-  if (e.target.classList.contains('edit-btn') || e.target.closest('.edit-btn')) {
-    e.stopPropagation();
-    openCustomModal();
-  }
+document.getElementById('progCoherence').addEventListener('click', () => {
+  setActiveProg('progCoherence');
+  inhale = 5; exhale = 5;
+  currentProgram = 'coherence';
+  updateDurations('coherence');
 });
 
+document.getElementById('progApaisement').addEventListener('click', () => {
+  setActiveProg('progApaisement');
+  inhale = 4; exhale = 8;
+  currentProgram = 'apaisement';
+  updateDurations('apaisement');
+});
+
+document.getElementById('progCustom').addEventListener('click', (e) => {
+  if (e.target.id === 'editLink') return;
+  setActiveProg('progCustom');
+  const custom = loadCustomProgram();
+  inhale = custom ? custom.in : 5;
+  exhale = custom ? custom.out : 5;
+  currentProgram = 'custom';
+  updateDurations('custom');
+});
+
+document.getElementById('editLink').addEventListener('click', (e) => {
+  e.stopPropagation();
+  openCustomModal();
+});
+
+/* ---------- ANIMATION BUTTONS ---------- */
+document.getElementById('animCircle').addEventListener('click', () => {
+  document.getElementById('animCircle').classList.add('active');
+  document.getElementById('animOval').classList.remove('active');
+  animation = 'circle';
+  updatePreview();
+});
+
+document.getElementById('animOval').addEventListener('click', () => {
+  document.getElementById('animOval').classList.add('active');
+  document.getElementById('animCircle').classList.remove('active');
+  animation = 'oval';
+  updatePreview();
+});
+
+/* ---------- SOUND BUTTONS ---------- */
+document.getElementById('btnSoundOn').addEventListener('click', () => {
+  document.getElementById('btnSoundOn').classList.add('active');
+  document.getElementById('btnSoundOff').classList.remove('active');
+  soundOn = true;
+});
+
+document.getElementById('btnSoundOff').addEventListener('click', () => {
+  document.getElementById('btnSoundOff').classList.add('active');
+  document.getElementById('btnSoundOn').classList.remove('active');
+  soundOn = false;
+});
+
+/* ---------- CUSTOM MODAL ---------- */
 function openCustomModal() {
-  const savedIn = localStorage.getItem('customInhale') || '5';
-  const savedOut = localStorage.getItem('customExhale') || '5';
-  document.getElementById('customInhale').value = savedIn;
-  document.getElementById('customExhale').value = savedOut;
+  document.getElementById('customInhale').value = localStorage.getItem('customInhale') || '5';
+  document.getElementById('customExhale').value = localStorage.getItem('customExhale') || '5';
   document.getElementById('customModal').classList.add('visible');
 }
 
@@ -723,64 +811,19 @@ function closeCustomModal() {
 function saveCustomProgram() {
   const inVal = document.getElementById('customInhale').value;
   const outVal = document.getElementById('customExhale').value;
-
   localStorage.setItem('customInhale', inVal);
   localStorage.setItem('customExhale', outVal);
-
-  const inFloat = parseFloat(inVal);
-  const outFloat = parseFloat(outVal);
-
-  document.getElementById('customLabel').innerHTML =
-    `Personnalisé<br>${inFloat}s / ${outFloat}s`;
-
+  document.getElementById('customSub').textContent = `${parseFloat(inVal)}s / ${parseFloat(outVal)}s`;
+  if (currentProgram === 'custom') {
+    inhale = parseFloat(inVal);
+    exhale = parseFloat(outVal);
+  }
   closeCustomModal();
 }
 
-// Initialiser les carousels
-setupCarousel('program', el => {
-  if (el.dataset.in === 'custom') {
-    const custom = loadCustomProgram();
-    if (custom) {
-      inhale = custom.in;
-      exhale = custom.out;
-    } else {
-      inhale = 5;
-      exhale = 5;
-    }
-    currentProgram = 'custom';
-    updateDurations('custom');
-  } else {
-    inhale = parseFloat(el.dataset.in);
-    exhale = parseFloat(el.dataset.out);
-
-    if (el.textContent.includes('Cohérence')) {
-      currentProgram = 'coherence';
-      updateDurations('coherence');
-    } else if (el.textContent.includes('Apaisement')) {
-      currentProgram = 'apaisement';
-      updateDurations('apaisement');
-    }
-  }
-});
-
-setupCarousel('animation', el => {
-  animation = el.dataset.type;
-  updatePreview();
-});
-
-setupCarousel('sound', el => {
-  soundOn = el.dataset.sound === 'on';
-});
-
+/* ---------- INIT ---------- */
 updateDurations('coherence');
-
-// Durées dans le carousel
-const durationCarousel = document.getElementById('duration');
-durationCarousel.querySelectorAll('.item').forEach(item => {
-  item.addEventListener('click', () => {
-    minutes = parseInt(item.dataset.min);
-  });
-});
+updatePreview();
 
 /* ---------- BREATHING ---------- */
 let remaining, timer, startTime, isPlaying;
@@ -789,13 +832,10 @@ function start() {
   initAudio();
   document.getElementById('setup').style.display = 'none';
   document.getElementById('breathing').style.display = 'flex';
-
   remaining = minutes * 60;
   startTime = Date.now();
   isPlaying = true;
-
   buildVisual();
-
   setTimeout(() => {
     breathe('in');
     updateProgressContinuous();
@@ -805,7 +845,6 @@ function start() {
 function buildVisual() {
   const v = document.getElementById('visual');
   v.innerHTML = '';
-
   if (animation === 'circle') {
     const c = document.createElement('div');
     c.className = 'circle';
@@ -830,15 +869,12 @@ function breathe(type) {
     isPlaying = false;
     return;
   }
-
   const label = document.getElementById('label');
   const el = document.getElementById('animElement');
   const duration = type === 'in' ? inhale : exhale;
 
   label.textContent = type === 'in' ? 'Inspirez' : 'Expirez';
-
-  if (type === 'in') playDing();
-  else playDong();
+  if (type === 'in') playDing(); else playDong();
 
   if (animation === 'circle') {
     el.style.transition = `transform ${duration}s linear`;
@@ -856,13 +892,10 @@ function breathe(type) {
 
 function updateProgressContinuous() {
   if (!isPlaying) return;
-
   const total = minutes * 60;
   const elapsed = (Date.now() - startTime) / 1000;
   const percent = Math.min(100, (elapsed / total) * 100);
-
   document.getElementById('progress').style.width = percent + '%';
-
   if (elapsed < total) {
     requestAnimationFrame(updateProgressContinuous);
   } else {
@@ -879,7 +912,6 @@ function back() {
 
 document.getElementById('breathing').addEventListener('click', (e) => {
   if (e.target.tagName === 'BUTTON') return;
-
   if (isPlaying) {
     clearTimeout(timer);
     isPlaying = false;
@@ -889,17 +921,12 @@ document.getElementById('breathing').addEventListener('click', (e) => {
       const elapsed = (minutes * 60 - remaining);
       startTime = Date.now() - (elapsed * 1000);
       isPlaying = true;
-
       const label = document.getElementById('label');
-      const currentPhase = label.textContent === 'Expirez' ? 'out' : 'in';
-      breathe(currentPhase);
+      breathe(label.textContent === 'Expirez' ? 'out' : 'in');
       updateProgressContinuous();
     }
   }
 });
-
-// Initialiser la prévisualisation
-updatePreview();
 </script>
 
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") closeCustomModal(); });</script>

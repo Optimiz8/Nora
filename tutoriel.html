@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/images/favicone.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="stylesheet" href="nora-common.css">
+    <title>Tutoriel – Nora</title>
+    <style>
+        body {
+            padding-bottom: 40px;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .coming-soon {
+            margin-top: 40px;
+        }
+
+        .coming-soon-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .coming-soon-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 12px;
+        }
+
+        .coming-soon-text {
+            font-size: 16px;
+            color: rgba(245, 228, 204, 0.75);
+            line-height: 1.6;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <h1 class="page-title" style="flex:1">Tutoriel</h1>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+    </header>
+
+    <main class="main-content">
+        <div class="coming-soon">
+            <div class="coming-soon-emoji">🎓</div>
+            <div class="coming-soon-title">Bientôt disponible</div>
+            <div class="coming-soon-text">
+                Le tutoriel de prise en main de Nora sera disponible dans une prochaine version.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+    </script>
+    <script src="nora-scroll.js"></script>
+</body>
+</html>

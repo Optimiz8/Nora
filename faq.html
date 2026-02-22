@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/images/favicone.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="stylesheet" href="nora-common.css">
+    <title>FAQ – Nora</title>
+    <style>
+        body {
+            padding-bottom: 40px;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-card {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .faq-item {
+            margin-bottom: 12px;
+        }
+
+        .faq-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-question {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 14px 16px;
+            background-color: rgba(46, 58, 89, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .faq-question:active {
+            background-color: rgba(46, 58, 89, 0.1);
+        }
+
+        .faq-icon {
+            font-size: 18px;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .faq-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.8);
+            line-height: 1.6;
+            padding: 12px 16px;
+            display: none;
+        }
+
+        .faq-answer.visible {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--light);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <h1 class="page-title" style="flex:1">FAQ</h1>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+    </header>
+
+    <main class="main-content">
+
+        <section class="section">
+            <h2 class="section-title">❓ Questions fréquentes</h2>
+            <div class="section-card">
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(0)">
+                        <span>Où sont stockées mes données ?</span>
+                        <span class="faq-icon" id="faqIcon0">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer0">
+                        Toutes tes données sont stockées localement dans le navigateur de ton appareil (Local Storage).
+                        Elles ne quittent jamais ton téléphone et ne sont pas envoyées vers internet.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(1)">
+                        <span>Qui peut voir mes informations ?</span>
+                        <span class="faq-icon" id="faqIcon1">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer1">
+                        Personne ne peut voir tes informations à moins que tu ne les partages volontairement
+                        (par exemple en montrant ton récapitulatif ou en exportant tes données).
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(2)">
+                        <span>Comment modifier mes contacts ?</span>
+                        <span class="faq-icon" id="faqIcon2">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer2">
+                        Va dans Paramètres > Contacts d'urgence.
+                        Tu peux modifier, ajouter ou supprimer tes contacts depuis cet écran.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(3)">
+                        <span>L'app fonctionne-t-elle hors ligne ?</span>
+                        <span class="faq-icon" id="faqIcon3">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer3">
+                        Oui ! Une fois installée ou chargée une première fois, l'application fonctionne entièrement sans connexion internet.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(4)">
+                        <span>Puis-je personnaliser les listes ?</span>
+                        <span class="faq-icon" id="faqIcon4">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer4">
+                        Oui ! Dans Paramètres > Paramètres des contextes, tu peux choisir quelles capacités, besoins et états afficher, et en ajouter des personnalisés.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(5)">
+                        <span>Comment sauvegarder mes données ?</span>
+                        <span class="faq-icon" id="faqIcon5">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer5">
+                        Va dans Paramètres > Données > Exporter mes données.
+                        Tu téléchargeras un fichier de sauvegarde que tu pourras réimporter sur n'importe quel appareil.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(6)">
+                        <span>Exporter mes données les supprime-t-il ?</span>
+                        <span class="faq-icon" id="faqIcon6">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer6">
+                        Non, pas du tout. L'export crée simplement une copie de tes données dans un fichier. Tout reste intact sur ton appareil. Tu ne perdras rien.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(7)">
+                        <span>Le partage du récap demande des autorisations, pourquoi ?</span>
+                        <span class="faq-icon" id="faqIcon7">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer7">
+                        L'application peut proposer d'inclure ta localisation dans le récapitulatif pour aider les secours à te trouver. Cette autorisation est demandée une seule fois — après l'avoir accordée, elle ne sera plus redemandée.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function toggleFaq(index) {
+            const answer = document.getElementById(`faqAnswer${index}`);
+            const icon = document.getElementById(`faqIcon${index}`);
+
+            if (answer.classList.contains('visible')) {
+                answer.classList.remove('visible');
+                icon.classList.remove('open');
+            } else {
+                answer.classList.add('visible');
+                icon.classList.add('open');
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+    </script>
+    <script src="nora-scroll.js"></script>
+</body>
+</html>

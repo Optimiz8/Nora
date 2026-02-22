@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/images/favicone.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="stylesheet" href="nora-common.css">
+    <title>Politique de confidentialité – Nora</title>
+    <style>
+        body {
+            padding-bottom: 40px;
+        }
+
+        .main-content {
+            padding: 24px 20px;
+        }
+
+        .section {
+            margin-bottom: 28px;
+        }
+
+        .section-card {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--light);
+        }
+
+        .subsection-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .subsection-title:first-child {
+            margin-top: 0;
+        }
+
+        .text {
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.85);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .text ul {
+            margin: 8px 0 8px 20px;
+        }
+
+        .text li {
+            margin-bottom: 4px;
+        }
+
+        .privacy-highlight {
+            background-color: rgba(100, 200, 100, 0.12);
+            border: 2px solid rgba(100, 200, 100, 0.3);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+
+        .privacy-highlight .text {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: rgba(46, 58, 89, 0.12);
+            margin: 16px 0;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <h1 class="page-title" style="flex:1">Confidentialité</h1>
+        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+    </header>
+
+    <main class="main-content">
+
+        <section class="section">
+            <h2 class="section-title">🔒 Politique de confidentialité</h2>
+            <div class="section-card">
+
+                <div class="privacy-highlight">
+                    <p class="text">🛡️ <strong>Toutes tes données restent sur ton téléphone.</strong> Rien n'est envoyé vers un serveur, une base de données ou un service tiers.</p>
+                </div>
+
+                <div class="subsection-title">Quelles données sont stockées ?</div>
+                <p class="text">Nora stocke localement sur ton appareil :</p>
+                <p class="text"><ul>
+                    <li>Ton prénom et nom (optionnel)</li>
+                    <li>Tes contacts d'urgence (nom, téléphone, lien)</li>
+                    <li>Tes informations médicales (groupe sanguin, allergies, traitements...)</li>
+                    <li>La configuration de ta carte d'urgence numérique</li>
+                    <li>Tes paramètres de contextes</li>
+                    <li>Ton journal de crises</li>
+                </ul></p>
+
+                <div class="divider"></div>
+
+                <div class="subsection-title">Où sont-elles stockées ?</div>
+                <p class="text">
+                    Toutes les données sont enregistrées dans le <strong>LocalStorage</strong> de ton navigateur, sur ton appareil uniquement. Il s'agit d'un espace de stockage local qui ne communique pas avec internet.
+                </p>
+
+                <div class="divider"></div>
+
+                <div class="subsection-title">Qui peut y accéder ?</div>
+                <p class="text">
+                    Seul toi (depuis ton appareil) peut accéder à ces données. Aucun serveur, aucune personne tierce, aucune analytics, aucun cookie de traçage n'est utilisé.
+                </p>
+
+                <div class="divider"></div>
+
+                <div class="subsection-title">Que se passe-t-il si je désinstalle l'app ?</div>
+                <p class="text">
+                    Si tu supprimes l'application ou vides les données de ton navigateur, toutes tes données Nora seront définitivement effacées. Pense à les exporter au préalable (Paramètres > Données > Exporter).
+                </p>
+
+                <div class="divider"></div>
+
+                <div class="subsection-title">Export et partage</div>
+                <p class="text">
+                    L'export crée un fichier JSON sur ton appareil. Tu es seul·e responsable de la sécurité de ce fichier. La carte d'urgence peut être partagée via QR Code — dans ce cas, les informations de la carte sont accessibles à quiconque scanne le code.
+                </p>
+
+                <div class="divider"></div>
+
+                <div class="subsection-title">Mise à jour de cette politique</div>
+                <p class="text">
+                    Cette politique peut être mise à jour lors des nouvelles versions de l'application. La version actuelle est indiquée dans "À propos de Nora".
+                </p>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function goBack() {
+            window.location.href = 'parametres.html';
+        }
+    </script>
+    <script src="nora-scroll.js"></script>
+</body>
+</html>

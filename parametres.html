@@ -332,7 +332,7 @@
         <!-- 2) PARAMÈTRES DES CONTEXTES -->
         <section class="section">
             <h2 class="section-title">🌍 Paramètres des contextes</h2>
-            <p class="section-description">Personnalisez ce qui s'affiche selon la situation</p>
+            <p class="section-description">Personnalise ce qui s'affiche selon la situation</p>
 
             <div class="settings-card" onclick="goToPage('contextes-liste.html')">
                 <div class="settings-card-content">
@@ -340,6 +340,23 @@
                     <div class="settings-text">
                         <div class="settings-label">Configurer les contextes</div>
                         <div class="settings-sublabel">Maison, Extérieur, Travail, Secours</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+        </section>
+
+        <!-- CARTES DE COMMUNICATION -->
+        <section class="section">
+            <h2 class="section-title">🃏 Cartes de communication</h2>
+            <p class="section-description">Messages à montrer à ton interlocuteur quand la parole est difficile</p>
+
+            <div class="settings-card" onclick="goToPage('cartes-com-config.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">🃏</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Gérer mes cartes</div>
+                        <div class="settings-sublabel">Ajouter, modifier, supprimer</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
@@ -370,18 +387,18 @@
             <h2 class="section-title">📁 Données</h2>
             <p class="section-description">Sauvegarder ou restaurer tes réglages</p>
 
-            <div class="settings-card" onclick="exportData()">
+            <div class="settings-card" onclick="confirmExport()">
                 <div class="settings-card-content">
                     <div class="settings-icon">📤</div>
                     <div class="settings-text">
                         <div class="settings-label">Exporter mes données</div>
-                        <div class="settings-sublabel">Télécharger un fichier JSON</div>
+                        <div class="settings-sublabel">Télécharger un fichier de sauvegarde</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="importData()">
+            <div class="settings-card" onclick="confirmImport()">
                 <div class="settings-card-content">
                     <div class="settings-icon">📥</div>
                     <div class="settings-text">
@@ -401,8 +418,41 @@
                 <div class="settings-card-content">
                     <div class="settings-icon">📖</div>
                     <div class="settings-text">
-                        <div class="settings-label">Informations</div>
-                        <div class="settings-sublabel">Version, confidentialité, contact</div>
+                        <div class="settings-label">À propos de Nora</div>
+                        <div class="settings-sublabel">Version, objectif, créateur</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
+            <div class="settings-card" onclick="goToPage('faq.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">❓</div>
+                    <div class="settings-text">
+                        <div class="settings-label">FAQ</div>
+                        <div class="settings-sublabel">Questions fréquentes</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
+            <div class="settings-card" onclick="goToPage('tutoriel.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">🎓</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Tutoriel</div>
+                        <div class="settings-sublabel">Prendre en main l'application</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
+            <div class="settings-card" onclick="goToPage('confidentialite.html')">
+                <div class="settings-card-content">
+                    <div class="settings-icon">🔒</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Politique de confidentialité</div>
+                        <div class="settings-sublabel">Stockage des données</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
@@ -429,17 +479,58 @@
                 <strong>Attention !</strong><br><br>
                 Cette action supprimera définitivement :
                 <ul>
-                    <li>Vos données personnelles (prénom, texte)</li>
-                    <li>Vos contacts d'urgence</li>
-                    <li>Vos informations médicales</li>
+                    <li>Tes données personnelles (prénom, texte)</li>
+                    <li>Tes contacts d'urgence</li>
+                    <li>Tes informations médicales</li>
                     <li>Tous tes paramètres de contextes</li>
-                    <li>Votre journal de crise</li>
+                    <li>Ton journal de crises</li>
                 </ul>
                 <strong>Cette action est irréversible.</strong>
             </div>
             <div class="modal-actions">
                 <button class="modal-button secondary" onclick="closeResetModal()">Annuler</button>
                 <button class="modal-button danger" onclick="resetAllData()">Tout supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal export -->
+    <div class="modal" id="exportModal" role="dialog" aria-modal="true" aria-label="Exporter les données">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📤 Exporter mes données</h2>
+            </div>
+            <div class="modal-text">
+                L'export va créer un <strong>fichier de sauvegarde</strong> contenant toutes tes informations (profil, contacts, carte d'urgence, paramètres, journal de crises).<br><br>
+                Ce fichier sera téléchargé sur ton appareil. Tu pourras l'utiliser pour :<br>
+                <ul>
+                    <li>Sauvegarder tes données en lieu sûr</li>
+                    <li>Les transférer sur un autre appareil</li>
+                    <li>Les restaurer si tu réinitialises l'app</li>
+                </ul>
+                <strong>Tes données restent intactes sur cet appareil.</strong>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeExportModal()">Annuler</button>
+                <button class="modal-button" style="background:var(--accent);color:var(--dark);" onclick="closeExportModal(); exportData()">📥 Télécharger</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal import -->
+    <div class="modal" id="importModal" role="dialog" aria-modal="true" aria-label="Importer des données">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">📥 Importer des données</h2>
+            </div>
+            <div class="modal-text">
+                L'import va <strong>remplacer toutes tes données actuelles</strong> par celles du fichier de sauvegarde.<br><br>
+                <strong>⚠️ Attention :</strong> cette action est irréversible. Toutes tes données actuelles seront écrasées par le contenu du fichier importé.<br><br>
+                Assure-toi d'importer un fichier exporté depuis Nora.
+            </div>
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeImportModal()">Annuler</button>
+                <button class="modal-button danger" onclick="closeImportModal(); importData()">Continuer</button>
             </div>
         </div>
     </div>
@@ -492,6 +583,7 @@
                 carteShowRemarques: localStorage.getItem('carteShowRemarques') || 'true',
                 carteMedical: localStorage.getItem('carteMedical') || 'true',
                 carteContactsInitialized: localStorage.getItem('carteContactsInitialized') || 'false',
+                carteContactsNote: localStorage.getItem('carteContactsNote') || '',
                 infosMedicales: JSON.parse(localStorage.getItem('infosMedicales') || '{}'),
                 contextes: {
                     messageUnique: localStorage.getItem('contexte_messageUnique') === 'true',
@@ -555,6 +647,7 @@
                         if (data.carteShowRemarques) localStorage.setItem('carteShowRemarques', data.carteShowRemarques);
                         if (data.carteMedical) localStorage.setItem('carteMedical', data.carteMedical);
                         if (data.carteContactsInitialized) localStorage.setItem('carteContactsInitialized', data.carteContactsInitialized);
+                        if (data.carteContactsNote !== undefined) localStorage.setItem('carteContactsNote', data.carteContactsNote);
                         localStorage.setItem('infosMedicales', JSON.stringify(data.infosMedicales || {}));
 
                         // Contextes
@@ -628,6 +721,27 @@
             const toggle = document.getElementById('toggleAutoRegister');
             const isActive = toggle.classList.toggle('active');
             localStorage.setItem('autoRegisterCrise', isActive ? 'true' : 'false');
+            if (isActive) {
+                showToast('⚡ Activé — les crises seront enregistrées au journal quand tu mettras fin à ta crise.');
+            } else {
+                showToast('Enregistrement automatique désactivé.');
+            }
+        }
+
+        function confirmExport() {
+            document.getElementById('exportModal').classList.add('visible');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.remove('visible');
+        }
+
+        function confirmImport() {
+            document.getElementById('importModal').classList.add('visible');
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('visible');
         }
 
         // Initialiser le toggle au chargement
@@ -637,7 +751,7 @@
             }
         });
     </script>
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") closeResetModal(); });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeResetModal(); closeExportModal(); closeImportModal(); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

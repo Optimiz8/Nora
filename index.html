@@ -299,6 +299,10 @@
                 <div class="option-icon">🧭</div>
                 <div class="option-text">Communiquer selon le contexte</div>
             </div>
+            <div class="modal-option" id="btnComCards">
+                <div class="option-icon">🃏</div>
+                <div class="option-text">Cartes de communication</div>
+            </div>
         </div>
     </div>
 
@@ -582,6 +586,7 @@
         };
 
         btnEmergency.onclick = () => location.href = 'carte.html';
+        btnComCards.onclick = () => location.href = 'cartes-communication.html';
 
         document.querySelectorAll('[data-close]').forEach(el =>
             el.onclick = () => close(el.dataset.close)

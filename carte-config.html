@@ -335,6 +335,103 @@
             transform: scale(0.96);
         }
 
+        /* Bouton conseils */
+        .conseils-btn {
+            background: rgba(247, 184, 156, 0.12);
+            border: 1px dashed rgba(247, 184, 156, 0.5);
+            color: var(--light);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 24px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .conseils-btn:active {
+            background: rgba(247, 184, 156, 0.2);
+        }
+
+        /* Modale générique */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 200;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-inner {
+            background-color: var(--light);
+            border-radius: 16px;
+            padding: 24px 20px;
+            max-width: 480px;
+            width: 100%;
+            margin: auto;
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 16px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .conseil-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 14px;
+            font-size: 15px;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .conseil-emoji {
+            font-size: 18px;
+            min-width: 24px;
+            margin-top: 1px;
+        }
+
+        /* Mention confidentialité */
+        .privacy-mention {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.6);
+            line-height: 1.5;
+        }
+
+        .privacy-mention a {
+            color: rgba(247, 184, 156, 0.8);
+            text-decoration: underline;
+        }
+
         /* Toast */
         .toast {
             position: fixed;
@@ -369,15 +466,17 @@
     <main class="main-content">
 
         <p class="intro-text">
-            Configure ici le support qui parle pour toi quand ça devient difficile. 
-
-Sélectionne tes contacts de confiance et tes informations clés pour disposer d'un outil d'aide à la communication prêt à l'emploi.
+            Configure ici le support qui parle pour toi quand cela devient trop difficile. Sélectionne tes informations clés pour disposer d'un outil d'aide à la communication prête à l'emploi.
         </p>
+
+        <button class="conseils-btn" onclick="openConseils()">
+            💡 Quelques conseils pour bien remplir cette carte
+        </button>
 
         <!-- IDENTITÉ -->
         <section class="config-section">
             <h2 class="section-title">👤 Identité</h2>
-            <p class="section-hint">Votre nom et prénom affichés en haut de la carte d'urgence numérique</p>
+            <p class="section-hint">Ton nom et prénom affichés en haut de la carte d'urgence numérique</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher mon identité</div>
@@ -403,10 +502,7 @@ Sélectionne tes contacts de confiance et tes informations clés pour disposer d
                     <div class="section-help">
                         Il permet de donner des informations complémentaires à la personne qui t'aide.
                     </div>
-                    <div class="section-example">
-                        Ex : « Je suis autiste et en situation de crise. Je ne peux probablement pas parler mais je vous entends. »
-                    </div>
-                    <textarea class="text-field" id="presentationField" placeholder="Votre texte de présentation..." oninput="markAsModified()"></textarea>
+                    <textarea class="text-field" id="presentationField" placeholder="Ton texte de présentation..." oninput="markAsModified()"></textarea>
                     <div class="text-actions">
                         <button class="text-action-btn" onclick="insertDefault()">📝 Message par défaut</button>
                         <button class="text-action-btn" onclick="clearField()">🗑️ Effacer</button>
@@ -479,6 +575,16 @@ Sélectionne tes contacts de confiance et tes informations clés pour disposer d
                         <!-- Généré dynamiquement -->
                     </div>
                     <div class="contact-limit" id="contactLimit"></div>
+
+                    <div style="margin-top: 16px;">
+                        <div class="section-label">Sous-titre affiché sur la carte</div>
+                        <div class="section-help" style="margin-bottom: 10px;">Ce texte apparaît juste au-dessus de tes contacts (laisse vide pour ne rien afficher).</div>
+                        <textarea class="text-field" id="contactsNoteField" style="min-height: 70px;" placeholder="Ex : Si il y a une urgence ou si je vous le demande, contacter :" oninput="markAsModified()"></textarea>
+                        <div class="text-actions">
+                            <button class="text-action-btn" onclick="insertDefaultContactsNote()">📝 Texte par défaut</button>
+                            <button class="text-action-btn" onclick="clearContactsNote()">🗑️ Effacer</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -518,7 +624,49 @@ Sélectionne tes contacts de confiance et tes informations clés pour disposer d
             </div>
         </section>
 
+        <div class="privacy-mention">
+            🔒 Ces informations sont stockées uniquement sur ton téléphone.<br>
+            <a href="confidentialite.html">Politique de confidentialité</a>
+        </div>
+
     </main>
+
+    <!-- MODALE CONSEILS -->
+    <div class="modal" id="conseilsModal" role="dialog" aria-modal="true">
+        <div class="modal-inner">
+            <button class="modal-close" onclick="closeConseils()" aria-label="Fermer">×</button>
+            <div class="modal-title">💡 Conseils pour bien remplir ta carte</div>
+
+            <div class="conseil-item">
+                <span class="conseil-emoji">🌍</span>
+                <span>Pense à être <strong>le plus général possible</strong> : ta carte peut servir dans des contextes très différents (rue, transports, travail, famille...).</span>
+            </div>
+            <div class="conseil-item">
+                <span class="conseil-emoji">✂️</span>
+                <span><strong>Garde l'essentiel</strong> : trop d'informations peut décourager la lecture dans l'urgence. Chaque mot compte.</span>
+            </div>
+            <div class="conseil-item">
+                <span class="conseil-emoji">👤</span>
+                <span>Ta carte peut être lue par <strong>n'importe qui</strong> : un passant, un soignant, des pompiers. Utilise un langage simple et clair, sans jargon.</span>
+            </div>
+            <div class="conseil-item">
+                <span class="conseil-emoji">🛟</span>
+                <span>Les <strong>consignes</strong> sont la partie la plus importante : c'est ce que la personne doit faire ou ne pas faire en premier.</span>
+            </div>
+            <div class="conseil-item">
+                <span class="conseil-emoji">🔄</span>
+                <span><strong>Mets à jour ta carte</strong> régulièrement si ta situation, tes contacts ou tes besoins évoluent.</span>
+            </div>
+            <div class="conseil-item">
+                <span class="conseil-emoji">📞</span>
+                <span>Sélectionne des contacts joignables à toute heure et qui connaissent bien ta situation.</span>
+            </div>
+
+            <button onclick="closeConseils()" style="background:var(--accent);color:var(--dark);border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-top:8px;">
+                Compris !
+            </button>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer class="footer">
@@ -545,11 +693,10 @@ Sélectionne tes contacts de confiance et tes informations clés pour disposer d
         let showRemarques = true;
         let hasUnsavedChanges = false;
 
-        const DEFAULT_PRESENTATION = `Je suis autiste verbale sans déficience intellectuelle.
-Je peux vous entendre mais probablement pas parler.`;
+        const DEFAULT_PRESENTATION = `Je suis une personne autiste verbale, sans déficience intellectuelle. Je suis actuellement en difficulté et je sollicite votre aide.`;
 
         const DEFAULT_CONSIGNES = `NE PAS ME TOUCHER
-METTEZ-MOI AU CALME (sombre, silencieux, seule)
+METTEZ-MOI AU CALME (éteindre les lumières et réduire les bruits au maximum)
 NE PAS M'EMMENER AUX URGENCES (sauf blessure grave)
 Si agitée → endroit froid pour me calmer
 Si calme → me couvrir si possible
@@ -557,7 +704,9 @@ Si je porte un casque/écouteurs → ne pas les retirer, ils m'aident
 Patienter (la crise peut durer de 30 min à plusieurs heures)`;
 
         const DEFAULT_INFORMATIONS = `Je ne suis pas dangereuse. Je peux me figer, pleurer, crier, faire des gestes involontaires.
-Normalement, je vous entends et comprends.`;
+Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.`;
+
+        const DEFAULT_CONTACTS_NOTE = `Si il y a une urgence ou si je vous le demande, contacter :`;
 
         window.addEventListener('DOMContentLoaded', () => {
             loadData();
@@ -581,6 +730,10 @@ Normalement, je vous entends et comprends.`;
             // Charger les remarques
             const remarques = localStorage.getItem('carteRemarques') || '';
             document.getElementById('remarquesField').value = remarques;
+
+            // Charger la note contacts
+            const contactsNote = localStorage.getItem('carteContactsNote') || '';
+            document.getElementById('contactsNoteField').value = contactsNote || DEFAULT_CONTACTS_NOTE;
 
             // Charger les contacts
             allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
@@ -675,7 +828,7 @@ Normalement, je vous entends et comprends.`;
                 carteContacts.splice(idx, 1);
             } else {
                 if (carteContacts.length >= MAX_CARTE_CONTACTS) {
-                    alert(`Vous ne pouvez sélectionner que ${MAX_CARTE_CONTACTS} contacts maximum.`);
+                    alert(`Tu ne peux sélectionner que ${MAX_CARTE_CONTACTS} contacts maximum.`);
                     return;
                 }
                 carteContacts.push(contactId);
@@ -782,6 +935,14 @@ Normalement, je vous entends et comprends.`;
             // Sauvegarder les remarques
             localStorage.setItem('carteRemarques', document.getElementById('remarquesField').value.trim());
 
+            // Sauvegarder la note contacts (si identique au défaut, sauvegarder vide)
+            const contactsNote = document.getElementById('contactsNoteField').value;
+            if (contactsNote.trim() === DEFAULT_CONTACTS_NOTE.trim()) {
+                localStorage.setItem('carteContactsNote', '');
+            } else {
+                localStorage.setItem('carteContactsNote', contactsNote.trim());
+            }
+
             // Sauvegarder les toggles
             localStorage.setItem('carteShowIdentity', showIdentity ? 'true' : 'false');
             localStorage.setItem('carteShowPresentation', showPresentation ? 'true' : 'false');
@@ -830,6 +991,28 @@ Normalement, je vous entends et comprends.`;
             document.getElementById('informationsField').value = '';
             markAsModified();
         }
+
+        function insertDefaultContactsNote() {
+            document.getElementById('contactsNoteField').value = DEFAULT_CONTACTS_NOTE;
+            markAsModified();
+        }
+
+        function clearContactsNote() {
+            document.getElementById('contactsNoteField').value = '';
+            markAsModified();
+        }
+
+        function openConseils() {
+            document.getElementById('conseilsModal').classList.add('visible');
+        }
+
+        function closeConseils() {
+            document.getElementById('conseilsModal').classList.remove('visible');
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeConseils();
+        });
 
         function showToast() {
             const toast = document.getElementById('toast');

@@ -260,7 +260,7 @@
 
     <main class="main-content">
         <p class="intro-text">
-            Ces contacts pourront être sélectionnés selon le contexte (Maison, Extérieur, Travail, Secours). Vous pouvez en ajouter jusqu'à 10.
+            Ces contacts pourront être sélectionnés selon le contexte (Maison, Extérieur, Travail, Secours). Tu peux en ajouter jusqu'à 10.
         </p>
 
         <button class="add-contact-btn" onclick="openAddModal()">
@@ -542,16 +542,16 @@
             // Pour un numéro français normal : exactement 10 chiffres
             if (!isInternational && digitsOnly.length !== 10) {
                 if (digitsOnly.length < 10) {
-                    alert('Le numéro de téléphone est incomplet. Un numéro français doit contenir exactement 10 chiffres. Vous avez saisi ' + digitsOnly.length + ' chiffres.');
+                    alert('Le numéro de téléphone est incomplet. Un numéro français doit contenir exactement 10 chiffres. Tu as saisi ' + digitsOnly.length + ' chiffres.');
                 } else {
-                    alert('Le numéro de téléphone est trop long. Un numéro français doit contenir exactement 10 chiffres. Vous avez saisi ' + digitsOnly.length + ' chiffres.');
+                    alert('Le numéro de téléphone est trop long. Un numéro français doit contenir exactement 10 chiffres. Tu as saisi ' + digitsOnly.length + ' chiffres.');
                 }
                 return;
             }
 
             // Pour un numéro international : au moins 10 chiffres (après 00 ou +33)
             if (isInternational && digitsOnly.length < 10) {
-                alert('Le numéro de téléphone international est incomplet. Vous avez saisi ' + digitsOnly.length + ' chiffres.');
+                alert('Le numéro de téléphone international est incomplet. Tu as saisi ' + digitsOnly.length + ' chiffres.');
                 return;
             }
 

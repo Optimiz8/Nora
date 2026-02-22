@@ -535,17 +535,34 @@
             font-style: italic;
         }
 
+        /* INTRO CONTEXTE */
+        .context-intro-banner {
+            background-color: rgba(247, 184, 156, 0.12);
+            border: 1px solid rgba(247, 184, 156, 0.25);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 28px;
+        }
+
+        .context-intro-text {
+            font-size: 14px;
+            color: rgba(245, 228, 204, 0.8);
+            line-height: 1.5;
+            margin: 0;
+            font-style: italic;
+        }
+
         /* EMOJI PICKER MODAL */
         .emoji-suggestions {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             margin-bottom: 16px;
         }
 
         .emoji-suggestion {
-            font-size: 28px;
-            padding: 12px;
+            font-size: 26px;
+            padding: 10px;
             background-color: white;
             border: 2px solid rgba(46, 58, 89, 0.1);
             border-radius: 8px;
@@ -605,6 +622,11 @@
             </div>
         </section>
 
+        <!-- INTRO : ce que ce contexte va afficher -->
+        <div class="context-intro-banner">
+            <p class="context-intro-text">👇 Voici ce qui s'affichera dans ton récapitulatif à chaque fois que tu sélectionneras ce contexte lors d'une crise.</p>
+        </div>
+
         <!-- TEXTE DE PRÉSENTATION -->
         <section class="config-section">
             <h2 class="section-title">✍️ Texte de présentation</h2>
@@ -618,7 +640,7 @@
                 </div>
                 <textarea class="textarea-field"
                           id="textePresentationField"
-                          placeholder="Votre texte de présentation..."
+                          placeholder="Ton texte de présentation..."
                           oninput="markAsModified()"></textarea>
                 <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: center;">
                     <button onclick="insertDefaultPresentation()" style="background:rgba(46,58,89,0.18);border:1px solid rgba(46,58,89,0.3);color:#2E3A59;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
@@ -630,7 +652,7 @@
         <!-- CAPACITÉS -->
         <section class="config-section">
             <h2 class="section-title">💬 Capacités</h2>
-            <p class="section-hint">Ce que tu es capable de faire selon ce contexte</p>
+            <p class="section-hint">Coche les éléments qui apparaîtront lors d'une crise dans ce contexte. Tu choisiras ensuite lesquels s'appliquent sur le moment.</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les capacités</div>
@@ -661,7 +683,7 @@
         <!-- BESOINS -->
         <section class="config-section">
             <h2 class="section-title">🤲 Besoins</h2>
-            <p class="section-hint">Section "Ce qui va m'aider" - tes besoins pour t'apaiser</p>
+            <p class="section-hint">Coche les besoins qui apparaîtront lors d'une crise dans ce contexte. Tu pourras ensuite indiquer ce dont tu as réellement besoin.</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les besoins</div>
@@ -692,7 +714,7 @@
         <!-- ÉTATS / RESSENTIS -->
         <section class="config-section">
             <h2 class="section-title">😰 États / Ressentis</h2>
-            <p class="section-hint">Section "Comment je me sens" - tes états émotionnels et sensations</p>
+            <p class="section-hint">Coche les états qui apparaîtront lors d'une crise dans ce contexte. Tu pourras ensuite indiquer comment tu te sens vraiment.</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les états</div>
@@ -723,7 +745,7 @@
         <!-- CONTACTS D'URGENCE -->
         <section class="config-section">
             <h2 class="section-title">📞 Contacts d'urgence</h2>
-            <p class="section-hint">Sélectionnez jusqu'à 3 contacts à afficher dans ce contexte</p>
+            <p class="section-hint">Sélectionne jusqu'à 3 contacts à afficher dans ce contexte.</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les contacts</div>
@@ -1222,6 +1244,11 @@
                 localStorage.setItem('contactsUrgence', JSON.stringify(contacts));
             }
 
+            // Par défaut : sélectionner tous les contacts (jusqu'à 3) si aucun n'a encore été choisi
+            if (contextData.contacts.selection.length === 0) {
+                contextData.contacts.selection = contacts.slice(0, 3).map(c => c.id);
+            }
+
             container.innerHTML = '';
 
             contacts.forEach((contact) => {
@@ -1229,11 +1256,12 @@
 
                 const row = document.createElement('div');
                 row.className = 'contact-row';
+                row.style.cursor = 'pointer';
+                row.onclick = () => toggleContact(contact.id);
 
                 const checkbox = document.createElement('div');
                 checkbox.className = 'contact-checkbox';
                 checkbox.textContent = isChecked ? '✅' : '⚪';
-                checkbox.onclick = () => toggleContact(contact.id);
 
                 const info = document.createElement('div');
                 info.className = 'contact-info';
@@ -1283,7 +1311,7 @@
             } else {
                 // Limite de 3 contacts
                 if (contextData.contacts.selection.length >= 3) {
-                    alert('⚠️ Vous ne pouvez sélectionner que 3 contacts maximum');
+                    alert('⚠️ Tu ne peux sélectionner que 3 contacts maximum');
                     return;
                 }
                 contextData.contacts.selection.push(contactId);
