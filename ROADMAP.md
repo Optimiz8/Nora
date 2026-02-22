@@ -50,13 +50,10 @@ Complice, respectueux de l'autonomie.
 
 ```
 0. Relecture et harmonisation de tous les textes   [non bloquant, en parallèle]
-1. Écran STOP / isolement
-2. Numéros d'urgence rapides (3114, 15, 114...)
-3. Post-crise + Ancrage 5-4-3-2-1                 [à faire ensemble]
-4. Timer visuel anti-cécité temporelle
-5. Cartes de communication                         [gros morceau]
-6. Journal — statistiques simples
-7. App Shortcuts V1                                [en dernier, dépend des cartes]
+1. Cartes de communication ✅                      [livré]
+2. Timer visuel anti-cécité temporelle             ← en cours
+3. Journal — statistiques simples
+4. App Shortcuts V1                                [en dernier, dépend des cartes]
 ```
 
 ### Détail des fonctionnalités V2
@@ -64,37 +61,23 @@ Complice, respectueux de l'autonomie.
 #### 0. Relecture des textes en dur
 Harmonisation du tutoiement, application des 3 niveaux de ton, clarification des labels et messages.
 
-#### 1. Écran STOP / isolement
-Page plein écran, 1 tap depuis l'accueil et depuis le récap en crise.
-Message court, personnalisable. Pas de navigation, pas de menu.
-> Questions à trancher : fond rouge (signal) ou couleur Nora ? Texte fixe ou personnalisable ?
-
-#### 2. Numéros d'urgence rapides
-Accès direct : 3114 (crise psy), 15 (SAMU), 114 (SMS urgence), 18 (pompiers).
-Visible sur l'accueil et/ou la carte d'urgence.
-> Questions à trancher : quels numéros exactement ? Numéros personnalisables en plus ?
-
-#### 3. Post-crise + Ancrage 5-4-3-2-1
-**Post-crise :** page auto après enregistrement d'une crise. Rappels bienveillants (boire, manger, repos, ne pas culpabiliser). Ton B.
-**Ancrage 5-4-3-2-1 :** guide interactif sensoriel intégré aux outils d'apaisement. Peut être suggéré depuis le post-crise.
-> Questions : post-crise auto ou optionnelle ? Ancrage : étapes successives ou tout visible ?
-
-#### 4. Timer visuel anti-cécité temporelle
-Cercle SVG qui se vide, alertes vocales aux seuils clés.
-Préréglages rapides (15 min, 30 min, 1h). Page autonome dans les outils.
-
-#### 5. Cartes de communication ⭐ priorité principale V2
+#### 1. Cartes de communication ✅
 Cartes à montrer dans les situations du quotidien (pas uniquement en crise).
 Affichage plein écran, police large, fort contraste.
-Catégories : Commerces, Santé, Transports, Travail, Social, Urgences.
 Cartes par défaut + création personnalisée + favoris.
-> Questions à trancher avant de coder : liste des cartes par défaut ? Fond coloré par catégorie ? Emoji + texte ou texte seul ?
 
-#### 6. Journal — statistiques simples
+#### 2. Timer visuel anti-cécité temporelle
+Cercle SVG qui se vide progressivement, temps restant en chiffres au centre.
+Alertes sonores (bip ou voix) aux seuils : 1h / 30 min / 15 min / 2 min.
+Comportement de fin configurable : voix / vibration / flash / rien.
+Snooze (+5/+15/+30 min) ou arrêt. Wake lock actif pendant le décompte.
+Accès depuis la modale "J'ai besoin d'aide et de communiquer" (accueil).
+
+#### 3. Journal — statistiques simples
 Nombre de crises par semaine/mois, déclencheurs fréquents, intensité moyenne.
 Suppression d'entrées individuelles.
 
-#### 7. App Shortcuts V1
+#### 4. App Shortcuts V1
 Raccourcis Android via appui long sur l'icône.
 V1 : 2 raccourcis — "Démarrer une crise" + "Cartes de communication".
 À faire en dernier (dépend des Cartes de communication).
@@ -150,6 +133,8 @@ Uniquement quand tous les textes sont stables. Priorité : anglais.
 - **Notifications push** — décision non prise, pas avant V3.
 - **Playlists multiples** (jusqu'à 5).
 - **Partage de profil entre appareils** — très lointain (pas avant V4).
+- **Numéros d'urgence rapides** — 3114, 15, 114, 18. Accès depuis l'accueil ou la carte d'urgence. Questions à trancher avant de coder.
+- **Post-crise + Ancrage 5-4-3-2-1** — Page auto après enregistrement d'une crise + guide sensoriel. Pas en V2, à réévaluer.
 
 ---
 
@@ -158,3 +143,4 @@ Uniquement quand tous les textes sont stables. Priorité : anglais.
 - **Mode accompagnant** — mis de côté indéfiniment.
 - **Widgets natifs Android** — nécessite une app native complète.
 - **Théorie des cuillères** — en vrac, pas prioritaire.
+- **Écran STOP / isolement** — doublon avec les cartes de communication (une carte "STOP / J'ai besoin d'être seul" remplit ce rôle).
