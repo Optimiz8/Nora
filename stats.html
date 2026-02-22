@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/images/favicone.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="stylesheet" href="nora-common.css">
+    <title>Nora – Statistiques</title>
+    <style>
+        body {
+            padding-bottom: 32px;
+        }
+
+        /* ---------- PÉRIODE ---------- */
+
+        .period-bar {
+            display: flex;
+            gap: 8px;
+            padding: 16px 16px 0;
+        }
+
+        .period-btn {
+            flex: 1;
+            background: rgba(245, 228, 204, 0.1);
+            border: 2px solid rgba(245, 228, 204, 0.15);
+            color: var(--light);
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px 4px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        .period-btn.active {
+            background: var(--light);
+            border-color: var(--light);
+            color: var(--dark);
+        }
+
+        .period-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ---------- PLAGE PERSONNALISÉE ---------- */
+
+        .date-range-panel {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(245, 228, 204, 0.08);
+            border-top: 1px solid rgba(245, 228, 204, 0.12);
+        }
+
+        .date-range-panel.visible {
+            display: flex;
+        }
+
+        .date-range-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-range-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--light);
+            white-space: nowrap;
+            width: 44px;
+            flex-shrink: 0;
+        }
+
+        .date-range-input {
+            flex: 1;
+            background: rgba(245, 228, 204, 0.12);
+            border: 2px solid rgba(245, 228, 204, 0.2);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--light);
+            color-scheme: dark;
+        }
+
+        .date-range-input:focus {
+            outline: none;
+            border-color: var(--light);
+        }
+
+        .date-range-apply {
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .date-range-apply:active {
+            transform: scale(0.98);
+        }
+
+        /* ---------- CONTENU ---------- */
+
+        .main-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ---------- CARTES MÉTRIQUES ---------- */
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .metric-card {
+            background: var(--light);
+            border-radius: 14px;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metric-card.wide {
+            grid-column: 1 / -1;
+        }
+
+        .metric-icon {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.1;
+        }
+
+        .metric-value.small {
+            font-size: 20px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: var(--dark);
+            opacity: 0.6;
+            font-weight: 500;
+        }
+
+        /* ---------- SECTIONS LISTES ---------- */
+
+        .section {
+            background: var(--light);
+            border-radius: 14px;
+            padding: 14px 14px 6px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rank-number {
+            width: 24px;
+            height: 24px;
+            background: var(--dark);
+            color: var(--light);
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .rank-bar-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .rank-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .rank-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rank-bar-bg {
+            flex: 1;
+            height: 6px;
+            background: rgba(46, 58, 89, 0.12);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .rank-bar-fill {
+            height: 100%;
+            background: var(--dark);
+            border-radius: 3px;
+        }
+
+        .rank-count {
+            font-size: 13px;
+            color: var(--dark);
+            opacity: 0.6;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        /* ---------- ACCORDÉON ---------- */
+
+        .accordion-toggle {
+            width: 100%;
+            background: none;
+            border: none;
+            border-top: 1px solid rgba(46, 58, 89, 0.1);
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.65;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .accordion-toggle:active {
+            opacity: 1;
+        }
+
+        .accordion-arrow {
+            transition: transform 0.2s;
+        }
+
+        .accordion-body {
+            display: none;
+            padding-bottom: 8px;
+        }
+
+        .accordion-body.open {
+            display: block;
+        }
+
+        .accordion-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .all-rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-top: 8px;
+        }
+
+        .all-rank-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ---------- ÉTAT VIDE ---------- */
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--light);
+            opacity: 0.6;
+        }
+
+        .empty-icon {
+            font-size: 56px;
+            margin-bottom: 14px;
+        }
+
+        .empty-text {
+            font-size: 17px;
+        }
+
+        .no-data {
+            font-size: 14px;
+            color: var(--dark);
+            opacity: 0.45;
+            font-style: italic;
+            padding: 4px 0 8px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="back-button" onclick="window.location.href='journal.html'" aria-label="Retour au journal">⬅️</button>
+        <h1 class="page-title">Statistiques</h1>
+    </header>
+
+    <div class="period-bar">
+        <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
+        <button class="period-btn" data-days="30" onclick="selectPeriod(30)">30 j</button>
+        <button class="period-btn" data-days="365" onclick="selectPeriod(365)">1 an</button>
+        <button class="period-btn" data-days="0" onclick="selectPeriod(0)">Perso.</button>
+    </div>
+    <div class="date-range-panel" id="dateRangePanel">
+        <div class="date-range-row">
+            <span class="date-range-label">Début</span>
+            <input type="date" class="date-range-input" id="dateFrom">
+        </div>
+        <div class="date-range-row">
+            <span class="date-range-label">Fin</span>
+            <input type="date" class="date-range-input" id="dateTo">
+        </div>
+        <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
+    </div>
+
+    <main class="main-content" id="mainContent">
+    </main>
+
+    <script>
+        /* ---------- ÉTAT ---------- */
+        let currentDays = 7;
+        let customFrom = null;
+        let customTo = null;
+
+        /* ---------- DONNÉES ---------- */
+        function getJournal() {
+            return JSON.parse(localStorage.getItem('journalCrises') || '[]');
+        }
+
+        function getProfiles() {
+            const profiles = {
+                commun:    { icon: '🌐', name: 'Profil commun' },
+                maison:    { icon: '🏠', name: 'Maison' },
+                exterieur: { icon: '🌍', name: 'Extérieur' },
+                travail:   { icon: '💼', name: 'Travail' },
+                secours:   { icon: '🚑', name: 'Secours' }
+            };
+            const contextes = JSON.parse(localStorage.getItem('contextes') || '[]');
+            contextes.forEach(ctx => {
+                if (ctx.id && !profiles[ctx.id]) {
+                    profiles[ctx.id] = { icon: ctx.emoji || '📍', name: ctx.nom || ctx.id };
+                }
+            });
+            return profiles;
+        }
+
+        /* ---------- DURÉE ---------- */
+        function parseDurationToMinutes(str) {
+            if (!str) return null;
+            str = str.toLowerCase().trim();
+            let minutes = 0;
+            let found = false;
+
+            const hMatch = str.match(/(\d+)\s*h/);
+            if (hMatch) { minutes += parseInt(hMatch[1]) * 60; found = true; }
+
+            const mMatch = str.match(/(\d+)\s*(min|mn|m\b)/);
+            if (mMatch) { minutes += parseInt(mMatch[1]); found = true; }
+
+            if (!found) {
+                const numOnly = str.match(/^(\d+)$/);
+                if (numOnly) { minutes = parseInt(numOnly[1]); found = true; }
+            }
+
+            return found && minutes > 0 ? minutes : null;
+        }
+
+        function formatMinutes(mins) {
+            if (mins < 60) return `~${Math.round(mins)} min`;
+            const h = Math.floor(mins / 60);
+            const m = Math.round(mins % 60);
+            return m > 0 ? `~${h}h${String(m).padStart(2, '0')}` : `~${h}h`;
+        }
+
+        /* ---------- FRÉQUENCES ---------- */
+        function countFrequencies(items) {
+            const freq = {};
+            items.forEach(item => { freq[item] = (freq[item] || 0) + 1; });
+            return Object.entries(freq)
+                .map(([name, count]) => ({ name, count }))
+                .sort((a, b) => b.count - a.count);
+        }
+
+        /* ---------- CALCUL STATS ---------- */
+        function computeStats(days, from, to) {
+            const journal = getJournal();
+            let entries;
+
+            if (days === 0 && from && to) {
+                const start = new Date(from);
+                start.setHours(0, 0, 0, 0);
+                const end = new Date(to);
+                end.setHours(23, 59, 59, 999);
+                entries = journal.filter(e => {
+                    const d = new Date(e.horodatage);
+                    return d >= start && d <= end;
+                });
+            } else {
+                const cutoff = new Date();
+                cutoff.setDate(cutoff.getDate() - days);
+                cutoff.setHours(0, 0, 0, 0);
+                entries = journal.filter(e => new Date(e.horodatage) >= cutoff);
+            }
+
+            if (entries.length === 0) return null;
+
+            const profiles = getProfiles();
+
+            // Intensité moyenne
+            const intensities = entries
+                .map(e => parseFloat(e.intensite))
+                .filter(v => !isNaN(v));
+            const avgIntensity = intensities.length
+                ? (intensities.reduce((s, v) => s + v, 0) / intensities.length).toFixed(1)
+                : null;
+
+            // Durée moyenne
+            const durations = entries.map(e => parseDurationToMinutes(e.duree)).filter(v => v !== null);
+            const avgDuration = durations.length
+                ? durations.reduce((s, v) => s + v, 0) / durations.length
+                : null;
+
+            // Profil le plus touché
+            const profileCounts = countFrequencies(entries.map(e => e.profil || 'commun'));
+            const topProfile = profileCounts.length ? profileCounts[0] : null;
+            const topProfileInfo = topProfile ? (profiles[topProfile.name] || { icon: '📍', name: topProfile.name }) : null;
+
+            // Type le plus fréquent
+            const types = entries.map(e => e.typeCrise).filter(t => t && t !== '');
+            const typeCounts = countFrequencies(types);
+            const topType = typeCounts.length ? typeCounts[0] : null;
+
+            // Déclencheurs
+            const allTriggers = entries.flatMap(e => e.declencheurs || []);
+            const triggerCounts = countFrequencies(allTriggers);
+
+            // Besoins
+            const allBesoins = entries.flatMap(e => (e.besoins || []).map(b => b.label || b));
+            const besoinCounts = countFrequencies(allBesoins);
+
+            return {
+                total: entries.length,
+                avgIntensity,
+                avgDuration,
+                topProfile: topProfile ? { ...topProfileInfo, count: topProfile.count } : null,
+                topType,
+                triggerCounts,
+                besoinCounts
+            };
+        }
+
+        /* ---------- RENDU LISTES ---------- */
+        function renderRankList(items, top) {
+            if (items.length === 0) return `<div class="no-data">Aucune donnée</div>`;
+
+            const maxCount = items[0].count;
+            const topItems = items.slice(0, top);
+            const restItems = items.slice(top);
+
+            let html = `<div class="rank-list">`;
+            topItems.forEach((item, i) => {
+                const pct = Math.round((item.count / maxCount) * 100);
+                html += `
+                    <div class="rank-item">
+                        <div class="rank-number">${i + 1}</div>
+                        <div class="rank-bar-wrap">
+                            <div class="rank-name">${item.name}</div>
+                            <div class="rank-bar-row">
+                                <div class="rank-bar-bg">
+                                    <div class="rank-bar-fill" style="width:${pct}%"></div>
+                                </div>
+                                <div class="rank-count">${item.count}×</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            if (restItems.length > 0) {
+                const id = 'acc_' + Math.random().toString(36).slice(2);
+                html += `
+                    <button class="accordion-toggle" onclick="toggleAccordion('${id}', this)">
+                        <span>Voir les ${restItems.length} autre${restItems.length > 1 ? 's' : ''}</span>
+                        <span class="accordion-arrow" id="arr_${id}">▾</span>
+                    </button>
+                    <div class="accordion-body" id="${id}">
+                        <div class="all-rank-list">
+                `;
+                restItems.forEach(item => {
+                    const pct = Math.round((item.count / maxCount) * 100);
+                    html += `
+                        <div class="rank-item">
+                            <div class="rank-number" style="background:rgba(46,58,89,0.4);font-size:12px;">·</div>
+                            <div class="rank-bar-wrap">
+                                <div class="rank-name">${item.name}</div>
+                                <div class="rank-bar-row">
+                                    <div class="rank-bar-bg">
+                                        <div class="rank-bar-fill" style="width:${pct}%"></div>
+                                    </div>
+                                    <div class="rank-count">${item.count}×</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
+
+            return html;
+        }
+
+        function toggleAccordion(id, btn) {
+            const body = document.getElementById(id);
+            const arrow = document.getElementById('arr_' + id);
+            const isOpen = body.classList.toggle('open');
+            arrow.classList.toggle('open', isOpen);
+            btn.querySelector('.accordion-arrow').textContent = isOpen ? '▴' : '▾';
+        }
+
+        /* ---------- RENDU PRINCIPAL ---------- */
+        function render(days, from, to) {
+            const stats = computeStats(days, from, to);
+            const main = document.getElementById('mainContent');
+
+            if (!stats) {
+                main.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <div class="empty-text">Aucune crise enregistrée<br>sur cette période</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const intensityStr = stats.avgIntensity !== null ? `${stats.avgIntensity}<span style="font-size:16px;font-weight:500;opacity:0.6">/10</span>` : '—';
+            const durationStr = stats.avgDuration !== null ? formatMinutes(stats.avgDuration) : '—';
+            const profileStr = stats.topProfile ? `${stats.topProfile.icon} ${stats.topProfile.name}` : '—';
+            const typeStr = stats.topType ? `${stats.topType.name}` : '—';
+            const typeCount = stats.topType ? `<div class="metric-label">${stats.topType.count} fois</div>` : '';
+
+            main.innerHTML = `
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">🔴</div>
+                        <div class="metric-value">${stats.total}</div>
+                        <div class="metric-label">crise${stats.total > 1 ? 's' : ''}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⚡</div>
+                        <div class="metric-value">${intensityStr}</div>
+                        <div class="metric-label">intensité moy.</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">⏱</div>
+                        <div class="metric-value small">${durationStr}</div>
+                        <div class="metric-label">durée moy. (approx.)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📍</div>
+                        <div class="metric-value small">${profileStr}</div>
+                        <div class="metric-label">profil le + touché</div>
+                    </div>
+                    <div class="metric-card wide">
+                        <div class="metric-icon">🧠</div>
+                        <div class="metric-value small">${typeStr}</div>
+                        ${typeCount}
+                        <div class="metric-label">type le + fréquent</div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🎯 Déclencheurs</div>
+                    ${renderRankList(stats.triggerCounts, 3)}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🤲 Besoins exprimés</div>
+                    ${renderRankList(stats.besoinCounts, 3)}
+                </div>
+            `;
+        }
+
+        /* ---------- PÉRIODE ---------- */
+        function selectPeriod(days) {
+            currentDays = days;
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.days) === days);
+            });
+            const panel = document.getElementById('dateRangePanel');
+            panel.classList.toggle('visible', days === 0);
+            if (days !== 0) render(days);
+        }
+
+        function applyCustomRange() {
+            const from = document.getElementById('dateFrom').value;
+            const to = document.getElementById('dateTo').value;
+            if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
+            if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
+            customFrom = from;
+            customTo = to;
+            render(0, from, to);
+        }
+
+        /* ---------- INIT ---------- */
+        render(currentDays);
+    </script>
+    <script src="nora-scroll.js"></script>
+</body>
+</html>

@@ -23,17 +23,15 @@
     .timer-main {
       flex: 1;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 16px 24px;
-      gap: 20px;
+      padding: 12px;
     }
 
     /* ---------- CERCLE SVG ---------- */
     .circle-wrap {
       position: relative;
-      width: min(280px, 72vw);
+      width: min(310px, 80vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -47,21 +45,22 @@
     .track {
       fill: none;
       stroke: rgba(245, 228, 204, 0.12);
-      stroke-width: 6;
+      stroke-width: 8;
     }
 
     .progress {
       fill: none;
       stroke: var(--accent);
-      stroke-width: 6;
+      stroke-width: 8;
       stroke-linecap: round;
       transition: stroke-dashoffset 0.9s linear;
     }
 
     .circle-wrap.paused .progress {
-      stroke: rgba(247, 184, 156, 0.45);
+      stroke: rgba(247, 184, 156, 0.4);
     }
 
+    /* Contenu au centre du cercle — pointer-events off sauf time-display */
     .circle-center {
       position: absolute;
       inset: 0;
@@ -69,22 +68,25 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       pointer-events: none;
     }
 
     .time-display {
-      font-size: clamp(2.2rem, 11vw, 3.2rem);
+      font-size: clamp(2.6rem, 13vw, 3.8rem);
       font-weight: 300;
       color: var(--light);
       letter-spacing: 2px;
       font-variant-numeric: tabular-nums;
       line-height: 1;
+      pointer-events: auto;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .time-hint {
-      font-size: 0.72rem;
-      color: rgba(245, 228, 204, 0.45);
+      font-size: 0.7rem;
+      color: rgba(245, 228, 204, 0.4);
       text-transform: uppercase;
       letter-spacing: 1.5px;
       min-height: 1em;
@@ -131,7 +133,7 @@
     }
 
     .t-btn:disabled {
-      opacity: 0.35;
+      opacity: 0.3;
       pointer-events: none;
     }
 
@@ -147,6 +149,30 @@
       pointer-events: none;
     }
 
+    /* ---------- TOAST ---------- */
+    .timer-toast {
+      position: fixed;
+      bottom: calc(var(--footer-height) + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(46, 58, 89, 0.97);
+      color: var(--light);
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 300;
+      pointer-events: none;
+      text-align: center;
+      max-width: 90%;
+      white-space: nowrap;
+    }
+
+    .timer-toast.visible { opacity: 1; }
+
     /* ---------- BOTTOM-SHEET ---------- */
     .sheet-backdrop {
       position: fixed;
@@ -157,15 +183,13 @@
       z-index: 500;
     }
 
-    .sheet-backdrop.visible {
-      display: flex;
-    }
+    .sheet-backdrop.visible { display: flex; }
 
     .sheet-box {
       background: #020617;
       width: 100%;
       border-radius: 24px 24px 0 0;
-      padding: 24px 20px 40px;
+      padding: 20px 20px 40px;
       position: relative;
     }
 
@@ -174,7 +198,7 @@
       height: 4px;
       background: rgba(255,255,255,0.15);
       border-radius: 2px;
-      margin: 0 auto 20px;
+      margin: 0 auto 18px;
     }
 
     .sheet-close {
@@ -192,23 +216,53 @@
       font-size: 1rem;
       font-weight: 600;
       color: var(--light);
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
+    /* Durée affichée — cliquable pour saisie manuelle */
     .sheet-duration-val {
       text-align: center;
       font-size: 2.8rem;
       font-weight: 300;
       color: var(--light);
       letter-spacing: 4px;
-      margin-bottom: 20px;
       font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
+
+    .sheet-duration-hint {
+      text-align: center;
+      font-size: 0.68rem;
+      color: rgba(245, 228, 204, 0.35);
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+      margin-bottom: 14px;
+    }
+
+    /* Input saisie manuelle */
+    .sheet-duration-input {
+      display: none;
+      width: 100%;
+      box-sizing: border-box;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(247,184,156,0.35);
+      border-radius: 12px;
+      padding: 12px;
+      color: var(--light);
+      font-size: 1.5rem;
+      font-family: inherit;
+      text-align: center;
+      margin-bottom: 14px;
+      outline: none;
+    }
+
+    .sheet-duration-input:focus { border-color: var(--accent); }
 
     .sheet-presets {
       display: flex;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .sheet-presets button {
@@ -218,38 +272,36 @@
       color: var(--light);
       border: none;
       border-radius: 12px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
     }
 
-    .sheet-presets button:active {
-      background: rgba(245, 228, 204, 0.2);
-    }
+    .sheet-presets button:active { background: rgba(245, 228, 204, 0.2); }
 
     .sheet-adjusters {
       display: flex;
-      gap: 8px;
-      margin-bottom: 22px;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 20px;
     }
 
     .sheet-adjusters button {
-      flex: 1;
-      padding: 10px 4px;
-      background: rgba(245, 228, 204, 0.08);
+      flex: 1 1 calc(25% - 7px);
+      padding: 9px 4px;
+      background: rgba(245, 228, 204, 0.07);
       color: var(--light);
       border: none;
       border-radius: 10px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
+      text-align: center;
     }
 
-    .sheet-adjusters button:active {
-      background: rgba(245, 228, 204, 0.18);
-    }
+    .sheet-adjusters button:active { background: rgba(245, 228, 204, 0.16); }
 
     .sheet-start {
       width: 100%;
@@ -264,11 +316,9 @@
       font-family: inherit;
     }
 
-    .sheet-start:active {
-      opacity: 0.88;
-    }
+    .sheet-start:active { opacity: 0.88; }
 
-    /* ---------- ALARME ---------- */
+    /* ---------- ALARME (z-index 900) ---------- */
     .alarm-overlay {
       position: fixed;
       inset: 0;
@@ -278,13 +328,10 @@
       align-items: center;
       justify-content: center;
       z-index: 900;
-      gap: 28px;
       padding: 32px 24px;
     }
 
-    .alarm-overlay.visible {
-      display: flex;
-    }
+    .alarm-overlay.visible { display: flex; }
 
     .alarm-overlay.flashing {
       animation: alarmFlash 0.9s ease-in-out infinite;
@@ -299,7 +346,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 28px;
+      gap: 24px;
       background: rgba(46, 58, 89, 0.92);
       border-radius: 28px;
       padding: 36px 28px;
@@ -314,7 +361,7 @@
 
     @keyframes alarmPulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
+      50% { transform: scale(1.2); }
     }
 
     .alarm-text {
@@ -351,6 +398,9 @@
       background: rgba(245, 228, 204, 0.15);
       color: var(--light);
     }
+
+    /* Snooze sheet : z-index 1000 > alarm-overlay 900 */
+    #snoozeSheet { z-index: 1000; }
   </style>
 </head>
 <body>
@@ -361,8 +411,9 @@
   </header>
 
   <main class="timer-main">
-    <div class="circle-wrap" id="circleWrap" onclick="onCircleTap()" role="button" aria-label="Régler la durée">
-      <!-- r=42 → circumference ≈ 263.89 -->
+    <!-- Cercle : tap partout = play/pause — tap sur le temps = changer durée -->
+    <div class="circle-wrap" id="circleWrap" onclick="onCircleTap()" role="button" aria-label="Démarrer ou mettre en pause">
+      <!-- r=42 → circumference = 2π×42 ≈ 263.89 -->
       <svg viewBox="0 0 100 100" aria-hidden="true">
         <circle class="track" cx="50" cy="50" r="42"/>
         <circle class="progress" id="progressArc" cx="50" cy="50" r="42"
@@ -370,7 +421,7 @@
           transform="rotate(-90 50 50)"/>
       </svg>
       <div class="circle-center">
-        <div class="time-display" id="timeDisplay">30:00</div>
+        <div class="time-display" id="timeDisplay" onclick="onTimeTap(event)" role="button" aria-label="Modifier la durée">30:00</div>
         <div class="time-hint" id="timeHint">Appuie pour régler</div>
       </div>
     </div>
@@ -378,7 +429,7 @@
 
   <!-- Footer controls -->
   <footer class="timer-footer">
-    <button class="t-btn" id="btnSon" onclick="cycleSon()">
+    <button class="t-btn active" id="btnSon" onclick="cycleSon()">
       <span id="sonIcon">🔔</span>
       <small id="sonLabel">BIP</small>
     </button>
@@ -396,13 +447,24 @@
     </button>
   </footer>
 
+  <!-- Toast -->
+  <div class="timer-toast" id="timerToast"></div>
+
   <!-- Duration picker -->
   <div class="sheet-backdrop" id="durationSheet" onclick="onBackdropClick(event,'durationSheet')">
     <div class="sheet-box">
       <div class="sheet-handle"></div>
       <div class="sheet-close" onclick="closeDurationSheet()">✕</div>
       <strong class="sheet-title">Durée du timer</strong>
-      <div class="sheet-duration-val" id="sheetDurationVal">30:00</div>
+
+      <!-- Valeur affichée : tap → saisie manuelle -->
+      <div class="sheet-duration-val" id="sheetDurationVal" onclick="startManualInput()">30:00</div>
+      <div class="sheet-duration-hint" id="sheetDurationHint">Appuie sur le temps pour saisir manuellement</div>
+      <input class="sheet-duration-input" id="sheetDurationInput" type="number"
+        min="1" max="600" placeholder="Minutes"
+        onblur="confirmManualInput()"
+        onkeydown="if(event.key==='Enter')confirmManualInput();if(event.key==='Escape')cancelManualInput()">
+
       <div class="sheet-presets">
         <button onclick="setDuration(900)">15 min</button>
         <button onclick="setDuration(1800)">30 min</button>
@@ -411,6 +473,8 @@
       <div class="sheet-adjusters">
         <button onclick="adjustDuration(-600)">−10 min</button>
         <button onclick="adjustDuration(-300)">−5 min</button>
+        <button onclick="adjustDuration(-60)">−1 min</button>
+        <button onclick="adjustDuration(60)">+1 min</button>
         <button onclick="adjustDuration(300)">+5 min</button>
         <button onclick="adjustDuration(600)">+10 min</button>
         <button onclick="adjustDuration(1800)">+30 min</button>
@@ -419,7 +483,7 @@
     </div>
   </div>
 
-  <!-- Alarm overlay -->
+  <!-- Alarm overlay (z-index 900) -->
   <div class="alarm-overlay" id="alarmOverlay">
     <div class="alarm-content">
       <div class="alarm-icon">⏰</div>
@@ -431,26 +495,27 @@
     </div>
   </div>
 
-  <!-- Snooze sheet -->
+  <!-- Snooze sheet (z-index 1000 > alarm) -->
   <div class="sheet-backdrop" id="snoozeSheet" onclick="onBackdropClick(event,'snoozeSheet')">
     <div class="sheet-box">
       <div class="sheet-handle"></div>
       <div class="sheet-close" onclick="closeSnoozeSheet()">✕</div>
       <strong class="sheet-title">Prolonger de…</strong>
       <div class="sheet-presets">
+        <button onclick="snooze(60)">+1 min</button>
         <button onclick="snooze(300)">+5 min</button>
         <button onclick="snooze(900)">+15 min</button>
         <button onclick="snooze(1800)">+30 min</button>
       </div>
-      <button class="alarm-btn secondary" style="width:100%;margin-top:16px;" onclick="stopAlarm()">Arrêter complètement</button>
+      <button class="alarm-btn secondary" style="width:100%;margin-top:14px;" onclick="stopAlarm()">Arrêter complètement</button>
     </div>
   </div>
 
   <script>
     /* ---------- CONSTANTES ---------- */
-    const CIRCUMFERENCE = 2 * Math.PI * 42; // 263.89
+    const CIRCUMFERENCE = 2 * Math.PI * 42; // ≈ 263.89
 
-    const THRESHOLDS = [3600, 1800, 900, 120]; // 1h, 30min, 15min, 2min
+    const THRESHOLDS = [3600, 1800, 900, 120];
     const THRESHOLD_MSGS = {
       3600: 'Il reste une heure',
       1800: 'Il reste trente minutes',
@@ -460,22 +525,34 @@
 
     const SON_CYCLE  = ['bip', 'voix', 'mute'];
     const SON_ICONS  = { bip: '🔔', voix: '🗣️', mute: '🔇' };
-    const SON_LABELS = { bip: 'BIP',  voix: 'VOIX', mute: 'MUET' };
+    const SON_LABELS = { bip: 'BIP', voix: 'VOIX', mute: 'MUET' };
+    const SON_TOASTS = {
+      bip:  'Bip sonore aux seuils : 1 h, 30 min, 15 min et 2 min',
+      voix: 'Annonces vocales aux seuils : 1 h, 30 min, 15 min et 2 min',
+      mute: 'Alertes sonores désactivées'
+    };
 
     const FIN_CYCLE  = ['flash', 'voix', 'vibration', 'rien'];
     const FIN_ICONS  = { flash: '⚡', voix: '🗣️', vibration: '📳', rien: '🔕' };
     const FIN_LABELS = { flash: 'FLASH', voix: 'VOIX', vibration: 'VIB', rien: 'RIEN' };
+    const FIN_TOASTS = {
+      flash:     'Fin : écran clignotant jusqu\'à arrêt',
+      voix:      'Fin : message vocal répété jusqu\'à arrêt',
+      vibration: 'Fin : vibrations répétées jusqu\'à arrêt',
+      rien:      'Fin silencieuse — seul l\'écran s\'affiche'
+    };
 
     /* ---------- ÉTAT ---------- */
-    let totalDuration  = parseInt(localStorage.getItem('timerLastDuration') || '1800');
-    let timeRemaining  = totalDuration;
-    let state          = 'idle'; // idle | running | paused | alarm
-    let endTimestamp   = null;
-    let timerInterval  = null;
-    let alarmInterval  = null;
-    let announcedSet   = new Set();
-    let wakeLock       = null;
-    let audioCtx       = null;
+    let totalDuration = parseInt(localStorage.getItem('timerLastDuration') || '1800');
+    let timeRemaining = totalDuration;
+    let state         = 'idle'; // idle | running | paused | alarm
+    let endTimestamp  = null;
+    let timerInterval = null;
+    let alarmInterval = null;
+    let announcedSet  = new Set();
+    let wakeLock      = null;
+    let audioCtx      = null;
+    let toastTimeout  = null;
 
     let sonMode = localStorage.getItem('timerSonMode') || 'bip';
     let finMode = localStorage.getItem('timerFinMode') || 'flash';
@@ -488,15 +565,13 @@
       restoreRunningState();
     });
 
-    /* ---------- PERSISTANCE (continuité hors focus) ---------- */
+    /* ---------- PERSISTANCE ---------- */
     function saveRunningState() {
       if (state !== 'running') { localStorage.removeItem('timerRunningState'); return; }
       localStorage.setItem('timerRunningState', JSON.stringify({
-        endTimestamp,
-        totalDuration,
+        endTimestamp, totalDuration,
         announcedSet: [...announcedSet],
-        sonMode,
-        finMode
+        sonMode, finMode
       }));
     }
 
@@ -515,11 +590,11 @@
           triggerAlarm();
           return;
         }
-        totalDuration   = s.totalDuration;
-        timeRemaining   = remaining;
-        endTimestamp    = s.endTimestamp;
-        announcedSet    = new Set(s.announcedSet || []);
-        state           = 'running';
+        totalDuration  = s.totalDuration;
+        timeRemaining  = remaining;
+        endTimestamp   = s.endTimestamp;
+        announcedSet   = new Set(s.announcedSet || []);
+        state          = 'running';
         startInterval();
         requestWakeLock();
         updateSonBtn();
@@ -530,14 +605,13 @@
       }
     }
 
-    // Synchronise quand on revient sur la page
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState !== 'visible') return;
-      if (state === 'running' && endTimestamp) {
+      if (document.visibilityState !== 'visible' || state !== 'running') return;
+      if (endTimestamp) {
         timeRemaining = Math.max(0, Math.floor((endTimestamp - Date.now()) / 1000));
         updateDisplay();
         if (timeRemaining <= 0) { clearInterval(timerInterval); triggerAlarm(); }
-        requestWakeLock();
+        else requestWakeLock();
       }
     });
 
@@ -554,7 +628,7 @@
     /* ---------- LOGIQUE TIMER ---------- */
     function startTimer() {
       closeDurationSheet();
-      announcedSet = new Set();
+      announcedSet  = new Set();
       endTimestamp  = Date.now() + timeRemaining * 1000;
       state         = 'running';
       startInterval();
@@ -579,8 +653,25 @@
       }, 500);
     }
 
+    // Tap sur le cercle = play/pause
+    function onCircleTap() {
+      if (state === 'alarm') return;
+      togglePause();
+    }
+
+    // Tap sur les chiffres = modifier la durée (si pas en cours)
+    function onTimeTap(e) {
+      e.stopPropagation();
+      if (state === 'running' || state === 'alarm') return;
+      openDurationSheet();
+    }
+
     function togglePause() {
-      if (state === 'idle') { openDurationSheet(); return; }
+      if (state === 'idle') {
+        // Démarre directement avec la durée actuelle
+        startTimer();
+        return;
+      }
       if (state === 'running') {
         clearInterval(timerInterval);
         releaseWakeLock();
@@ -616,12 +707,9 @@
       updateUI();
       const overlay = document.getElementById('alarmOverlay');
       overlay.classList.add('visible');
-      if (finMode === 'flash')     { overlay.classList.add('flashing'); }
-      if (finMode === 'voix')      { startAlarmVoice(); }
-      if (finMode === 'vibration') { startAlarmVibration(); }
-      if (finMode === 'bip' || (finMode === 'rien' && sonMode !== 'mute')) {
-        // mode 'rien' = pas de son, juste visuel
-      }
+      if (finMode === 'flash')     overlay.classList.add('flashing');
+      if (finMode === 'voix')      startAlarmVoice();
+      if (finMode === 'vibration') startAlarmVibration();
     }
 
     function startAlarmVoice() {
@@ -635,11 +723,9 @@
     }
 
     function startAlarmVibration() {
-      const pattern = [800, 300, 800, 300, 800];
-      navigator.vibrate && navigator.vibrate(pattern);
-      alarmInterval = setInterval(() => {
-        navigator.vibrate && navigator.vibrate(pattern);
-      }, 4000);
+      const p = [800, 300, 800, 300, 800];
+      navigator.vibrate && navigator.vibrate(p);
+      alarmInterval = setInterval(() => navigator.vibrate && navigator.vibrate(p), 4000);
     }
 
     function stopAlarmEffects() {
@@ -679,9 +765,9 @@
         if (timeRemaining <= t && t < totalDuration && !announcedSet.has(t)) {
           announcedSet.add(t);
           if (sonMode === 'voix') {
+            speechSynthesis.cancel();
             const u = new SpeechSynthesisUtterance(THRESHOLD_MSGS[t]);
             u.lang = 'fr-FR';
-            speechSynthesis.cancel();
             speechSynthesis.speak(u);
           } else {
             playThresholdBip();
@@ -693,30 +779,57 @@
     function playThresholdBip() {
       const ctx = getAudioCtx();
       if (!ctx) return;
-      [660, 880].forEach((freq, i) => {
-        setTimeout(() => {
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type = 'sine';
-          o.frequency.value = freq;
-          g.gain.setValueAtTime(0.35, ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-          o.connect(g);
-          g.connect(ctx.destination);
-          o.start();
-          o.stop(ctx.currentTime + 0.5);
-        }, i * 180);
-      });
+      const play = () => {
+        try {
+          [660, 880].forEach((freq, i) => {
+            setTimeout(() => {
+              const o = ctx.createOscillator();
+              const g = ctx.createGain();
+              o.type = 'sine';
+              o.frequency.value = freq;
+              g.gain.setValueAtTime(0.35, ctx.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.55);
+              o.connect(g); g.connect(ctx.destination);
+              o.start(); o.stop(ctx.currentTime + 0.55);
+            }, i * 200);
+          });
+        } catch(e) {}
+      };
+      // Attendre que le contexte soit actif avant de jouer
+      if (ctx.state === 'running') {
+        play();
+      } else {
+        ctx.resume().then(play).catch(() => {});
+      }
     }
 
-    /* ---------- AUDIO CONTEXT ---------- */
+    /* ---------- AUDIO ---------- */
     function getAudioCtx() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
       return audioCtx;
     }
 
-    function unlockAudio() { getAudioCtx(); }
+    function unlockAudio() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      // Jouer un son silencieux pour débloquer le contexte audio (pattern standard)
+      ctx.resume().then(() => {
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+      }).catch(() => {});
+    }
+
+    /* ---------- TOAST ---------- */
+    function showToast(text) {
+      const toast = document.getElementById('timerToast');
+      toast.textContent = text;
+      toast.classList.add('visible');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.remove('visible'), 3200);
+    }
 
     /* ---------- MISE À JOUR UI ---------- */
     function updateUI() {
@@ -727,10 +840,8 @@
 
     function updateDisplay() {
       document.getElementById('timeDisplay').textContent = formatTime(timeRemaining);
-
-      const hints = { idle: 'Appuie pour régler', running: '', paused: 'En pause', alarm: '' };
+      const hints = { idle: 'Appuie pour régler la durée', running: '', paused: 'En pause · appuie pour reprendre', alarm: '' };
       document.getElementById('timeHint').textContent = hints[state] || '';
-
       const progress = totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0;
       document.getElementById('progressArc').style.strokeDashoffset = CIRCUMFERENCE * progress;
     }
@@ -739,13 +850,12 @@
       const btn   = document.getElementById('btnPause');
       const icon  = document.getElementById('pauseIcon');
       const label = document.getElementById('pauseLabel');
-      const configs = {
+      const cfg = {
         idle:    { i: '▶', l: 'START',    active: false, disabled: false },
-        running: { i: '⏸', l: 'PAUSE',   active: true,  disabled: false },
-        paused:  { i: '▶', l: 'REPRENDRE', active: false, disabled: false },
-        alarm:   { i: '⏸', l: 'PAUSE',   active: false, disabled: true  }
-      };
-      const cfg = configs[state];
+        running: { i: '⏸', l: 'PAUSE',    active: true,  disabled: false },
+        paused:  { i: '▶', l: 'REPRENDRE',active: false, disabled: false },
+        alarm:   { i: '⏸', l: 'PAUSE',    active: false, disabled: true  }
+      }[state];
       icon.textContent = cfg.i;
       label.textContent = cfg.l;
       btn.classList.toggle('active', cfg.active);
@@ -764,12 +874,13 @@
       document.getElementById('btnFin').classList.toggle('active', finMode !== 'rien');
     }
 
-    /* ---------- BOUTONS CYCLE ---------- */
+    /* ---------- CYCLE BOUTONS ---------- */
     function cycleSon() {
       const i = SON_CYCLE.indexOf(sonMode);
       sonMode = SON_CYCLE[(i + 1) % SON_CYCLE.length];
       localStorage.setItem('timerSonMode', sonMode);
       updateSonBtn();
+      showToast(SON_TOASTS[sonMode]);
     }
 
     function cycleFin() {
@@ -777,47 +888,72 @@
       finMode = FIN_CYCLE[(i + 1) % FIN_CYCLE.length];
       localStorage.setItem('timerFinMode', finMode);
       updateFinBtn();
+      showToast(FIN_TOASTS[finMode]);
     }
 
     /* ---------- DURATION SHEET ---------- */
-    function onCircleTap() {
-      if (state === 'running' || state === 'alarm') return;
-      openDurationSheet();
-    }
-
     function openDurationSheet() {
-      updateSheetDuration();
+      syncSheetDisplay();
       document.getElementById('durationSheet').classList.add('visible');
     }
 
     function closeDurationSheet() {
+      cancelManualInput();
       document.getElementById('durationSheet').classList.remove('visible');
     }
 
-    function updateSheetDuration() {
+    function syncSheetDisplay() {
       document.getElementById('sheetDurationVal').textContent = formatTime(timeRemaining);
+      document.getElementById('sheetDurationVal').style.display = '';
+      document.getElementById('sheetDurationHint').style.display = '';
+      document.getElementById('sheetDurationInput').style.display = 'none';
     }
 
     function setDuration(sec) {
       timeRemaining = sec;
       totalDuration = sec;
       localStorage.setItem('timerLastDuration', sec);
-      updateSheetDuration();
+      syncSheetDisplay();
       updateDisplay();
     }
 
     function adjustDuration(delta) {
-      const newVal = Math.max(60, timeRemaining + delta);
-      timeRemaining = newVal;
-      totalDuration = newVal;
-      localStorage.setItem('timerLastDuration', newVal);
-      updateSheetDuration();
+      const v = Math.max(60, timeRemaining + delta);
+      timeRemaining = v;
+      totalDuration = v;
+      localStorage.setItem('timerLastDuration', v);
+      syncSheetDisplay();
       updateDisplay();
+    }
+
+    /* Saisie manuelle — tap sur le temps affiché */
+    function startManualInput() {
+      const input = document.getElementById('sheetDurationInput');
+      document.getElementById('sheetDurationVal').style.display = 'none';
+      document.getElementById('sheetDurationHint').style.display = 'none';
+      input.value = Math.max(1, Math.round(timeRemaining / 60));
+      input.style.display = 'block';
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function confirmManualInput() {
+      const input = document.getElementById('sheetDurationInput');
+      const minutes = parseInt(input.value);
+      if (minutes >= 1 && minutes <= 600) {
+        setDuration(minutes * 60);
+      } else {
+        syncSheetDisplay();
+      }
+    }
+
+    function cancelManualInput() {
+      syncSheetDisplay();
     }
 
     function onBackdropClick(e, sheetId) {
       if (e.target === document.getElementById(sheetId)) {
         document.getElementById(sheetId).classList.remove('visible');
+        if (sheetId === 'durationSheet') cancelManualInput();
       }
     }
 
