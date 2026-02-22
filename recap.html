@@ -1080,7 +1080,7 @@
                 { name: "Perturbation de l'organisation ou des routines personnelles", desc: "Rupture de structure habituelle" },
                 { name: "Non-respect des règles", desc: "Cadre : non respecté, règle enfreinte" },
                 { name: "Injustice", desc: "Confrontation à une situation ou un vécu injuste / non éthique" },
-                { name: "Intrusion", desc: "dans la zone secure / votre espace personnel" }
+                { name: "Intrusion", desc: "dans la zone secure / ton espace personnel" }
             ],
             "Contacts sociaux": [
                 { name: "Situations sociales", desc: "Participation à des occasions sociales ou à des conversations superficielles (small talk)" },
@@ -1451,7 +1451,7 @@
         }
 
         function modifyRecap() {
-            if (confirm('Retourner modifier vos informations ?')) {
+            if (confirm('Retourner modifier tes informations ?')) {
                 const config = profileConfig || getProfileConfig(localStorage.getItem('profilActuel') || 'commun');
                 const pages = getFlowPages(config);
                 // Aller à la première page du flow (pas recap)

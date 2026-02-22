@@ -369,9 +369,9 @@
     <main class="main-content">
 
         <p class="intro-text">
-            Configurez ici le support qui parle pour vous quand ça devient difficile. 
+            Configure ici le support qui parle pour toi quand ça devient difficile. 
 
-Sélectionnez vos contacts de confiance et vos informations clés pour disposer d'un outil d'aide à la communication prêt à l'emploi.
+Sélectionne tes contacts de confiance et tes informations clés pour disposer d'un outil d'aide à la communication prêt à l'emploi.
         </p>
 
         <!-- IDENTITÉ -->
@@ -391,7 +391,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
         <!-- TEXTE DE PRÉSENTATION -->
         <section class="config-section">
             <h2 class="section-title">✍️ Texte de présentation</h2>
-            <p class="section-hint">Ce texte apparaît sous votre identité sur la carte d'urgence numérique</p>
+            <p class="section-hint">Ce texte apparaît sous ton identité sur la carte d'urgence numérique</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher la présentation</div>
@@ -401,7 +401,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
                 </div>
                 <div id="presentationContent">
                     <div class="section-help">
-                        Il permet de donner des informations complémentaires à la personne qui vous aide.
+                        Il permet de donner des informations complémentaires à la personne qui t'aide.
                     </div>
                     <div class="section-example">
                         Ex : « Je suis autiste et en situation de crise. Je ne peux probablement pas parler mais je vous entends. »
@@ -418,7 +418,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
         <!-- CONSIGNES -->
         <section class="config-section">
             <h2 class="section-title">📋 Consignes</h2>
-            <p class="section-hint">Listez les consignes essentielles que la personne qui vous aide doit connaître. Une consigne par ligne.</p>
+            <p class="section-hint">Liste les consignes essentielles que la personne qui t'aide doit connaître. Une consigne par ligne.</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les consignes</div>
@@ -428,7 +428,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
                 </div>
                 <div id="consignesContent">
                     <div class="section-help">
-                        Ces consignes apparaissent en haut de votre carte, juste après votre identité.
+                        Ces consignes apparaissent en haut de ta carte, juste après ton identité.
                     </div>
                     <textarea class="text-field" id="consignesField" placeholder="Ex : NE PAS ME TOUCHER&#10;METTEZ-MOI AU CALME..." oninput="markAsModified()"></textarea>
                     <div class="text-actions">
@@ -442,7 +442,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
         <!-- INFORMATIONS -->
         <section class="config-section">
             <h2 class="section-title">💬 Informations</h2>
-            <p class="section-hint">Expliquez votre situation en quelques lignes. Ces informations aident à rassurer la personne qui vous aide.</p>
+            <p class="section-hint">Explique ta situation en quelques lignes. Ces informations aident à rassurer la personne qui t'aide.</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les informations</div>
@@ -452,7 +452,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
                 </div>
                 <div id="informationsContent">
                     <div class="section-help">
-                        Ce texte apparaît dans la section "Informations" de votre carte.
+                        Ce texte apparaît dans la section "Informations" de ta carte.
                     </div>
                     <textarea class="text-field" id="informationsField" placeholder="Ex : Je ne suis pas dangereuse...&#10;Normalement, je vous entends et comprends." oninput="markAsModified()"></textarea>
                     <div class="text-actions">
@@ -466,7 +466,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
         <!-- CONTACTS -->
         <section class="config-section">
             <h2 class="section-title">📞 <span id="contactsSectionTitle">Contact(s) affiché(s) sur la carte</span></h2>
-            <p class="section-hint">Sélectionnez jusqu'à 3 contacts d'urgence à afficher sur votre carte avec leur numéro de téléphone</p>
+            <p class="section-hint">Sélectionne jusqu'à 3 contacts d'urgence à afficher sur ta carte avec leur numéro de téléphone</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les contacts</div>
@@ -504,7 +504,7 @@ Sélectionnez vos contacts de confiance et vos informations clés pour disposer 
         <!-- REMARQUES -->
         <section class="config-section">
             <h2 class="section-title">📝 Remarques</h2>
-            <p class="section-hint">Ajoutez des notes complémentaires visibles sur votre carte (ex : horaires, précautions, préférences).</p>
+            <p class="section-hint">Ajoute des notes complémentaires visibles sur ta carte (ex : horaires, précautions, préférences).</p>
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les remarques</div>
@@ -849,7 +849,7 @@ Normalement, je vous entends et comprends.`;
 
         function goBack() {
             if (hasUnsavedChanges) {
-                if (confirm('⚠️ Modifications non enregistrées\n\nVoulez-vous quitter sans enregistrer ?')) {
+                if (confirm('⚠️ Modifications non enregistrées\n\nQuitter sans enregistrer ?')) {
                     window.location.href = 'parametres.html';
                 }
             } else {
