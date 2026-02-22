@@ -22,6 +22,7 @@
             line-height: 1.5;
         }
 
+        /* ---------- CARD GRID ---------- */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -35,21 +36,25 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 6px;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
-            transition: transform 0.15s, box-shadow 0.15s;
-            min-height: 100px;
+            transition: transform 0.15s;
+            min-height: 90px;
+            position: relative;
         }
 
         .com-card:active {
             transform: scale(0.96);
         }
 
-        .card-emoji {
-            font-size: 40px;
+        .card-emoji-small {
+            position: absolute;
+            top: 9px;
+            left: 11px;
+            font-size: 18px;
             line-height: 1;
-            flex-shrink: 0;
         }
 
         .card-text {
@@ -59,50 +64,44 @@
             text-align: center;
             line-height: 1.3;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
+        /* ---------- EMPTY STATE ---------- */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: rgba(245, 228, 204, 0.6);
         }
 
-        .empty-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
+        .empty-icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--light); }
+        .empty-sub { font-size: 15px; line-height: 1.5; }
 
-        .empty-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--light);
-        }
-
-        .empty-sub {
-            font-size: 15px;
-            line-height: 1.5;
-        }
-
-        /* Fullscreen overlay */
+        /* ---------- FULLSCREEN OVERLAY ---------- */
         .fullscreen-overlay {
             position: fixed;
             inset: 0;
-            background-color: #2E3A59;
+            background-color: var(--dark);
             z-index: 9999;
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 32px 24px;
+            padding: 40px 28px;
             cursor: pointer;
         }
 
         .fullscreen-overlay.visible {
             display: flex;
+            animation: overlayIn 0.25s ease;
+        }
+
+        @keyframes overlayIn {
+            from { opacity: 0; transform: scale(0.97); }
+            to   { opacity: 1; transform: scale(1); }
         }
 
         .overlay-close {
@@ -113,8 +112,8 @@
             height: 52px;
             border-radius: 50%;
             border: none;
-            background: rgba(245, 228, 204, 0.15);
-            color: #F5E4CC;
+            background: rgba(245, 228, 204, 0.12);
+            color: var(--light);
             font-size: 28px;
             cursor: pointer;
             display: flex;
@@ -125,29 +124,31 @@
         }
 
         .overlay-close:active {
-            background: rgba(245, 228, 204, 0.3);
+            background: rgba(245, 228, 204, 0.25);
         }
 
-        .overlay-emoji {
-            font-size: 80px;
+        .overlay-icon-small {
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            font-size: 32px;
             line-height: 1;
-            margin-bottom: 28px;
         }
 
         .overlay-text {
-            font-size: 56px;
+            font-size: 64px;
             font-weight: 700;
-            color: #F5E4CC;
+            color: var(--light);
             text-align: center;
-            line-height: 1.2;
-            margin-bottom: 20px;
+            line-height: 1.15;
+            margin-bottom: 28px;
         }
 
         .overlay-subtext {
-            font-size: 22px;
-            color: rgba(245, 228, 204, 0.75);
+            font-size: 26px;
+            color: rgba(245, 228, 204, 0.8);
             text-align: center;
-            line-height: 1.5;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -166,21 +167,22 @@
     <!-- Fullscreen overlay -->
     <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeOverlay()">
         <button class="overlay-close" onclick="event.stopPropagation(); closeOverlay();" aria-label="Fermer">×</button>
-        <div class="overlay-emoji" id="overlayEmoji"></div>
+        <div class="overlay-icon-small" id="overlayIcon"></div>
         <div class="overlay-text" id="overlayText"></div>
         <div class="overlay-subtext" id="overlaySubtext"></div>
     </div>
 
     <script>
         const DEFAULT_CARDS = [
-            { id: '1', emoji: '🚫', text: 'Ne me touche pas', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
-            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis en mutisme temporaire. Je vous entends mais ne peux pas répondre verbalement.' },
-            { id: '3', emoji: '🔕', text: 'Besoin de silence', sousTexte: "J'ai besoin de calme et de silence complet. Merci de ne pas me parler." },
-            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme." },
-            { id: '5', emoji: '🆘', text: "J'ai besoin d'aide", sousTexte: "Je fais une crise autistique. Aidez-moi à trouver un endroit calme et sombre." },
-            { id: '6', emoji: '🪪', text: 'Passage prioritaire CMI', sousTexte: "Je bénéficie de la CMI mention priorité. J'ai le droit à un passage en caisse prioritaire." },
-            { id: '7', emoji: '🙏', text: 'Ouvrir une caisse', sousTexte: "Pourriez-vous ouvrir une caisse prioritaire ? Je suis en situation de handicap (CMI)." },
-            { id: '8', emoji: '✋', text: 'Laissez-moi', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." }
+            { id: '1', emoji: '🚫', text: 'Ne me touchez pas svp', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
+            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis temporairement mutique. Je vous entends mais je ne peux pas répondre verbalement. C\'est involontaire et ça peut être transitoire.' },
+            { id: '3', emoji: '🔕', text: 'Besoin de silence', sousTexte: "J'ai besoin de calme et de silence complet. Merci de ne pas me parler svp." },
+            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme svp." },
+            { id: '5', emoji: '🆘', text: "J'ai besoin d'aide", sousTexte: "Je fais une crise autistique. Aidez-moi svp à trouver un endroit calme et sombre." },
+            { id: '6', emoji: '🪪', text: 'Passage prioritaire CMI', sousTexte: "Je bénéficie d'une CMI mention priorité. Pourriez-vous me laisser passer en priorité svp ?" },
+            { id: '7', emoji: '🙏', text: 'Ouvrir une caisse', sousTexte: "Pourriez-vous ouvrir une caisse prioritaire svp ? Je suis en situation de handicap." },
+            { id: '8', emoji: '✋', text: 'Laissez-moi svp', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." },
+            { id: '9', emoji: '🧠', text: 'Je suis en surcharge', sousTexte: "Merci de me laisser tranquille et de m'aider à réduire au maximum les stimulations sensorielles." }
         ];
 
         function getCards() {
@@ -192,25 +194,33 @@
             return JSON.parse(stored);
         }
 
+        function showIcons() {
+            return localStorage.getItem('cartesShowIcons') !== 'false';
+        }
+
+        function formatSubtext(text) {
+            if (!text) return '';
+            return text.replace(/\. /g, '.<br>').replace(/\? /g, '?<br>');
+        }
+
         function renderCards() {
             const grid = document.getElementById('cardsGrid');
             const cards = getCards();
+            const iconsOn = showIcons();
 
             if (cards.length === 0) {
-                grid.innerHTML = '';
-                grid.insertAdjacentHTML('afterend', `
-                    <div class="empty-state">
-                        <div class="empty-icon">🃏</div>
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1">
+                        <div class="empty-icon">💬</div>
                         <div class="empty-title">Aucune carte</div>
                         <div class="empty-sub">Ajoute des cartes depuis les Paramètres.</div>
-                    </div>
-                `);
+                    </div>`;
                 return;
             }
 
             grid.innerHTML = cards.map(card => `
                 <div class="com-card" onclick="openCard('${card.id}')" role="button" aria-label="${card.text}">
-                    <div class="card-emoji">${card.emoji}</div>
+                    ${iconsOn ? `<div class="card-emoji-small">${card.emoji}</div>` : ''}
                     <div class="card-text">${card.text}</div>
                 </div>
             `).join('');
@@ -221,15 +231,23 @@
             const card = cards.find(c => c.id === id);
             if (!card) return;
 
-            document.getElementById('overlayEmoji').textContent = card.emoji;
+            const iconsOn = showIcons();
+            const iconEl = document.getElementById('overlayIcon');
+            iconEl.textContent = iconsOn ? card.emoji : '';
+            iconEl.style.display = iconsOn ? 'block' : 'none';
+
             document.getElementById('overlayText').textContent = card.text;
+
             const subEl = document.getElementById('overlaySubtext');
-            subEl.textContent = card.sousTexte || '';
-            subEl.style.display = card.sousTexte ? 'block' : 'none';
+            if (card.sousTexte) {
+                subEl.innerHTML = formatSubtext(card.sousTexte);
+                subEl.style.display = 'block';
+            } else {
+                subEl.style.display = 'none';
+            }
 
             document.getElementById('fullscreenOverlay').classList.add('visible');
 
-            // Fullscreen + landscape lock
             const el = document.documentElement;
             if (el.requestFullscreen) {
                 el.requestFullscreen().then(() => {
@@ -244,21 +262,14 @@
 
         function closeOverlay() {
             document.getElementById('fullscreenOverlay').classList.remove('visible');
-
-            if (document.fullscreenElement) {
-                document.exitFullscreen().catch(() => {});
-            }
+            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
             if (screen.orientation && screen.orientation.unlock) {
                 try { screen.orientation.unlock(); } catch (e) {}
             }
         }
 
-        // Close overlay on Escape key
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeOverlay();
-        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOverlay(); });
 
-        // Handle fullscreen exit from system back gesture
         document.addEventListener('fullscreenchange', () => {
             if (!document.fullscreenElement) {
                 document.getElementById('fullscreenOverlay').classList.remove('visible');
@@ -268,9 +279,7 @@
             }
         });
 
-        function goBack() {
-            window.location.href = 'index.html';
-        }
+        function goBack() { window.location.href = 'index.html'; }
 
         window.addEventListener('DOMContentLoaded', renderCards);
     </script>

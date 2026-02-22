@@ -43,6 +43,14 @@ Schéma de versioning suggéré :
 - `1.x` → nouvelle fonctionnalité ou changement UI significatif
 - `1.x.y` → correction de bug ou ajustement visuel mineur
 
+## Branches Git
+- `main` → production (GitHub Pages, déploiement automatique au push)
+- `dev` → développement (tout le travail se fait ici)
+
+**Toujours vérifier qu'on est sur `dev` avant de modifier des fichiers.**
+
+Mise en production : `git checkout main` → `git merge dev` → `git push` → `git checkout dev`
+
 ## Ce qu'on ne fait pas
 - Pas de refactoring non demandé
 - Pas d'ajout de fonctionnalités non demandées

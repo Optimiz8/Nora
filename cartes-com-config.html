@@ -12,7 +12,7 @@
     <title>Cartes de communication</title>
     <style>
         .main-content {
-            padding: 20px 16px;
+            padding: 20px 16px 40px;
         }
 
         .section-intro {
@@ -22,7 +22,61 @@
             line-height: 1.5;
         }
 
-        /* Liste des cartes */
+        /* ---------- TOGGLE ICONS SETTING ---------- */
+        .setting-row {
+            background: rgba(245, 228, 204, 0.07);
+            border: 1.5px solid rgba(245, 228, 204, 0.12);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .setting-sub {
+            font-size: 12px;
+            color: rgba(245, 228, 204, 0.5);
+            margin-top: 2px;
+        }
+
+        .toggle-switch {
+            width: 48px;
+            height: 28px;
+            background: rgba(46, 58, 89, 0.4);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent);
+        }
+
+        .toggle-knob {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(20px);
+        }
+
+        /* ---------- CARDS LIST ---------- */
         .cards-list {
             display: flex;
             flex-direction: column;
@@ -33,16 +87,16 @@
         .card-row {
             background-color: var(--light);
             border-radius: 12px;
-            padding: 14px 16px;
+            padding: 12px 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .card-row-emoji {
-            font-size: 28px;
+            font-size: 24px;
             flex-shrink: 0;
-            width: 40px;
+            width: 36px;
             text-align: center;
         }
 
@@ -61,7 +115,7 @@
         }
 
         .card-row-sub {
-            font-size: 13px;
+            font-size: 12px;
             color: rgba(46, 58, 89, 0.6);
             white-space: nowrap;
             overflow: hidden;
@@ -71,21 +125,32 @@
 
         .card-row-actions {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-shrink: 0;
         }
 
         .btn-icon {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-move {
+            background-color: rgba(46, 58, 89, 0.08);
+            color: var(--dark);
+            font-size: 13px;
+        }
+
+        .btn-move:disabled {
+            opacity: 0.2;
+            cursor: default;
         }
 
         .btn-edit {
@@ -93,20 +158,16 @@
             color: var(--dark);
         }
 
-        .btn-edit:active {
-            background-color: rgba(46, 58, 89, 0.2);
-        }
-
         .btn-delete {
             background-color: rgba(220, 80, 80, 0.1);
             color: #dc5050;
         }
 
-        .btn-delete:active {
-            background-color: rgba(220, 80, 80, 0.2);
-        }
+        .btn-delete:active { background-color: rgba(220, 80, 80, 0.2); }
+        .btn-edit:active   { background-color: rgba(46, 58, 89, 0.2); }
+        .btn-move:active:not(:disabled) { background-color: rgba(46, 58, 89, 0.18); }
 
-        /* Bouton ajouter */
+        /* ---------- ADD BUTTON ---------- */
         .add-card-btn {
             width: 100%;
             padding: 16px;
@@ -118,13 +179,29 @@
             font-family: inherit;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
+            margin-bottom: 12px;
         }
 
-        .add-card-btn:active {
-            background-color: rgba(245, 228, 204, 0.05);
+        .add-card-btn:active { background-color: rgba(245, 228, 204, 0.05); }
+
+        /* ---------- RESET BUTTON ---------- */
+        .reset-btn {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid rgba(220, 80, 80, 0.3);
+            border-radius: 12px;
+            background: transparent;
+            color: rgba(220, 80, 80, 0.8);
+            font-size: 15px;
+            font-family: inherit;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            margin-top: 8px;
         }
 
-        /* Modal */
+        .reset-btn:active { background-color: rgba(220, 80, 80, 0.06); }
+
+        /* ---------- MODAL ---------- */
         .modal-backdrop {
             position: fixed;
             inset: 0;
@@ -134,13 +211,11 @@
             align-items: flex-end;
         }
 
-        .modal-backdrop.visible {
-            display: flex;
-        }
+        .modal-backdrop.visible { display: flex; }
 
         .modal-sheet {
             width: 100%;
-            background-color: #F5E4CC;
+            background-color: var(--light);
             border-radius: 20px 20px 0 0;
             padding: 24px 20px 32px;
             max-height: 90vh;
@@ -224,11 +299,9 @@
             cursor: pointer;
         }
 
-        .btn-save:active {
-            opacity: 0.85;
-        }
+        .btn-save:active { opacity: 0.85; }
 
-        /* Emoji picker */
+        /* ---------- EMOJI PICKER ---------- */
         .emoji-picker-row {
             display: flex;
             align-items: center;
@@ -248,9 +321,7 @@
             flex-shrink: 0;
         }
 
-        .emoji-input-wrap {
-            flex: 1;
-        }
+        .emoji-input-wrap { flex: 1; }
 
         .emoji-input {
             width: 100%;
@@ -270,7 +341,7 @@
             border-color: var(--accent);
         }
 
-        /* Toast */
+        /* ---------- TOAST ---------- */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -287,9 +358,7 @@
             display: none;
         }
 
-        .toast.visible {
-            display: block;
-        }
+        .toast.visible { display: block; }
 
         .empty-state {
             text-align: center;
@@ -297,14 +366,8 @@
             color: rgba(245, 228, 204, 0.6);
         }
 
-        .empty-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-
-        .empty-text {
-            font-size: 15px;
-        }
+        .empty-icon { font-size: 40px; margin-bottom: 12px; }
+        .empty-text { font-size: 15px; }
     </style>
 </head>
 <body>
@@ -316,8 +379,21 @@
 
     <main class="main-content">
         <p class="section-intro">Ces cartes s'affichent en plein écran quand tu appuies dessus. Tu peux les montrer à ton interlocuteur quand la parole est difficile.</p>
+
+        <!-- Toggle icônes -->
+        <div class="setting-row">
+            <div>
+                <div class="setting-label">Afficher les icônes</div>
+                <div class="setting-sub">Petite icône en haut à gauche de chaque carte</div>
+            </div>
+            <div class="toggle-switch" id="iconsToggle" onclick="toggleIcons()">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+
         <div class="cards-list" id="cardsList"></div>
-        <button class="add-card-btn" onclick="openModal(null)">➕ Ajouter une carte</button>
+        <button class="add-card-btn" onclick="openModal(null)">+ Ajouter une carte</button>
+        <button class="reset-btn" onclick="confirmReset()">Réinitialiser les cartes par défaut</button>
     </main>
 
     <!-- Modal ajout / modification -->
@@ -329,21 +405,21 @@
                 <span class="modal-label-sub">Un seul emoji pour représenter la carte</span>
             </label>
             <div class="emoji-picker-row">
-                <div class="emoji-preview" id="emojiPreview">🃏</div>
+                <div class="emoji-preview" id="emojiPreview">💬</div>
                 <div class="emoji-input-wrap">
-                    <input type="text" class="emoji-input" id="emojiInput" maxlength="4" placeholder="🃏" oninput="updateEmojiPreview()">
+                    <input type="text" class="emoji-input" id="emojiInput" maxlength="4" placeholder="💬" oninput="updateEmojiPreview()">
                 </div>
             </div>
 
             <label class="modal-label" for="textInput">Texte principal</label>
-            <input type="text" class="modal-input" id="textInput" placeholder="Ex : Ne me touche pas" maxlength="60">
+            <input type="text" class="modal-input" id="textInput" placeholder="Ex : Ne me touchez pas" maxlength="60">
 
             <label class="modal-label" for="sousTexteInput">Sous-texte <span style="font-weight:400; opacity:0.7">(optionnel)</span></label>
             <textarea class="modal-input modal-textarea" id="sousTexteInput" placeholder="Ex : Ne me touchez pas, même pour aider. Merci." maxlength="200"></textarea>
 
             <div class="modal-actions">
                 <button class="btn-cancel" onclick="closeModal()">Annuler</button>
-                <button class="btn-save" onclick="saveCard()">💾 Enregistrer</button>
+                <button class="btn-save" onclick="saveCard()">Enregistrer</button>
             </div>
         </div>
     </div>
@@ -352,18 +428,20 @@
 
     <script>
         const DEFAULT_CARDS = [
-            { id: '1', emoji: '🚫', text: 'Ne me touche pas', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
-            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis en mutisme temporaire. Je vous entends mais ne peux pas répondre verbalement.' },
-            { id: '3', emoji: '🔕', text: 'Besoin de silence', sousTexte: "J'ai besoin de calme et de silence complet. Merci de ne pas me parler." },
-            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme." },
-            { id: '5', emoji: '🆘', text: "J'ai besoin d'aide", sousTexte: "Je fais une crise autistique. Aidez-moi à trouver un endroit calme et sombre." },
-            { id: '6', emoji: '🪪', text: 'Passage prioritaire CMI', sousTexte: "Je bénéficie de la CMI mention priorité. J'ai le droit à un passage en caisse prioritaire." },
-            { id: '7', emoji: '🙏', text: 'Ouvrir une caisse', sousTexte: "Pourriez-vous ouvrir une caisse prioritaire ? Je suis en situation de handicap (CMI)." },
-            { id: '8', emoji: '✋', text: 'Laissez-moi', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." }
+            { id: '1', emoji: '🚫', text: 'Ne me touchez pas svp', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
+            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis temporairement mutique. Je vous entends mais je ne peux pas répondre verbalement. C\'est involontaire et ça peut être transitoire.' },
+            { id: '3', emoji: '🔕', text: 'Besoin de silence', sousTexte: "J'ai besoin de calme et de silence complet. Merci de ne pas me parler svp." },
+            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme svp." },
+            { id: '5', emoji: '🆘', text: "J'ai besoin d'aide", sousTexte: "Je fais une crise autistique. Aidez-moi svp à trouver un endroit calme et sombre." },
+            { id: '6', emoji: '🪪', text: 'Passage prioritaire CMI', sousTexte: "Je bénéficie d'une CMI mention priorité. Pourriez-vous me laisser passer en priorité svp ?" },
+            { id: '7', emoji: '🙏', text: 'Ouvrir une caisse', sousTexte: "Pourriez-vous ouvrir une caisse prioritaire svp ? Je suis en situation de handicap." },
+            { id: '8', emoji: '✋', text: 'Laissez-moi svp', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." },
+            { id: '9', emoji: '🧠', text: 'Je suis en surcharge', sousTexte: "Merci de me laisser tranquille et de m'aider à réduire au maximum les stimulations sensorielles." }
         ];
 
         let editingId = null;
 
+        /* ---------- STORAGE ---------- */
         function getCards() {
             const stored = localStorage.getItem('cartesCommunication');
             if (!stored) {
@@ -377,6 +455,22 @@
             localStorage.setItem('cartesCommunication', JSON.stringify(cards));
         }
 
+        /* ---------- ICONS TOGGLE ---------- */
+        function showIcons() {
+            return localStorage.getItem('cartesShowIcons') !== 'false';
+        }
+
+        function toggleIcons() {
+            const isActive = !showIcons();
+            localStorage.setItem('cartesShowIcons', isActive ? 'true' : 'false');
+            document.getElementById('iconsToggle').classList.toggle('active', isActive);
+        }
+
+        function initToggle() {
+            document.getElementById('iconsToggle').classList.toggle('active', showIcons());
+        }
+
+        /* ---------- RENDER ---------- */
         function renderCards() {
             const list = document.getElementById('cardsList');
             const cards = getCards();
@@ -384,14 +478,13 @@
             if (cards.length === 0) {
                 list.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">🃏</div>
+                        <div class="empty-icon">💬</div>
                         <div class="empty-text">Aucune carte pour l'instant.<br>Appuie sur le bouton ci-dessous pour en ajouter.</div>
-                    </div>
-                `;
+                    </div>`;
                 return;
             }
 
-            list.innerHTML = cards.map(card => `
+            list.innerHTML = cards.map((card, index) => `
                 <div class="card-row">
                     <div class="card-row-emoji">${card.emoji}</div>
                     <div class="card-row-texts">
@@ -399,6 +492,8 @@
                         ${card.sousTexte ? `<div class="card-row-sub">${card.sousTexte}</div>` : ''}
                     </div>
                     <div class="card-row-actions">
+                        <button class="btn-icon btn-move" onclick="moveCard('${card.id}', 'up')" aria-label="Monter" ${index === 0 ? 'disabled' : ''}>▲</button>
+                        <button class="btn-icon btn-move" onclick="moveCard('${card.id}', 'down')" aria-label="Descendre" ${index === cards.length - 1 ? 'disabled' : ''}>▼</button>
                         <button class="btn-icon btn-edit" onclick="openModal('${card.id}')" aria-label="Modifier">✏️</button>
                         <button class="btn-icon btn-delete" onclick="deleteCard('${card.id}')" aria-label="Supprimer">🗑️</button>
                     </div>
@@ -406,14 +501,26 @@
             `).join('');
         }
 
+        /* ---------- REORDER ---------- */
+        function moveCard(id, direction) {
+            const cards = getCards();
+            const idx = cards.findIndex(c => c.id === id);
+            if (direction === 'up' && idx > 0) {
+                [cards[idx], cards[idx - 1]] = [cards[idx - 1], cards[idx]];
+            } else if (direction === 'down' && idx < cards.length - 1) {
+                [cards[idx], cards[idx + 1]] = [cards[idx + 1], cards[idx]];
+            }
+            saveCards(cards);
+            renderCards();
+        }
+
+        /* ---------- MODAL ---------- */
         function openModal(id) {
             editingId = id;
-            const modal = document.getElementById('modalBackdrop');
             const title = document.getElementById('modalTitle');
 
             if (id) {
-                const cards = getCards();
-                const card = cards.find(c => c.id === id);
+                const card = getCards().find(c => c.id === id);
                 if (!card) return;
                 title.textContent = 'Modifier la carte';
                 document.getElementById('emojiInput').value = card.emoji;
@@ -423,12 +530,12 @@
             } else {
                 title.textContent = 'Nouvelle carte';
                 document.getElementById('emojiInput').value = '';
-                document.getElementById('emojiPreview').textContent = '🃏';
+                document.getElementById('emojiPreview').textContent = '💬';
                 document.getElementById('textInput').value = '';
                 document.getElementById('sousTexteInput').value = '';
             }
 
-            modal.classList.add('visible');
+            document.getElementById('modalBackdrop').classList.add('visible');
             setTimeout(() => document.getElementById('textInput').focus(), 100);
         }
 
@@ -443,45 +550,47 @@
 
         function updateEmojiPreview() {
             const val = document.getElementById('emojiInput').value.trim();
-            document.getElementById('emojiPreview').textContent = val || '🃏';
+            document.getElementById('emojiPreview').textContent = val || '💬';
         }
 
         function saveCard() {
-            const emoji = document.getElementById('emojiInput').value.trim() || '🃏';
+            const emoji = document.getElementById('emojiInput').value.trim() || '💬';
             const text = document.getElementById('textInput').value.trim();
             const sousTexte = document.getElementById('sousTexteInput').value.trim();
 
-            if (!text) {
-                document.getElementById('textInput').focus();
-                return;
-            }
+            if (!text) { document.getElementById('textInput').focus(); return; }
 
             const cards = getCards();
-
             if (editingId) {
                 const idx = cards.findIndex(c => c.id === editingId);
-                if (idx !== -1) {
-                    cards[idx] = { ...cards[idx], emoji, text, sousTexte };
-                }
+                if (idx !== -1) cards[idx] = { ...cards[idx], emoji, text, sousTexte };
             } else {
-                const newId = Date.now().toString();
-                cards.push({ id: newId, emoji, text, sousTexte });
+                cards.push({ id: Date.now().toString(), emoji, text, sousTexte });
             }
 
             saveCards(cards);
             closeModal();
             renderCards();
-            showToast(editingId ? '✅ Carte modifiée' : '✅ Carte ajoutée');
+            showToast(editingId ? 'Carte modifiée' : 'Carte ajoutée');
         }
 
+        /* ---------- DELETE ---------- */
         function deleteCard(id) {
             if (!confirm('Supprimer cette carte ?')) return;
-            const cards = getCards().filter(c => c.id !== id);
-            saveCards(cards);
+            saveCards(getCards().filter(c => c.id !== id));
             renderCards();
-            showToast('🗑️ Carte supprimée');
+            showToast('Carte supprimée');
         }
 
+        /* ---------- RESET ---------- */
+        function confirmReset() {
+            if (!confirm('Remettre toutes les cartes par défaut ? Tes modifications seront perdues.')) return;
+            localStorage.setItem('cartesCommunication', JSON.stringify(DEFAULT_CARDS));
+            renderCards();
+            showToast('Cartes réinitialisées');
+        }
+
+        /* ---------- TOAST ---------- */
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -489,11 +598,14 @@
             setTimeout(() => toast.classList.remove('visible'), 2500);
         }
 
-        function goBack() {
-            window.location.href = 'parametres.html';
-        }
+        function goBack() { window.location.href = 'parametres.html'; }
 
-        window.addEventListener('DOMContentLoaded', renderCards);
+        window.addEventListener('DOMContentLoaded', () => {
+            initToggle();
+            renderCards();
+        });
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     </script>
     <script src="nora-scroll.js"></script>
 </body>

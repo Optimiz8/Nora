@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="color-scheme" content="only light">
+  <meta name="theme-color" content="#384657">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/images/favicone.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/images/logo.png">
+  <link rel="stylesheet" href="nora-common.css">
+  <title>Nora – Timer visuel</title>
+  <style>
+    /* ---------- LAYOUT ---------- */
+    body {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: var(--bg);
+    }
+
+    .timer-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      gap: 20px;
+    }
+
+    /* ---------- CERCLE SVG ---------- */
+    .circle-wrap {
+      position: relative;
+      width: min(280px, 72vw);
+      aspect-ratio: 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .circle-wrap svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .track {
+      fill: none;
+      stroke: rgba(245, 228, 204, 0.12);
+      stroke-width: 6;
+    }
+
+    .progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 6;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.9s linear;
+    }
+
+    .circle-wrap.paused .progress {
+      stroke: rgba(247, 184, 156, 0.45);
+    }
+
+    .circle-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .time-display {
+      font-size: clamp(2.2rem, 11vw, 3.2rem);
+      font-weight: 300;
+      color: var(--light);
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .time-hint {
+      font-size: 0.72rem;
+      color: rgba(245, 228, 204, 0.45);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      min-height: 1em;
+    }
+
+    /* ---------- FOOTER BUTTONS (style Pop-it) ---------- */
+    .timer-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      gap: 8px;
+      padding: 0 12px;
+      background: var(--dark);
+      height: var(--footer-height);
+      align-items: center;
+      z-index: 200;
+    }
+
+    .t-btn {
+      flex: 1;
+      height: 50px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(245, 228, 204, 0.15);
+      color: var(--light);
+      border: 1px solid rgba(245, 228, 204, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.1;
+      cursor: pointer;
+      -webkit-appearance: none;
+      gap: 2px;
+    }
+
+    .t-btn.active {
+      background: var(--accent);
+      color: var(--dark);
+      border: none;
+    }
+
+    .t-btn:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .t-btn > span {
+      font-size: 18px;
+      display: block;
+      pointer-events: none;
+    }
+
+    .t-btn > small {
+      font-weight: 800;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    /* ---------- BOTTOM-SHEET ---------- */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      align-items: flex-end;
+      z-index: 500;
+    }
+
+    .sheet-backdrop.visible {
+      display: flex;
+    }
+
+    .sheet-box {
+      background: #020617;
+      width: 100%;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 40px;
+      position: relative;
+    }
+
+    .sheet-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .sheet-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      color: rgba(245, 228, 204, 0.5);
+    }
+
+    .sheet-title {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--light);
+      margin-bottom: 18px;
+    }
+
+    .sheet-duration-val {
+      text-align: center;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--light);
+      letter-spacing: 4px;
+      margin-bottom: 20px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sheet-presets {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .sheet-presets button {
+      flex: 1;
+      padding: 12px 6px;
+      background: rgba(245, 228, 204, 0.1);
+      color: var(--light);
+      border: none;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .sheet-presets button:active {
+      background: rgba(245, 228, 204, 0.2);
+    }
+
+    .sheet-adjusters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .sheet-adjusters button {
+      flex: 1;
+      padding: 10px 4px;
+      background: rgba(245, 228, 204, 0.08);
+      color: var(--light);
+      border: none;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .sheet-adjusters button:active {
+      background: rgba(245, 228, 204, 0.18);
+    }
+
+    .sheet-start {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: var(--dark);
+      border: none;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .sheet-start:active {
+      opacity: 0.88;
+    }
+
+    /* ---------- ALARME ---------- */
+    .alarm-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--dark);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 900;
+      gap: 28px;
+      padding: 32px 24px;
+    }
+
+    .alarm-overlay.visible {
+      display: flex;
+    }
+
+    .alarm-overlay.flashing {
+      animation: alarmFlash 0.9s ease-in-out infinite;
+    }
+
+    @keyframes alarmFlash {
+      0%, 100% { background: var(--dark); }
+      50% { background: var(--light); }
+    }
+
+    .alarm-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      background: rgba(46, 58, 89, 0.92);
+      border-radius: 28px;
+      padding: 36px 28px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .alarm-icon {
+      font-size: 3.5rem;
+      animation: alarmPulse 0.9s ease-in-out infinite;
+    }
+
+    @keyframes alarmPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .alarm-text {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--light);
+      text-align: center;
+    }
+
+    .alarm-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .alarm-btn {
+      padding: 16px;
+      border: none;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .alarm-btn.primary {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .alarm-btn.secondary {
+      background: rgba(245, 228, 204, 0.15);
+      color: var(--light);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <button class="back-button" onclick="onBack()" aria-label="Retour">⬅️</button>
+    <h1 class="page-title">Timer visuel</h1>
+  </header>
+
+  <main class="timer-main">
+    <div class="circle-wrap" id="circleWrap" onclick="onCircleTap()" role="button" aria-label="Régler la durée">
+      <!-- r=42 → circumference ≈ 263.89 -->
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="track" cx="50" cy="50" r="42"/>
+        <circle class="progress" id="progressArc" cx="50" cy="50" r="42"
+          stroke-dasharray="263.89" stroke-dashoffset="0"
+          transform="rotate(-90 50 50)"/>
+      </svg>
+      <div class="circle-center">
+        <div class="time-display" id="timeDisplay">30:00</div>
+        <div class="time-hint" id="timeHint">Appuie pour régler</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer controls -->
+  <footer class="timer-footer">
+    <button class="t-btn" id="btnSon" onclick="cycleSon()">
+      <span id="sonIcon">🔔</span>
+      <small id="sonLabel">BIP</small>
+    </button>
+    <button class="t-btn active" id="btnFin" onclick="cycleFin()">
+      <span id="finIcon">⚡</span>
+      <small id="finLabel">FLASH</small>
+    </button>
+    <button class="t-btn" id="btnPause" onclick="togglePause()">
+      <span id="pauseIcon">▶</span>
+      <small id="pauseLabel">START</small>
+    </button>
+    <button class="t-btn" id="btnReset" onclick="resetTimer()">
+      <span>↺</span>
+      <small>RESET</small>
+    </button>
+  </footer>
+
+  <!-- Duration picker -->
+  <div class="sheet-backdrop" id="durationSheet" onclick="onBackdropClick(event,'durationSheet')">
+    <div class="sheet-box">
+      <div class="sheet-handle"></div>
+      <div class="sheet-close" onclick="closeDurationSheet()">✕</div>
+      <strong class="sheet-title">Durée du timer</strong>
+      <div class="sheet-duration-val" id="sheetDurationVal">30:00</div>
+      <div class="sheet-presets">
+        <button onclick="setDuration(900)">15 min</button>
+        <button onclick="setDuration(1800)">30 min</button>
+        <button onclick="setDuration(3600)">1 h</button>
+      </div>
+      <div class="sheet-adjusters">
+        <button onclick="adjustDuration(-600)">−10 min</button>
+        <button onclick="adjustDuration(-300)">−5 min</button>
+        <button onclick="adjustDuration(300)">+5 min</button>
+        <button onclick="adjustDuration(600)">+10 min</button>
+        <button onclick="adjustDuration(1800)">+30 min</button>
+      </div>
+      <button class="sheet-start" onclick="startTimer()">▶ Commencer</button>
+    </div>
+  </div>
+
+  <!-- Alarm overlay -->
+  <div class="alarm-overlay" id="alarmOverlay">
+    <div class="alarm-content">
+      <div class="alarm-icon">⏰</div>
+      <div class="alarm-text">Temps écoulé !</div>
+      <div class="alarm-actions">
+        <button class="alarm-btn primary" onclick="openSnoozeSheet()">Prolonger</button>
+        <button class="alarm-btn secondary" onclick="stopAlarm()">Arrêter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Snooze sheet -->
+  <div class="sheet-backdrop" id="snoozeSheet" onclick="onBackdropClick(event,'snoozeSheet')">
+    <div class="sheet-box">
+      <div class="sheet-handle"></div>
+      <div class="sheet-close" onclick="closeSnoozeSheet()">✕</div>
+      <strong class="sheet-title">Prolonger de…</strong>
+      <div class="sheet-presets">
+        <button onclick="snooze(300)">+5 min</button>
+        <button onclick="snooze(900)">+15 min</button>
+        <button onclick="snooze(1800)">+30 min</button>
+      </div>
+      <button class="alarm-btn secondary" style="width:100%;margin-top:16px;" onclick="stopAlarm()">Arrêter complètement</button>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- CONSTANTES ---------- */
+    const CIRCUMFERENCE = 2 * Math.PI * 42; // 263.89
+
+    const THRESHOLDS = [3600, 1800, 900, 120]; // 1h, 30min, 15min, 2min
+    const THRESHOLD_MSGS = {
+      3600: 'Il reste une heure',
+      1800: 'Il reste trente minutes',
+      900:  'Il reste quinze minutes',
+      120:  'Il reste deux minutes'
+    };
+
+    const SON_CYCLE  = ['bip', 'voix', 'mute'];
+    const SON_ICONS  = { bip: '🔔', voix: '🗣️', mute: '🔇' };
+    const SON_LABELS = { bip: 'BIP',  voix: 'VOIX', mute: 'MUET' };
+
+    const FIN_CYCLE  = ['flash', 'voix', 'vibration', 'rien'];
+    const FIN_ICONS  = { flash: '⚡', voix: '🗣️', vibration: '📳', rien: '🔕' };
+    const FIN_LABELS = { flash: 'FLASH', voix: 'VOIX', vibration: 'VIB', rien: 'RIEN' };
+
+    /* ---------- ÉTAT ---------- */
+    let totalDuration  = parseInt(localStorage.getItem('timerLastDuration') || '1800');
+    let timeRemaining  = totalDuration;
+    let state          = 'idle'; // idle | running | paused | alarm
+    let endTimestamp   = null;
+    let timerInterval  = null;
+    let alarmInterval  = null;
+    let announcedSet   = new Set();
+    let wakeLock       = null;
+    let audioCtx       = null;
+
+    let sonMode = localStorage.getItem('timerSonMode') || 'bip';
+    let finMode = localStorage.getItem('timerFinMode') || 'flash';
+
+    /* ---------- INIT ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSonBtn();
+      updateFinBtn();
+      updateDisplay();
+      restoreRunningState();
+    });
+
+    /* ---------- PERSISTANCE (continuité hors focus) ---------- */
+    function saveRunningState() {
+      if (state !== 'running') { localStorage.removeItem('timerRunningState'); return; }
+      localStorage.setItem('timerRunningState', JSON.stringify({
+        endTimestamp,
+        totalDuration,
+        announcedSet: [...announcedSet],
+        sonMode,
+        finMode
+      }));
+    }
+
+    function restoreRunningState() {
+      const raw = localStorage.getItem('timerRunningState');
+      if (!raw) return;
+      try {
+        const s = JSON.parse(raw);
+        sonMode = s.sonMode || sonMode;
+        finMode = s.finMode || finMode;
+        const remaining = Math.floor((s.endTimestamp - Date.now()) / 1000);
+        if (remaining <= 0) {
+          localStorage.removeItem('timerRunningState');
+          totalDuration = s.totalDuration;
+          timeRemaining = 0;
+          triggerAlarm();
+          return;
+        }
+        totalDuration   = s.totalDuration;
+        timeRemaining   = remaining;
+        endTimestamp    = s.endTimestamp;
+        announcedSet    = new Set(s.announcedSet || []);
+        state           = 'running';
+        startInterval();
+        requestWakeLock();
+        updateSonBtn();
+        updateFinBtn();
+        updateUI();
+      } catch(e) {
+        localStorage.removeItem('timerRunningState');
+      }
+    }
+
+    // Synchronise quand on revient sur la page
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') return;
+      if (state === 'running' && endTimestamp) {
+        timeRemaining = Math.max(0, Math.floor((endTimestamp - Date.now()) / 1000));
+        updateDisplay();
+        if (timeRemaining <= 0) { clearInterval(timerInterval); triggerAlarm(); }
+        requestWakeLock();
+      }
+    });
+
+    /* ---------- WAKE LOCK ---------- */
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try { wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    }
+
+    /* ---------- LOGIQUE TIMER ---------- */
+    function startTimer() {
+      closeDurationSheet();
+      announcedSet = new Set();
+      endTimestamp  = Date.now() + timeRemaining * 1000;
+      state         = 'running';
+      startInterval();
+      saveRunningState();
+      requestWakeLock();
+      unlockAudio();
+      updateUI();
+    }
+
+    function startInterval() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!endTimestamp) return;
+        timeRemaining = Math.max(0, Math.floor((endTimestamp - Date.now()) / 1000));
+        checkAnnouncements();
+        updateDisplay();
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          localStorage.removeItem('timerRunningState');
+          triggerAlarm();
+        }
+      }, 500);
+    }
+
+    function togglePause() {
+      if (state === 'idle') { openDurationSheet(); return; }
+      if (state === 'running') {
+        clearInterval(timerInterval);
+        releaseWakeLock();
+        localStorage.removeItem('timerRunningState');
+        state = 'paused';
+      } else if (state === 'paused') {
+        endTimestamp = Date.now() + timeRemaining * 1000;
+        state = 'running';
+        startInterval();
+        saveRunningState();
+        requestWakeLock();
+      }
+      updateUI();
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      stopAlarmEffects();
+      releaseWakeLock();
+      localStorage.removeItem('timerRunningState');
+      state         = 'idle';
+      timeRemaining = totalDuration;
+      endTimestamp  = null;
+      announcedSet  = new Set();
+      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      updateUI();
+    }
+
+    /* ---------- ALARME ---------- */
+    function triggerAlarm() {
+      state = 'alarm';
+      releaseWakeLock();
+      updateUI();
+      const overlay = document.getElementById('alarmOverlay');
+      overlay.classList.add('visible');
+      if (finMode === 'flash')     { overlay.classList.add('flashing'); }
+      if (finMode === 'voix')      { startAlarmVoice(); }
+      if (finMode === 'vibration') { startAlarmVibration(); }
+      if (finMode === 'bip' || (finMode === 'rien' && sonMode !== 'mute')) {
+        // mode 'rien' = pas de son, juste visuel
+      }
+    }
+
+    function startAlarmVoice() {
+      const say = () => {
+        const u = new SpeechSynthesisUtterance('Le temps est écoulé');
+        u.lang = 'fr-FR';
+        speechSynthesis.speak(u);
+      };
+      say();
+      alarmInterval = setInterval(say, 4500);
+    }
+
+    function startAlarmVibration() {
+      const pattern = [800, 300, 800, 300, 800];
+      navigator.vibrate && navigator.vibrate(pattern);
+      alarmInterval = setInterval(() => {
+        navigator.vibrate && navigator.vibrate(pattern);
+      }, 4000);
+    }
+
+    function stopAlarmEffects() {
+      clearInterval(alarmInterval);
+      alarmInterval = null;
+      speechSynthesis.cancel();
+      navigator.vibrate && navigator.vibrate(0);
+    }
+
+    function stopAlarm() {
+      stopAlarmEffects();
+      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      closeSnoozeSheet();
+      state         = 'idle';
+      timeRemaining = totalDuration;
+      updateUI();
+    }
+
+    function snooze(seconds) {
+      stopAlarmEffects();
+      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      closeSnoozeSheet();
+      timeRemaining = seconds;
+      announcedSet  = new Set();
+      endTimestamp  = Date.now() + seconds * 1000;
+      state         = 'running';
+      startInterval();
+      saveRunningState();
+      requestWakeLock();
+      updateUI();
+    }
+
+    /* ---------- ALERTES INTERMÉDIAIRES ---------- */
+    function checkAnnouncements() {
+      if (sonMode === 'mute') return;
+      for (const t of THRESHOLDS) {
+        if (timeRemaining <= t && t < totalDuration && !announcedSet.has(t)) {
+          announcedSet.add(t);
+          if (sonMode === 'voix') {
+            const u = new SpeechSynthesisUtterance(THRESHOLD_MSGS[t]);
+            u.lang = 'fr-FR';
+            speechSynthesis.cancel();
+            speechSynthesis.speak(u);
+          } else {
+            playThresholdBip();
+          }
+        }
+      }
+    }
+
+    function playThresholdBip() {
+      const ctx = getAudioCtx();
+      if (!ctx) return;
+      [660, 880].forEach((freq, i) => {
+        setTimeout(() => {
+          const o = ctx.createOscillator();
+          const g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.value = freq;
+          g.gain.setValueAtTime(0.35, ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+          o.connect(g);
+          g.connect(ctx.destination);
+          o.start();
+          o.stop(ctx.currentTime + 0.5);
+        }, i * 180);
+      });
+    }
+
+    /* ---------- AUDIO CONTEXT ---------- */
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function unlockAudio() { getAudioCtx(); }
+
+    /* ---------- MISE À JOUR UI ---------- */
+    function updateUI() {
+      updateDisplay();
+      updatePauseBtn();
+      document.getElementById('circleWrap').classList.toggle('paused', state === 'paused');
+    }
+
+    function updateDisplay() {
+      document.getElementById('timeDisplay').textContent = formatTime(timeRemaining);
+
+      const hints = { idle: 'Appuie pour régler', running: '', paused: 'En pause', alarm: '' };
+      document.getElementById('timeHint').textContent = hints[state] || '';
+
+      const progress = totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0;
+      document.getElementById('progressArc').style.strokeDashoffset = CIRCUMFERENCE * progress;
+    }
+
+    function updatePauseBtn() {
+      const btn   = document.getElementById('btnPause');
+      const icon  = document.getElementById('pauseIcon');
+      const label = document.getElementById('pauseLabel');
+      const configs = {
+        idle:    { i: '▶', l: 'START',    active: false, disabled: false },
+        running: { i: '⏸', l: 'PAUSE',   active: true,  disabled: false },
+        paused:  { i: '▶', l: 'REPRENDRE', active: false, disabled: false },
+        alarm:   { i: '⏸', l: 'PAUSE',   active: false, disabled: true  }
+      };
+      const cfg = configs[state];
+      icon.textContent = cfg.i;
+      label.textContent = cfg.l;
+      btn.classList.toggle('active', cfg.active);
+      btn.disabled = cfg.disabled;
+    }
+
+    function updateSonBtn() {
+      document.getElementById('sonIcon').textContent  = SON_ICONS[sonMode];
+      document.getElementById('sonLabel').textContent = SON_LABELS[sonMode];
+      document.getElementById('btnSon').classList.toggle('active', sonMode !== 'mute');
+    }
+
+    function updateFinBtn() {
+      document.getElementById('finIcon').textContent  = FIN_ICONS[finMode];
+      document.getElementById('finLabel').textContent = FIN_LABELS[finMode];
+      document.getElementById('btnFin').classList.toggle('active', finMode !== 'rien');
+    }
+
+    /* ---------- BOUTONS CYCLE ---------- */
+    function cycleSon() {
+      const i = SON_CYCLE.indexOf(sonMode);
+      sonMode = SON_CYCLE[(i + 1) % SON_CYCLE.length];
+      localStorage.setItem('timerSonMode', sonMode);
+      updateSonBtn();
+    }
+
+    function cycleFin() {
+      const i = FIN_CYCLE.indexOf(finMode);
+      finMode = FIN_CYCLE[(i + 1) % FIN_CYCLE.length];
+      localStorage.setItem('timerFinMode', finMode);
+      updateFinBtn();
+    }
+
+    /* ---------- DURATION SHEET ---------- */
+    function onCircleTap() {
+      if (state === 'running' || state === 'alarm') return;
+      openDurationSheet();
+    }
+
+    function openDurationSheet() {
+      updateSheetDuration();
+      document.getElementById('durationSheet').classList.add('visible');
+    }
+
+    function closeDurationSheet() {
+      document.getElementById('durationSheet').classList.remove('visible');
+    }
+
+    function updateSheetDuration() {
+      document.getElementById('sheetDurationVal').textContent = formatTime(timeRemaining);
+    }
+
+    function setDuration(sec) {
+      timeRemaining = sec;
+      totalDuration = sec;
+      localStorage.setItem('timerLastDuration', sec);
+      updateSheetDuration();
+      updateDisplay();
+    }
+
+    function adjustDuration(delta) {
+      const newVal = Math.max(60, timeRemaining + delta);
+      timeRemaining = newVal;
+      totalDuration = newVal;
+      localStorage.setItem('timerLastDuration', newVal);
+      updateSheetDuration();
+      updateDisplay();
+    }
+
+    function onBackdropClick(e, sheetId) {
+      if (e.target === document.getElementById(sheetId)) {
+        document.getElementById(sheetId).classList.remove('visible');
+      }
+    }
+
+    /* ---------- SNOOZE SHEET ---------- */
+    function openSnoozeSheet() {
+      document.getElementById('snoozeSheet').classList.add('visible');
+    }
+
+    function closeSnoozeSheet() {
+      document.getElementById('snoozeSheet').classList.remove('visible');
+    }
+
+    /* ---------- RETOUR ---------- */
+    function onBack() {
+      if (state === 'running') saveRunningState();
+      location.href = 'index.html';
+    }
+
+    /* ---------- UTILS ---------- */
+    function formatTime(sec) {
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      if (h > 0) return `${h}:${pad(m)}:${pad(s)}`;
+      return `${pad(m)}:${pad(s)}`;
+    }
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+  </script>
+  <script src="nora-scroll.js"></script>
+</body>
+</html>
