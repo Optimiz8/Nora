@@ -162,7 +162,14 @@
             font-weight: 500;
         }
 
-        /* ---------- SECTIONS LISTES ---------- */
+        .metric-delta {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.5;
+        }
+
+        /* ---------- SECTIONS ---------- */
 
         .section {
             background: var(--light);
@@ -179,6 +186,133 @@
             align-items: center;
             gap: 6px;
         }
+
+        .subsection-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            opacity: 0.6;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ---------- GRAPHIQUE TEMPOREL ---------- */
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 100px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+        }
+
+        .bar-group {
+            flex: 1;
+            min-width: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            gap: 3px;
+        }
+
+        .bar-fill {
+            width: 100%;
+            background: var(--dark);
+            border-radius: 3px 3px 0 0;
+            flex-shrink: 0;
+        }
+
+        .bar-label {
+            font-size: 10px;
+            color: var(--dark);
+            opacity: 0.55;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* ---------- JOURS / HEURES ---------- */
+
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 14px;
+        }
+
+        .day-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 6px 2px;
+            border-radius: 8px;
+            background: rgba(46, 58, 89, 0.06);
+        }
+
+        .day-cell.top-day {
+            background: var(--dark);
+        }
+
+        .day-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.6;
+        }
+
+        .day-count {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .day-cell.top-day .day-name,
+        .day-cell.top-day .day-count {
+            color: var(--light);
+            opacity: 1;
+        }
+
+        .hour-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .hour-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 8px 4px;
+            border-radius: 8px;
+            background: rgba(46, 58, 89, 0.06);
+        }
+
+        .hour-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .hour-range {
+            font-size: 10px;
+            color: var(--dark);
+            opacity: 0.4;
+        }
+
+        .hour-count {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* ---------- RANK LISTS ---------- */
 
         .rank-list {
             display: flex;
@@ -248,6 +382,87 @@
             font-weight: 500;
         }
 
+        /* ---------- CORRÉLATIONS ---------- */
+
+        .corr-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .corr-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .corr-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .corr-sub {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.5;
+        }
+
+        .corr-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .corr-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: rgba(46, 58, 89, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .corr-bar-fill {
+            height: 100%;
+            background: var(--dark);
+            border-radius: 4px;
+        }
+
+        .corr-avg-line {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--accent);
+        }
+
+        .corr-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            white-space: nowrap;
+        }
+
+        .corr-ref {
+            font-size: 11px;
+            color: var(--dark);
+            opacity: 0.45;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .corr-ref-dot {
+            display: inline-block;
+            width: 10px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
         /* ---------- ACCORDÉON ---------- */
 
         .accordion-toggle {
@@ -266,26 +481,14 @@
             justify-content: space-between;
         }
 
-        .accordion-toggle:active {
-            opacity: 1;
-        }
-
-        .accordion-arrow {
-            transition: transform 0.2s;
-        }
+        .accordion-toggle:active { opacity: 1; }
 
         .accordion-body {
             display: none;
             padding-bottom: 8px;
         }
 
-        .accordion-body.open {
-            display: block;
-        }
-
-        .accordion-arrow.open {
-            transform: rotate(180deg);
-        }
+        .accordion-body.open { display: block; }
 
         .all-rank-list {
             display: flex;
@@ -294,29 +497,40 @@
             padding-top: 8px;
         }
 
-        .all-rank-item {
+        /* ---------- EXPORT ---------- */
+
+        .export-stats-btn {
+            background: rgba(245, 228, 204, 0.08);
+            border: 2px solid rgba(245, 228, 204, 0.18);
+            color: var(--light);
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+        }
+
+        .export-stats-btn:active {
+            background: rgba(245, 228, 204, 0.16);
+            transform: scale(0.98);
         }
 
         /* ---------- ÉTAT VIDE ---------- */
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 50px 20px 20px;
             color: var(--light);
             opacity: 0.6;
         }
 
-        .empty-icon {
-            font-size: 56px;
-            margin-bottom: 14px;
-        }
-
-        .empty-text {
-            font-size: 17px;
-        }
+        .empty-icon { font-size: 56px; margin-bottom: 14px; }
+        .empty-text { font-size: 17px; }
 
         .no-data {
             font-size: 14px;
@@ -324,6 +538,24 @@
             opacity: 0.45;
             font-style: italic;
             padding: 4px 0 8px;
+        }
+
+        .last-crisis-global {
+            background: var(--light);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .last-crisis-text {
+            font-size: 15px;
+            color: var(--dark);
+        }
+
+        .last-crisis-value {
+            font-weight: 700;
         }
     </style>
 </head>
@@ -388,18 +620,14 @@
             str = str.toLowerCase().trim();
             let minutes = 0;
             let found = false;
-
             const hMatch = str.match(/(\d+)\s*h/);
             if (hMatch) { minutes += parseInt(hMatch[1]) * 60; found = true; }
-
             const mMatch = str.match(/(\d+)\s*(min|mn|m\b)/);
             if (mMatch) { minutes += parseInt(mMatch[1]); found = true; }
-
             if (!found) {
                 const numOnly = str.match(/^(\d+)$/);
                 if (numOnly) { minutes = parseInt(numOnly[1]); found = true; }
             }
-
             return found && minutes > 0 ? minutes : null;
         }
 
@@ -419,75 +647,206 @@
                 .sort((a, b) => b.count - a.count);
         }
 
+        /* ---------- DEPUIS LA DERNIÈRE CRISE ---------- */
+        function computeSinceLastCrisis() {
+            const journal = getJournal();
+            if (journal.length === 0) return null;
+            const sorted = [...journal].sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+            const lastDate = new Date(sorted[0].horodatage);
+            const diffDays = Math.floor((Date.now() - lastDate) / 86400000);
+            if (diffDays === 0) return "aujourd'hui";
+            if (diffDays === 1) return "hier";
+            return `il y a ${diffDays} j`;
+        }
+
+        /* ---------- DONNÉES GRAPHIQUE ---------- */
+        function buildChartData(entries, days, periodDays, from, to) {
+            const effectiveDays = days === 0 ? periodDays : days;
+
+            if (effectiveDays <= 31) {
+                const startDate = days === 0
+                    ? (() => { const d = new Date(from); d.setHours(0,0,0,0); return d; })()
+                    : (() => { const d = new Date(); d.setDate(d.getDate() - days); d.setHours(0,0,0,0); return d; })();
+                const endDate = days === 0
+                    ? (() => { const d = new Date(to); d.setHours(23,59,59,999); return d; })()
+                    : new Date();
+
+                const buckets = {};
+                const d = new Date(startDate);
+                while (d <= endDate) {
+                    buckets[d.toISOString().split('T')[0]] = 0;
+                    d.setDate(d.getDate() + 1);
+                }
+                entries.forEach(e => {
+                    const key = new Date(e.horodatage).toISOString().split('T')[0];
+                    if (key in buckets) buckets[key]++;
+                });
+                const DAY_SHORT = ['Di','Lu','Ma','Me','Je','Ve','Sa'];
+                return Object.entries(buckets).map(([key, count]) => {
+                    const dd = new Date(key);
+                    const label = effectiveDays <= 7
+                        ? DAY_SHORT[dd.getDay()]
+                        : `${dd.getDate()}/${dd.getMonth() + 1}`;
+                    return { label, count };
+                });
+            }
+
+            if (effectiveDays <= 180) {
+                const weekBuckets = {};
+                entries.forEach(e => {
+                    const d = new Date(e.horodatage);
+                    const diff = (d.getDay() + 6) % 7;
+                    const monday = new Date(d);
+                    monday.setDate(monday.getDate() - diff);
+                    monday.setHours(0,0,0,0);
+                    const key = monday.toISOString().split('T')[0];
+                    weekBuckets[key] = (weekBuckets[key] || 0) + 1;
+                });
+                return Object.entries(weekBuckets)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([key, count]) => {
+                        const dd = new Date(key);
+                        return { label: `${dd.getDate()}/${dd.getMonth() + 1}`, count };
+                    });
+            }
+
+            const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+            const monthBuckets = {};
+            entries.forEach(e => {
+                const d = new Date(e.horodatage);
+                const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                monthBuckets[key] = (monthBuckets[key] || 0) + 1;
+            });
+            return Object.entries(monthBuckets)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([key, count]) => {
+                    const month = parseInt(key.split('-')[1]) - 1;
+                    return { label: MONTHS[month], count };
+                });
+        }
+
         /* ---------- CALCUL STATS ---------- */
         function computeStats(days, from, to) {
             const journal = getJournal();
-            let entries;
+            let entries, prevEntries, periodDays;
 
             if (days === 0 && from && to) {
-                const start = new Date(from);
-                start.setHours(0, 0, 0, 0);
-                const end = new Date(to);
-                end.setHours(23, 59, 59, 999);
+                const start = new Date(from); start.setHours(0, 0, 0, 0);
+                const end = new Date(to); end.setHours(23, 59, 59, 999);
+                periodDays = Math.ceil((end - start) / 86400000);
                 entries = journal.filter(e => {
                     const d = new Date(e.horodatage);
                     return d >= start && d <= end;
                 });
+                const prevEnd = new Date(start.getTime() - 1);
+                const prevStart = new Date(prevEnd);
+                prevStart.setDate(prevStart.getDate() - periodDays + 1);
+                prevStart.setHours(0, 0, 0, 0);
+                prevEntries = journal.filter(e => {
+                    const d = new Date(e.horodatage);
+                    return d >= prevStart && d <= prevEnd;
+                });
             } else {
+                periodDays = days;
                 const cutoff = new Date();
                 cutoff.setDate(cutoff.getDate() - days);
                 cutoff.setHours(0, 0, 0, 0);
                 entries = journal.filter(e => new Date(e.horodatage) >= cutoff);
+                const prevCutoff = new Date();
+                prevCutoff.setDate(prevCutoff.getDate() - days * 2);
+                prevCutoff.setHours(0, 0, 0, 0);
+                prevEntries = journal.filter(e => {
+                    const d = new Date(e.horodatage);
+                    return d >= prevCutoff && d < cutoff;
+                });
             }
 
             if (entries.length === 0) return null;
 
             const profiles = getProfiles();
 
-            // Intensité moyenne
-            const intensities = entries
-                .map(e => parseFloat(e.intensite))
-                .filter(v => !isNaN(v));
+            const evolution = {
+                current: entries.length,
+                previous: prevEntries.length,
+                delta: entries.length - prevEntries.length
+            };
+
+            const intensities = entries.map(e => parseFloat(e.intensite)).filter(v => !isNaN(v));
             const avgIntensity = intensities.length
                 ? (intensities.reduce((s, v) => s + v, 0) / intensities.length).toFixed(1)
                 : null;
 
-            // Durée moyenne
             const durations = entries.map(e => parseDurationToMinutes(e.duree)).filter(v => v !== null);
             const avgDuration = durations.length
                 ? durations.reduce((s, v) => s + v, 0) / durations.length
                 : null;
 
-            // Profil le plus touché
             const profileCounts = countFrequencies(entries.map(e => e.profil || 'commun'));
             const topProfile = profileCounts.length ? profileCounts[0] : null;
             const topProfileInfo = topProfile ? (profiles[topProfile.name] || { icon: '📍', name: topProfile.name }) : null;
 
-            // Type le plus fréquent
             const types = entries.map(e => e.typeCrise).filter(t => t && t !== '');
             const typeCounts = countFrequencies(types);
             const topType = typeCounts.length ? typeCounts[0] : null;
 
-            // Déclencheurs
             const allTriggers = entries.flatMap(e => e.declencheurs || []);
             const triggerCounts = countFrequencies(allTriggers);
 
-            // Besoins
             const allBesoins = entries.flatMap(e => (e.besoins || []).map(b => b.label || b));
             const besoinCounts = countFrequencies(allBesoins);
 
+            // Jours de la semaine (reordered Lun→Dim)
+            const DAY_NAMES = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            const dayFreq = [0, 0, 0, 0, 0, 0, 0];
+            entries.forEach(e => { dayFreq[new Date(e.horodatage).getDay()]++; });
+            const dayOfWeek = [1, 2, 3, 4, 5, 6, 0].map(i => ({ name: DAY_NAMES[i], count: dayFreq[i] }));
+
+            // Tranches horaires
+            const hourSlots = [
+                { name: 'Nuit', range: '0–6h', count: 0 },
+                { name: 'Matin', range: '6–12h', count: 0 },
+                { name: 'Après-m.', range: '12–18h', count: 0 },
+                { name: 'Soir', range: '18–24h', count: 0 }
+            ];
+            entries.forEach(e => {
+                const h = new Date(e.horodatage).getHours();
+                if (h < 6) hourSlots[0].count++;
+                else if (h < 12) hourSlots[1].count++;
+                else if (h < 18) hourSlots[2].count++;
+                else hourSlots[3].count++;
+            });
+
+            // Corrélations déclencheurs / intensité
+            const correlations = [];
+            triggerCounts.forEach(({ name, count }) => {
+                if (count < 2) return;
+                const withTrigger = entries.filter(e => (e.declencheurs || []).includes(name));
+                const ints = withTrigger.map(e => parseFloat(e.intensite)).filter(v => !isNaN(v));
+                if (ints.length < 2) return;
+                const avg = parseFloat((ints.reduce((s, v) => s + v, 0) / ints.length).toFixed(1));
+                correlations.push({ name, avgIntensity: avg, count });
+            });
+            correlations.sort((a, b) => b.avgIntensity - a.avgIntensity);
+
+            const chartData = buildChartData(entries, days, periodDays, from, to);
+
             return {
                 total: entries.length,
+                evolution,
                 avgIntensity,
                 avgDuration,
                 topProfile: topProfile ? { ...topProfileInfo, count: topProfile.count } : null,
                 topType,
                 triggerCounts,
-                besoinCounts
+                besoinCounts,
+                dayOfWeek,
+                hourSlots,
+                correlations,
+                chartData
             };
         }
 
-        /* ---------- RENDU LISTES ---------- */
+        /* ---------- RENDU : LISTES CLASSÉES ---------- */
         function renderRankList(items, top) {
             if (items.length === 0) return `<div class="no-data">Aucune donnée</div>`;
 
@@ -504,14 +863,11 @@
                         <div class="rank-bar-wrap">
                             <div class="rank-name">${item.name}</div>
                             <div class="rank-bar-row">
-                                <div class="rank-bar-bg">
-                                    <div class="rank-bar-fill" style="width:${pct}%"></div>
-                                </div>
+                                <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${pct}%"></div></div>
                                 <div class="rank-count">${item.count}×</div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
             html += `</div>`;
 
@@ -520,31 +876,25 @@
                 html += `
                     <button class="accordion-toggle" onclick="toggleAccordion('${id}', this)">
                         <span>Voir les ${restItems.length} autre${restItems.length > 1 ? 's' : ''}</span>
-                        <span class="accordion-arrow" id="arr_${id}">▾</span>
+                        <span id="arr_${id}">▾</span>
                     </button>
-                    <div class="accordion-body" id="${id}">
-                        <div class="all-rank-list">
-                `;
+                    <div class="accordion-body" id="${id}"><div class="all-rank-list">`;
                 restItems.forEach(item => {
                     const pct = Math.round((item.count / maxCount) * 100);
                     html += `
                         <div class="rank-item">
-                            <div class="rank-number" style="background:rgba(46,58,89,0.4);font-size:12px;">·</div>
+                            <div class="rank-number" style="background:rgba(46,58,89,0.35);font-size:11px">·</div>
                             <div class="rank-bar-wrap">
                                 <div class="rank-name">${item.name}</div>
                                 <div class="rank-bar-row">
-                                    <div class="rank-bar-bg">
-                                        <div class="rank-bar-fill" style="width:${pct}%"></div>
-                                    </div>
+                                    <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${pct}%"></div></div>
                                     <div class="rank-count">${item.count}×</div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
                 html += `</div></div>`;
             }
-
             return html;
         }
 
@@ -552,37 +902,121 @@
             const body = document.getElementById(id);
             const arrow = document.getElementById('arr_' + id);
             const isOpen = body.classList.toggle('open');
-            arrow.classList.toggle('open', isOpen);
-            btn.querySelector('.accordion-arrow').textContent = isOpen ? '▴' : '▾';
+            arrow.textContent = isOpen ? '▴' : '▾';
+        }
+
+        /* ---------- RENDU : GRAPHIQUE ---------- */
+        function renderBarChart(chartData) {
+            if (!chartData || chartData.length === 0) return `<div class="no-data">Pas assez de données</div>`;
+            const maxCount = Math.max(...chartData.map(d => d.count), 1);
+            const BAR_MAX = 68;
+            let html = `<div class="bar-chart">`;
+            chartData.forEach(({ label, count }) => {
+                const px = count === 0 ? 0 : Math.max(Math.round((count / maxCount) * BAR_MAX), 4);
+                html += `
+                    <div class="bar-group">
+                        <div class="bar-fill" style="height:${px}px"></div>
+                        <div class="bar-label">${label}</div>
+                    </div>`;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        /* ---------- RENDU : CORRÉLATIONS ---------- */
+        function renderCorrelations(correlations, avgIntensity) {
+            if (correlations.length === 0) {
+                return `<div class="no-data">Il faut au moins 2 crises avec le même déclencheur et une intensité renseignée.</div>`;
+            }
+            const avgPct = avgIntensity ? Math.round((parseFloat(avgIntensity) / 10) * 100) : null;
+
+            let html = `<div class="corr-list">`;
+            correlations.slice(0, 6).forEach(({ name, avgIntensity: avg, count }) => {
+                const fillPct = Math.round((avg / 10) * 100);
+                html += `
+                    <div class="corr-item">
+                        <div class="corr-name">${name} <span class="corr-sub">${count} crises</span></div>
+                        <div class="corr-bar-row">
+                            <div class="corr-bar-bg">
+                                <div class="corr-bar-fill" style="width:${fillPct}%"></div>
+                                ${avgPct !== null ? `<div class="corr-avg-line" style="left:${avgPct}%"></div>` : ''}
+                            </div>
+                            <div class="corr-value">${avg}/10</div>
+                        </div>
+                    </div>`;
+            });
+            html += `</div>`;
+
+            if (avgPct !== null) {
+                html += `<div class="corr-ref"><span class="corr-ref-dot"></span> Trait = intensité moyenne globale (${avgIntensity}/10)</div>`;
+            }
+            return html;
         }
 
         /* ---------- RENDU PRINCIPAL ---------- */
         function render(days, from, to) {
             const stats = computeStats(days, from, to);
+            const sinceLastCrisis = computeSinceLastCrisis();
             const main = document.getElementById('mainContent');
+
+            const lastCrisisCard = sinceLastCrisis
+                ? `<div class="last-crisis-global"><span style="font-size:20px">⌛</span><div class="last-crisis-text">Dernière crise : <span class="last-crisis-value">${sinceLastCrisis}</span></div></div>`
+                : '';
 
             if (!stats) {
                 main.innerHTML = `
+                    ${lastCrisisCard}
                     <div class="empty-state">
                         <div class="empty-icon">📊</div>
                         <div class="empty-text">Aucune crise enregistrée<br>sur cette période</div>
-                    </div>
-                `;
+                    </div>`;
                 return;
             }
 
-            const intensityStr = stats.avgIntensity !== null ? `${stats.avgIntensity}<span style="font-size:16px;font-weight:500;opacity:0.6">/10</span>` : '—';
+            const intensityStr = stats.avgIntensity !== null
+                ? `${stats.avgIntensity}<span style="font-size:16px;font-weight:500;opacity:0.6">/10</span>`
+                : '—';
             const durationStr = stats.avgDuration !== null ? formatMinutes(stats.avgDuration) : '—';
             const profileStr = stats.topProfile ? `${stats.topProfile.icon} ${stats.topProfile.name}` : '—';
-            const typeStr = stats.topType ? `${stats.topType.name}` : '—';
+            const typeStr = stats.topType ? stats.topType.name : '—';
             const typeCount = stats.topType ? `<div class="metric-label">${stats.topType.count} fois</div>` : '';
 
+            let deltaStr = '';
+            if (stats.evolution && stats.evolution.previous > 0) {
+                const d = stats.evolution.delta;
+                deltaStr = `<div class="metric-delta">${d > 0 ? '+' : ''}${d} vs période préc.</div>`;
+            }
+
+            const maxDayCount = Math.max(...stats.dayOfWeek.map(d => d.count), 1);
+            const dayGridHtml = stats.dayOfWeek.map(d => `
+                <div class="day-cell ${d.count === maxDayCount && d.count > 0 ? 'top-day' : ''}">
+                    <div class="day-name">${d.name}</div>
+                    <div class="day-count">${d.count}</div>
+                </div>`).join('');
+
+            const hourGridHtml = stats.hourSlots.map(s => `
+                <div class="hour-cell">
+                    <div class="hour-name">${s.name}</div>
+                    <div class="hour-range">${s.range}</div>
+                    <div class="hour-count">${s.count}</div>
+                </div>`).join('');
+
+            const corrSection = stats.correlations.length > 0 || stats.triggerCounts.some(t => t.count >= 2)
+                ? `<div class="section">
+                    <div class="section-title">🔗 Déclencheurs & intensité</div>
+                    ${renderCorrelations(stats.correlations, stats.avgIntensity)}
+                   </div>`
+                : '';
+
             main.innerHTML = `
+                ${lastCrisisCard}
+
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-icon">🔴</div>
                         <div class="metric-value">${stats.total}</div>
                         <div class="metric-label">crise${stats.total > 1 ? 's' : ''}</div>
+                        ${deltaStr}
                     </div>
                     <div class="metric-card">
                         <div class="metric-icon">⚡</div>
@@ -608,6 +1042,19 @@
                 </div>
 
                 <div class="section">
+                    <div class="section-title">📅 Évolution</div>
+                    ${renderBarChart(stats.chartData)}
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🗓 Patterns temporels</div>
+                    <div class="subsection-title">Jour de la semaine</div>
+                    <div class="day-grid">${dayGridHtml}</div>
+                    <div class="subsection-title">Tranche horaire</div>
+                    <div class="hour-grid">${hourGridHtml}</div>
+                </div>
+
+                <div class="section">
                     <div class="section-title">🎯 Déclencheurs</div>
                     ${renderRankList(stats.triggerCounts, 3)}
                 </div>
@@ -616,7 +1063,70 @@
                     <div class="section-title">🤲 Besoins exprimés</div>
                     ${renderRankList(stats.besoinCounts, 3)}
                 </div>
+
+                ${corrSection}
+
+                <button class="export-stats-btn" onclick="exportStats()">📋 Copier le résumé</button>
             `;
+        }
+
+        /* ---------- EXPORT ---------- */
+        function exportStats() {
+            const stats = computeStats(currentDays, customFrom, customTo);
+            const sinceLastCrisis = computeSinceLastCrisis();
+
+            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
+
+            const periodLabel = currentDays === 7 ? '7 derniers jours'
+                : currentDays === 30 ? '30 derniers jours'
+                : currentDays === 365 ? 'dernière année'
+                : `du ${customFrom} au ${customTo}`;
+
+            let text = `== Statistiques Nora — ${periodLabel} ==\n\n`;
+            text += `Crises : ${stats.total}`;
+            if (stats.evolution && stats.evolution.previous > 0) {
+                const d = stats.evolution.delta;
+                text += ` (${d > 0 ? '+' : ''}${d} vs période préc.)`;
+            }
+            text += '\n';
+            if (stats.avgIntensity) text += `Intensité moyenne : ${stats.avgIntensity}/10\n`;
+            if (stats.avgDuration) text += `Durée moyenne : ${formatMinutes(stats.avgDuration)}\n`;
+            if (stats.topProfile) text += `Contexte le plus touché : ${stats.topProfile.name}\n`;
+            if (stats.topType) text += `Type le plus fréquent : ${stats.topType.name} (${stats.topType.count}×)\n`;
+            if (sinceLastCrisis) text += `Dernière crise : ${sinceLastCrisis}\n`;
+
+            if (stats.triggerCounts.length > 0) {
+                text += `\nDéclencheurs :\n`;
+                stats.triggerCounts.slice(0, 5).forEach((t, i) => { text += `  ${i+1}. ${t.name} (${t.count}×)\n`; });
+            }
+            if (stats.besoinCounts.length > 0) {
+                text += `\nBesoins exprimés :\n`;
+                stats.besoinCounts.slice(0, 5).forEach((b, i) => { text += `  ${i+1}. ${b.name} (${b.count}×)\n`; });
+            }
+            if (stats.correlations.length > 0) {
+                text += `\nDéclencheurs / intensité associée :\n`;
+                stats.correlations.slice(0, 5).forEach(c => { text += `  ${c.name} → ${c.avgIntensity}/10\n`; });
+            }
+
+            text += `\nExport généré le ${new Date().toLocaleDateString('fr-FR')} depuis Nora.`;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Résumé copié dans le presse-papier !');
+                }).catch(() => downloadText(text));
+            } else {
+                downloadText(text);
+            }
+        }
+
+        function downloadText(text) {
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `stats-nora-${new Date().toISOString().split('T')[0]}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         /* ---------- PÉRIODE ---------- */
@@ -625,8 +1135,7 @@
             document.querySelectorAll('.period-btn').forEach(btn => {
                 btn.classList.toggle('active', parseInt(btn.dataset.days) === days);
             });
-            const panel = document.getElementById('dateRangePanel');
-            panel.classList.toggle('visible', days === 0);
+            document.getElementById('dateRangePanel').classList.toggle('visible', days === 0);
             if (days !== 0) render(days);
         }
 
