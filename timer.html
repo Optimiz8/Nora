@@ -33,7 +33,7 @@
     /* ---------- CERCLE SVG (style 1) ---------- */
     .circle-wrap {
       position: relative;
-      width: min(270px, 72vw);
+      width: min(300px, 82vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -96,11 +96,12 @@
       display: flex;
       gap: 16px;
       align-items: center;
+      margin-top: 14px;
     }
 
     .ctrl-btn {
-      width: 64px;
-      height: 64px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       border: none;
       cursor: pointer;
@@ -110,12 +111,11 @@
       justify-content: center;
       gap: 2px;
       -webkit-appearance: none;
+      appearance: none;
       -webkit-tap-highlight-color: transparent;
     }
 
     .ctrl-btn.play-btn {
-      width: 76px;
-      height: 76px;
       background: var(--accent);
       color: var(--dark);
     }
@@ -128,8 +128,7 @@
 
     .ctrl-btn:disabled { opacity: 0.3; pointer-events: none; }
 
-    .ctrl-icon { font-size: 24px; line-height: 1; }
-    .ctrl-btn.play-btn .ctrl-icon { font-size: 28px; }
+    .ctrl-icon { font-size: 26px; line-height: 1; }
 
     .ctrl-label {
       font-size: 9px;
@@ -169,6 +168,7 @@
       line-height: 1.1;
       cursor: pointer;
       -webkit-appearance: none;
+      appearance: none;
       gap: 1px;
     }
 
@@ -485,8 +485,8 @@
     .bar-wrap {
       display: none;
       position: relative;
-      width: min(100px, 28vw);
-      height: min(270px, 60vh);
+      width: min(160px, 44vw);
+      height: min(310px, 65vh);
       background: rgba(245, 228, 204, 0.08);
       border-radius: 20px;
       overflow: hidden;
@@ -516,31 +516,43 @@
     /* ---------- STYLE 3 — SEGMENTS ---------- */
     .segments-wrap {
       display: none;
-      position: relative;
-      width: min(270px, 72vw);
-      aspect-ratio: 1;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: min(300px, 82vw);
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .segments-wrap svg { width: 100%; height: 100%; }
-
     .seg-center {
-      position: absolute;
-      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 6px;
       pointer-events: none;
     }
+
+    .seg-pills {
+      display: flex;
+      gap: 5px;
+      height: 42px;
+      width: 100%;
+    }
+
+    .seg-pill {
+      flex: 1;
+      border-radius: 8px;
+      background: rgba(245, 228, 204, 0.1);
+      transition: background 0.5s ease;
+    }
+
+    .seg-pill.active { background: var(--accent); }
 
     /* ---------- STYLE 4 — PIXELS ---------- */
     .pixels-wrap {
       display: none;
       position: relative;
-      width: min(270px, 72vw);
+      width: min(300px, 82vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -563,7 +575,7 @@
     .kawaii-wrap {
       display: none;
       position: relative;
-      width: min(270px, 72vw);
+      width: min(300px, 82vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -585,12 +597,6 @@
       position: absolute;
       font-size: 18px;
       opacity: 0.55;
-      animation: kawaiiFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes kawaiiFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50%       { transform: translateY(-6px) rotate(8deg); }
     }
 
     .kawaii-arc { position: absolute; inset: 4px; border-radius: 50%; }
@@ -607,21 +613,11 @@
       pointer-events: none;
     }
 
-    @keyframes kawaiiGlitch {
-      0%   { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
-      10%  { filter: hue-rotate(40deg) saturate(2); transform: translate(2px,-1px); }
-      20%  { filter: hue-rotate(80deg) saturate(1.8); transform: translate(-2px,1px); }
-      30%  { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
-      100% { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
-    }
-
-    .kawaii-wrap.running { animation: kawaiiGlitch 4s ease-in-out infinite; }
-
     /* ---------- STYLE 6 — ESPACE ---------- */
     .space-wrap {
       display: none;
       position: relative;
-      width: min(270px, 72vw);
+      width: min(300px, 82vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -667,9 +663,122 @@
       gap: 6px;
       pointer-events: none;
     }
+
+    /* ---------- FOND DE PAGE THÈME ---------- */
+
+    #pageBg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      display: none;
+      opacity: 0.3;
+    }
+
+    #pageBgCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      display: none;
+    }
+
+    #pageBgNebula {
+      position: fixed;
+      inset: -10%;
+      z-index: -2;
+      pointer-events: none;
+      display: none;
+      opacity: 0.22;
+      background: radial-gradient(circle at 30% 40%, #7c3aed 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, #a78bfa 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, #6d28d9 0%, transparent 70%);
+      animation: nebulaRotate 20s linear infinite;
+    }
+
+    /* ---------- ALARME THÈME ---------- */
+
+    .alarm-overlay.theme-kawaii {
+      background: linear-gradient(135deg, #ff6b9d 0%, #ffd93d 50%, #6bceff 100%);
+      overflow: hidden;
+    }
+
+    .alarm-overlay.theme-kawaii .alarm-icon {
+      font-size: 5rem;
+      animation: kawaiiEndBounce 0.7s ease-in-out infinite;
+    }
+
+    @keyframes kawaiiEndBounce {
+      0%, 100% { transform: scale(1) rotate(-8deg); }
+      50%       { transform: scale(1.3) rotate(8deg); }
+    }
+
+    .alarm-sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .sparkle-particle {
+      position: absolute;
+      top: -50px;
+      animation: sparkleFall linear infinite;
+    }
+
+    @keyframes sparkleFall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      80%  { opacity: 0.8; }
+      100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+    }
+
+    .alarm-overlay.theme-espace {
+      background: #060b1a;
+    }
+
+    .alarm-overlay.theme-espace .alarm-icon {
+      font-size: 5rem;
+      animation: spaceFloat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes spaceFloat {
+      0%, 100% { transform: translateY(0) rotate(-5deg); }
+      50%       { transform: translateY(-24px) rotate(10deg); }
+    }
+
+    /* ---------- FOOTER TIMER (override) ---------- */
+
+    .timer-footer {
+      height: 72px !important;
+    }
+
+    .t-btn {
+      height: 56px;
+    }
+
+    .t-btn.active {
+      background: rgba(245, 228, 204, 0.15);
+      border-color: rgba(245, 228, 204, 0.1);
+    }
+
+    .btn-cat {
+      font-size: 10px;
+    }
+
+    .t-btn > .btn-icon { font-size: 18px; }
+
+    .t-btn > small {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
+
+  <div id="pageBg"></div>
+  <canvas id="pageBgCanvas"></canvas>
+  <div id="pageBgNebula"></div>
 
   <header class="header">
     <button class="back-button" onclick="onBack()" aria-label="Retour">⬅️</button>
@@ -703,11 +812,11 @@
 
     <!-- Style 3 : Segments -->
     <div class="segments-wrap" id="segmentsWrap" onclick="onCircleTap()">
-      <svg viewBox="0 0 100 100" id="segmentsSvg" aria-hidden="true"></svg>
       <div class="seg-center">
         <div class="time-display" id="timeDisplay3" onclick="onTimeTap(event)">15:00</div>
         <div class="time-hint" id="timeHint3">Appuie pour régler</div>
       </div>
+      <div class="seg-pills" id="segPills"></div>
     </div>
 
     <!-- Style 4 : Pixels -->
@@ -842,9 +951,10 @@
 
   <!-- Alarm overlay -->
   <div class="alarm-overlay" id="alarmOverlay">
+    <div class="alarm-sparkles" id="alarmSparkles"></div>
     <div class="alarm-content">
       <div class="alarm-icon">⏰</div>
-      <div class="alarm-text">Temps écoulé !</div>
+      <div class="alarm-text" id="alarmText">Temps écoulé !</div>
       <div class="alarm-actions">
         <button class="alarm-btn primary" onclick="openSnoozeSheet()">Prolonger</button>
         <button class="alarm-btn secondary" onclick="stopAlarm()">Arrêter</button>
@@ -942,6 +1052,20 @@
       1800: 'Il reste trente minutes',
       900:  'Il reste quinze minutes',
       120:  'Il reste deux minutes'
+    };
+
+    const THRESHOLD_MSGS_KAWAII = {
+      3600: 'Encore une heure de paillettes',
+      1800: 'Encore trente minutes de paillettes',
+      900:  'Encore quinze minutes de paillettes',
+      120:  'Encore deux minutes de paillettes'
+    };
+
+    const THRESHOLD_MSGS_ESPACE = {
+      3600: 'Fin de la mission orbitale dans une heure',
+      1800: 'Fin de la mission orbitale dans trente minutes',
+      900:  'Fin de la mission orbitale dans quinze minutes',
+      120:  'Fin de la mission orbitale dans deux minutes'
     };
 
     const SON_CYCLE  = ['bip', 'voix', 'vibration', 'mute'];
@@ -1147,7 +1271,11 @@
       timeRemaining = totalDuration;
       endTimestamp  = null;
       announcedSet  = new Set();
-      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      stopSparkles();
+      const resetOverlay = document.getElementById('alarmOverlay');
+      resetOverlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
+      document.getElementById('alarmText').textContent = 'Temps écoulé !';
       updateUI();
     }
 
@@ -1158,14 +1286,28 @@
       updateUI();
       const overlay = document.getElementById('alarmOverlay');
       overlay.classList.add('visible');
-      if (finMode === 'flash')     overlay.classList.add('flashing');
+      if (timerStyle === 'kawaii') {
+        document.querySelector('#alarmOverlay .alarm-icon').textContent = '🌈';
+        document.getElementById('alarmText').textContent = 'Pluie de paillettes terminée !';
+        overlay.classList.add('theme-kawaii');
+        startSparkles();
+      } else if (timerStyle === 'espace') {
+        document.querySelector('#alarmOverlay .alarm-icon').textContent = '👨‍🚀';
+        document.getElementById('alarmText').textContent = 'Houston, le temps est écoulé.';
+        overlay.classList.add('theme-espace');
+      } else if (finMode === 'flash') {
+        overlay.classList.add('flashing');
+      }
       if (finMode === 'voix')      startAlarmVoice();
       if (finMode === 'vibration') startAlarmVibration();
     }
 
     function startAlarmVoice() {
+      let text = 'Le temps est écoulé';
+      if (timerStyle === 'kawaii') text = 'Pluie de paillettes terminée';
+      else if (timerStyle === 'espace') text = 'Houston, le temps est écoulé';
       const say = () => {
-        const u = new SpeechSynthesisUtterance('Le temps est écoulé');
+        const u = new SpeechSynthesisUtterance(text);
         u.lang = 'fr-FR';
         speechSynthesis.speak(u);
       };
@@ -1186,9 +1328,33 @@
       navigator.vibrate && navigator.vibrate(0);
     }
 
+    function startSparkles() {
+      const container = document.getElementById('alarmSparkles');
+      container.innerHTML = '';
+      const emojis = ['✨', '⭐', '🌟', '💫', '🎆'];
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement('span');
+        p.className = 'sparkle-particle';
+        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.left = (Math.random() * 100) + '%';
+        p.style.animationDelay = (Math.random() * 2.5) + 's';
+        p.style.animationDuration = (1.8 + Math.random() * 2.2) + 's';
+        p.style.fontSize = (14 + Math.floor(Math.random() * 18)) + 'px';
+        container.appendChild(p);
+      }
+    }
+
+    function stopSparkles() {
+      document.getElementById('alarmSparkles').innerHTML = '';
+    }
+
     function stopAlarm() {
       stopAlarmEffects();
-      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      stopSparkles();
+      const overlay = document.getElementById('alarmOverlay');
+      overlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
+      document.getElementById('alarmText').textContent = 'Temps écoulé !';
       closeSnoozeSheet();
       state         = 'idle';
       timeRemaining = totalDuration;
@@ -1208,7 +1374,11 @@
 
     function doSnooze(seconds) {
       stopAlarmEffects();
-      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      stopSparkles();
+      const snoozeOverlay = document.getElementById('alarmOverlay');
+      snoozeOverlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
+      document.getElementById('alarmText').textContent = 'Temps écoulé !';
       closeSnoozeSheet();
       totalDuration = seconds;
       timeRemaining = seconds;
@@ -1229,7 +1399,10 @@
           announcedSet.add(t);
           if (sonMode === 'voix') {
             speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(THRESHOLD_MSGS[t]);
+            const msgs = timerStyle === 'kawaii' ? THRESHOLD_MSGS_KAWAII
+                       : timerStyle === 'espace' ? THRESHOLD_MSGS_ESPACE
+                       : THRESHOLD_MSGS;
+            const u = new SpeechSynthesisUtterance(msgs[t]);
             u.lang = 'fr-FR';
             speechSynthesis.speak(u);
           } else if (sonMode === 'vibration') {
@@ -1293,7 +1466,6 @@
       updateDisplay();
       updatePlayBtn();
       document.getElementById('circleWrap').classList.toggle('paused', state === 'paused');
-      document.getElementById('kawaiiWrap').classList.toggle('running', state === 'running');
     }
 
     function updateDisplay() {
@@ -1413,11 +1585,29 @@
       const map = { cercle:'circleWrap', barre:'barWrap', segments:'segmentsWrap', pixels:'pixelsWrap', kawaii:'kawaiiWrap', espace:'spaceWrap' };
       Object.values(map).forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
       const el = document.getElementById(map[s]);
-      if (el) el.style.display = 'block';
+      if (el) el.style.display = s === 'segments' ? 'flex' : 'block';
       document.getElementById('styleIcon').textContent  = STYLE_ICONS[s];
       document.getElementById('styleLabel').textContent = STYLE_LABELS[s];
-      if (s === 'pixels') { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
-      if (s === 'espace') drawSpaceStars();
+      if (s === 'pixels')   { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
+      if (s === 'segments') buildSegmentsSvg();
+
+      /* Fond de page */
+      const pageBg       = document.getElementById('pageBg');
+      const pageBgCanvas = document.getElementById('pageBgCanvas');
+      const pageBgNebula = document.getElementById('pageBgNebula');
+      pageBg.style.display = pageBgCanvas.style.display = pageBgNebula.style.display = 'none';
+      document.body.style.backgroundColor = '';
+
+      if (s === 'espace') {
+        pageBgCanvas.style.display = 'block';
+        pageBgNebula.style.display = 'block';
+        document.body.style.backgroundColor = 'transparent';
+        drawFullPageStars();
+        drawSpaceStars();
+      } else if (s === 'kawaii') {
+        pageBg.style.display = 'block';
+        updateKawaiiColors(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0);
+      }
     }
 
     /* ---------- RETOUR ---------- */
@@ -1540,34 +1730,27 @@
     }
 
     /* =====================================================
-       STYLE 3 — SEGMENTS
+       STYLE 3 — SEGMENTS (pilules horizontales)
     ===================================================== */
-    const N_SEGMENTS = 60;
+    const N_SEGMENTS = 20;
 
     function buildSegmentsSvg() {
-      const svg = document.getElementById('segmentsSvg');
-      svg.innerHTML = '';
-      const cx = 50, cy = 50, r = 42;
+      const container = document.getElementById('segPills');
+      if (!container) return;
+      container.innerHTML = '';
       for (let i = 0; i < N_SEGMENTS; i++) {
-        const startDeg = -90 + i * (360 / N_SEGMENTS);
-        const endDeg   = startDeg + (360 / N_SEGMENTS) - 3;
-        const toRad = d => d * Math.PI / 180;
-        const x1 = cx + r * Math.cos(toRad(startDeg)), y1 = cy + r * Math.sin(toRad(startDeg));
-        const x2 = cx + r * Math.cos(toRad(endDeg)),   y2 = cy + r * Math.sin(toRad(endDeg));
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`);
-        path.setAttribute('fill', 'none');
-        path.setAttribute('stroke-width', '7');
-        path.setAttribute('stroke-linecap', 'round');
-        svg.appendChild(path);
+        const pill = document.createElement('div');
+        pill.className = 'seg-pill';
+        container.appendChild(pill);
       }
-      updateSegments(0);
+      updateSegments(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0);
     }
 
     function updateSegments(progress) {
-      const segs = document.getElementById('segmentsSvg').querySelectorAll('path');
-      const active = Math.round((1 - progress) * N_SEGMENTS);
-      segs.forEach((seg, i) => seg.setAttribute('stroke', i < active ? 'var(--accent)' : 'rgba(245,228,204,0.1)'));
+      const elapsed = Math.round(progress * N_SEGMENTS);
+      document.querySelectorAll('#segPills .seg-pill').forEach((pill, i) => {
+        pill.classList.toggle('active', i < elapsed);
+      });
     }
 
     /* =====================================================
@@ -1637,7 +1820,7 @@
       rrect(ctx, 0, 0, W, H, 20); ctx.fill();
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          ctx.fillStyle = pixelGrid[r][c] ? `hsl(${20 + r * 3}, 85%, 68%)` : 'rgba(245,228,204,0.06)';
+          ctx.fillStyle = pixelGrid[r][c] ? '#F7B89C' : 'rgba(245,228,204,0.06)';
           rrect(ctx, c * cw + p, r * ch + p, cw - p*2, ch - p*2, 3);
           ctx.fill();
         }
@@ -1668,10 +1851,15 @@
 
     function updateKawaiiColors(progress) {
       const hue = Math.round(progress * 300);
+      const gradient = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
       const bg  = document.getElementById('kawaiiBg');
-      if (bg) { bg.style.background = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`; bg.style.opacity = '0.55'; }
+      if (bg) { bg.style.background = gradient; bg.style.opacity = '0.55'; }
       const arc = document.getElementById('kawaiiArc');
       if (arc) arc.style.stroke = `hsl(${(hue + 180) % 360}, 90%, 65%)`;
+      if (timerStyle === 'kawaii') {
+        const pageBg = document.getElementById('pageBg');
+        if (pageBg && pageBg.style.display !== 'none') pageBg.style.background = gradient;
+      }
     }
 
     /* =====================================================
@@ -1696,7 +1884,23 @@
 
     function updateSpaceArc(progress) {
       const arc = document.getElementById('spaceArc');
-      if (arc) arc.style.stroke = `hsl(${220 + progress * 60}, 80%, 65%)`;
+      if (arc) arc.style.stroke = `hsl(${265 + progress * 20}, 85%, 72%)`;
+    }
+
+    function drawFullPageStars() {
+      const canvas = document.getElementById('pageBgCanvas');
+      if (!canvas) return;
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#060b1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 180; i++) {
+        const x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+        const r = Math.random() * 1.8, a = 0.3 + Math.random() * 0.7;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,220,255,${a})`; ctx.fill();
+      }
     }
   </script>
   <script src="nora-scroll.js"></script>
