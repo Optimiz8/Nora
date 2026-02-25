@@ -23,24 +23,23 @@
     .timer-main {
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 12px;
+      padding: 12px 12px 4px;
+      gap: 20px;
     }
 
-    /* ---------- CERCLE SVG ---------- */
+    /* ---------- CERCLE SVG (style 1) ---------- */
     .circle-wrap {
       position: relative;
-      width: min(310px, 80vw);
+      width: min(270px, 72vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .circle-wrap svg {
-      width: 100%;
-      height: 100%;
-    }
+    .circle-wrap svg { width: 100%; height: 100%; }
 
     .track {
       fill: none;
@@ -60,7 +59,6 @@
       stroke: rgba(247, 184, 156, 0.4);
     }
 
-    /* Contenu au centre du cercle — pointer-events off sauf time-display */
     .circle-center {
       position: absolute;
       inset: 0;
@@ -68,12 +66,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       pointer-events: none;
     }
 
     .time-display {
-      font-size: clamp(2.6rem, 13vw, 3.8rem);
+      font-size: clamp(2.4rem, 12vw, 3.4rem);
       font-weight: 300;
       color: var(--light);
       letter-spacing: 2px;
@@ -85,14 +83,62 @@
     }
 
     .time-hint {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: rgba(245, 228, 204, 0.4);
       text-transform: uppercase;
       letter-spacing: 1.5px;
       min-height: 1em;
+      pointer-events: none;
     }
 
-    /* ---------- FOOTER BUTTONS (style Pop-it) ---------- */
+    /* ---------- CONTRÔLES CENTRAUX ---------- */
+    .timer-controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .ctrl-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ctrl-btn.play-btn {
+      width: 76px;
+      height: 76px;
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .ctrl-btn.reset-btn {
+      background: rgba(245, 228, 204, 0.12);
+      color: var(--light);
+      border: 1px solid rgba(245, 228, 204, 0.15);
+    }
+
+    .ctrl-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+    .ctrl-icon { font-size: 24px; line-height: 1; }
+    .ctrl-btn.play-btn .ctrl-icon { font-size: 28px; }
+
+    .ctrl-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ---------- FOOTER 3 BOUTONS ---------- */
     .timer-footer {
       position: fixed;
       bottom: 0;
@@ -123,31 +169,24 @@
       line-height: 1.1;
       cursor: pointer;
       -webkit-appearance: none;
-      gap: 2px;
+      gap: 1px;
     }
 
     .t-btn.active {
-      background: var(--accent);
-      color: var(--dark);
-      border: none;
+      background: rgba(247, 184, 156, 0.22);
+      border-color: rgba(247, 184, 156, 0.3);
     }
 
-    .t-btn:disabled {
-      opacity: 0.3;
-      pointer-events: none;
-    }
-
-    .t-btn > span {
-      font-size: 18px;
-      display: block;
-      pointer-events: none;
-    }
-
-    .t-btn > small {
-      font-weight: 800;
+    .btn-cat {
+      font-size: 8px;
+      font-weight: 600;
       text-transform: uppercase;
-      pointer-events: none;
+      letter-spacing: 0.8px;
+      color: rgba(245, 228, 204, 0.45);
     }
+
+    .t-btn > .btn-icon { font-size: 17px; display: block; }
+    .t-btn > small { font-weight: 800; text-transform: uppercase; }
 
     /* ---------- TOAST ---------- */
     .timer-toast {
@@ -177,7 +216,7 @@
     .sheet-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0,0,0,0.55);
       display: none;
       align-items: flex-end;
       z-index: 500;
@@ -216,92 +255,117 @@
       font-size: 1rem;
       font-weight: 600;
       color: var(--light);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
-    /* Durée affichée — cliquable pour saisie manuelle */
-    .sheet-duration-val {
-      text-align: center;
-      font-size: 2.8rem;
-      font-weight: 300;
-      color: var(--light);
-      letter-spacing: 4px;
-      font-variant-numeric: tabular-nums;
-      cursor: pointer;
+    /* ---------- CAROUSEL hh:mm:ss ---------- */
+    .carousel-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 16px;
+      user-select: none;
+    }
+
+    .carousel-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .carousel-col label {
+      font-size: 0.62rem;
+      color: rgba(245, 228, 204, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .carousel-drum {
+      position: relative;
+      width: 72px;
+      height: 120px;
+      overflow: hidden;
+      cursor: ns-resize;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .sheet-duration-hint {
-      text-align: center;
-      font-size: 0.68rem;
-      color: rgba(245, 228, 204, 0.35);
-      letter-spacing: 0.5px;
-      margin-top: 2px;
-      margin-bottom: 14px;
+    .carousel-drum::before,
+    .carousel-drum::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 36px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .carousel-drum::before { top: 0; background: linear-gradient(to bottom, #020617 0%, transparent 100%); }
+    .carousel-drum::after  { bottom: 0; background: linear-gradient(to top, #020617 0%, transparent 100%); }
+
+    .carousel-track {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      transition: transform 0.15s ease;
     }
 
-    /* Input saisie manuelle */
-    .sheet-duration-input {
-      display: none;
-      width: 100%;
-      box-sizing: border-box;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(247,184,156,0.35);
-      border-radius: 12px;
-      padding: 12px;
-      color: var(--light);
-      font-size: 1.5rem;
-      font-family: inherit;
-      text-align: center;
-      margin-bottom: 14px;
-      outline: none;
-    }
-
-    .sheet-duration-input:focus { border-color: var(--accent); }
-
-    .sheet-presets {
+    .carousel-item {
+      height: 40px;
       display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      font-weight: 300;
+      color: rgba(245, 228, 204, 0.3);
+      font-variant-numeric: tabular-nums;
     }
 
-    .sheet-presets button {
-      flex: 1;
-      padding: 12px 6px;
-      background: rgba(245, 228, 204, 0.1);
+    .carousel-item.selected {
       color: var(--light);
-      border: none;
-      border-radius: 12px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
+      font-size: 2.2rem;
     }
 
-    .sheet-presets button:active { background: rgba(245, 228, 204, 0.2); }
+    .carousel-sep {
+      font-size: 2rem;
+      font-weight: 300;
+      color: rgba(245, 228, 204, 0.4);
+      padding-bottom: 4px;
+      align-self: center;
+    }
 
+    .carousel-highlight {
+      position: absolute;
+      top: 40px;
+      left: 6px; right: 6px;
+      height: 40px;
+      background: rgba(247, 184, 156, 0.1);
+      border-radius: 10px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ---------- AJUSTEURS ---------- */
     .sheet-adjusters {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 7px;
       margin-bottom: 20px;
     }
 
     .sheet-adjusters button {
-      flex: 1 1 calc(25% - 7px);
-      padding: 9px 4px;
+      padding: 10px 4px;
       background: rgba(245, 228, 204, 0.07);
       color: var(--light);
       border: none;
       border-radius: 10px;
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
       text-align: center;
     }
 
-    .sheet-adjusters button:active { background: rgba(245, 228, 204, 0.16); }
+    .sheet-adjusters button:active { background: rgba(245, 228, 204, 0.18); }
 
     .sheet-start {
       width: 100%;
@@ -318,7 +382,7 @@
 
     .sheet-start:active { opacity: 0.88; }
 
-    /* ---------- ALARME (z-index 900) ---------- */
+    /* ---------- ALARME ---------- */
     .alarm-overlay {
       position: fixed;
       inset: 0;
@@ -333,13 +397,11 @@
 
     .alarm-overlay.visible { display: flex; }
 
-    .alarm-overlay.flashing {
-      animation: alarmFlash 0.9s ease-in-out infinite;
-    }
+    .alarm-overlay.flashing { animation: alarmFlash 0.9s ease-in-out infinite; }
 
     @keyframes alarmFlash {
       0%, 100% { background: var(--dark); }
-      50% { background: var(--light); }
+      50%       { background: var(--light); }
     }
 
     .alarm-content {
@@ -354,29 +416,15 @@
       max-width: 320px;
     }
 
-    .alarm-icon {
-      font-size: 3.5rem;
-      animation: alarmPulse 0.9s ease-in-out infinite;
-    }
+    .alarm-icon { font-size: 3.5rem; animation: alarmPulse 0.9s ease-in-out infinite; }
 
     @keyframes alarmPulse {
       0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+      50%       { transform: scale(1.2); }
     }
 
-    .alarm-text {
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: var(--light);
-      text-align: center;
-    }
-
-    .alarm-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-    }
+    .alarm-text { font-size: 1.6rem; font-weight: 600; color: var(--light); text-align: center; }
+    .alarm-actions { display: flex; flex-direction: column; gap: 12px; width: 100%; }
 
     .alarm-btn {
       padding: 16px;
@@ -389,18 +437,236 @@
       text-align: center;
     }
 
-    .alarm-btn.primary {
-      background: var(--accent);
-      color: var(--dark);
-    }
+    .alarm-btn.primary   { background: var(--accent); color: var(--dark); }
+    .alarm-btn.secondary { background: rgba(245, 228, 204, 0.15); color: var(--light); }
 
-    .alarm-btn.secondary {
-      background: rgba(245, 228, 204, 0.15);
-      color: var(--light);
-    }
-
-    /* Snooze sheet : z-index 1000 > alarm-overlay 900 */
     #snoozeSheet { z-index: 1000; }
+
+    /* ---------- STYLE SHEET ---------- */
+    .style-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .style-btn {
+      aspect-ratio: 1;
+      border-radius: 16px;
+      border: 2px solid transparent;
+      background: rgba(245, 228, 204, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .style-btn.active {
+      border-color: var(--accent);
+      background: rgba(247, 184, 156, 0.1);
+    }
+
+    .style-btn > .style-preview { font-size: 28px; line-height: 1; }
+
+    .style-btn > .style-name {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--light);
+      text-align: center;
+    }
+
+    /* ---------- STYLE 2 — BARRE ---------- */
+    .bar-wrap {
+      display: none;
+      position: relative;
+      width: min(100px, 28vw);
+      height: min(270px, 60vh);
+      background: rgba(245, 228, 204, 0.08);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bar-fill {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: var(--accent);
+      border-radius: 0 0 20px 20px;
+      transition: height 0.9s linear;
+    }
+
+    .bar-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    /* ---------- STYLE 3 — SEGMENTS ---------- */
+    .segments-wrap {
+      display: none;
+      position: relative;
+      width: min(270px, 72vw);
+      aspect-ratio: 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .segments-wrap svg { width: 100%; height: 100%; }
+
+    .seg-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    /* ---------- STYLE 4 — PIXELS ---------- */
+    .pixels-wrap {
+      display: none;
+      position: relative;
+      width: min(270px, 72vw);
+      aspect-ratio: 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .pixels-canvas { width: 100%; height: 100%; border-radius: 20px; }
+
+    .pixels-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    /* ---------- STYLE 5 — KAWAII ---------- */
+    .kawaii-wrap {
+      display: none;
+      position: relative;
+      width: min(270px, 72vw);
+      aspect-ratio: 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .kawaii-bg { position: absolute; inset: 0; border-radius: 50%; }
+
+    .kawaii-stickers {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      border-radius: 50%;
+    }
+
+    .kawaii-sticker {
+      position: absolute;
+      font-size: 18px;
+      opacity: 0.55;
+      animation: kawaiiFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes kawaiiFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-6px) rotate(8deg); }
+    }
+
+    .kawaii-arc { position: absolute; inset: 4px; border-radius: 50%; }
+    .kawaii-arc svg { width: 100%; height: 100%; }
+
+    .kawaii-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    @keyframes kawaiiGlitch {
+      0%   { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
+      10%  { filter: hue-rotate(40deg) saturate(2); transform: translate(2px,-1px); }
+      20%  { filter: hue-rotate(80deg) saturate(1.8); transform: translate(-2px,1px); }
+      30%  { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
+      100% { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
+    }
+
+    .kawaii-wrap.running { animation: kawaiiGlitch 4s ease-in-out infinite; }
+
+    /* ---------- STYLE 6 — ESPACE ---------- */
+    .space-wrap {
+      display: none;
+      position: relative;
+      width: min(270px, 72vw);
+      aspect-ratio: 1;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #060b1a;
+    }
+
+    .space-stars {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .space-nebula {
+      position: absolute;
+      inset: -10%;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.35;
+      background: radial-gradient(circle at 30% 40%, #7c3aed 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, #0ea5e9 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, #6d28d9 0%, transparent 70%);
+      animation: nebulaRotate 20s linear infinite;
+    }
+
+    @keyframes nebulaRotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .space-arc { position: absolute; inset: 4px; border-radius: 50%; }
+    .space-arc svg { width: 100%; height: 100%; }
+
+    .space-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -411,9 +677,9 @@
   </header>
 
   <main class="timer-main">
-    <!-- Cercle : tap partout = play/pause — tap sur le temps = changer durée -->
-    <div class="circle-wrap" id="circleWrap" onclick="onCircleTap()" role="button" aria-label="Démarrer ou mettre en pause">
-      <!-- r=42 → circumference = 2π×42 ≈ 263.89 -->
+
+    <!-- Style 1 : Cercle -->
+    <div class="circle-wrap" id="circleWrap" onclick="onCircleTap()" role="button">
       <svg viewBox="0 0 100 100" aria-hidden="true">
         <circle class="track" cx="50" cy="50" r="42"/>
         <circle class="progress" id="progressArc" cx="50" cy="50" r="42"
@@ -421,29 +687,105 @@
           transform="rotate(-90 50 50)"/>
       </svg>
       <div class="circle-center">
-        <div class="time-display" id="timeDisplay" onclick="onTimeTap(event)" role="button" aria-label="Modifier la durée">30:00</div>
-        <div class="time-hint" id="timeHint">Appuie pour régler</div>
+        <div class="time-display" id="timeDisplay1" onclick="onTimeTap(event)">15:00</div>
+        <div class="time-hint" id="timeHint1">Appuie pour régler</div>
       </div>
     </div>
+
+    <!-- Style 2 : Barre -->
+    <div class="bar-wrap" id="barWrap" onclick="onCircleTap()">
+      <div class="bar-fill" id="barFill" style="height:0%"></div>
+      <div class="bar-center">
+        <div class="time-display" id="timeDisplay2" onclick="onTimeTap(event)" style="text-shadow:0 0 12px rgba(0,0,0,0.7)">15:00</div>
+        <div class="time-hint" id="timeHint2">Appuie pour régler</div>
+      </div>
+    </div>
+
+    <!-- Style 3 : Segments -->
+    <div class="segments-wrap" id="segmentsWrap" onclick="onCircleTap()">
+      <svg viewBox="0 0 100 100" id="segmentsSvg" aria-hidden="true"></svg>
+      <div class="seg-center">
+        <div class="time-display" id="timeDisplay3" onclick="onTimeTap(event)">15:00</div>
+        <div class="time-hint" id="timeHint3">Appuie pour régler</div>
+      </div>
+    </div>
+
+    <!-- Style 4 : Pixels -->
+    <div class="pixels-wrap" id="pixelsWrap" onclick="onCircleTap()">
+      <canvas class="pixels-canvas" id="pixelsCanvas"></canvas>
+      <div class="pixels-center">
+        <div class="time-display" id="timeDisplay4" onclick="onTimeTap(event)" style="text-shadow:0 0 16px rgba(0,0,0,0.8)">15:00</div>
+        <div class="time-hint" id="timeHint4">Appuie pour régler</div>
+      </div>
+    </div>
+
+    <!-- Style 5 : Kawaii -->
+    <div class="kawaii-wrap" id="kawaiiWrap" onclick="onCircleTap()">
+      <div class="kawaii-bg" id="kawaiiBg"></div>
+      <div class="kawaii-stickers" id="kawaiiStickers"></div>
+      <div class="kawaii-arc">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="7"/>
+          <circle id="kawaiiArc" cx="50" cy="50" r="42" fill="none"
+            stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="263.89" stroke-dashoffset="0"
+            transform="rotate(-90 50 50)"/>
+        </svg>
+      </div>
+      <div class="kawaii-center">
+        <div class="time-display" id="timeDisplay5" onclick="onTimeTap(event)" style="color:#fff;text-shadow:0 0 12px rgba(255,100,200,0.6)">15:00</div>
+        <div class="time-hint" id="timeHint5" style="color:rgba(255,255,255,0.5)">Appuie pour régler</div>
+      </div>
+    </div>
+
+    <!-- Style 6 : Espace -->
+    <div class="space-wrap" id="spaceWrap" onclick="onCircleTap()">
+      <div class="space-nebula"></div>
+      <canvas class="space-stars" id="spaceStarsCanvas" width="270" height="270"></canvas>
+      <div class="space-arc">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(100,150,255,0.15)" stroke-width="7"/>
+          <circle id="spaceArc" cx="50" cy="50" r="42" fill="none"
+            stroke-width="7" stroke-linecap="round"
+            stroke-dasharray="263.89" stroke-dashoffset="0"
+            transform="rotate(-90 50 50)"/>
+        </svg>
+      </div>
+      <div class="space-center">
+        <div class="time-display" id="timeDisplay6" onclick="onTimeTap(event)" style="color:#c4d8ff;text-shadow:0 0 16px rgba(100,150,255,0.7)">15:00</div>
+        <div class="time-hint" id="timeHint6" style="color:rgba(180,210,255,0.45)">Appuie pour régler</div>
+      </div>
+    </div>
+
+    <!-- Contrôles Play/Reset -->
+    <div class="timer-controls">
+      <button class="ctrl-btn reset-btn" id="btnReset" onclick="resetTimer()">
+        <span class="ctrl-icon">↺</span>
+        <span class="ctrl-label">Reset</span>
+      </button>
+      <button class="ctrl-btn play-btn" id="btnPlay" onclick="togglePause()">
+        <span class="ctrl-icon" id="playIcon">▶</span>
+      </button>
+    </div>
+
   </main>
 
-  <!-- Footer controls -->
+  <!-- Footer 3 boutons -->
   <footer class="timer-footer">
     <button class="t-btn active" id="btnSon" onclick="cycleSon()">
-      <span id="sonIcon">🔔</span>
+      <span class="btn-cat">Alertes</span>
+      <span class="btn-icon" id="sonIcon">🔔</span>
       <small id="sonLabel">BIP</small>
     </button>
     <button class="t-btn active" id="btnFin" onclick="cycleFin()">
-      <span id="finIcon">⚡</span>
+      <span class="btn-cat">Fin du timer</span>
+      <span class="btn-icon" id="finIcon">⚡</span>
       <small id="finLabel">FLASH</small>
     </button>
-    <button class="t-btn" id="btnPause" onclick="togglePause()">
-      <span id="pauseIcon">▶</span>
-      <small id="pauseLabel">START</small>
-    </button>
-    <button class="t-btn" id="btnReset" onclick="resetTimer()">
-      <span>↺</span>
-      <small>RESET</small>
+    <button class="t-btn" id="btnStyle" onclick="openStyleSheet()">
+      <span class="btn-cat">Visuel</span>
+      <span class="btn-icon" id="styleIcon">🔵</span>
+      <small id="styleLabel">CERCLE</small>
     </button>
   </footer>
 
@@ -457,33 +799,48 @@
       <div class="sheet-close" onclick="closeDurationSheet()">✕</div>
       <strong class="sheet-title">Durée du timer</strong>
 
-      <!-- Valeur affichée : tap → saisie manuelle -->
-      <div class="sheet-duration-val" id="sheetDurationVal" onclick="startManualInput()">30:00</div>
-      <div class="sheet-duration-hint" id="sheetDurationHint">Appuie sur le temps pour saisir manuellement</div>
-      <input class="sheet-duration-input" id="sheetDurationInput" type="number"
-        min="1" max="600" placeholder="Minutes"
-        onblur="confirmManualInput()"
-        onkeydown="if(event.key==='Enter')confirmManualInput();if(event.key==='Escape')cancelManualInput()">
-
-      <div class="sheet-presets">
-        <button onclick="setDuration(900)">15 min</button>
-        <button onclick="setDuration(1800)">30 min</button>
-        <button onclick="setDuration(3600)">1 h</button>
+      <div class="carousel-wrap">
+        <div class="carousel-col">
+          <label>heures</label>
+          <div class="carousel-drum" id="drumH">
+            <div class="carousel-highlight"></div>
+            <div class="carousel-track" id="trackH"></div>
+          </div>
+        </div>
+        <div class="carousel-sep">:</div>
+        <div class="carousel-col">
+          <label>minutes</label>
+          <div class="carousel-drum" id="drumM">
+            <div class="carousel-highlight"></div>
+            <div class="carousel-track" id="trackM"></div>
+          </div>
+        </div>
+        <div class="carousel-sep">:</div>
+        <div class="carousel-col">
+          <label>secondes</label>
+          <div class="carousel-drum" id="drumS">
+            <div class="carousel-highlight"></div>
+            <div class="carousel-track" id="trackS"></div>
+          </div>
+        </div>
       </div>
+
       <div class="sheet-adjusters">
         <button onclick="adjustDuration(-600)">−10 min</button>
-        <button onclick="adjustDuration(-300)">−5 min</button>
         <button onclick="adjustDuration(-60)">−1 min</button>
         <button onclick="adjustDuration(60)">+1 min</button>
+        <button onclick="adjustDuration(120)">+2 min</button>
         <button onclick="adjustDuration(300)">+5 min</button>
         <button onclick="adjustDuration(600)">+10 min</button>
         <button onclick="adjustDuration(1800)">+30 min</button>
+        <button onclick="adjustDuration(3600)">+1 h</button>
       </div>
-      <button class="sheet-start" onclick="startTimer()">▶ Commencer</button>
+
+      <button class="sheet-start" onclick="startFromSheet()">▶ Commencer</button>
     </div>
   </div>
 
-  <!-- Alarm overlay (z-index 900) -->
+  <!-- Alarm overlay -->
   <div class="alarm-overlay" id="alarmOverlay">
     <div class="alarm-content">
       <div class="alarm-icon">⏰</div>
@@ -495,25 +852,89 @@
     </div>
   </div>
 
-  <!-- Snooze sheet (z-index 1000 > alarm) -->
+  <!-- Snooze sheet -->
   <div class="sheet-backdrop" id="snoozeSheet" onclick="onBackdropClick(event,'snoozeSheet')">
     <div class="sheet-box">
       <div class="sheet-handle"></div>
       <div class="sheet-close" onclick="closeSnoozeSheet()">✕</div>
       <strong class="sheet-title">Prolonger de…</strong>
-      <div class="sheet-presets">
-        <button onclick="snooze(60)">+1 min</button>
-        <button onclick="snooze(300)">+5 min</button>
-        <button onclick="snooze(900)">+15 min</button>
-        <button onclick="snooze(1800)">+30 min</button>
+
+      <div class="carousel-wrap">
+        <div class="carousel-col">
+          <label>heures</label>
+          <div class="carousel-drum" id="snoozeDrumH">
+            <div class="carousel-highlight"></div>
+            <div class="carousel-track" id="snoozeTrackH"></div>
+          </div>
+        </div>
+        <div class="carousel-sep">:</div>
+        <div class="carousel-col">
+          <label>minutes</label>
+          <div class="carousel-drum" id="snoozeDrumM">
+            <div class="carousel-highlight"></div>
+            <div class="carousel-track" id="snoozeTrackM"></div>
+          </div>
+        </div>
+        <div class="carousel-sep">:</div>
+        <div class="carousel-col">
+          <label>secondes</label>
+          <div class="carousel-drum" id="snoozeDrumS">
+            <div class="carousel-highlight"></div>
+            <div class="carousel-track" id="snoozeTrackS"></div>
+          </div>
+        </div>
       </div>
-      <button class="alarm-btn secondary" style="width:100%;margin-top:14px;" onclick="stopAlarm()">Arrêter complètement</button>
+
+      <div class="sheet-adjusters" style="margin-bottom:14px">
+        <button onclick="snoozeQuick(60)">+1 min</button>
+        <button onclick="snoozeQuick(300)">+5 min</button>
+        <button onclick="snoozeQuick(900)">+15 min</button>
+        <button onclick="snoozeQuick(1800)">+30 min</button>
+      </div>
+
+      <button class="sheet-start" onclick="snoozeFromCarousel()">▶ Prolonger</button>
+      <button class="alarm-btn secondary" style="width:100%;margin-top:10px;" onclick="stopAlarm()">Arrêter complètement</button>
+    </div>
+  </div>
+
+  <!-- Style sheet -->
+  <div class="sheet-backdrop" id="styleSheet" onclick="onBackdropClick(event,'styleSheet')">
+    <div class="sheet-box">
+      <div class="sheet-handle"></div>
+      <div class="sheet-close" onclick="closeStyleSheet()">✕</div>
+      <strong class="sheet-title">Style visuel</strong>
+      <div class="style-grid">
+        <button class="style-btn" id="styleBtn-cercle" onclick="setStyle('cercle')">
+          <span class="style-preview">⭕</span>
+          <span class="style-name">Cercle</span>
+        </button>
+        <button class="style-btn" id="styleBtn-barre" onclick="setStyle('barre')">
+          <span class="style-preview">▮</span>
+          <span class="style-name">Barre</span>
+        </button>
+        <button class="style-btn" id="styleBtn-segments" onclick="setStyle('segments')">
+          <span class="style-preview">🔆</span>
+          <span class="style-name">Segments</span>
+        </button>
+        <button class="style-btn" id="styleBtn-pixels" onclick="setStyle('pixels')">
+          <span class="style-preview">⬛</span>
+          <span class="style-name">Pixels</span>
+        </button>
+        <button class="style-btn" id="styleBtn-kawaii" onclick="setStyle('kawaii')">
+          <span class="style-preview">🌈</span>
+          <span class="style-name">Kawaii</span>
+        </button>
+        <button class="style-btn" id="styleBtn-espace" onclick="setStyle('espace')">
+          <span class="style-preview">🌌</span>
+          <span class="style-name">Espace</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
     /* ---------- CONSTANTES ---------- */
-    const CIRCUMFERENCE = 2 * Math.PI * 42; // ≈ 263.89
+    const CIRCUMFERENCE = 2 * Math.PI * 42;
 
     const THRESHOLDS = [3600, 1800, 900, 120];
     const THRESHOLD_MSGS = {
@@ -523,13 +944,14 @@
       120:  'Il reste deux minutes'
     };
 
-    const SON_CYCLE  = ['bip', 'voix', 'mute'];
-    const SON_ICONS  = { bip: '🔔', voix: '🗣️', mute: '🔇' };
-    const SON_LABELS = { bip: 'BIP', voix: 'VOIX', mute: 'MUET' };
+    const SON_CYCLE  = ['bip', 'voix', 'vibration', 'mute'];
+    const SON_ICONS  = { bip: '🔔', voix: '🗣️', vibration: '📳', mute: '🔇' };
+    const SON_LABELS = { bip: 'BIP', voix: 'VOIX', vibration: 'VIB', mute: 'MUET' };
     const SON_TOASTS = {
-      bip:  'Bip sonore aux seuils : 1 h, 30 min, 15 min et 2 min',
-      voix: 'Annonces vocales aux seuils : 1 h, 30 min, 15 min et 2 min',
-      mute: 'Alertes sonores désactivées'
+      bip:       'Bip sonore aux seuils : 1 h, 30 min, 15 min et 2 min',
+      voix:      'Annonces vocales aux seuils : 1 h, 30 min, 15 min et 2 min',
+      vibration: 'Vibrations aux seuils : 1 h, 30 min, 15 min et 2 min',
+      mute:      'Alertes désactivées'
     };
 
     const FIN_CYCLE  = ['flash', 'voix', 'vibration', 'rien'];
@@ -542,23 +964,38 @@
       rien:      'Fin silencieuse — seul l\'écran s\'affiche'
     };
 
-    /* ---------- ÉTAT ---------- */
-    let totalDuration = parseInt(localStorage.getItem('timerLastDuration') || '1800');
-    let timeRemaining = totalDuration;
-    let state         = 'idle'; // idle | running | paused | alarm
-    let endTimestamp  = null;
-    let timerInterval = null;
-    let alarmInterval = null;
-    let announcedSet  = new Set();
-    let wakeLock      = null;
-    let audioCtx      = null;
-    let toastTimeout  = null;
+    const STYLE_LABELS = { cercle:'CERCLE', barre:'BARRE', segments:'SEGMENTS', pixels:'PIXELS', kawaii:'KAWAII', espace:'ESPACE' };
+    const STYLE_ICONS  = { cercle:'🔵', barre:'▮', segments:'🔆', pixels:'⬛', kawaii:'🌈', espace:'🌌' };
 
-    let sonMode = localStorage.getItem('timerSonMode') || 'bip';
-    let finMode = localStorage.getItem('timerFinMode') || 'flash';
+    /* ---------- ÉTAT ---------- */
+    let totalDuration  = parseInt(localStorage.getItem('timerLastDuration') || '900');
+    let timeRemaining  = totalDuration;
+    let state          = 'idle';
+    let endTimestamp   = null;
+    let timerInterval  = null;
+    let alarmInterval  = null;
+    let announcedSet   = new Set();
+    let wakeLock       = null;
+    let audioCtx       = null;
+    let toastTimeout   = null;
+
+    let sonMode    = localStorage.getItem('timerSonMode')  || 'bip';
+    let finMode    = localStorage.getItem('timerFinMode')  || 'flash';
+    let timerStyle = localStorage.getItem('timerStyle')    || 'cercle';
 
     /* ---------- INIT ---------- */
     document.addEventListener('DOMContentLoaded', () => {
+      buildCarousel('trackH',       'drumH',       0, 23);
+      buildCarousel('trackM',       'drumM',       0, 59);
+      buildCarousel('trackS',       'drumS',       0, 59);
+      buildCarousel('snoozeTrackH', 'snoozeDrumH', 0, 23);
+      buildCarousel('snoozeTrackM', 'snoozeDrumM', 0, 59);
+      buildCarousel('snoozeTrackS', 'snoozeDrumS', 0, 59);
+      buildSegmentsSvg();
+      initPixels();
+      initKawaii();
+      initSpace();
+      applyStyle(timerStyle);
       updateSonBtn();
       updateFinBtn();
       updateDisplay();
@@ -590,11 +1027,11 @@
           triggerAlarm();
           return;
         }
-        totalDuration  = s.totalDuration;
-        timeRemaining  = remaining;
-        endTimestamp   = s.endTimestamp;
-        announcedSet   = new Set(s.announcedSet || []);
-        state          = 'running';
+        totalDuration = s.totalDuration;
+        timeRemaining = remaining;
+        endTimestamp  = s.endTimestamp;
+        announcedSet  = new Set(s.announcedSet || []);
+        state         = 'running';
         startInterval();
         requestWakeLock();
         updateSonBtn();
@@ -627,15 +1064,27 @@
 
     /* ---------- LOGIQUE TIMER ---------- */
     function startTimer() {
-      closeDurationSheet();
-      announcedSet  = new Set();
-      endTimestamp  = Date.now() + timeRemaining * 1000;
-      state         = 'running';
+      announcedSet = new Set();
+      endTimestamp = Date.now() + timeRemaining * 1000;
+      state        = 'running';
       startInterval();
       saveRunningState();
       requestWakeLock();
       unlockAudio();
       updateUI();
+    }
+
+    function startFromSheet() {
+      const h = getCarouselVal('trackH');
+      const m = getCarouselVal('trackM');
+      const s = getCarouselVal('trackS');
+      const total = h * 3600 + m * 60 + s;
+      if (total < 1) return;
+      timeRemaining = total;
+      totalDuration = total;
+      localStorage.setItem('timerLastDuration', total);
+      closeDurationSheet();
+      startTimer();
     }
 
     function startInterval() {
@@ -653,25 +1102,27 @@
       }, 500);
     }
 
-    // Tap sur le cercle = play/pause
     function onCircleTap() {
       if (state === 'alarm') return;
       togglePause();
     }
 
-    // Tap sur les chiffres = modifier la durée (si pas en cours)
+    /* Tap sur le temps = auto-pause + ouverture sheet */
     function onTimeTap(e) {
       e.stopPropagation();
-      if (state === 'running' || state === 'alarm') return;
+      if (state === 'alarm') return;
+      if (state === 'running') {
+        clearInterval(timerInterval);
+        releaseWakeLock();
+        localStorage.removeItem('timerRunningState');
+        state = 'paused';
+        updateUI();
+      }
       openDurationSheet();
     }
 
     function togglePause() {
-      if (state === 'idle') {
-        // Démarre directement avec la durée actuelle
-        startTimer();
-        return;
-      }
+      if (state === 'idle') { startTimer(); return; }
       if (state === 'running') {
         clearInterval(timerInterval);
         releaseWakeLock();
@@ -744,10 +1195,22 @@
       updateUI();
     }
 
-    function snooze(seconds) {
+    function snoozeQuick(seconds) { doSnooze(seconds); }
+
+    function snoozeFromCarousel() {
+      const h = getCarouselVal('snoozeTrackH');
+      const m = getCarouselVal('snoozeTrackM');
+      const s = getCarouselVal('snoozeTrackS');
+      const total = h * 3600 + m * 60 + s;
+      if (total < 1) return;
+      doSnooze(total);
+    }
+
+    function doSnooze(seconds) {
       stopAlarmEffects();
       document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
       closeSnoozeSheet();
+      totalDuration = seconds;
       timeRemaining = seconds;
       announcedSet  = new Set();
       endTimestamp  = Date.now() + seconds * 1000;
@@ -769,6 +1232,8 @@
             const u = new SpeechSynthesisUtterance(THRESHOLD_MSGS[t]);
             u.lang = 'fr-FR';
             speechSynthesis.speak(u);
+          } else if (sonMode === 'vibration') {
+            navigator.vibrate && navigator.vibrate([200, 100, 200, 100, 200]);
           } else {
             playThresholdBip();
           }
@@ -783,8 +1248,7 @@
         try {
           [660, 880].forEach((freq, i) => {
             setTimeout(() => {
-              const o = ctx.createOscillator();
-              const g = ctx.createGain();
+              const o = ctx.createOscillator(), g = ctx.createGain();
               o.type = 'sine';
               o.frequency.value = freq;
               g.gain.setValueAtTime(0.35, ctx.currentTime);
@@ -795,12 +1259,8 @@
           });
         } catch(e) {}
       };
-      // Attendre que le contexte soit actif avant de jouer
-      if (ctx.state === 'running') {
-        play();
-      } else {
-        ctx.resume().then(play).catch(() => {});
-      }
+      if (ctx.state === 'running') play();
+      else ctx.resume().then(play).catch(() => {});
     }
 
     /* ---------- AUDIO ---------- */
@@ -812,13 +1272,10 @@
     function unlockAudio() {
       const ctx = getAudioCtx();
       if (!ctx) return;
-      // Jouer un son silencieux pour débloquer le contexte audio (pattern standard)
       ctx.resume().then(() => {
         const buf = ctx.createBuffer(1, 1, 22050);
         const src = ctx.createBufferSource();
-        src.buffer = buf;
-        src.connect(ctx.destination);
-        src.start(0);
+        src.buffer = buf; src.connect(ctx.destination); src.start(0);
       }).catch(() => {});
     }
 
@@ -834,32 +1291,43 @@
     /* ---------- MISE À JOUR UI ---------- */
     function updateUI() {
       updateDisplay();
-      updatePauseBtn();
+      updatePlayBtn();
       document.getElementById('circleWrap').classList.toggle('paused', state === 'paused');
+      document.getElementById('kawaiiWrap').classList.toggle('running', state === 'running');
     }
 
     function updateDisplay() {
-      document.getElementById('timeDisplay').textContent = formatTime(timeRemaining);
-      const hints = { idle: 'Appuie pour régler la durée', running: '', paused: 'En pause · appuie pour reprendre', alarm: '' };
-      document.getElementById('timeHint').textContent = hints[state] || '';
+      const t = formatTime(timeRemaining);
+      for (let i = 1; i <= 6; i++) {
+        const d = document.getElementById('timeDisplay' + i);
+        const h = document.getElementById('timeHint' + i);
+        if (d) d.textContent = t;
+        if (h) h.textContent = { idle: 'Appuie pour régler', running: '', paused: 'En pause · reprendre ?', alarm: '' }[state] || '';
+      }
       const progress = totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0;
       document.getElementById('progressArc').style.strokeDashoffset = CIRCUMFERENCE * progress;
+      document.getElementById('barFill').style.height = (progress * 100) + '%';
+      updateSegments(progress);
+      updatePixels(progress);
+      document.getElementById('kawaiiArc').style.strokeDashoffset = CIRCUMFERENCE * progress;
+      updateKawaiiColors(progress);
+      document.getElementById('spaceArc').style.strokeDashoffset = CIRCUMFERENCE * progress;
+      updateSpaceArc(progress);
     }
 
-    function updatePauseBtn() {
-      const btn   = document.getElementById('btnPause');
-      const icon  = document.getElementById('pauseIcon');
-      const label = document.getElementById('pauseLabel');
+    function updatePlayBtn() {
+      const btn  = document.getElementById('btnPlay');
+      const icon = document.getElementById('playIcon');
       const cfg = {
-        idle:    { i: '▶', l: 'START',    active: false, disabled: false },
-        running: { i: '⏸', l: 'PAUSE',    active: true,  disabled: false },
-        paused:  { i: '▶', l: 'REPRENDRE',active: false, disabled: false },
-        alarm:   { i: '⏸', l: 'PAUSE',    active: false, disabled: true  }
+        idle:    { i: '▶', bg: 'var(--accent)',          color: 'var(--dark)',  disabled: false },
+        running: { i: '⏸', bg: 'rgba(245,228,204,0.2)',  color: 'var(--light)', disabled: false },
+        paused:  { i: '▶', bg: 'var(--accent)',          color: 'var(--dark)',  disabled: false },
+        alarm:   { i: '⏸', bg: 'rgba(245,228,204,0.1)',  color: 'var(--light)', disabled: true  }
       }[state];
-      icon.textContent = cfg.i;
-      label.textContent = cfg.l;
-      btn.classList.toggle('active', cfg.active);
-      btn.disabled = cfg.disabled;
+      icon.textContent     = cfg.i;
+      btn.style.background = cfg.bg;
+      btn.style.color      = cfg.color;
+      btn.disabled         = cfg.disabled;
     }
 
     function updateSonBtn() {
@@ -876,16 +1344,14 @@
 
     /* ---------- CYCLE BOUTONS ---------- */
     function cycleSon() {
-      const i = SON_CYCLE.indexOf(sonMode);
-      sonMode = SON_CYCLE[(i + 1) % SON_CYCLE.length];
+      sonMode = SON_CYCLE[(SON_CYCLE.indexOf(sonMode) + 1) % SON_CYCLE.length];
       localStorage.setItem('timerSonMode', sonMode);
       updateSonBtn();
       showToast(SON_TOASTS[sonMode]);
     }
 
     function cycleFin() {
-      const i = FIN_CYCLE.indexOf(finMode);
-      finMode = FIN_CYCLE[(i + 1) % FIN_CYCLE.length];
+      finMode = FIN_CYCLE[(FIN_CYCLE.indexOf(finMode) + 1) % FIN_CYCLE.length];
       localStorage.setItem('timerFinMode', finMode);
       updateFinBtn();
       showToast(FIN_TOASTS[finMode]);
@@ -893,77 +1359,65 @@
 
     /* ---------- DURATION SHEET ---------- */
     function openDurationSheet() {
-      syncSheetDisplay();
+      syncCarouselToTime(timeRemaining, 'trackH', 'trackM', 'trackS');
       document.getElementById('durationSheet').classList.add('visible');
     }
 
     function closeDurationSheet() {
-      cancelManualInput();
       document.getElementById('durationSheet').classList.remove('visible');
     }
 
-    function syncSheetDisplay() {
-      document.getElementById('sheetDurationVal').textContent = formatTime(timeRemaining);
-      document.getElementById('sheetDurationVal').style.display = '';
-      document.getElementById('sheetDurationHint').style.display = '';
-      document.getElementById('sheetDurationInput').style.display = 'none';
-    }
-
-    function setDuration(sec) {
-      timeRemaining = sec;
-      totalDuration = sec;
-      localStorage.setItem('timerLastDuration', sec);
-      syncSheetDisplay();
-      updateDisplay();
-    }
-
     function adjustDuration(delta) {
-      const v = Math.max(60, timeRemaining + delta);
-      timeRemaining = v;
-      totalDuration = v;
-      localStorage.setItem('timerLastDuration', v);
-      syncSheetDisplay();
-      updateDisplay();
-    }
-
-    /* Saisie manuelle — tap sur le temps affiché */
-    function startManualInput() {
-      const input = document.getElementById('sheetDurationInput');
-      document.getElementById('sheetDurationVal').style.display = 'none';
-      document.getElementById('sheetDurationHint').style.display = 'none';
-      input.value = Math.max(1, Math.round(timeRemaining / 60));
-      input.style.display = 'block';
-      setTimeout(() => input.focus(), 50);
-    }
-
-    function confirmManualInput() {
-      const input = document.getElementById('sheetDurationInput');
-      const minutes = parseInt(input.value);
-      if (minutes >= 1 && minutes <= 600) {
-        setDuration(minutes * 60);
-      } else {
-        syncSheetDisplay();
-      }
-    }
-
-    function cancelManualInput() {
-      syncSheetDisplay();
-    }
-
-    function onBackdropClick(e, sheetId) {
-      if (e.target === document.getElementById(sheetId)) {
-        document.getElementById(sheetId).classList.remove('visible');
-        if (sheetId === 'durationSheet') cancelManualInput();
-      }
+      const h = getCarouselVal('trackH');
+      const m = getCarouselVal('trackM');
+      const s = getCarouselVal('trackS');
+      const next = Math.max(10, h * 3600 + m * 60 + s + delta);
+      syncCarouselToTime(next, 'trackH', 'trackM', 'trackS');
     }
 
     /* ---------- SNOOZE SHEET ---------- */
     function openSnoozeSheet() {
+      syncCarouselToTime(300, 'snoozeTrackH', 'snoozeTrackM', 'snoozeTrackS');
       document.getElementById('snoozeSheet').classList.add('visible');
     }
 
     function closeSnoozeSheet() {
       document.getElementById('snoozeSheet').classList.remove('visible');
+    }
+
+    function onBackdropClick(e, sheetId) {
+      if (e.target === document.getElementById(sheetId))
+        document.getElementById(sheetId).classList.remove('visible');
+    }
+
+    /* ---------- STYLE SHEET ---------- */
+    function openStyleSheet() {
+      document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+      const active = document.getElementById('styleBtn-' + timerStyle);
+      if (active) active.classList.add('active');
+      document.getElementById('styleSheet').classList.add('visible');
+    }
+
+    function closeStyleSheet() {
+      document.getElementById('styleSheet').classList.remove('visible');
+    }
+
+    function setStyle(s) {
+      timerStyle = s;
+      localStorage.setItem('timerStyle', s);
+      applyStyle(s);
+      closeStyleSheet();
+    }
+
+    function applyStyle(s) {
+      const map = { cercle:'circleWrap', barre:'barWrap', segments:'segmentsWrap', pixels:'pixelsWrap', kawaii:'kawaiiWrap', espace:'spaceWrap' };
+      Object.values(map).forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+      const el = document.getElementById(map[s]);
+      if (el) el.style.display = '';
+      document.getElementById('styleIcon').textContent  = STYLE_ICONS[s];
+      document.getElementById('styleLabel').textContent = STYLE_LABELS[s];
+      if (s === 'pixels') { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
+      if (s === 'espace') drawSpaceStars();
     }
 
     /* ---------- RETOUR ---------- */
@@ -982,6 +1436,268 @@
     }
 
     function pad(n) { return String(n).padStart(2, '0'); }
+
+    /* =====================================================
+       CAROUSEL hh:mm:ss
+    ===================================================== */
+    const ITEM_H = 40;
+
+    function buildCarousel(trackId, drumId, min, max) {
+      const track = document.getElementById(trackId);
+      track.innerHTML = '';
+      const ghost = document.createElement('div');
+      ghost.className = 'carousel-item';
+      track.appendChild(ghost.cloneNode());
+      for (let v = min; v <= max; v++) {
+        const item = document.createElement('div');
+        item.className = 'carousel-item';
+        item.textContent = pad(v);
+        item.dataset.value = v;
+        track.appendChild(item);
+      }
+      track.appendChild(ghost.cloneNode());
+      setCarouselByIdx(trackId, 0);
+      addDrumListeners(trackId, drumId, min, max);
+    }
+
+    function addDrumListeners(trackId, drumId, min, max) {
+      const drum  = document.getElementById(drumId);
+      const track = document.getElementById(trackId);
+      let startY = 0, startOffset = 0, isDragging = false;
+
+      function getOffset() {
+        const match = track.style.transform && track.style.transform.match(/translateY\((.+)px\)/);
+        return match ? parseFloat(match[1]) : 0;
+      }
+
+      function onStart(y) {
+        isDragging = true;
+        startY = y;
+        startOffset = getOffset();
+        track.style.transition = 'none';
+      }
+
+      function onMove(y) {
+        if (!isDragging) return;
+        const minOff = -(max - min) * ITEM_H;
+        const next = Math.max(minOff, Math.min(0, startOffset + (y - startY)));
+        track.style.transform = `translateY(${next}px)`;
+      }
+
+      function onEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        snapTo(trackId, drumId, Math.round(-getOffset() / ITEM_H), min, max);
+      }
+
+      drum.addEventListener('touchstart', e => { e.preventDefault(); onStart(e.touches[0].clientY); }, { passive: false });
+      drum.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e.touches[0].clientY); }, { passive: false });
+      drum.addEventListener('touchend',   () => onEnd());
+      drum.addEventListener('mousedown',  e => onStart(e.clientY));
+      // Listeners globaux stockés pour éviter les doublons sur document
+      drum._onMouseMove = e => { if(isDragging) onMove(e.clientY); };
+      drum._onMouseUp   = () => { if(isDragging) onEnd(); };
+      document.addEventListener('mousemove', drum._onMouseMove);
+      document.addEventListener('mouseup',   drum._onMouseUp);
+    }
+
+    function snapTo(trackId, drumId, idx, min, max) {
+      idx = Math.max(0, Math.min(max - min, idx));
+      const track = document.getElementById(trackId);
+      track.style.transition = 'transform 0.18s ease';
+      track.style.transform  = `translateY(${-idx * ITEM_H}px)`;
+      updateCarouselSelection(trackId, idx);
+    }
+
+    function setCarouselByIdx(trackId, idx) {
+      const track = document.getElementById(trackId);
+      track.style.transition = 'none';
+      track.style.transform  = `translateY(${-idx * ITEM_H}px)`;
+      updateCarouselSelection(trackId, idx);
+    }
+
+    function updateCarouselSelection(trackId, idx) {
+      const items = document.getElementById(trackId).querySelectorAll('.carousel-item[data-value]');
+      items.forEach((item, i) => item.classList.toggle('selected', i === idx));
+    }
+
+    function getCarouselVal(trackId) {
+      const selected = document.getElementById(trackId).querySelector('.carousel-item.selected');
+      return selected ? parseInt(selected.dataset.value) : 0;
+    }
+
+    function setCarouselValue(trackId, value) {
+      const items = document.getElementById(trackId).querySelectorAll('.carousel-item[data-value]');
+      let idx = 0;
+      items.forEach((item, i) => { if (parseInt(item.dataset.value) === value) idx = i; });
+      setCarouselByIdx(trackId, idx);
+    }
+
+    function syncCarouselToTime(seconds, tH, tM, tS) {
+      setCarouselValue(tH, Math.floor(seconds / 3600));
+      setCarouselValue(tM, Math.floor((seconds % 3600) / 60));
+      setCarouselValue(tS, seconds % 60);
+    }
+
+    /* =====================================================
+       STYLE 3 — SEGMENTS
+    ===================================================== */
+    const N_SEGMENTS = 60;
+
+    function buildSegmentsSvg() {
+      const svg = document.getElementById('segmentsSvg');
+      svg.innerHTML = '';
+      const cx = 50, cy = 50, r = 42;
+      for (let i = 0; i < N_SEGMENTS; i++) {
+        const startDeg = -90 + i * (360 / N_SEGMENTS);
+        const endDeg   = startDeg + (360 / N_SEGMENTS) - 3;
+        const toRad = d => d * Math.PI / 180;
+        const x1 = cx + r * Math.cos(toRad(startDeg)), y1 = cy + r * Math.sin(toRad(startDeg));
+        const x2 = cx + r * Math.cos(toRad(endDeg)),   y2 = cy + r * Math.sin(toRad(endDeg));
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke-width', '7');
+        path.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(path);
+      }
+      updateSegments(0);
+    }
+
+    function updateSegments(progress) {
+      const segs = document.getElementById('segmentsSvg').querySelectorAll('path');
+      const active = Math.round((1 - progress) * N_SEGMENTS);
+      segs.forEach((seg, i) => seg.setAttribute('stroke', i < active ? 'var(--accent)' : 'rgba(245,228,204,0.1)'));
+    }
+
+    /* =====================================================
+       STYLE 4 — PIXELS
+    ===================================================== */
+    const COLS = 10, ROWS = 20;
+    let pixelGrid = [];
+
+    function initPixels() {
+      pixelGrid = Array.from({ length: ROWS }, () => Array(COLS).fill(false));
+      const canvas = document.getElementById('pixelsCanvas');
+      const size   = document.getElementById('pixelsWrap').offsetWidth || 270;
+      canvas.width = canvas.height = size;
+      drawPixels();
+    }
+
+    function updatePixels(progress) {
+      const target  = Math.round(progress * COLS * ROWS);
+      const current = pixelGrid.flat().filter(Boolean).length;
+      const diff    = target - current;
+      if (diff > 0)  for (let k = 0; k < diff;  k++) addPixel();
+      if (diff < 0)  for (let k = 0; k < -diff; k++) removeTopPixel();
+      drawPixels();
+    }
+
+    function addPixel() {
+      const free = [];
+      for (let c = 0; c < COLS; c++) { if (!pixelGrid[0][c]) free.push(c); }
+      if (!free.length) return;
+      const col = free[Math.floor(Math.random() * free.length)];
+      for (let r = ROWS - 1; r >= 0; r--) {
+        if (!pixelGrid[r][col]) { pixelGrid[r][col] = true; return; }
+      }
+    }
+
+    function removeTopPixel() {
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (pixelGrid[r][c]) { pixelGrid[r][c] = false; return; }
+        }
+      }
+    }
+
+    function rrect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.arcTo(x + w, y,     x + w, y + r,     r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+      ctx.lineTo(x + r, y + h);
+      ctx.arcTo(x,     y + h, x,     y + h - r, r);
+      ctx.lineTo(x,     y + r);
+      ctx.arcTo(x,     y,     x + r, y,         r);
+      ctx.closePath();
+    }
+
+    function drawPixels() {
+      const canvas = document.getElementById('pixelsCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const cw = W / COLS, ch = H / ROWS;
+      const p = 2;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(245,228,204,0.04)';
+      rrect(ctx, 0, 0, W, H, 20); ctx.fill();
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          ctx.fillStyle = pixelGrid[r][c] ? `hsl(${20 + r * 3}, 85%, 68%)` : 'rgba(245,228,204,0.06)';
+          rrect(ctx, c * cw + p, r * ch + p, cw - p*2, ch - p*2, 3);
+          ctx.fill();
+        }
+      }
+    }
+
+    /* =====================================================
+       STYLE 5 — KAWAII
+    ===================================================== */
+    const KAWAII_STICKERS = ['🌸','✨','💖','🎀','🍭','🌙','⭐','🦄','🍬','💫','🌈','🎵'];
+    const RAINBOW = ['#ff6b9d','#ff9a6c','#ffd93d','#6bceff','#a29bfe','#fd79a8'];
+
+    function initKawaii() {
+      const container = document.getElementById('kawaiiStickers');
+      container.innerHTML = '';
+      KAWAII_STICKERS.forEach((s, i) => {
+        const el = document.createElement('span');
+        el.className = 'kawaii-sticker';
+        el.textContent = s;
+        el.style.left = (8 + Math.random() * 72) + '%';
+        el.style.top  = (8 + Math.random() * 72) + '%';
+        el.style.animationDelay    = (i * 0.3) + 's';
+        el.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+        container.appendChild(el);
+      });
+      updateKawaiiColors(0);
+    }
+
+    function updateKawaiiColors(progress) {
+      const hue = Math.round(progress * 300);
+      const bg  = document.getElementById('kawaiiBg');
+      if (bg) { bg.style.background = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`; bg.style.opacity = '0.55'; }
+      const arc = document.getElementById('kawaiiArc');
+      if (arc) arc.style.stroke = `hsl(${(hue + 180) % 360}, 90%, 65%)`;
+    }
+
+    /* =====================================================
+       STYLE 6 — ESPACE
+    ===================================================== */
+    function initSpace() { drawSpaceStars(); }
+
+    function drawSpaceStars() {
+      const canvas = document.getElementById('spaceStarsCanvas');
+      if (!canvas) return;
+      const size = document.getElementById('spaceWrap').offsetWidth || 270;
+      canvas.width = canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, size, size);
+      for (let i = 0; i < 80; i++) {
+        const x = Math.random() * size, y = Math.random() * size;
+        const r = Math.random() * 1.5, a = 0.3 + Math.random() * 0.7;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,220,255,${a})`; ctx.fill();
+      }
+    }
+
+    function updateSpaceArc(progress) {
+      const arc = document.getElementById('spaceArc');
+      if (arc) arc.style.stroke = `hsl(${220 + progress * 60}, 80%, 65%)`;
+    }
   </script>
   <script src="nora-scroll.js"></script>
 </body>

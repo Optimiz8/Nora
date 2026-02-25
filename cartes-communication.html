@@ -12,14 +12,62 @@
     <title>Cartes de communication</title>
     <style>
         .main-content {
-            padding: 20px 16px;
+            padding: 20px 16px calc(var(--footer-height) + 20px);
         }
 
         .intro-text {
-            font-size: 15px;
+            font-size: 17px;
             color: rgba(245, 228, 204, 0.75);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             line-height: 1.5;
+        }
+
+        /* ---------- TOGGLE ICONS ---------- */
+        .icons-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(245, 228, 204, 0.07);
+            border: 1.5px solid rgba(245, 228, 204, 0.12);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .icons-toggle-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .toggle-switch {
+            width: 48px;
+            height: 28px;
+            background: rgba(46, 58, 89, 0.4);
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent);
+        }
+
+        .toggle-knob {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(20px);
         }
 
         /* ---------- CARD GRID ---------- */
@@ -64,9 +112,11 @@
             text-align: center;
             line-height: 1.3;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            word-break: break-word;
         }
 
         /* ---------- EMPTY STATE ---------- */
@@ -84,7 +134,7 @@
         .fullscreen-overlay {
             position: fixed;
             inset: 0;
-            background-color: var(--dark);
+            background-color: var(--bg);
             z-index: 9999;
             display: none;
             flex-direction: column;
@@ -96,12 +146,12 @@
 
         .fullscreen-overlay.visible {
             display: flex;
-            animation: overlayIn 0.25s ease;
+            animation: overlayIn 0.2s ease;
         }
 
         @keyframes overlayIn {
-            from { opacity: 0; transform: scale(0.97); }
-            to   { opacity: 1; transform: scale(1); }
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
         .overlay-close {
@@ -150,6 +200,165 @@
             text-align: center;
             line-height: 1.6;
         }
+
+        /* ---------- MODAL ---------- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .modal-backdrop.visible { display: flex; }
+
+        .modal-sheet {
+            width: 100%;
+            background-color: var(--light);
+            border-radius: 20px 20px 0 0;
+            padding: 24px 20px 32px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .modal-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .modal-label-sub {
+            font-size: 13px;
+            color: rgba(46, 58, 89, 0.6);
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+
+        .modal-input {
+            width: 100%;
+            background-color: rgba(46, 58, 89, 0.06);
+            border: 2px solid rgba(46, 58, 89, 0.15);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .modal-textarea {
+            min-height: 90px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            border: 2px solid rgba(46, 58, 89, 0.2);
+            background: transparent;
+            color: var(--dark);
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            flex: 2;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background-color: var(--accent);
+            color: var(--dark);
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .btn-save:active { opacity: 0.85; }
+
+        /* ---------- EMOJI PICKER ---------- */
+        .emoji-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .emoji-preview {
+            font-size: 40px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(46, 58, 89, 0.06);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        .emoji-input-wrap { flex: 1; }
+
+        .emoji-input {
+            width: 100%;
+            background-color: rgba(46, 58, 89, 0.06);
+            border: 2px solid rgba(46, 58, 89, 0.15);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 24px;
+            color: var(--dark);
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .emoji-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* ---------- TOAST ---------- */
+        .toast {
+            position: fixed;
+            bottom: calc(var(--footer-height) + 12px);
+            left: 20px;
+            right: 20px;
+            background-color: var(--accent);
+            color: var(--dark);
+            padding: 14px 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 15px;
+            z-index: 300;
+            display: none;
+        }
+
+        .toast.visible { display: block; }
     </style>
 </head>
 <body>
@@ -161,8 +370,49 @@
 
     <main class="main-content">
         <p class="intro-text">Appuie sur une carte pour l'afficher en grand. Tu pourras la montrer à ton interlocuteur.</p>
+
+        <!-- Toggle icônes -->
+        <div class="icons-toggle-row">
+            <div class="icons-toggle-label">Afficher les icônes</div>
+            <div class="toggle-switch" id="iconsToggle" onclick="toggleIcons()">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+
         <div class="cards-grid" id="cardsGrid"></div>
     </main>
+
+    <footer class="footer">
+        <button class="footer-button center" onclick="openModal()">+ Ajouter une carte</button>
+    </footer>
+
+    <!-- Modal ajout carte -->
+    <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <div class="modal-title">Nouvelle carte</div>
+
+            <label class="modal-label">Emoji
+                <span class="modal-label-sub">Un seul emoji pour représenter la carte</span>
+            </label>
+            <div class="emoji-picker-row">
+                <div class="emoji-preview" id="emojiPreview">💬</div>
+                <div class="emoji-input-wrap">
+                    <input type="text" class="emoji-input" id="emojiInput" maxlength="4" placeholder="💬" oninput="updateEmojiPreview()">
+                </div>
+            </div>
+
+            <label class="modal-label" for="textInput">Texte principal</label>
+            <input type="text" class="modal-input" id="textInput" placeholder="Ex : Ne me touchez pas" maxlength="60">
+
+            <label class="modal-label" for="sousTexteInput">Sous-texte <span style="font-weight:400; opacity:0.7">(optionnel)</span></label>
+            <textarea class="modal-input modal-textarea" id="sousTexteInput" placeholder="Ex : Ne me touchez pas, même pour aider. Merci." maxlength="200"></textarea>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+                <button class="btn-save" onclick="saveCard()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Fullscreen overlay -->
     <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeOverlay()">
@@ -172,19 +422,22 @@
         <div class="overlay-subtext" id="overlaySubtext"></div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
         const DEFAULT_CARDS = [
-            { id: '1', emoji: '🚫', text: 'Ne me touchez pas svp', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
-            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis temporairement mutique. Je vous entends mais je ne peux pas répondre verbalement. C\'est involontaire et ça peut être transitoire.' },
+            { id: '1', emoji: '🚫', text: 'Ne me touchez pas', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
+            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis temporairement mutique. Je vous entends mais je ne peux pas répondre verbalement. C\'est involontaire' },
             { id: '3', emoji: '🔕', text: 'Besoin de silence', sousTexte: "J'ai besoin de calme et de silence complet. Merci de ne pas me parler svp." },
-            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme svp." },
+            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme." },
             { id: '5', emoji: '🆘', text: "J'ai besoin d'aide", sousTexte: "Je fais une crise autistique. Aidez-moi svp à trouver un endroit calme et sombre." },
             { id: '6', emoji: '🪪', text: 'Passage prioritaire CMI', sousTexte: "Je bénéficie d'une CMI mention priorité. Pourriez-vous me laisser passer en priorité svp ?" },
             { id: '7', emoji: '🙏', text: 'Ouvrir une caisse', sousTexte: "Pourriez-vous ouvrir une caisse prioritaire svp ? Je suis en situation de handicap." },
-            { id: '8', emoji: '✋', text: 'Laissez-moi svp', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." },
+            { id: '8', emoji: '✋', text: 'Laissez-moi', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." },
             { id: '9', emoji: '🧠', text: 'Je suis en surcharge', sousTexte: "Merci de me laisser tranquille et de m'aider à réduire au maximum les stimulations sensorielles." }
         ];
 
+        /* ---------- STORAGE ---------- */
         function getCards() {
             const stored = localStorage.getItem('cartesCommunication');
             if (!stored) {
@@ -194,15 +447,59 @@
             return JSON.parse(stored);
         }
 
+        function saveCards(cards) {
+            localStorage.setItem('cartesCommunication', JSON.stringify(cards));
+        }
+
+        /* ---------- ICONS TOGGLE ---------- */
         function showIcons() {
             return localStorage.getItem('cartesShowIcons') !== 'false';
         }
 
+        function toggleIcons() {
+            const isActive = !showIcons();
+            localStorage.setItem('cartesShowIcons', isActive ? 'true' : 'false');
+            document.getElementById('iconsToggle').classList.toggle('active', isActive);
+            renderCards();
+            showToast(isActive ? 'Icônes affichées sur les cartes' : 'Icônes masquées sur les cartes');
+        }
+
+        function initToggle() {
+            document.getElementById('iconsToggle').classList.toggle('active', showIcons());
+        }
+
+        /* ---------- DYNAMIC FONT SIZE ---------- */
+        function getCardFontSize(len) {
+            if (len <= 15) return 15;
+            if (len <= 22) return 14;
+            if (len <= 30) return 13;
+            if (len <= 40) return 12;
+            return 11;
+        }
+
+        function adjustCardFonts() {
+            document.querySelectorAll('.card-text').forEach(el => {
+                el.style.fontSize = getCardFontSize(el.textContent.trim().length) + 'px';
+            });
+        }
+
+        function getOverlayFontSize(text) {
+            const len = text.length;
+            if (len <= 10) return 64;
+            if (len <= 16) return 52;
+            if (len <= 22) return 44;
+            if (len <= 30) return 36;
+            if (len <= 42) return 28;
+            return 22;
+        }
+
+        /* ---------- FORMAT ---------- */
         function formatSubtext(text) {
             if (!text) return '';
             return text.replace(/\. /g, '.<br>').replace(/\? /g, '?<br>');
         }
 
+        /* ---------- RENDER ---------- */
         function renderCards() {
             const grid = document.getElementById('cardsGrid');
             const cards = getCards();
@@ -213,7 +510,7 @@
                     <div class="empty-state" style="grid-column:1/-1">
                         <div class="empty-icon">💬</div>
                         <div class="empty-title">Aucune carte</div>
-                        <div class="empty-sub">Ajoute des cartes depuis les Paramètres.</div>
+                        <div class="empty-sub">Ajoute une carte avec le bouton ci-dessous.</div>
                     </div>`;
                 return;
             }
@@ -224,8 +521,11 @@
                     <div class="card-text">${card.text}</div>
                 </div>
             `).join('');
+
+            adjustCardFonts();
         }
 
+        /* ---------- OPEN CARD ---------- */
         function openCard(id) {
             const cards = getCards();
             const card = cards.find(c => c.id === id);
@@ -236,7 +536,9 @@
             iconEl.textContent = iconsOn ? card.emoji : '';
             iconEl.style.display = iconsOn ? 'block' : 'none';
 
-            document.getElementById('overlayText').textContent = card.text;
+            const overlayTextEl = document.getElementById('overlayText');
+            overlayTextEl.textContent = card.text;
+            overlayTextEl.style.fontSize = getOverlayFontSize(card.text) + 'px';
 
             const subEl = document.getElementById('overlaySubtext');
             if (card.sousTexte) {
@@ -247,41 +549,71 @@
             }
 
             document.getElementById('fullscreenOverlay').classList.add('visible');
-
-            const el = document.documentElement;
-            if (el.requestFullscreen) {
-                el.requestFullscreen().then(() => {
-                    if (screen.orientation && screen.orientation.lock) {
-                        screen.orientation.lock('landscape-primary').catch(() => {});
-                    }
-                }).catch(() => {});
-            } else if (el.webkitRequestFullscreen) {
-                el.webkitRequestFullscreen();
-            }
         }
 
         function closeOverlay() {
             document.getElementById('fullscreenOverlay').classList.remove('visible');
-            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-            if (screen.orientation && screen.orientation.unlock) {
-                try { screen.orientation.unlock(); } catch (e) {}
-            }
         }
 
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOverlay(); });
+        /* ---------- MODAL ---------- */
+        function openModal() {
+            document.getElementById('emojiInput').value = '';
+            document.getElementById('emojiPreview').textContent = '💬';
+            document.getElementById('textInput').value = '';
+            document.getElementById('sousTexteInput').value = '';
+            document.getElementById('modalBackdrop').classList.add('visible');
+            setTimeout(() => document.getElementById('textInput').focus(), 100);
+        }
 
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement) {
-                document.getElementById('fullscreenOverlay').classList.remove('visible');
-                if (screen.orientation && screen.orientation.unlock) {
-                    try { screen.orientation.unlock(); } catch (e) {}
-                }
+        function closeModal() {
+            document.getElementById('modalBackdrop').classList.remove('visible');
+        }
+
+        function handleBackdropClick(e) {
+            if (e.target === document.getElementById('modalBackdrop')) closeModal();
+        }
+
+        function updateEmojiPreview() {
+            const val = document.getElementById('emojiInput').value.trim();
+            document.getElementById('emojiPreview').textContent = val || '💬';
+        }
+
+        function saveCard() {
+            const emoji = document.getElementById('emojiInput').value.trim() || '💬';
+            const text = document.getElementById('textInput').value.trim();
+            const sousTexte = document.getElementById('sousTexteInput').value.trim();
+
+            if (!text) { document.getElementById('textInput').focus(); return; }
+
+            const cards = getCards();
+            cards.push({ id: Date.now().toString(), emoji, text, sousTexte });
+            saveCards(cards);
+            closeModal();
+            renderCards();
+            showToast('Carte ajoutée');
+        }
+
+        /* ---------- TOAST ---------- */
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 2500);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closeOverlay();
+                closeModal();
             }
         });
 
-        function goBack() { window.location.href = 'index.html'; }
+        function goBack() { history.back(); }
 
-        window.addEventListener('DOMContentLoaded', renderCards);
+        window.addEventListener('DOMContentLoaded', () => {
+            initToggle();
+            renderCards();
+        });
     </script>
     <script src="nora-scroll.js"></script>
 </body>
