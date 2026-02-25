@@ -16,7 +16,7 @@
         }
 
         .intro-text {
-            font-size: 15px;
+            font-size: 17px;
             color: rgba(245, 228, 204, 0.75);
             margin-bottom: 16px;
             line-height: 1.5;
@@ -113,6 +113,7 @@
             line-height: 1.3;
             display: -webkit-box;
             -webkit-line-clamp: 4;
+            line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
             word-break: break-word;
@@ -145,12 +146,12 @@
 
         .fullscreen-overlay.visible {
             display: flex;
-            animation: overlayIn 0.25s ease;
+            animation: overlayIn 0.2s ease;
         }
 
         @keyframes overlayIn {
-            from { opacity: 0; transform: scale(0.97); }
-            to   { opacity: 1; transform: scale(1); }
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
         .overlay-close {
@@ -425,14 +426,14 @@
 
     <script>
         const DEFAULT_CARDS = [
-            { id: '1', emoji: '🚫', text: 'Ne me touchez pas svp', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
-            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis temporairement mutique. Je vous entends mais je ne peux pas répondre verbalement. C\'est involontaire et ça peut être transitoire.' },
+            { id: '1', emoji: '🚫', text: 'Ne me touchez pas', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
+            { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis temporairement mutique. Je vous entends mais je ne peux pas répondre verbalement. C\'est involontaire' },
             { id: '3', emoji: '🔕', text: 'Besoin de silence', sousTexte: "J'ai besoin de calme et de silence complet. Merci de ne pas me parler svp." },
-            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme svp." },
+            { id: '4', emoji: '🚪', text: "Besoin de m'isoler", sousTexte: "Je suis en surcharge sensorielle. J'ai besoin de m'isoler dans un endroit calme." },
             { id: '5', emoji: '🆘', text: "J'ai besoin d'aide", sousTexte: "Je fais une crise autistique. Aidez-moi svp à trouver un endroit calme et sombre." },
             { id: '6', emoji: '🪪', text: 'Passage prioritaire CMI', sousTexte: "Je bénéficie d'une CMI mention priorité. Pourriez-vous me laisser passer en priorité svp ?" },
             { id: '7', emoji: '🙏', text: 'Ouvrir une caisse', sousTexte: "Pourriez-vous ouvrir une caisse prioritaire svp ? Je suis en situation de handicap." },
-            { id: '8', emoji: '✋', text: 'Laissez-moi svp', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." },
+            { id: '8', emoji: '✋', text: 'Laissez-moi', sousTexte: "J'ai besoin de temps. Je reviendrai vers vous quand je serai prête." },
             { id: '9', emoji: '🧠', text: 'Je suis en surcharge', sousTexte: "Merci de me laisser tranquille et de m'aider à réduire au maximum les stimulations sensorielles." }
         ];
 
@@ -548,25 +549,10 @@
             }
 
             document.getElementById('fullscreenOverlay').classList.add('visible');
-
-            const el = document.documentElement;
-            if (el.requestFullscreen) {
-                el.requestFullscreen().then(() => {
-                    if (screen.orientation && screen.orientation.lock) {
-                        screen.orientation.lock('landscape-primary').catch(() => {});
-                    }
-                }).catch(() => {});
-            } else if (el.webkitRequestFullscreen) {
-                el.webkitRequestFullscreen();
-            }
         }
 
         function closeOverlay() {
             document.getElementById('fullscreenOverlay').classList.remove('visible');
-            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-            if (screen.orientation && screen.orientation.unlock) {
-                try { screen.orientation.unlock(); } catch (e) {}
-            }
         }
 
         /* ---------- MODAL ---------- */
@@ -622,16 +608,7 @@
             }
         });
 
-        document.addEventListener('fullscreenchange', () => {
-            if (!document.fullscreenElement) {
-                document.getElementById('fullscreenOverlay').classList.remove('visible');
-                if (screen.orientation && screen.orientation.unlock) {
-                    try { screen.orientation.unlock(); } catch (e) {}
-                }
-            }
-        });
-
-        function goBack() { window.location.href = 'index.html'; }
+        function goBack() { history.back(); }
 
         window.addEventListener('DOMContentLoaded', () => {
             initToggle();

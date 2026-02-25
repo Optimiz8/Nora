@@ -312,7 +312,7 @@
 
     <div class="modal" id="contextModal" role="dialog" aria-modal="true" aria-label="Choix du contexte">
         <div class="modal-content">
-            <div class="modal-close" data-close="contextModal">×</div>
+            <div class="modal-close" onclick="closeContextModal()">×</div>
             <div class="modal-title">Où es-tu&nbsp;?</div>
             <div class="context-grid" id="contextGrid">
                 <!-- Généré dynamiquement -->
@@ -578,6 +578,11 @@
 
         btnHelp.onclick = () => open('helpModal');
         btnCalm.onclick = () => open('calmModal');
+
+        window.closeContextModal = () => {
+            close('contextModal');
+            open('helpModal');
+        };
 
         btnContext.onclick = () => {
             close('helpModal');

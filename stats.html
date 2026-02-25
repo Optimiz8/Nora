@@ -11,11 +11,9 @@
     <link rel="stylesheet" href="nora-common.css">
     <title>Nora – Statistiques</title>
     <style>
-        body {
-            padding-bottom: 32px;
-        }
+        body { padding-bottom: 32px; }
 
-        /* ---------- LABEL SECTION ---------- */
+        /* ---------- LABEL DE SECTION ---------- */
 
         .section-label {
             font-size: 11px;
@@ -45,7 +43,6 @@
             padding: 10px 4px;
             border-radius: 10px;
             cursor: pointer;
-            transition: background 0.2s, border-color 0.2s, color 0.2s;
         }
 
         .period-btn.active {
@@ -54,9 +51,7 @@
             color: var(--dark);
         }
 
-        .period-btn:active {
-            transform: scale(0.97);
-        }
+        .period-btn:active { transform: scale(0.97); }
 
         /* ---------- PLAGE PERSONNALISÉE ---------- */
 
@@ -65,13 +60,9 @@
             flex-direction: column;
             gap: 10px;
             padding: 12px 16px;
-            background: rgba(245, 228, 204, 0.06);
-            border-top: 1px solid rgba(245, 228, 204, 0.1);
         }
 
-        .date-range-panel.visible {
-            display: flex;
-        }
+        .date-range-panel.visible { display: flex; }
 
         .date-range-row {
             display: flex;
@@ -117,9 +108,7 @@
             width: 100%;
         }
 
-        .date-range-apply:active {
-            transform: scale(0.98);
-        }
+        .date-range-apply:active { transform: scale(0.98); }
 
         /* ---------- CONTENU ---------- */
 
@@ -141,9 +130,7 @@
             color: var(--dark);
         }
 
-        .narrative-card strong {
-            font-weight: 700;
-        }
+        .narrative-card strong { font-weight: 700; }
 
         /* ---------- CARTES MÉTRIQUES ---------- */
 
@@ -159,9 +146,7 @@
             padding: 13px 12px 11px;
         }
 
-        .metric-card.wide {
-            grid-column: 1 / -1;
-        }
+        .metric-card.wide { grid-column: 1 / -1; }
 
         .metric-header {
             display: flex;
@@ -170,10 +155,7 @@
             margin-bottom: 6px;
         }
 
-        .metric-icon {
-            font-size: 15px;
-            line-height: 1;
-        }
+        .metric-icon { font-size: 15px; line-height: 1; }
 
         .metric-label {
             font-size: 12px;
@@ -189,9 +171,7 @@
             line-height: 1.1;
         }
 
-        .metric-value.small {
-            font-size: 18px;
-        }
+        .metric-value.small { font-size: 18px; }
 
         .metric-sub {
             font-size: 11px;
@@ -234,11 +214,7 @@
             margin-top: 12px;
         }
 
-        .subsection-title:first-child {
-            margin-top: 0;
-        }
-
-        /* ---------- TOGGLE SIMPLE/DÉTAIL ---------- */
+        /* ---------- TOGGLE RAPIDE / DÉTAIL ---------- */
 
         .section-header {
             display: flex;
@@ -320,6 +296,11 @@
             flex-shrink: 0;
         }
 
+        .rank-number.secondary {
+            background: rgba(46, 58, 89, 0.3);
+            font-size: 11px;
+        }
+
         .rank-bar-wrap {
             flex: 1;
             display: flex;
@@ -396,11 +377,7 @@
 
         .accordion-toggle:active { opacity: 1; }
 
-        .accordion-body {
-            display: none;
-            padding-bottom: 6px;
-        }
-
+        .accordion-body { display: none; padding-bottom: 6px; }
         .accordion-body.open { display: block; }
 
         .all-rank-list {
@@ -554,7 +531,7 @@
         <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
         <button class="period-btn" data-days="30" onclick="selectPeriod(30)">30 j</button>
         <button class="period-btn" data-days="365" onclick="selectPeriod(365)">1 an</button>
-        <button class="period-btn" data-days="0" onclick="selectPeriod(0)">Perso.</button>
+        <button class="period-btn" data-days="0" onclick="selectPeriod(0)">Dates</button>
     </div>
     <div class="date-range-panel" id="dateRangePanel">
         <div class="date-range-row">
@@ -571,307 +548,393 @@
     <main class="main-content" id="mainContent"></main>
 
     <script>
-        /* ---------- ÉTAT ---------- */
-        let currentDays = 7;
-        let customFrom = null;
-        let customTo = null;
-        const viewModes = { triggers: 'rapide', besoins: 'rapide' };
+        var currentDays = 7;
+        var customFrom = null;
+        var customTo = null;
+        var viewModes = { triggers: 'detail', besoins: 'detail' };
 
         /* ---------- DONNÉES ---------- */
+
         function getJournal() {
-            return JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            try {
+                return JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            } catch (e) {
+                return [];
+            }
         }
 
-        function getProfiles() {
-            const profiles = {
-                commun:    { icon: '🌐', name: 'Profil commun' },
-                maison:    { icon: '🏠', name: 'Maison' },
-                exterieur: { icon: '🌍', name: 'Extérieur' },
-                travail:   { icon: '💼', name: 'Travail' },
-                secours:   { icon: '🚑', name: 'Secours' }
+        function getProfileName(profileId) {
+            var names = {
+                commun: 'Profil commun',
+                maison: 'Maison',
+                exterieur: 'Extérieur',
+                travail: 'Travail',
+                secours: 'Secours'
             };
-            const contextes = JSON.parse(localStorage.getItem('contextes') || '[]');
-            contextes.forEach(ctx => {
-                if (ctx.id && !profiles[ctx.id]) {
-                    profiles[ctx.id] = { icon: ctx.emoji || '📍', name: ctx.nom || ctx.id };
-                }
-            });
-            return profiles;
+            var icons = {
+                commun: '🌐', maison: '🏠', exterieur: '🌍', travail: '💼', secours: '🚑'
+            };
+            return {
+                name: names[profileId] || profileId || 'Inconnu',
+                icon: icons[profileId] || '📍'
+            };
         }
 
         /* ---------- DURÉE ---------- */
-        function parseDurationToMinutes(str) {
+
+        function parseDuration(str) {
             if (!str) return null;
             str = str.toLowerCase().trim();
-            let minutes = 0, found = false;
-            const hMatch = str.match(/(\d+)\s*h/);
-            if (hMatch) { minutes += parseInt(hMatch[1]) * 60; found = true; }
-            const mMatch = str.match(/(\d+)\s*(min|mn|m\b)/);
-            if (mMatch) { minutes += parseInt(mMatch[1]); found = true; }
+            var mins = 0;
+            var found = false;
+            var hMatch = str.match(/(\d+)\s*h/);
+            if (hMatch) { mins += parseInt(hMatch[1], 10) * 60; found = true; }
+            var mMatch = str.match(/(\d+)\s*(min|mn|m\b)/);
+            if (mMatch) { mins += parseInt(mMatch[1], 10); found = true; }
             if (!found) {
-                const numOnly = str.match(/^(\d+)$/);
-                if (numOnly) { minutes = parseInt(numOnly[1]); found = true; }
+                var numMatch = str.match(/^(\d+)$/);
+                if (numMatch) { mins = parseInt(numMatch[1], 10); found = true; }
             }
-            return found && minutes > 0 ? minutes : null;
+            return (found && mins > 0) ? mins : null;
         }
 
-        function formatMinutes(mins) {
-            const m = Math.round(mins);
-            if (m < 60) return `${m} min`;
-            const h = Math.floor(m / 60);
-            const rem = m % 60;
-            return rem > 0 ? `${h}h${String(rem).padStart(2, '0')}` : `${h}h`;
-        }
-
-        /* ---------- FRÉQUENCES ---------- */
-        function countFrequencies(items) {
-            const freq = {};
-            items.forEach(item => { freq[item] = (freq[item] || 0) + 1; });
-            return Object.entries(freq)
-                .map(([name, count]) => ({ name, count }))
-                .sort((a, b) => b.count - a.count);
-        }
-
-        /* ---------- DERNIÈRE CRISE ---------- */
-        function computeSinceLastCrisis() {
-            const journal = getJournal();
-            if (!journal.length) return null;
-            const sorted = [...journal].sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
-            const diff = Math.floor((Date.now() - new Date(sorted[0].horodatage)) / 86400000);
-            if (diff === 0) return "aujourd'hui";
-            if (diff === 1) return "hier";
-            return `il y a ${diff} j`;
-        }
-
-        /* ---------- CALCUL STATS ---------- */
-        function computeStats(days, from, to) {
-            const journal = getJournal();
-            let entries, prevEntries, periodDays;
-
-            if (days === 0 && from && to) {
-                const start = new Date(from); start.setHours(0, 0, 0, 0);
-                const end = new Date(to); end.setHours(23, 59, 59, 999);
-                periodDays = Math.ceil((end - start) / 86400000);
-                entries = journal.filter(e => { const d = new Date(e.horodatage); return d >= start && d <= end; });
-                const prevEnd = new Date(start.getTime() - 1);
-                const prevStart = new Date(prevEnd);
-                prevStart.setDate(prevStart.getDate() - periodDays + 1); prevStart.setHours(0, 0, 0, 0);
-                prevEntries = journal.filter(e => { const d = new Date(e.horodatage); return d >= prevStart && d <= prevEnd; });
-            } else {
-                periodDays = days;
-                const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - days); cutoff.setHours(0, 0, 0, 0);
-                entries = journal.filter(e => new Date(e.horodatage) >= cutoff);
-                const prevCutoff = new Date(); prevCutoff.setDate(prevCutoff.getDate() - days * 2); prevCutoff.setHours(0, 0, 0, 0);
-                prevEntries = journal.filter(e => { const d = new Date(e.horodatage); return d >= prevCutoff && d < cutoff; });
-            }
-
-            if (!entries.length) return null;
-
-            const profiles = getProfiles();
-
-            const evolution = { current: entries.length, previous: prevEntries.length, delta: entries.length - prevEntries.length };
-
-            const intensities = entries.map(e => parseFloat(e.intensite)).filter(v => !isNaN(v));
-            const avgIntensity = intensities.length ? parseFloat((intensities.reduce((s, v) => s + v, 0) / intensities.length).toFixed(1)) : null;
-
-            const durations = entries.map(e => parseDurationToMinutes(e.duree)).filter(v => v !== null);
-            const avgDuration = durations.length ? durations.reduce((s, v) => s + v, 0) / durations.length : null;
-            const minDuration = durations.length ? Math.min(...durations) : null;
-            const maxDuration = durations.length ? Math.max(...durations) : null;
-
-            const profileCounts = countFrequencies(entries.map(e => e.profil || 'commun'));
-            const topProfile = profileCounts.length ? profileCounts[0] : null;
-            const topProfileInfo = topProfile ? (profiles[topProfile.name] || { icon: '📍', name: topProfile.name }) : null;
-
-            const types = entries.map(e => e.typeCrise).filter(t => t && t !== '');
-            const typeCounts = countFrequencies(types);
-            const topType = typeCounts.length ? typeCounts[0] : null;
-
-            // Déclencheurs avec intensité associée
-            const allTriggers = entries.flatMap(e => e.declencheurs || []);
-            const triggerFreq = {};
-            allTriggers.forEach(t => { triggerFreq[t] = (triggerFreq[t] || 0) + 1; });
-            const triggerStats = Object.entries(triggerFreq)
-                .sort(([, a], [, b]) => b - a)
-                .map(([name, count]) => {
-                    const withTrigger = entries.filter(e => (e.declencheurs || []).includes(name));
-                    const ints = withTrigger.map(e => parseFloat(e.intensite)).filter(v => !isNaN(v));
-                    const avgInt = ints.length >= 2 ? parseFloat((ints.reduce((s, v) => s + v, 0) / ints.length).toFixed(1)) : null;
-                    return { name, count, avgIntensity: avgInt };
-                });
-
-            const allBesoins = entries.flatMap(e => (e.besoins || []).map(b => b.label || b));
-            const besoinCounts = countFrequencies(allBesoins);
-
-            // Jours de la semaine (Lun→Dim)
-            const DAY_NAMES = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-            const dayFreq = [0, 0, 0, 0, 0, 0, 0];
-            entries.forEach(e => { dayFreq[new Date(e.horodatage).getDay()]++; });
-            const dayOfWeek = [1, 2, 3, 4, 5, 6, 0].map(i => ({ name: DAY_NAMES[i], count: dayFreq[i] }));
-
-            const hourSlots = [
-                { name: 'Nuit', range: '0–6h', count: 0 },
-                { name: 'Matin', range: '6–12h', count: 0 },
-                { name: 'Après-m.', range: '12–18h', count: 0 },
-                { name: 'Soir', range: '18–24h', count: 0 }
-            ];
-            entries.forEach(e => {
-                const h = new Date(e.horodatage).getHours();
-                if (h < 6) hourSlots[0].count++;
-                else if (h < 12) hourSlots[1].count++;
-                else if (h < 18) hourSlots[2].count++;
-                else hourSlots[3].count++;
-            });
-
-            return { total: entries.length, evolution, avgIntensity, avgDuration, minDuration, maxDuration,
-                topProfile: topProfile ? { ...topProfileInfo, count: topProfile.count } : null,
-                topType, triggerStats, besoinCounts, dayOfWeek, hourSlots };
-        }
-
-        /* ---------- NARRATIF ---------- */
-        function generateNarrative(stats, days, from, to) {
-            const periodLabel = days === 7 ? 'ces 7 derniers jours'
-                : days === 30 ? 'ces 30 derniers jours'
-                : days === 365 ? 'cette dernière année'
-                : `du ${formatDateFR(from)} au ${formatDateFR(to)}`;
-
-            const n = stats.total;
-            const pl = n > 1;
-            const sentences = [];
-
-            // Phrase 1 : intro
-            let s1 = `Sur ${periodLabel}, tu as traversé <strong>${n} crise${pl ? 's' : ''}</strong>`;
-            if (stats.avgIntensity !== null) s1 += ` avec une intensité moyenne de <strong>${stats.avgIntensity}/10</strong>`;
-            if (stats.avgDuration !== null) {
-                s1 += ` et une durée d'environ <strong>${formatMinutes(stats.avgDuration)}</strong>`;
-                if (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration) {
-                    s1 += ` (de ${formatMinutes(stats.minDuration)} à ${formatMinutes(stats.maxDuration)})`;
-                }
-            }
-            sentences.push(s1 + '.');
-
-            // Phrase 2 : contexte + type
-            const ctxParts = [];
-            if (stats.topProfile) {
-                const name = stats.topProfile.name;
-                const preps = { 'Maison': 'à la maison', 'Extérieur': 'en extérieur', 'Travail': 'au travail',
-                    'Secours': 'en contexte secours', 'Profil commun': 'en contexte commun' };
-                ctxParts.push(`surtout <strong>${preps[name] || 'en contexte ' + name}</strong>`);
-            }
-            if (stats.topType) {
-                const adj = { 'Anticipatoire': 'anticipatoires', 'Réactionnelle': 'réactionnelles', 'Mixte': 'mixtes' };
-                ctxParts.push(`majoritairement de type <strong>${adj[stats.topType.name] || stats.topType.name.toLowerCase()}</strong>`);
-            }
-            if (ctxParts.length) sentences.push(`${pl ? 'Elles se sont passées' : "Elle s'est passée"} ${ctxParts.join(', ')}.`);
-
-            // Phrase 3 : jour + heure
-            const topDay = [...stats.dayOfWeek].sort((a, b) => b.count - a.count)[0];
-            const topHour = [...stats.hourSlots].sort((a, b) => b.count - a.count)[0];
-            if (topDay && topDay.count > 0) {
-                const hourLabel = { 'Nuit': 'la nuit', 'Matin': 'le matin', 'Après-m.': "l'après-midi", 'Soir': 'le soir' };
-                let s3 = `Le jour où tu en as le plus : <strong>${topDay.name}</strong>`;
-                if (topHour && topHour.count > 0) s3 += `, souvent <strong>${hourLabel[topHour.name] || topHour.name.toLowerCase()}</strong>`;
-                sentences.push(s3 + '.');
-            }
-
-            // Phrase 4 : déclencheurs
-            if (stats.triggerStats.length > 0) {
-                const top3 = stats.triggerStats.slice(0, 3);
-                const names = top3.map(t => `<strong>${t.name}</strong>`).join(', ');
-                const nb = top3.length;
-                sentences.push(`${pl ? 'Tes' : 'Ton'} principal${nb > 1 ? 'aux' : ''} déclencheur${nb > 1 ? 's' : ''} : ${names}.`);
-
-                const withIntensity = stats.triggerStats.filter(t => t.avgIntensity !== null);
-                if (withIntensity.length > 0) {
-                    const t = withIntensity[0];
-                    sentences.push(`${pl ? 'Les crises les plus intenses sont associées' : 'La crise la plus intense est associée'} à <strong>${t.name}</strong> (${t.avgIntensity}/10 en moyenne).`);
-                }
-            }
-
-            // Phrase 5 : besoins
-            if (stats.besoinCounts.length > 0) {
-                const top3 = stats.besoinCounts.slice(0, 3);
-                const names = top3.map(b => `<strong>${b.name}</strong>`).join(', ');
-                const nb = top3.length;
-                sentences.push(`${pl ? 'Tes' : 'Ton'} principal${nb > 1 ? 'aux' : ''} besoin${nb > 1 ? 's' : ''} : ${names}.`);
-            }
-
-            return sentences.join(' ');
+        function formatMins(m) {
+            m = Math.round(m);
+            if (m < 60) return m + ' min';
+            var h = Math.floor(m / 60);
+            var r = m % 60;
+            return r > 0 ? h + 'h' + (r < 10 ? '0' : '') + r : h + 'h';
         }
 
         function formatDateFR(dateStr) {
             return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
         }
 
-        /* ---------- RENDU : LISTE AVEC TOGGLE ---------- */
-        function renderToggleSection(id, title, items, viewMode) {
-            const isDetail = viewMode === 'detail';
-            const maxCount = items.length ? items[0].count : 1;
+        /* ---------- FRÉQUENCES ---------- */
 
-            let innerHtml;
-            if (!items.length) {
-                innerHtml = `<div class="no-data">Aucune donnée</div>`;
-            } else if (!isDetail) {
-                // Vue rapide : pills
-                innerHtml = `<div class="pills-list">`;
-                items.forEach(item => { innerHtml += `<span class="pill">${item.name}</span>`; });
-                innerHtml += `</div>`;
+        function countFreq(arr) {
+            var freq = {};
+            for (var i = 0; i < arr.length; i++) {
+                var val = arr[i];
+                if (val) freq[val] = (freq[val] || 0) + 1;
+            }
+            var result = [];
+            for (var key in freq) {
+                result.push({ name: key, count: freq[key] });
+            }
+            result.sort(function(a, b) { return b.count - a.count; });
+            return result;
+        }
+
+        /* ---------- CALCUL STATS ---------- */
+
+        function computeStats(days, from, to) {
+            var journal = getJournal();
+            var entries = [];
+            var prevEntries = [];
+
+            if (days === 0 && from && to) {
+                var start = new Date(from); start.setHours(0, 0, 0, 0);
+                var end = new Date(to); end.setHours(23, 59, 59, 999);
+                var periodMs = end - start;
+                for (var i = 0; i < journal.length; i++) {
+                    var d = new Date(journal[i].horodatage);
+                    if (d >= start && d <= end) entries.push(journal[i]);
+                    else if (d >= new Date(start - periodMs) && d < start) prevEntries.push(journal[i]);
+                }
             } else {
-                // Vue détail : barres + accordéon
-                const top = items.slice(0, 3);
-                const rest = items.slice(3);
-                const hasIntensity = items.some(t => t.avgIntensity !== undefined && t.avgIntensity !== null);
-
-                function itemRow(item, showNumber, num) {
-                    const pct = Math.round((item.count / maxCount) * 100);
-                    const numEl = showNumber
-                        ? `<div class="rank-number">${num}</div>`
-                        : `<div class="rank-number" style="background:rgba(46,58,89,0.3);font-size:11px">·</div>`;
-                    const intTag = (item.avgIntensity != null)
-                        ? `<span class="intensity-tag">· ${item.avgIntensity}/10</span>`
-                        : '';
-                    return `<div class="rank-item">${numEl}
-                        <div class="rank-bar-wrap">
-                            <div class="rank-name">${item.name}</div>
-                            <div class="rank-bar-row">
-                                <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${pct}%"></div></div>
-                                <div class="rank-count">${item.count}×</div>
-                                ${intTag}
-                            </div>
-                        </div></div>`;
-                }
-
-                innerHtml = `<div class="rank-list">`;
-                top.forEach((item, i) => { innerHtml += itemRow(item, true, i + 1); });
-                innerHtml += `</div>`;
-
-                if (rest.length > 0) {
-                    const accId = 'acc_' + id;
-                    innerHtml += `<button class="accordion-toggle" onclick="toggleAccordion('${accId}', this)">
-                        <span>Voir les ${rest.length} autre${rest.length > 1 ? 's' : ''}</span>
-                        <span id="arr_${accId}">▾</span>
-                    </button>
-                    <div class="accordion-body" id="${accId}"><div class="all-rank-list">`;
-                    rest.forEach(item => { innerHtml += itemRow(item, false, 0); });
-                    innerHtml += `</div></div>`;
-                }
-
-                if (hasIntensity) {
-                    innerHtml += `<div class="intensity-legend">Le chiffre après · = intensité moy. lors des crises avec ce déclencheur</div>`;
+                var now = new Date();
+                var cutoff = new Date(now); cutoff.setDate(now.getDate() - days); cutoff.setHours(0, 0, 0, 0);
+                var prevCutoff = new Date(now); prevCutoff.setDate(now.getDate() - days * 2); prevCutoff.setHours(0, 0, 0, 0);
+                for (var j = 0; j < journal.length; j++) {
+                    var dj = new Date(journal[j].horodatage);
+                    if (dj >= cutoff) entries.push(journal[j]);
+                    else if (dj >= prevCutoff) prevEntries.push(journal[j]);
                 }
             }
 
-            return `
-                <div class="section">
-                    <div class="section-header">
-                        <div class="section-title">${title}</div>
-                        <div class="view-toggle">
-                            <button class="view-toggle-btn ${!isDetail ? 'active' : ''}" onclick="setView('${id}', 'rapide')">Rapide</button>
-                            <button class="view-toggle-btn ${isDetail ? 'active' : ''}" onclick="setView('${id}', 'detail')">Détail</button>
-                        </div>
-                    </div>
-                    ${innerHtml}
-                </div>`;
+            if (!entries.length) return null;
+
+            var intensities = [];
+            var durations = [];
+            var profileArr = [];
+            var typeArr = [];
+            var triggerFreq = {};
+            var besoinArr = [];
+
+            for (var k = 0; k < entries.length; k++) {
+                var e = entries[k];
+                var ints = parseFloat(e.intensite);
+                if (!isNaN(ints)) intensities.push(ints);
+                var dur = parseDuration(e.duree);
+                if (dur !== null) durations.push(dur);
+                profileArr.push(e.profil || 'commun');
+                if (e.typeCrise) typeArr.push(e.typeCrise);
+                var decl = e.declencheurs || [];
+                for (var d2 = 0; d2 < decl.length; d2++) {
+                    if (decl[d2]) triggerFreq[decl[d2]] = (triggerFreq[decl[d2]] || 0) + 1;
+                }
+                var bess = e.besoins || [];
+                for (var b = 0; b < bess.length; b++) {
+                    var bl = bess[b] && bess[b].label ? bess[b].label : bess[b];
+                    if (bl) besoinArr.push(bl);
+                }
+            }
+
+            var avgIntensity = null;
+            if (intensities.length) {
+                var sum = 0; for (var s = 0; s < intensities.length; s++) sum += intensities[s];
+                avgIntensity = parseFloat((sum / intensities.length).toFixed(1));
+            }
+
+            var avgDuration = null, minDuration = null, maxDuration = null;
+            if (durations.length) {
+                var dsum = 0; for (var ds = 0; ds < durations.length; ds++) dsum += durations[ds];
+                avgDuration = dsum / durations.length;
+                minDuration = Math.min.apply(null, durations);
+                maxDuration = Math.max.apply(null, durations);
+            }
+
+            var profileCounts = countFreq(profileArr);
+            var topProfileData = profileCounts.length ? profileCounts[0] : null;
+            var topProfile = null;
+            if (topProfileData) {
+                var pInfo = getProfileName(topProfileData.name);
+                topProfile = { name: pInfo.name, icon: pInfo.icon, count: topProfileData.count };
+            }
+
+            var typeCounts = countFreq(typeArr);
+            var topType = typeCounts.length ? typeCounts[0] : null;
+
+            var triggerStats = [];
+            for (var tkey in triggerFreq) {
+                var tcnt = triggerFreq[tkey];
+                var tInts = [];
+                for (var te = 0; te < entries.length; te++) {
+                    var td = entries[te].declencheurs || [];
+                    var hasT = false;
+                    for (var td2 = 0; td2 < td.length; td2++) { if (td[td2] === tkey) { hasT = true; break; } }
+                    if (hasT) {
+                        var ti = parseFloat(entries[te].intensite);
+                        if (!isNaN(ti)) tInts.push(ti);
+                    }
+                }
+                var avgInt = null;
+                if (tInts.length >= 2) {
+                    var tsum = 0; for (var ts2 = 0; ts2 < tInts.length; ts2++) tsum += tInts[ts2];
+                    avgInt = parseFloat((tsum / tInts.length).toFixed(1));
+                }
+                triggerStats.push({ name: tkey, count: tcnt, avgIntensity: avgInt });
+            }
+            triggerStats.sort(function(a, b) { return b.count - a.count; });
+
+            var besoinCounts = countFreq(besoinArr);
+
+            var DAY_NAMES = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            var dayFreq = [0, 0, 0, 0, 0, 0, 0];
+            for (var de = 0; de < entries.length; de++) {
+                dayFreq[new Date(entries[de].horodatage).getDay()]++;
+            }
+            var dayOfWeek = [1, 2, 3, 4, 5, 6, 0].map(function(i) {
+                return { name: DAY_NAMES[i], count: dayFreq[i] };
+            });
+
+            var hourSlots = [
+                { name: 'Nuit', range: '0–6h', count: 0 },
+                { name: 'Matin', range: '6–12h', count: 0 },
+                { name: 'Après-m.', range: '12–18h', count: 0 },
+                { name: 'Soir', range: '18–24h', count: 0 }
+            ];
+            for (var he = 0; he < entries.length; he++) {
+                var h = new Date(entries[he].horodatage).getHours();
+                if (h < 6) hourSlots[0].count++;
+                else if (h < 12) hourSlots[1].count++;
+                else if (h < 18) hourSlots[2].count++;
+                else hourSlots[3].count++;
+            }
+
+            return {
+                total: entries.length,
+                prevCount: prevEntries.length,
+                avgIntensity: avgIntensity,
+                avgDuration: avgDuration,
+                minDuration: minDuration,
+                maxDuration: maxDuration,
+                topProfile: topProfile,
+                topType: topType,
+                triggerStats: triggerStats,
+                besoinCounts: besoinCounts,
+                dayOfWeek: dayOfWeek,
+                hourSlots: hourSlots
+            };
+        }
+
+        /* ---------- DERNIÈRE CRISE ---------- */
+
+        function sinceLastCrisis() {
+            var journal = getJournal();
+            if (!journal.length) return null;
+            var latest = null;
+            for (var i = 0; i < journal.length; i++) {
+                var d = new Date(journal[i].horodatage);
+                if (!latest || d > latest) latest = d;
+            }
+            var diff = Math.floor((Date.now() - latest) / 86400000);
+            if (diff === 0) return "aujourd'hui";
+            if (diff === 1) return 'hier';
+            return 'il y a ' + diff + ' j';
+        }
+
+        /* ---------- NARRATIF ---------- */
+
+        function buildNarrative(stats, days, from, to) {
+            var periodLabel = days === 7 ? 'ces 7 derniers jours'
+                : days === 30 ? 'ces 30 derniers jours'
+                : days === 365 ? 'cette dernière année'
+                : 'du ' + formatDateFR(from) + ' au ' + formatDateFR(to);
+
+            var n = stats.total;
+            var pl = n > 1;
+            var parts = [];
+
+            var s1 = 'Sur ' + periodLabel + ', tu as traversé <strong>' + n + ' crise' + (pl ? 's' : '') + '</strong>';
+            if (stats.avgIntensity !== null) s1 += ' avec une intensité moyenne de <strong>' + stats.avgIntensity + '/10</strong>';
+            if (stats.avgDuration !== null) {
+                s1 += ' et une durée d\'environ <strong>' + formatMins(stats.avgDuration) + '</strong>';
+                if (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration) {
+                    s1 += ' (de ' + formatMins(stats.minDuration) + ' à ' + formatMins(stats.maxDuration) + ')';
+                }
+            }
+            parts.push(s1 + '.');
+
+            var ctxParts = [];
+            if (stats.topProfile) {
+                var preps = { 'Maison': 'à la maison', 'Extérieur': 'en extérieur', 'Travail': 'au travail',
+                    'Secours': 'en contexte secours', 'Profil commun': 'en contexte commun' };
+                var prep = preps[stats.topProfile.name] || 'en contexte ' + stats.topProfile.name;
+                ctxParts.push('surtout <strong>' + prep + '</strong>');
+            }
+            if (stats.topType) {
+                var adj = { 'Anticipatoire': 'anticipatoires', 'Réactionnelle': 'réactionnelles', 'Mixte': 'mixtes' };
+                var typeAdj = adj[stats.topType.name] || stats.topType.name.toLowerCase();
+                ctxParts.push('majoritairement de type <strong>' + typeAdj + '</strong>');
+            }
+            if (ctxParts.length) {
+                parts.push((pl ? 'Elles se sont passées ' : 'Elle s\'est passée ') + ctxParts.join(', ') + '.');
+            }
+
+            var topDay = null;
+            for (var di = 0; di < stats.dayOfWeek.length; di++) {
+                if (!topDay || stats.dayOfWeek[di].count > topDay.count) topDay = stats.dayOfWeek[di];
+            }
+            var topHour = null;
+            for (var hi = 0; hi < stats.hourSlots.length; hi++) {
+                if (!topHour || stats.hourSlots[hi].count > topHour.count) topHour = stats.hourSlots[hi];
+            }
+            if (topDay && topDay.count > 0) {
+                var hourLabels = { 'Nuit': 'la nuit', 'Matin': 'le matin', 'Après-m.': "l'après-midi", 'Soir': 'le soir' };
+                var s3 = 'Le jour où tu en as le plus : <strong>' + topDay.name + '</strong>';
+                if (topHour && topHour.count > 0) s3 += ', souvent <strong>' + (hourLabels[topHour.name] || topHour.name) + '</strong>';
+                parts.push(s3 + '.');
+            }
+
+            if (stats.triggerStats.length > 0) {
+                var top3t = stats.triggerStats.slice(0, 3);
+                var tnames = top3t.map(function(t) { return '<strong>' + t.name + '</strong>'; }).join(', ');
+                var tnb = top3t.length;
+                parts.push((pl ? 'Tes' : 'Ton') + ' principal' + (tnb > 1 ? 'aux' : '') + ' déclencheur' + (tnb > 1 ? 's' : '') + ' : ' + tnames + '.');
+                var withInt = stats.triggerStats.filter(function(t) { return t.avgIntensity !== null; });
+                if (withInt.length > 0) {
+                    var wt = withInt[0];
+                    parts.push((pl ? 'Les crises les plus intenses sont associées' : 'La crise la plus intense est associée') + ' à <strong>' + wt.name + '</strong> (' + wt.avgIntensity + '/10 en moyenne).');
+                }
+            }
+
+            if (stats.besoinCounts.length > 0) {
+                var top3b = stats.besoinCounts.slice(0, 3);
+                var bnames = top3b.map(function(b) { return '<strong>' + b.name + '</strong>'; }).join(', ');
+                var bnb = top3b.length;
+                parts.push((pl ? 'Tes' : 'Ton') + ' principal' + (bnb > 1 ? 'aux' : '') + ' besoin' + (bnb > 1 ? 's' : '') + ' : ' + bnames + '.');
+            }
+
+            return parts.join(' ');
+        }
+
+        /* ---------- RENDU : LIGNE DE CLASSEMENT ---------- */
+
+        function rankRow(item, num, maxCount) {
+            var pct = Math.round((item.count / maxCount) * 100);
+            var numEl = (num > 0)
+                ? '<div class="rank-number">' + num + '</div>'
+                : '<div class="rank-number secondary">·</div>';
+            var intTag = (item.avgIntensity != null)
+                ? '<span class="intensity-tag">· ' + item.avgIntensity + '/10</span>'
+                : '';
+            return '<div class="rank-item">' + numEl +
+                '<div class="rank-bar-wrap">' +
+                '<div class="rank-name">' + item.name + '</div>' +
+                '<div class="rank-bar-row">' +
+                '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct + '%"></div></div>' +
+                '<div class="rank-count">' + item.count + '×</div>' +
+                intTag +
+                '</div></div></div>';
+        }
+
+        /* ---------- RENDU : SECTION AVEC TOGGLE ---------- */
+
+        function renderToggleSection(id, title, items, viewMode) {
+            var isDetail = viewMode === 'detail';
+            var maxCount = items.length ? items[0].count : 1;
+            var inner = '';
+
+            if (!items.length) {
+                inner = '<div class="no-data">Aucune donnée</div>';
+            } else if (!isDetail) {
+                inner = '<div class="pills-list">';
+                for (var i = 0; i < items.length; i++) {
+                    inner += '<span class="pill">' + items[i].name + '</span>';
+                }
+                inner += '</div>';
+            } else {
+                var top = items.slice(0, 3);
+                var rest = items.slice(3);
+                var hasIntensity = false;
+                for (var hi = 0; hi < items.length; hi++) {
+                    if (items[hi].avgIntensity != null) { hasIntensity = true; break; }
+                }
+
+                inner = '<div class="rank-list">';
+                for (var ti = 0; ti < top.length; ti++) {
+                    inner += rankRow(top[ti], ti + 1, maxCount);
+                }
+                inner += '</div>';
+
+                if (rest.length > 0) {
+                    var accId = 'acc_' + id;
+                    inner += '<button class="accordion-toggle" onclick="toggleAccordion(\'' + accId + '\', this)">';
+                    inner += '<span>Voir les ' + rest.length + ' autre' + (rest.length > 1 ? 's' : '') + '</span>';
+                    inner += '<span id="arr_' + accId + '">▾</span></button>';
+                    inner += '<div class="accordion-body" id="' + accId + '"><div class="all-rank-list">';
+                    for (var ri = 0; ri < rest.length; ri++) {
+                        inner += rankRow(rest[ri], 0, maxCount);
+                    }
+                    inner += '</div></div>';
+                }
+
+                if (hasIntensity) {
+                    inner += '<div class="intensity-legend">Le chiffre après · = intensité moy. lors des crises avec ce déclencheur</div>';
+                }
+            }
+
+            return '<div class="section">' +
+                '<div class="section-header">' +
+                '<div class="section-title">' + title + '</div>' +
+                '<div class="view-toggle">' +
+                '<button class="view-toggle-btn ' + (!isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'rapide\')">Rapide</button>' +
+                '<button class="view-toggle-btn ' + (isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'detail\')">Détail</button>' +
+                '</div></div>' +
+                inner +
+                '</div>';
         }
 
         function setView(id, mode) {
@@ -879,187 +942,204 @@
             renderCurrent();
         }
 
-        /* ---------- TOGGLE ACCORDÉON ---------- */
         function toggleAccordion(id, btn) {
-            const body = document.getElementById(id);
-            const arrow = document.getElementById('arr_' + id);
-            const isOpen = body.classList.toggle('open');
-            arrow.textContent = isOpen ? '▴' : '▾';
+            var body = document.getElementById(id);
+            var arrow = document.getElementById('arr_' + id);
+            var isOpen = body.classList.toggle('open');
+            if (arrow) arrow.textContent = isOpen ? '▴' : '▾';
         }
 
         /* ---------- RENDU PRINCIPAL ---------- */
-        function render(days, from, to) {
-            const stats = computeStats(days, from, to);
-            const sinceLastCrisis = computeSinceLastCrisis();
-            const main = document.getElementById('mainContent');
 
-            const lastCard = sinceLastCrisis
-                ? `<div class="last-crisis-card"><span style="font-size:18px">⌛</span>Dernière crise : <span class="last-crisis-value">${sinceLastCrisis}</span></div>`
+        function render(days, from, to) {
+            var stats = computeStats(days, from, to);
+            var last = sinceLastCrisis();
+            var main = document.getElementById('mainContent');
+
+            var lastCard = last
+                ? '<div class="last-crisis-card"><span style="font-size:18px">⌛</span>Dernière crise : <span class="last-crisis-value">' + last + '</span></div>'
                 : '';
 
             if (!stats) {
-                main.innerHTML = `${lastCard}
-                    <div class="empty-state">
-                        <div class="empty-icon">📊</div>
-                        <div class="empty-text">Aucune crise enregistrée<br>sur cette période</div>
-                    </div>`;
+                main.innerHTML = lastCard +
+                    '<div class="empty-state"><div class="empty-icon">📊</div>' +
+                    '<div class="empty-text">Aucune crise enregistrée<br>sur cette période</div></div>';
                 return;
             }
 
-            // Cartes métriques
-            const intensityStr = stats.avgIntensity !== null
-                ? `${stats.avgIntensity}<span style="font-size:15px;font-weight:500;opacity:0.6">/10</span>`
+            var intensityStr = stats.avgIntensity !== null
+                ? stats.avgIntensity + '<span style="font-size:15px;font-weight:500;opacity:0.6">/10</span>'
                 : '—';
-            const durationStr = stats.avgDuration !== null ? `~${formatMinutes(stats.avgDuration)}` : '—';
-            const durationSub = (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration)
-                ? `min ${formatMinutes(stats.minDuration)} · max ${formatMinutes(stats.maxDuration)}`
+            var durationStr = stats.avgDuration !== null ? '~' + formatMins(stats.avgDuration) : '—';
+            var durationSub = (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration)
+                ? 'min ' + formatMins(stats.minDuration) + ' · max ' + formatMins(stats.maxDuration)
                 : '';
-            const profileStr = stats.topProfile ? `${stats.topProfile.icon} ${stats.topProfile.name}` : '—';
-            const typeStr = stats.topType ? stats.topType.name : '—';
-            const typeSub = stats.topType ? `${stats.topType.count} fois` : '';
+            var profileStr = stats.topProfile ? stats.topProfile.icon + ' ' + stats.topProfile.name : '—';
+            var typeStr = stats.topType ? stats.topType.name : '—';
+            var typeSub = stats.topType ? stats.topType.count + ' fois' : '';
 
-            let deltaStr = '';
-            if (stats.evolution.previous > 0) {
-                const d = stats.evolution.delta;
-                deltaStr = `<div class="metric-delta">${d > 0 ? '+' : ''}${d} vs période préc.</div>`;
+            var deltaStr = '';
+            if (stats.prevCount > 0) {
+                var d = stats.total - stats.prevCount;
+                deltaStr = '<div class="metric-delta">' + (d > 0 ? '+' : '') + d + ' vs période préc.</div>';
             }
 
-            // Patterns
-            const maxDayCount = Math.max(...stats.dayOfWeek.map(d => d.count), 1);
-            const dayGridHtml = stats.dayOfWeek.map(d =>
-                `<div class="day-cell ${d.count === maxDayCount && d.count > 0 ? 'top-day' : ''}">
-                    <div class="day-name">${d.name}</div>
-                    <div class="day-count">${d.count}</div>
-                </div>`).join('');
+            var maxDayCount = 0;
+            for (var di = 0; di < stats.dayOfWeek.length; di++) {
+                if (stats.dayOfWeek[di].count > maxDayCount) maxDayCount = stats.dayOfWeek[di].count;
+            }
+            if (maxDayCount === 0) maxDayCount = 1;
 
-            const maxHourCount = Math.max(...stats.hourSlots.map(s => s.count), 1);
-            const hourGridHtml = stats.hourSlots.map(s =>
-                `<div class="hour-cell">
-                    <div class="hour-name">${s.name}</div>
-                    <div class="hour-range">${s.range}</div>
-                    <div class="hour-count">${s.count}</div>
-                </div>`).join('');
+            var dayGridHtml = '';
+            for (var dg = 0; dg < stats.dayOfWeek.length; dg++) {
+                var day = stats.dayOfWeek[dg];
+                var isTop = day.count === maxDayCount && day.count > 0;
+                dayGridHtml += '<div class="day-cell' + (isTop ? ' top-day' : '') + '">' +
+                    '<div class="day-name">' + day.name + '</div>' +
+                    '<div class="day-count">' + day.count + '</div></div>';
+            }
 
-            main.innerHTML = `
-                ${lastCard}
+            var hourGridHtml = '';
+            for (var hg = 0; hg < stats.hourSlots.length; hg++) {
+                var slot = stats.hourSlots[hg];
+                hourGridHtml += '<div class="hour-cell">' +
+                    '<div class="hour-name">' + slot.name + '</div>' +
+                    '<div class="hour-range">' + slot.range + '</div>' +
+                    '<div class="hour-count">' + slot.count + '</div></div>';
+            }
 
-                <div class="narrative-card">${generateNarrative(stats, days, from, to)}</div>
-
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-header"><span class="metric-icon">🔴</span><span class="metric-label">Nombre de crises</span></div>
-                        <div class="metric-value">${stats.total}</div>
-                        ${deltaStr}
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-header"><span class="metric-icon">⚡</span><span class="metric-label">Intensité moyenne</span></div>
-                        <div class="metric-value">${intensityStr}</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-header"><span class="metric-icon">⏱</span><span class="metric-label">Durée moyenne</span></div>
-                        <div class="metric-value small">${durationStr}</div>
-                        ${durationSub ? `<div class="metric-sub">${durationSub}</div>` : ''}
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-header"><span class="metric-icon">📍</span><span class="metric-label">Contexte principal</span></div>
-                        <div class="metric-value small">${profileStr}</div>
-                    </div>
-                    <div class="metric-card wide">
-                        <div class="metric-header"><span class="metric-icon">🧠</span><span class="metric-label">Type de crise le plus fréquent</span></div>
-                        <div class="metric-value small">${typeStr}</div>
-                        ${typeSub ? `<div class="metric-sub">${typeSub}</div>` : ''}
-                    </div>
-                </div>
-
-                <div class="section">
-                    <div class="section-title">🕐 Quand surviennent tes crises ?</div>
-                    <div class="subsection-title">Jour de la semaine</div>
-                    <div class="day-grid">${dayGridHtml}</div>
-                    <div class="subsection-title">Moment de la journée</div>
-                    <div class="hour-grid">${hourGridHtml}</div>
-                </div>
-
-                ${renderToggleSection('triggers', '🎯 Déclencheurs', stats.triggerStats, viewModes.triggers)}
-                ${renderToggleSection('besoins', '🤲 Besoins exprimés', stats.besoinCounts, viewModes.besoins)}
-
-                <button class="export-stats-btn" onclick="exportStats()">📋 Copier le résumé</button>
-            `;
+            main.innerHTML = lastCard +
+                '<div class="narrative-card">' + buildNarrative(stats, days, from, to) + '</div>' +
+                '<div class="metrics-grid">' +
+                '<div class="metric-card">' +
+                '<div class="metric-header"><span class="metric-icon">🔴</span><span class="metric-label">Nombre de crises</span></div>' +
+                '<div class="metric-value">' + stats.total + '</div>' + deltaStr + '</div>' +
+                '<div class="metric-card">' +
+                '<div class="metric-header"><span class="metric-icon">⚡</span><span class="metric-label">Intensité moyenne</span></div>' +
+                '<div class="metric-value">' + intensityStr + '</div></div>' +
+                '<div class="metric-card">' +
+                '<div class="metric-header"><span class="metric-icon">⏱</span><span class="metric-label">Durée moyenne</span></div>' +
+                '<div class="metric-value small">' + durationStr + '</div>' +
+                (durationSub ? '<div class="metric-sub">' + durationSub + '</div>' : '') + '</div>' +
+                '<div class="metric-card">' +
+                '<div class="metric-header"><span class="metric-icon">📍</span><span class="metric-label">Contexte principal</span></div>' +
+                '<div class="metric-value small">' + profileStr + '</div></div>' +
+                '<div class="metric-card wide">' +
+                '<div class="metric-header"><span class="metric-icon">🧠</span><span class="metric-label">Type de crise le plus fréquent</span></div>' +
+                '<div class="metric-value small">' + typeStr + '</div>' +
+                (typeSub ? '<div class="metric-sub">' + typeSub + '</div>' : '') + '</div></div>' +
+                '<div class="section">' +
+                '<div class="section-title">🕐 Quand surviennent tes crises ?</div>' +
+                '<div class="subsection-title">Jour de la semaine</div>' +
+                '<div class="day-grid">' + dayGridHtml + '</div>' +
+                '<div class="subsection-title">Moment de la journée</div>' +
+                '<div class="hour-grid">' + hourGridHtml + '</div></div>' +
+                renderToggleSection('triggers', '🎯 Déclencheurs', stats.triggerStats, viewModes.triggers) +
+                renderToggleSection('besoins', '🤲 Besoins exprimés', stats.besoinCounts, viewModes.besoins) +
+                '<button class="export-stats-btn" onclick="exportStats()">📋 Copier le résumé</button>';
         }
 
         /* ---------- EXPORT ---------- */
+
         function exportStats() {
-            const stats = computeStats(currentDays, customFrom, customTo);
-            const sinceLastCrisis = computeSinceLastCrisis();
+            var stats = computeStats(currentDays, customFrom, customTo);
             if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
 
-            const periodLabel = currentDays === 7 ? '7 derniers jours' : currentDays === 30 ? '30 derniers jours'
-                : currentDays === 365 ? 'dernière année' : `du ${customFrom} au ${customTo}`;
+            var periodLabel = currentDays === 7 ? '7 derniers jours'
+                : currentDays === 30 ? '30 derniers jours'
+                : currentDays === 365 ? 'dernière année'
+                : 'du ' + customFrom + ' au ' + customTo;
 
-            let text = `== Statistiques Nora — ${periodLabel} ==\n\n`;
-            text += `Crises : ${stats.total}`;
-            if (stats.evolution.previous > 0) { const d = stats.evolution.delta; text += ` (${d >= 0 ? '+' : ''}${d} vs période préc.)`; }
+            var text = '== Statistiques Nora — ' + periodLabel + ' ==\n\n';
+            text += 'Crises : ' + stats.total;
+            if (stats.prevCount > 0) {
+                var d = stats.total - stats.prevCount;
+                text += ' (' + (d >= 0 ? '+' : '') + d + ' vs période préc.)';
+            }
             text += '\n';
-            if (stats.avgIntensity !== null) text += `Intensité moyenne : ${stats.avgIntensity}/10\n`;
+            if (stats.avgIntensity !== null) text += 'Intensité moyenne : ' + stats.avgIntensity + '/10\n';
             if (stats.avgDuration !== null) {
-                text += `Durée moyenne : ~${formatMinutes(stats.avgDuration)}`;
-                if (stats.minDuration !== null && stats.maxDuration !== null) text += ` (min ${formatMinutes(stats.minDuration)} / max ${formatMinutes(stats.maxDuration)})`;
+                text += 'Durée moyenne : ~' + formatMins(stats.avgDuration);
+                if (stats.minDuration !== null && stats.maxDuration !== null) {
+                    text += ' (min ' + formatMins(stats.minDuration) + ' / max ' + formatMins(stats.maxDuration) + ')';
+                }
                 text += '\n';
             }
-            if (stats.topProfile) text += `Contexte principal : ${stats.topProfile.name}\n`;
-            if (stats.topType) text += `Type le plus fréquent : ${stats.topType.name} (${stats.topType.count}×)\n`;
-            if (sinceLastCrisis) text += `Dernière crise : ${sinceLastCrisis}\n`;
+            if (stats.topProfile) text += 'Contexte principal : ' + stats.topProfile.name + '\n';
+            if (stats.topType) text += 'Type le plus fréquent : ' + stats.topType.name + ' (' + stats.topType.count + ' fois)\n';
+            var last = sinceLastCrisis();
+            if (last) text += 'Dernière crise : ' + last + '\n';
             if (stats.triggerStats.length) {
-                text += `\nDéclencheurs :\n`;
-                stats.triggerStats.slice(0, 5).forEach((t, i) => {
-                    text += `  ${i + 1}. ${t.name} (${t.count}×)${t.avgIntensity !== null ? ' — ' + t.avgIntensity + '/10' : ''}\n`;
-                });
+                text += '\nDéclencheurs :\n';
+                var top5t = stats.triggerStats.slice(0, 5);
+                for (var ti = 0; ti < top5t.length; ti++) {
+                    var t = top5t[ti];
+                    text += '  ' + (ti + 1) + '. ' + t.name + ' (' + t.count + 'x)';
+                    if (t.avgIntensity !== null) text += ' — ' + t.avgIntensity + '/10';
+                    text += '\n';
+                }
             }
             if (stats.besoinCounts.length) {
-                text += `\nBesoins :\n`;
-                stats.besoinCounts.slice(0, 5).forEach((b, i) => { text += `  ${i + 1}. ${b.name} (${b.count}×)\n`; });
+                text += '\nBesoins :\n';
+                var top5b = stats.besoinCounts.slice(0, 5);
+                for (var bi = 0; bi < top5b.length; bi++) {
+                    text += '  ' + (bi + 1) + '. ' + top5b[bi].name + ' (' + top5b[bi].count + 'x)\n';
+                }
             }
-            text += `\nExport généré le ${new Date().toLocaleDateString('fr-FR')} depuis Nora.`;
+            text += '\nExport généré le ' + new Date().toLocaleDateString('fr-FR') + ' depuis Nora.';
 
-            if (navigator.clipboard?.writeText) {
-                navigator.clipboard.writeText(text).then(() => alert('Résumé copié dans le presse-papier !'))
-                    .catch(() => downloadText(text));
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(function() { alert('Résumé copié !'); })
+                    .catch(function() { downloadText(text); });
             } else {
                 downloadText(text);
             }
         }
 
         function downloadText(text) {
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `stats-nora-${new Date().toISOString().split('T')[0]}.txt`;
-            a.click(); URL.revokeObjectURL(url);
+            var blob = new Blob([text], { type: 'text/plain' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'stats-nora-' + new Date().toISOString().split('T')[0] + '.txt';
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         /* ---------- PÉRIODE ---------- */
+
         function selectPeriod(days) {
             currentDays = days;
-            document.querySelectorAll('.period-btn').forEach(btn => {
-                btn.classList.toggle('active', parseInt(btn.dataset.days) === days);
-            });
-            document.getElementById('dateRangePanel').classList.toggle('visible', days === 0);
-            if (days !== 0) renderCurrent();
+            var btns = document.querySelectorAll('.period-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', parseInt(btns[i].getAttribute('data-days'), 10) === days);
+            }
+            var panel = document.getElementById('dateRangePanel');
+            if (days === 0) panel.classList.add('visible');
+            else { panel.classList.remove('visible'); renderCurrent(); }
         }
 
         function applyCustomRange() {
-            const from = document.getElementById('dateFrom').value;
-            const to = document.getElementById('dateTo').value;
+            var from = document.getElementById('dateFrom').value;
+            var to = document.getElementById('dateTo').value;
             if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
             if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
-            customFrom = from; customTo = to;
+            customFrom = from;
+            customTo = to;
             renderCurrent();
         }
 
         function renderCurrent() {
-            render(currentDays, customFrom, customTo);
+            try {
+                render(currentDays, customFrom, customTo);
+            } catch (err) {
+                document.getElementById('mainContent').innerHTML =
+                    '<div class="empty-state"><div class="empty-icon">⚠️</div>' +
+                    '<div class="empty-text">Erreur de chargement.<br>Réessaie.</div></div>';
+            }
         }
 
-        /* ---------- INIT ---------- */
         renderCurrent();
     </script>
     <script src="nora-scroll.js"></script>
