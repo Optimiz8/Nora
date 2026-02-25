@@ -360,6 +360,58 @@
 
         .toast.visible { display: block; }
 
+        /* ---------- CARD PREVIEW ---------- */
+        .card-preview-wrap {
+            margin-bottom: 16px;
+        }
+
+        .card-preview-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(46, 58, 89, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .card-preview {
+            border: 1.5px solid rgba(46, 58, 89, 0.15);
+            border-radius: 12px;
+            padding: 14px;
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .card-preview-emoji-sm {
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            font-size: 15px;
+            line-height: 1;
+        }
+
+        .card-preview-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            text-align: center;
+            line-height: 1.3;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            word-break: break-word;
+            width: 100%;
+        }
+
+        .card-preview-text.placeholder {
+            opacity: 0.35;
+            font-weight: 400;
+        }
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -412,7 +464,15 @@
             </div>
 
             <label class="modal-label" for="textInput">Texte principal</label>
-            <input type="text" class="modal-input" id="textInput" placeholder="Ex : Ne me touchez pas" maxlength="60">
+            <input type="text" class="modal-input" id="textInput" placeholder="Ex : Ne me touchez pas" maxlength="60" oninput="updateCardPreview()">
+
+            <div class="card-preview-wrap">
+                <div class="card-preview-label">Aperçu de la carte</div>
+                <div class="card-preview">
+                    <div class="card-preview-emoji-sm" id="cardPreviewEmoji" style="display:none"></div>
+                    <div class="card-preview-text placeholder" id="cardPreviewText">Ton texte apparaîtra ici</div>
+                </div>
+            </div>
 
             <label class="modal-label" for="sousTexteInput">Sous-texte <span style="font-weight:400; opacity:0.7">(optionnel)</span></label>
             <textarea class="modal-input modal-textarea" id="sousTexteInput" placeholder="Ex : Ne me touchez pas, même pour aider. Merci." maxlength="200"></textarea>
@@ -464,6 +524,7 @@
             const isActive = !showIcons();
             localStorage.setItem('cartesShowIcons', isActive ? 'true' : 'false');
             document.getElementById('iconsToggle').classList.toggle('active', isActive);
+            showToast(isActive ? 'Icônes affichées sur les cartes' : 'Icônes masquées sur les cartes');
         }
 
         function initToggle() {
@@ -535,6 +596,7 @@
                 document.getElementById('sousTexteInput').value = '';
             }
 
+            updateCardPreview();
             document.getElementById('modalBackdrop').classList.add('visible');
             setTimeout(() => document.getElementById('textInput').focus(), 100);
         }
@@ -551,6 +613,36 @@
         function updateEmojiPreview() {
             const val = document.getElementById('emojiInput').value.trim();
             document.getElementById('emojiPreview').textContent = val || '💬';
+            updateCardPreview();
+        }
+
+        /* ---------- CARD PREVIEW ---------- */
+        function getCardFontSize(len) {
+            if (len <= 15) return 15;
+            if (len <= 22) return 14;
+            if (len <= 30) return 13;
+            if (len <= 40) return 12;
+            return 11;
+        }
+
+        function updateCardPreview() {
+            const text = document.getElementById('textInput').value;
+            const emoji = document.getElementById('emojiInput').value.trim() || '💬';
+            const previewText = document.getElementById('cardPreviewText');
+            const previewEmoji = document.getElementById('cardPreviewEmoji');
+
+            if (text) {
+                previewText.textContent = text;
+                previewText.classList.remove('placeholder');
+                previewText.style.fontSize = getCardFontSize(text.length) + 'px';
+            } else {
+                previewText.textContent = 'Ton texte apparaîtra ici';
+                previewText.classList.add('placeholder');
+                previewText.style.fontSize = '15px';
+            }
+
+            previewEmoji.textContent = emoji;
+            previewEmoji.style.display = showIcons() ? 'block' : 'none';
         }
 
         function saveCard() {
