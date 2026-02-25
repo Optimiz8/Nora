@@ -690,7 +690,11 @@
             setTimeout(() => toast.classList.remove('visible'), 2500);
         }
 
-        function goBack() { window.location.href = 'parametres.html'; }
+        function goBack() {
+            var tutorielRetour = localStorage.getItem('tutorielRetour');
+            if (tutorielRetour) { localStorage.removeItem('tutorielRetour'); window.location.href = 'tutoriel.html'; }
+            else { window.location.href = 'parametres.html'; }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             initToggle();

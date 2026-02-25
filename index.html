@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <script>if (!localStorage.getItem('onboardingDone') && !localStorage.getItem('onboardingSkipped')) { location.replace('tutoriel.html'); }</script>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
@@ -256,6 +257,37 @@
         .crisis-toast.visible {
             opacity: 1;
         }
+
+        /* Bandeau setup non terminé */
+        .setup-banner {
+            display: none;
+            background: rgba(245, 228, 204, 0.08);
+            border: 1.5px solid rgba(245, 228, 204, 0.2);
+            color: var(--light);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .setup-banner.visible { display: flex; }
+
+        .setup-banner-icon { font-size: 22px; flex-shrink: 0; }
+
+        .setup-banner-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .setup-banner-text strong { font-size: 16px; font-weight: 600; }
+
+        .setup-banner-text span { font-size: 13px; opacity: 0.65; }
+
+        .setup-banner-arrow { font-size: 20px; opacity: 0.5; }
     </style>
 </head>
 
@@ -271,6 +303,14 @@
             <div class="crisis-banner-dot"></div>
             <div class="crisis-banner-text">Crise en cours</div>
             <div class="crisis-banner-arrow">›</div>
+        </div>
+        <div class="setup-banner" id="setupBanner">
+            <div class="setup-banner-icon">⚙️</div>
+            <div class="setup-banner-text">
+                <strong>Terminer la configuration</strong>
+                <span>3 étapes rapides pour personnaliser Nora</span>
+            </div>
+            <div class="setup-banner-arrow">›</div>
         </div>
         <h1 class="main-title">De quoi as-tu besoin&nbsp;?</h1>
 
@@ -631,6 +671,13 @@
         if (localStorage.getItem('criseEnCours') === 'true') {
             document.getElementById('crisisBanner').classList.add('visible');
         }
+
+        // Afficher la bannière setup si onboarding skippé mais non terminé
+        var setupBanner = document.getElementById('setupBanner');
+        if (localStorage.getItem('onboardingSkipped') === 'true' && !localStorage.getItem('onboardingDone')) {
+            setupBanner.classList.add('visible');
+        }
+        setupBanner.onclick = function() { location.href = 'tutoriel.html'; };
 
         // Vérifier fin de crise après un court délai (laisser la page se charger)
         setTimeout(checkCrisisEnd, 500);
