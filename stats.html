@@ -11,26 +11,14 @@
     <link rel="stylesheet" href="nora-common.css">
     <title>Nora – Statistiques</title>
     <style>
-        body { padding-bottom: 32px; }
-
-        /* ---------- LABEL DE SECTION ---------- */
-
-        .section-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--light);
-            opacity: 0.45;
-            padding: 16px 16px 4px;
-        }
+        body { padding-bottom: 40px; }
 
         /* ---------- PÉRIODE ---------- */
 
         .period-bar {
             display: flex;
             gap: 8px;
-            padding: 0 16px;
+            padding: 12px 16px 0;
         }
 
         .period-btn {
@@ -38,7 +26,7 @@
             background: rgba(245, 228, 204, 0.1);
             border: 2px solid rgba(245, 228, 204, 0.15);
             color: var(--light);
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             padding: 10px 4px;
             border-radius: 10px;
@@ -64,17 +52,12 @@
 
         .date-range-panel.visible { display: flex; }
 
-        .date-range-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .date-range-row { display: flex; gap: 10px; align-items: center; }
 
         .date-range-label {
             font-size: 14px;
             font-weight: 600;
             color: var(--light);
-            white-space: nowrap;
             width: 44px;
             flex-shrink: 0;
         }
@@ -91,10 +74,7 @@
             color-scheme: dark;
         }
 
-        .date-range-input:focus {
-            outline: none;
-            border-color: var(--light);
-        }
+        .date-range-input:focus { outline: none; border-color: var(--light); }
 
         .date-range-apply {
             background: var(--accent);
@@ -116,212 +96,160 @@
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-        }
-
-        /* ---------- RÉSUMÉ NARRATIF ---------- */
-
-        .narrative-card {
-            background: var(--light);
-            border-radius: 14px;
-            padding: 16px;
-            font-size: 15px;
-            line-height: 1.65;
-            color: var(--dark);
-        }
-
-        .narrative-card strong { font-weight: 700; }
-
-        /* ---------- CARTES MÉTRIQUES ---------- */
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .metric-card {
-            background: var(--light);
-            border-radius: 14px;
-            padding: 13px 12px 11px;
-        }
-
-        .metric-card.wide { grid-column: 1 / -1; }
-
-        .metric-header {
-            display: flex;
-            align-items: center;
             gap: 6px;
-            margin-bottom: 6px;
         }
 
-        .metric-icon { font-size: 15px; line-height: 1; }
+        /* ---------- TITRES DE SECTION ---------- */
 
-        .metric-label {
+        .section-tag {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--light);
+            opacity: 0.8;
+            padding: 14px 2px 6px;
+        }
+
+        /* ---------- CARTE BLANCHE ---------- */
+
+        .stat-card {
+            background: var(--light);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        /* ---------- LIGNES LABEL / VALEUR ---------- */
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 16px;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
+            gap: 12px;
+        }
+
+        .stat-row:last-child { border-bottom: none; }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--dark);
+            opacity: 0.65;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            text-align: right;
+        }
+
+        .stat-value.large { font-size: 22px; }
+
+        .stat-delta {
             font-size: 12px;
             font-weight: 600;
+            margin-left: 6px;
             color: var(--dark);
             opacity: 0.55;
         }
 
-        .metric-value {
-            font-size: 26px;
-            font-weight: 700;
+        .stat-sub {
+            font-size: 12px;
+            font-weight: 400;
             color: var(--dark);
-            line-height: 1.1;
-        }
-
-        .metric-value.small { font-size: 18px; }
-
-        .metric-sub {
-            font-size: 11px;
-            color: var(--dark);
-            opacity: 0.45;
-            margin-top: 3px;
-        }
-
-        .metric-delta {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--dark);
-            opacity: 0.45;
+            opacity: 0.5;
+            display: block;
             margin-top: 2px;
         }
 
-        /* ---------- SECTIONS ---------- */
+        /* ---------- DERNIÈRE CRISE ---------- */
 
-        .section {
+        .last-crisis-row {
             background: var(--light);
             border-radius: 14px;
-            padding: 14px 14px 8px;
-        }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 12px;
-        }
-
-        .subsection-title {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--dark);
-            opacity: 0.5;
-            margin-bottom: 8px;
-            margin-top: 12px;
-        }
-
-        /* ---------- TOGGLE RAPIDE / DÉTAIL ---------- */
-
-        .section-header {
+            padding: 13px 16px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            align-items: center;
         }
 
-        .view-toggle {
-            display: flex;
+        .last-crisis-label { font-size: 14px; color: var(--dark); opacity: 0.65; }
+        .last-crisis-value { font-size: 16px; font-weight: 700; color: var(--dark); }
+
+        /* ---------- GRILLE MOMENTS ---------- */
+
+        .moment-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
             background: rgba(46, 58, 89, 0.08);
-            border-radius: 8px;
-            padding: 3px;
-            gap: 2px;
+            border-radius: 14px;
+            overflow: hidden;
         }
 
-        .view-toggle-btn {
-            background: none;
-            border: none;
+        .moment-cell {
+            background: var(--light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 14px 4px;
+        }
+
+        .moment-cell.highlight { background: var(--dark); }
+
+        .moment-name {
             font-size: 12px;
             font-weight: 600;
             color: var(--dark);
-            opacity: 0.5;
-            padding: 4px 10px;
-            border-radius: 6px;
-            cursor: pointer;
+            opacity: 0.7;
         }
 
-        .view-toggle-btn.active {
-            background: var(--dark);
+        .moment-range {
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.6;
+        }
+
+        .moment-count {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-top: 2px;
+        }
+
+        .moment-cell.highlight .moment-name,
+        .moment-cell.highlight .moment-range,
+        .moment-cell.highlight .moment-count {
             color: var(--light);
             opacity: 1;
         }
 
-        /* ---------- VUE RAPIDE (pills) ---------- */
-
-        .pills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 7px;
-            padding-bottom: 8px;
-        }
-
-        .pill {
-            background: rgba(46, 58, 89, 0.08);
-            color: var(--dark);
-            font-size: 13px;
-            font-weight: 600;
-            padding: 6px 11px;
-            border-radius: 20px;
-        }
-
-        /* ---------- VUE DÉTAIL (barres) ---------- */
-
-        .rank-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
+        /* ---------- BARRES DE CLASSEMENT ---------- */
 
         .rank-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
+        }
+
+        .rank-item:last-child { border-bottom: none; }
+
+        .rank-header {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 7px;
         }
 
-        .rank-number {
-            width: 22px;
-            height: 22px;
-            background: var(--dark);
-            color: var(--light);
-            border-radius: 50%;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+        .rank-name { font-size: 14px; font-weight: 600; color: var(--dark); }
 
-        .rank-number.secondary {
-            background: rgba(46, 58, 89, 0.3);
-            font-size: 11px;
-        }
-
-        .rank-bar-wrap {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .rank-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .rank-bar-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .rank-meta { font-size: 13px; color: var(--dark); opacity: 0.55; }
 
         .rank-bar-bg {
-            flex: 1;
             height: 6px;
             background: rgba(46, 58, 89, 0.1);
             border-radius: 3px;
@@ -334,140 +262,29 @@
             border-radius: 3px;
         }
 
-        .rank-count {
-            font-size: 12px;
-            color: var(--dark);
-            opacity: 0.55;
-            white-space: nowrap;
-            font-weight: 600;
-        }
+        /* ---------- CAPACITÉS ---------- */
 
-        .intensity-tag {
+        .cap-category {
             font-size: 11px;
-            color: var(--dark);
-            opacity: 0.45;
-            white-space: nowrap;
-        }
-
-        .intensity-legend {
-            font-size: 11px;
-            color: var(--dark);
-            opacity: 0.4;
-            font-style: italic;
-            padding: 2px 0 6px;
-        }
-
-        /* ---------- ACCORDÉON ---------- */
-
-        .accordion-toggle {
-            width: 100%;
-            background: none;
-            border: none;
-            border-top: 1px solid rgba(46, 58, 89, 0.1);
-            padding: 9px 0;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--dark);
-            opacity: 0.6;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .accordion-toggle:active { opacity: 1; }
-
-        .accordion-body { display: none; padding-bottom: 6px; }
-        .accordion-body.open { display: block; }
-
-        .all-rank-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding-top: 8px;
-        }
-
-        /* ---------- JOURS / HEURES ---------- */
-
-        .day-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 12px;
-        }
-
-        .day-cell {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 6px 2px;
-            border-radius: 8px;
-            background: rgba(46, 58, 89, 0.06);
-        }
-
-        .day-cell.top-day { background: var(--dark); }
-
-        .day-name {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--dark);
-            opacity: 0.55;
-        }
-
-        .day-count {
-            font-size: 14px;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
             color: var(--dark);
+            opacity: 0.5;
+            padding: 10px 16px 4px;
         }
 
-        .day-cell.top-day .day-name,
-        .day-cell.top-day .day-count {
-            color: var(--light);
-            opacity: 1;
-        }
-
-        .hour-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 8px;
-        }
-
-        .hour-cell {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 8px 4px;
-            border-radius: 8px;
-            background: rgba(46, 58, 89, 0.06);
-        }
-
-        .hour-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--dark);
-            opacity: 0.7;
-        }
-
-        .hour-range {
-            font-size: 10px;
-            color: var(--dark);
-            opacity: 0.4;
-        }
-
-        .hour-count {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--dark);
+        .cap-category.cap-sep {
+            border-top: 1px solid rgba(46, 58, 89, 0.08);
+            padding-top: 14px;
+            margin-top: 4px;
         }
 
         /* ---------- EXPORT ---------- */
 
-        .export-stats-btn {
-            background: rgba(245, 228, 204, 0.08);
-            border: 2px solid rgba(245, 228, 204, 0.16);
+        .export-btn {
+            background: rgba(245, 228, 204, 0.14);
+            border: 2px solid rgba(245, 228, 204, 0.3);
             color: var(--light);
             font-size: 15px;
             font-weight: 600;
@@ -475,49 +292,26 @@
             border-radius: 12px;
             cursor: pointer;
             width: 100%;
+            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
 
-        .export-stats-btn:active {
-            background: rgba(245, 228, 204, 0.14);
-            transform: scale(0.98);
-        }
+        .export-btn:active { opacity: 0.8; transform: scale(0.98); }
 
         /* ---------- ÉTAT VIDE ---------- */
 
         .empty-state {
             text-align: center;
-            padding: 50px 20px 20px;
+            padding: 60px 20px;
             color: var(--light);
             opacity: 0.6;
         }
 
-        .empty-icon { font-size: 52px; margin-bottom: 12px; }
-        .empty-text { font-size: 16px; }
-
-        .no-data {
-            font-size: 13px;
-            color: var(--dark);
-            opacity: 0.4;
-            font-style: italic;
-            padding: 2px 0 8px;
-        }
-
-        .last-crisis-card {
-            background: var(--light);
-            border-radius: 14px;
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 15px;
-            color: var(--dark);
-        }
-
-        .last-crisis-value { font-weight: 700; }
+        .empty-icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-text { font-size: 16px; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -526,7 +320,6 @@
         <h1 class="page-title">Statistiques</h1>
     </header>
 
-    <div class="section-label">Période</div>
     <div class="period-bar">
         <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
         <button class="period-btn" data-days="30" onclick="selectPeriod(30)">30 j</button>
@@ -551,33 +344,17 @@
         var currentDays = 7;
         var customFrom = null;
         var customTo = null;
-        var viewModes = { triggers: 'detail', besoins: 'detail' };
 
         /* ---------- DONNÉES ---------- */
 
         function getJournal() {
-            try {
-                return JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            } catch (e) {
-                return [];
-            }
+            try { return JSON.parse(localStorage.getItem('journalCrises') || '[]'); }
+            catch (e) { return []; }
         }
 
         function getProfileName(profileId) {
-            var names = {
-                commun: 'Profil commun',
-                maison: 'Maison',
-                exterieur: 'Extérieur',
-                travail: 'Travail',
-                secours: 'Secours'
-            };
-            var icons = {
-                commun: '🌐', maison: '🏠', exterieur: '🌍', travail: '💼', secours: '🚑'
-            };
-            return {
-                name: names[profileId] || profileId || 'Inconnu',
-                icon: icons[profileId] || '📍'
-            };
+            var names = { commun: 'Profil commun', maison: 'Maison', exterieur: 'Extérieur', travail: 'Travail', secours: 'Secours' };
+            return names[profileId] || profileId || '—';
         }
 
         /* ---------- DURÉE ---------- */
@@ -585,29 +362,24 @@
         function parseDuration(str) {
             if (!str) return null;
             str = str.toLowerCase().trim();
-            var mins = 0;
-            var found = false;
+            var mins = 0, found = false;
             var hMatch = str.match(/(\d+)\s*h/);
             if (hMatch) { mins += parseInt(hMatch[1], 10) * 60; found = true; }
             var mMatch = str.match(/(\d+)\s*(min|mn|m\b)/);
             if (mMatch) { mins += parseInt(mMatch[1], 10); found = true; }
-            if (!found) {
-                var numMatch = str.match(/^(\d+)$/);
-                if (numMatch) { mins = parseInt(numMatch[1], 10); found = true; }
-            }
+            if (!found) { var n = str.match(/^(\d+)$/); if (n) { mins = parseInt(n[1], 10); found = true; } }
             return (found && mins > 0) ? mins : null;
         }
 
         function formatMins(m) {
             m = Math.round(m);
             if (m < 60) return m + ' min';
-            var h = Math.floor(m / 60);
-            var r = m % 60;
+            var h = Math.floor(m / 60), r = m % 60;
             return r > 0 ? h + 'h' + (r < 10 ? '0' : '') + r : h + 'h';
         }
 
-        function formatDateFR(dateStr) {
-            return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+        function formatDateFR(s) {
+            return new Date(s).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
         }
 
         /* ---------- FRÉQUENCES ---------- */
@@ -615,13 +387,10 @@
         function countFreq(arr) {
             var freq = {};
             for (var i = 0; i < arr.length; i++) {
-                var val = arr[i];
-                if (val) freq[val] = (freq[val] || 0) + 1;
+                if (arr[i]) freq[arr[i]] = (freq[arr[i]] || 0) + 1;
             }
             var result = [];
-            for (var key in freq) {
-                result.push({ name: key, count: freq[key] });
-            }
+            for (var k in freq) result.push({ name: k, count: freq[k] });
             result.sort(function(a, b) { return b.count - a.count; });
             return result;
         }
@@ -630,61 +399,63 @@
 
         function computeStats(days, from, to) {
             var journal = getJournal();
-            var entries = [];
-            var prevEntries = [];
+            var entries = [], prevEntries = [];
 
             if (days === 0 && from && to) {
                 var start = new Date(from); start.setHours(0, 0, 0, 0);
                 var end = new Date(to); end.setHours(23, 59, 59, 999);
-                var periodMs = end - start;
+                var span = end - start;
                 for (var i = 0; i < journal.length; i++) {
                     var d = new Date(journal[i].horodatage);
                     if (d >= start && d <= end) entries.push(journal[i]);
-                    else if (d >= new Date(start - periodMs) && d < start) prevEntries.push(journal[i]);
+                    else if (d >= new Date(start - span) && d < start) prevEntries.push(journal[i]);
                 }
             } else {
                 var now = new Date();
                 var cutoff = new Date(now); cutoff.setDate(now.getDate() - days); cutoff.setHours(0, 0, 0, 0);
-                var prevCutoff = new Date(now); prevCutoff.setDate(now.getDate() - days * 2); prevCutoff.setHours(0, 0, 0, 0);
+                var prevCut = new Date(now); prevCut.setDate(now.getDate() - days * 2); prevCut.setHours(0, 0, 0, 0);
                 for (var j = 0; j < journal.length; j++) {
                     var dj = new Date(journal[j].horodatage);
                     if (dj >= cutoff) entries.push(journal[j]);
-                    else if (dj >= prevCutoff) prevEntries.push(journal[j]);
+                    else if (dj >= prevCut) prevEntries.push(journal[j]);
                 }
             }
 
             if (!entries.length) return null;
 
-            var intensities = [];
-            var durations = [];
-            var profileArr = [];
-            var typeArr = [];
-            var triggerFreq = {};
-            var besoinArr = [];
+            var intensities = [], durations = [], profileArr = [], typeArr = [], triggerArr = [], besoinArr = [], capImpossArr = [], capDiffArr = [], etatsArr = [];
 
             for (var k = 0; k < entries.length; k++) {
                 var e = entries[k];
-                var ints = parseFloat(e.intensite);
-                if (!isNaN(ints)) intensities.push(ints);
-                var dur = parseDuration(e.duree);
-                if (dur !== null) durations.push(dur);
+                var iv = parseFloat(e.intensite); if (!isNaN(iv)) intensities.push(iv);
+                var dv = parseDuration(e.duree); if (dv !== null) durations.push(dv);
                 profileArr.push(e.profil || 'commun');
                 if (e.typeCrise) typeArr.push(e.typeCrise);
                 var decl = e.declencheurs || [];
-                for (var d2 = 0; d2 < decl.length; d2++) {
-                    if (decl[d2]) triggerFreq[decl[d2]] = (triggerFreq[decl[d2]] || 0) + 1;
-                }
+                for (var d2 = 0; d2 < decl.length; d2++) { if (decl[d2]) triggerArr.push(decl[d2]); }
                 var bess = e.besoins || [];
                 for (var b = 0; b < bess.length; b++) {
                     var bl = bess[b] && bess[b].label ? bess[b].label : bess[b];
                     if (bl) besoinArr.push(bl);
                 }
+                var caps = e.capacites || {};
+                var capImp = caps.impossible || [];
+                for (var ci = 0; ci < capImp.length; ci++) { if (capImp[ci]) capImpossArr.push(capImp[ci]); }
+                var capDif = caps.difficile || [];
+                for (var cd = 0; cd < capDif.length; cd++) { if (capDif[cd]) capDiffArr.push(capDif[cd]); }
+                var ets = e.etats || [];
+                for (var et = 0; et < ets.length; et++) {
+                    var etl = ets[et] && ets[et].label ? ets[et].label : ets[et];
+                    if (etl) etatsArr.push(etl);
+                }
             }
 
-            var avgIntensity = null;
+            var avgIntensity = null, minIntensity = null, maxIntensity = null;
             if (intensities.length) {
-                var sum = 0; for (var s = 0; s < intensities.length; s++) sum += intensities[s];
-                avgIntensity = parseFloat((sum / intensities.length).toFixed(1));
+                var isum = 0; for (var s = 0; s < intensities.length; s++) isum += intensities[s];
+                avgIntensity = parseFloat((isum / intensities.length).toFixed(1));
+                minIntensity = Math.min.apply(null, intensities);
+                maxIntensity = Math.max.apply(null, intensities);
             }
 
             var avgDuration = null, minDuration = null, maxDuration = null;
@@ -696,54 +467,22 @@
             }
 
             var profileCounts = countFreq(profileArr);
-            var topProfileData = profileCounts.length ? profileCounts[0] : null;
-            var topProfile = null;
-            if (topProfileData) {
-                var pInfo = getProfileName(topProfileData.name);
-                topProfile = { name: pInfo.name, icon: pInfo.icon, count: topProfileData.count };
+            var profiles = [];
+            for (var pi = 0; pi < profileCounts.length; pi++) {
+                profiles.push({ name: getProfileName(profileCounts[pi].name), count: profileCounts[pi].count });
             }
-
             var typeCounts = countFreq(typeArr);
-            var topType = typeCounts.length ? typeCounts[0] : null;
-
-            var triggerStats = [];
-            for (var tkey in triggerFreq) {
-                var tcnt = triggerFreq[tkey];
-                var tInts = [];
-                for (var te = 0; te < entries.length; te++) {
-                    var td = entries[te].declencheurs || [];
-                    var hasT = false;
-                    for (var td2 = 0; td2 < td.length; td2++) { if (td[td2] === tkey) { hasT = true; break; } }
-                    if (hasT) {
-                        var ti = parseFloat(entries[te].intensite);
-                        if (!isNaN(ti)) tInts.push(ti);
-                    }
-                }
-                var avgInt = null;
-                if (tInts.length >= 2) {
-                    var tsum = 0; for (var ts2 = 0; ts2 < tInts.length; ts2++) tsum += tInts[ts2];
-                    avgInt = parseFloat((tsum / tInts.length).toFixed(1));
-                }
-                triggerStats.push({ name: tkey, count: tcnt, avgIntensity: avgInt });
-            }
-            triggerStats.sort(function(a, b) { return b.count - a.count; });
-
-            var besoinCounts = countFreq(besoinArr);
-
-            var DAY_NAMES = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-            var dayFreq = [0, 0, 0, 0, 0, 0, 0];
-            for (var de = 0; de < entries.length; de++) {
-                dayFreq[new Date(entries[de].horodatage).getDay()]++;
-            }
-            var dayOfWeek = [1, 2, 3, 4, 5, 6, 0].map(function(i) {
-                return { name: DAY_NAMES[i], count: dayFreq[i] };
-            });
+            var triggers = countFreq(triggerArr);
+            var besoins = countFreq(besoinArr);
+            var capacitesImposs = countFreq(capImpossArr);
+            var capacitesDiff = countFreq(capDiffArr);
+            var etats = countFreq(etatsArr);
 
             var hourSlots = [
-                { name: 'Nuit', range: '0–6h', count: 0 },
-                { name: 'Matin', range: '6–12h', count: 0 },
-                { name: 'Après-m.', range: '12–18h', count: 0 },
-                { name: 'Soir', range: '18–24h', count: 0 }
+                { name: 'Nuit',    range: '0–6h',   count: 0 },
+                { name: 'Matin',   range: '6–12h',  count: 0 },
+                { name: 'Après-m.',range: '12–18h', count: 0 },
+                { name: 'Soir',    range: '18–24h', count: 0 }
             ];
             for (var he = 0; he < entries.length; he++) {
                 var h = new Date(entries[he].horodatage).getHours();
@@ -757,14 +496,18 @@
                 total: entries.length,
                 prevCount: prevEntries.length,
                 avgIntensity: avgIntensity,
+                minIntensity: minIntensity,
+                maxIntensity: maxIntensity,
                 avgDuration: avgDuration,
                 minDuration: minDuration,
                 maxDuration: maxDuration,
-                topProfile: topProfile,
-                topType: topType,
-                triggerStats: triggerStats,
-                besoinCounts: besoinCounts,
-                dayOfWeek: dayOfWeek,
+                profiles: profiles,
+                types: typeCounts,
+                triggers: triggers,
+                besoins: besoins,
+                capacitesImposs: capacitesImposs,
+                capacitesDiff: capacitesDiff,
+                etats: etats,
                 hourSlots: hourSlots
             };
         }
@@ -785,258 +528,147 @@
             return 'il y a ' + diff + ' j';
         }
 
-        /* ---------- NARRATIF ---------- */
+        /* ---------- RENDU ---------- */
 
-        function buildNarrative(stats, days, from, to) {
-            var periodLabel = days === 7 ? 'ces 7 derniers jours'
-                : days === 30 ? 'ces 30 derniers jours'
-                : days === 365 ? 'cette dernière année'
-                : 'du ' + formatDateFR(from) + ' au ' + formatDateFR(to);
-
-            var n = stats.total;
-            var pl = n > 1;
-            var parts = [];
-
-            var s1 = 'Sur ' + periodLabel + ', tu as traversé <strong>' + n + ' crise' + (pl ? 's' : '') + '</strong>';
-            if (stats.avgIntensity !== null) s1 += ' avec une intensité moyenne de <strong>' + stats.avgIntensity + '/10</strong>';
-            if (stats.avgDuration !== null) {
-                s1 += ' et une durée d\'environ <strong>' + formatMins(stats.avgDuration) + '</strong>';
-                if (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration) {
-                    s1 += ' (de ' + formatMins(stats.minDuration) + ' à ' + formatMins(stats.maxDuration) + ')';
-                }
+        function rankItems(list, maxCount) {
+            var html = '';
+            for (var i = 0; i < list.length; i++) {
+                var item = list[i];
+                var pct = Math.round((item.count / maxCount) * 100);
+                var meta = item.count + ' fois';
+                if (item.avgIntensity != null) meta += ' · ' + item.avgIntensity + '/10';
+                html += '<div class="rank-item">' +
+                    '<div class="rank-header">' +
+                    '<span class="rank-name">' + item.name + '</span>' +
+                    '<span class="rank-meta">' + meta + '</span>' +
+                    '</div>' +
+                    '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct + '%"></div></div>' +
+                    '</div>';
             }
-            parts.push(s1 + '.');
-
-            var ctxParts = [];
-            if (stats.topProfile) {
-                var preps = { 'Maison': 'à la maison', 'Extérieur': 'en extérieur', 'Travail': 'au travail',
-                    'Secours': 'en contexte secours', 'Profil commun': 'en contexte commun' };
-                var prep = preps[stats.topProfile.name] || 'en contexte ' + stats.topProfile.name;
-                ctxParts.push('surtout <strong>' + prep + '</strong>');
-            }
-            if (stats.topType) {
-                var adj = { 'Anticipatoire': 'anticipatoires', 'Réactionnelle': 'réactionnelles', 'Mixte': 'mixtes' };
-                var typeAdj = adj[stats.topType.name] || stats.topType.name.toLowerCase();
-                ctxParts.push('majoritairement de type <strong>' + typeAdj + '</strong>');
-            }
-            if (ctxParts.length) {
-                parts.push((pl ? 'Elles se sont passées ' : 'Elle s\'est passée ') + ctxParts.join(', ') + '.');
-            }
-
-            var topDay = null;
-            for (var di = 0; di < stats.dayOfWeek.length; di++) {
-                if (!topDay || stats.dayOfWeek[di].count > topDay.count) topDay = stats.dayOfWeek[di];
-            }
-            var topHour = null;
-            for (var hi = 0; hi < stats.hourSlots.length; hi++) {
-                if (!topHour || stats.hourSlots[hi].count > topHour.count) topHour = stats.hourSlots[hi];
-            }
-            if (topDay && topDay.count > 0) {
-                var hourLabels = { 'Nuit': 'la nuit', 'Matin': 'le matin', 'Après-m.': "l'après-midi", 'Soir': 'le soir' };
-                var s3 = 'Le jour où tu en as le plus : <strong>' + topDay.name + '</strong>';
-                if (topHour && topHour.count > 0) s3 += ', souvent <strong>' + (hourLabels[topHour.name] || topHour.name) + '</strong>';
-                parts.push(s3 + '.');
-            }
-
-            if (stats.triggerStats.length > 0) {
-                var top3t = stats.triggerStats.slice(0, 3);
-                var tnames = top3t.map(function(t) { return '<strong>' + t.name + '</strong>'; }).join(', ');
-                var tnb = top3t.length;
-                parts.push((pl ? 'Tes' : 'Ton') + ' principal' + (tnb > 1 ? 'aux' : '') + ' déclencheur' + (tnb > 1 ? 's' : '') + ' : ' + tnames + '.');
-                var withInt = stats.triggerStats.filter(function(t) { return t.avgIntensity !== null; });
-                if (withInt.length > 0) {
-                    var wt = withInt[0];
-                    parts.push((pl ? 'Les crises les plus intenses sont associées' : 'La crise la plus intense est associée') + ' à <strong>' + wt.name + '</strong> (' + wt.avgIntensity + '/10 en moyenne).');
-                }
-            }
-
-            if (stats.besoinCounts.length > 0) {
-                var top3b = stats.besoinCounts.slice(0, 3);
-                var bnames = top3b.map(function(b) { return '<strong>' + b.name + '</strong>'; }).join(', ');
-                var bnb = top3b.length;
-                parts.push((pl ? 'Tes' : 'Ton') + ' principal' + (bnb > 1 ? 'aux' : '') + ' besoin' + (bnb > 1 ? 's' : '') + ' : ' + bnames + '.');
-            }
-
-            return parts.join(' ');
+            return html;
         }
-
-        /* ---------- RENDU : LIGNE DE CLASSEMENT ---------- */
-
-        function rankRow(item, num, maxCount) {
-            var pct = Math.round((item.count / maxCount) * 100);
-            var numEl = (num > 0)
-                ? '<div class="rank-number">' + num + '</div>'
-                : '<div class="rank-number secondary">·</div>';
-            var intTag = (item.avgIntensity != null)
-                ? '<span class="intensity-tag">· ' + item.avgIntensity + '/10</span>'
-                : '';
-            return '<div class="rank-item">' + numEl +
-                '<div class="rank-bar-wrap">' +
-                '<div class="rank-name">' + item.name + '</div>' +
-                '<div class="rank-bar-row">' +
-                '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct + '%"></div></div>' +
-                '<div class="rank-count">' + item.count + '×</div>' +
-                intTag +
-                '</div></div></div>';
-        }
-
-        /* ---------- RENDU : SECTION AVEC TOGGLE ---------- */
-
-        function renderToggleSection(id, title, items, viewMode) {
-            var isDetail = viewMode === 'detail';
-            var maxCount = items.length ? items[0].count : 1;
-            var inner = '';
-
-            if (!items.length) {
-                inner = '<div class="no-data">Aucune donnée</div>';
-            } else if (!isDetail) {
-                inner = '<div class="pills-list">';
-                for (var i = 0; i < items.length; i++) {
-                    inner += '<span class="pill">' + items[i].name + '</span>';
-                }
-                inner += '</div>';
-            } else {
-                var top = items.slice(0, 3);
-                var rest = items.slice(3);
-                var hasIntensity = false;
-                for (var hi = 0; hi < items.length; hi++) {
-                    if (items[hi].avgIntensity != null) { hasIntensity = true; break; }
-                }
-
-                inner = '<div class="rank-list">';
-                for (var ti = 0; ti < top.length; ti++) {
-                    inner += rankRow(top[ti], ti + 1, maxCount);
-                }
-                inner += '</div>';
-
-                if (rest.length > 0) {
-                    var accId = 'acc_' + id;
-                    inner += '<button class="accordion-toggle" onclick="toggleAccordion(\'' + accId + '\', this)">';
-                    inner += '<span>Voir les ' + rest.length + ' autre' + (rest.length > 1 ? 's' : '') + '</span>';
-                    inner += '<span id="arr_' + accId + '">▾</span></button>';
-                    inner += '<div class="accordion-body" id="' + accId + '"><div class="all-rank-list">';
-                    for (var ri = 0; ri < rest.length; ri++) {
-                        inner += rankRow(rest[ri], 0, maxCount);
-                    }
-                    inner += '</div></div>';
-                }
-
-                if (hasIntensity) {
-                    inner += '<div class="intensity-legend">Le chiffre après · = intensité moy. lors des crises avec ce déclencheur</div>';
-                }
-            }
-
-            return '<div class="section">' +
-                '<div class="section-header">' +
-                '<div class="section-title">' + title + '</div>' +
-                '<div class="view-toggle">' +
-                '<button class="view-toggle-btn ' + (!isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'rapide\')">Rapide</button>' +
-                '<button class="view-toggle-btn ' + (isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'detail\')">Détail</button>' +
-                '</div></div>' +
-                inner +
-                '</div>';
-        }
-
-        function setView(id, mode) {
-            viewModes[id] = mode;
-            renderCurrent();
-        }
-
-        function toggleAccordion(id, btn) {
-            var body = document.getElementById(id);
-            var arrow = document.getElementById('arr_' + id);
-            var isOpen = body.classList.toggle('open');
-            if (arrow) arrow.textContent = isOpen ? '▴' : '▾';
-        }
-
-        /* ---------- RENDU PRINCIPAL ---------- */
 
         function render(days, from, to) {
             var stats = computeStats(days, from, to);
             var last = sinceLastCrisis();
             var main = document.getElementById('mainContent');
 
-            var lastCard = last
-                ? '<div class="last-crisis-card"><span style="font-size:18px">⌛</span>Dernière crise : <span class="last-crisis-value">' + last + '</span></div>'
+            var lastRow = last
+                ? '<div class="last-crisis-row"><span class="last-crisis-label">Dernière crise</span><span class="last-crisis-value">' + last + '</span></div>'
                 : '';
 
             if (!stats) {
-                main.innerHTML = lastCard +
+                main.innerHTML = lastRow +
                     '<div class="empty-state"><div class="empty-icon">📊</div>' +
-                    '<div class="empty-text">Aucune crise enregistrée<br>sur cette période</div></div>';
+                    '<div class="empty-text">Aucune crise enregistrée<br>sur cette période.</div></div>';
                 return;
             }
 
-            var intensityStr = stats.avgIntensity !== null
-                ? stats.avgIntensity + '<span style="font-size:15px;font-weight:500;opacity:0.6">/10</span>'
-                : '—';
-            var durationStr = stats.avgDuration !== null ? '~' + formatMins(stats.avgDuration) : '—';
-            var durationSub = (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration)
-                ? 'min ' + formatMins(stats.minDuration) + ' · max ' + formatMins(stats.maxDuration)
+            /* Bilan */
+            var delta = stats.total - stats.prevCount;
+            var deltaHtml = stats.prevCount > 0
+                ? '<span class="stat-delta">' + (delta > 0 ? '▲' : '▼') + ' ' + Math.abs(delta) + ' vs préc.</span>'
                 : '';
-            var profileStr = stats.topProfile ? stats.topProfile.icon + ' ' + stats.topProfile.name : '—';
-            var typeStr = stats.topType ? stats.topType.name : '—';
-            var typeSub = stats.topType ? stats.topType.count + ' fois' : '';
 
-            var deltaStr = '';
-            if (stats.prevCount > 0) {
-                var d = stats.total - stats.prevCount;
-                deltaStr = '<div class="metric-delta">' + (d > 0 ? '+' : '') + d + ' vs période préc.</div>';
+            var intensityHtml = stats.avgIntensity !== null ? stats.avgIntensity + '/10' : '—';
+            var intensitySub = (stats.minIntensity !== null && stats.maxIntensity !== null && stats.minIntensity !== stats.maxIntensity)
+                ? '<span class="stat-sub">min ' + stats.minIntensity + '/10 · max ' + stats.maxIntensity + '/10</span>'
+                : '';
+            var durationHtml = stats.avgDuration !== null ? formatMins(stats.avgDuration) : '—';
+            var durationSub = (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration)
+                ? '<span class="stat-sub">min ' + formatMins(stats.minDuration) + ' · max ' + formatMins(stats.maxDuration) + '</span>'
+                : '';
+
+            var bilanHtml =
+                '<div class="stat-row"><span class="stat-label">Crises</span><span class="stat-value large">' + stats.total + deltaHtml + '</span></div>' +
+                '<div class="stat-row"><span class="stat-label">Intensité moyenne</span><span class="stat-value">' + intensityHtml + intensitySub + '</span></div>' +
+                '<div class="stat-row"><span class="stat-label">Durée moyenne</span><span class="stat-value">' + durationHtml + durationSub + '</span></div>';
+
+            /* Moments */
+            var maxMoment = 0;
+            for (var mi = 0; mi < stats.hourSlots.length; mi++) {
+                if (stats.hourSlots[mi].count > maxMoment) maxMoment = stats.hourSlots[mi].count;
+            }
+            var momentHtml = '';
+            for (var mo = 0; mo < stats.hourSlots.length; mo++) {
+                var slot = stats.hourSlots[mo];
+                var isTop = slot.count === maxMoment && slot.count > 0;
+                momentHtml += '<div class="moment-cell' + (isTop ? ' highlight' : '') + '">' +
+                    '<div class="moment-name">' + slot.name + '</div>' +
+                    '<div class="moment-range">' + slot.range + '</div>' +
+                    '<div class="moment-count">' + slot.count + '</div>' +
+                    '</div>';
             }
 
-            var maxDayCount = 0;
-            for (var di = 0; di < stats.dayOfWeek.length; di++) {
-                if (stats.dayOfWeek[di].count > maxDayCount) maxDayCount = stats.dayOfWeek[di].count;
-            }
-            if (maxDayCount === 0) maxDayCount = 1;
+            /* Contextes */
+            var topContextes = stats.profiles.slice(0, 5);
+            var maxP = topContextes.length ? topContextes[0].count : 1;
+            var contextesHtml = topContextes.length
+                ? rankItems(topContextes, maxP)
+                : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun contexte enregistré</div>';
 
-            var dayGridHtml = '';
-            for (var dg = 0; dg < stats.dayOfWeek.length; dg++) {
-                var day = stats.dayOfWeek[dg];
-                var isTop = day.count === maxDayCount && day.count > 0;
-                dayGridHtml += '<div class="day-cell' + (isTop ? ' top-day' : '') + '">' +
-                    '<div class="day-name">' + day.name + '</div>' +
-                    '<div class="day-count">' + day.count + '</div></div>';
+            /* Types de crise */
+            var topTypes = stats.types.slice(0, 5);
+            var maxTy = topTypes.length ? topTypes[0].count : 1;
+            var typesHtml = topTypes.length
+                ? rankItems(topTypes, maxTy)
+                : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun type enregistré</div>';
+
+            /* Déclencheurs */
+            var topTriggers = stats.triggers.slice(0, 5);
+            var maxT = topTriggers.length ? topTriggers[0].count : 1;
+            var triggersHtml = topTriggers.length
+                ? rankItems(topTriggers, maxT)
+                : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun déclencheur enregistré</div>';
+
+            /* Besoins */
+            var topBesoins = stats.besoins.slice(0, 5);
+            var maxB = topBesoins.length ? topBesoins[0].count : 1;
+            var besoinsHtml = topBesoins.length
+                ? rankItems(topBesoins, maxB)
+                : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun besoin enregistré</div>';
+
+            /* États */
+            var topEtats = stats.etats.slice(0, 5);
+            var maxE = topEtats.length ? topEtats[0].count : 1;
+            var etatsHtml = topEtats.length
+                ? rankItems(topEtats, maxE)
+                : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun état enregistré</div>';
+
+            /* Capacités */
+            var topImposs = stats.capacitesImposs.slice(0, 5);
+            var topDiff = stats.capacitesDiff.slice(0, 5);
+            var capHtml = '';
+            if (topImposs.length === 0 && topDiff.length === 0) {
+                capHtml = '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucune capacité enregistrée</div>';
+            } else {
+                if (topImposs.length) {
+                    capHtml += '<div class="cap-category">Souvent impossible</div>' + rankItems(topImposs, topImposs[0].count);
+                }
+                if (topDiff.length) {
+                    capHtml += '<div class="cap-category' + (topImposs.length ? ' cap-sep' : '') + '">Souvent difficile</div>' + rankItems(topDiff, topDiff[0].count);
+                }
             }
 
-            var hourGridHtml = '';
-            for (var hg = 0; hg < stats.hourSlots.length; hg++) {
-                var slot = stats.hourSlots[hg];
-                hourGridHtml += '<div class="hour-cell">' +
-                    '<div class="hour-name">' + slot.name + '</div>' +
-                    '<div class="hour-range">' + slot.range + '</div>' +
-                    '<div class="hour-count">' + slot.count + '</div></div>';
-            }
-
-            main.innerHTML = lastCard +
-                '<div class="narrative-card">' + buildNarrative(stats, days, from, to) + '</div>' +
-                '<div class="metrics-grid">' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">🔴</span><span class="metric-label">Nombre de crises</span></div>' +
-                '<div class="metric-value">' + stats.total + '</div>' + deltaStr + '</div>' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">⚡</span><span class="metric-label">Intensité moyenne</span></div>' +
-                '<div class="metric-value">' + intensityStr + '</div></div>' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">⏱</span><span class="metric-label">Durée moyenne</span></div>' +
-                '<div class="metric-value small">' + durationStr + '</div>' +
-                (durationSub ? '<div class="metric-sub">' + durationSub + '</div>' : '') + '</div>' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">📍</span><span class="metric-label">Contexte principal</span></div>' +
-                '<div class="metric-value small">' + profileStr + '</div></div>' +
-                '<div class="metric-card wide">' +
-                '<div class="metric-header"><span class="metric-icon">🧠</span><span class="metric-label">Type de crise le plus fréquent</span></div>' +
-                '<div class="metric-value small">' + typeStr + '</div>' +
-                (typeSub ? '<div class="metric-sub">' + typeSub + '</div>' : '') + '</div></div>' +
-                '<div class="section">' +
-                '<div class="section-title">🕐 Quand surviennent tes crises ?</div>' +
-                '<div class="subsection-title">Jour de la semaine</div>' +
-                '<div class="day-grid">' + dayGridHtml + '</div>' +
-                '<div class="subsection-title">Moment de la journée</div>' +
-                '<div class="hour-grid">' + hourGridHtml + '</div></div>' +
-                renderToggleSection('triggers', '🎯 Déclencheurs', stats.triggerStats, viewModes.triggers) +
-                renderToggleSection('besoins', '🤲 Besoins exprimés', stats.besoinCounts, viewModes.besoins) +
-                '<button class="export-stats-btn" onclick="exportStats()">📋 Copier le résumé</button>';
+            main.innerHTML =
+                lastRow +
+                '<div class="section-tag">Bilan</div>' +
+                '<div class="stat-card">' + bilanHtml + '</div>' +
+                '<div class="section-tag">Moment de la journée</div>' +
+                '<div class="moment-grid">' + momentHtml + '</div>' +
+                '<div class="section-tag">Contextes</div>' +
+                '<div class="stat-card">' + contextesHtml + '</div>' +
+                '<div class="section-tag">Types de crise</div>' +
+                '<div class="stat-card">' + typesHtml + '</div>' +
+                '<div class="section-tag">Déclencheurs</div>' +
+                '<div class="stat-card">' + triggersHtml + '</div>' +
+                '<div class="section-tag">Besoins</div>' +
+                '<div class="stat-card">' + besoinsHtml + '</div>' +
+                '<div class="section-tag">États</div>' +
+                '<div class="stat-card">' + etatsHtml + '</div>' +
+                '<div class="section-tag">Capacités</div>' +
+                '<div class="stat-card">' + capHtml + '</div>' +
+                '<button class="export-btn" onclick="exportStats()">📋 Copier le résumé</button>';
         }
 
         /* ---------- EXPORT ---------- */
@@ -1051,50 +683,49 @@
                 : 'du ' + customFrom + ' au ' + customTo;
 
             var text = '== Statistiques Nora — ' + periodLabel + ' ==\n\n';
-            text += 'Crises : ' + stats.total;
-            if (stats.prevCount > 0) {
-                var d = stats.total - stats.prevCount;
-                text += ' (' + (d >= 0 ? '+' : '') + d + ' vs période préc.)';
-            }
-            text += '\n';
+            text += 'Crises : ' + stats.total + '\n';
             if (stats.avgIntensity !== null) text += 'Intensité moyenne : ' + stats.avgIntensity + '/10\n';
             if (stats.avgDuration !== null) {
-                text += 'Durée moyenne : ~' + formatMins(stats.avgDuration);
-                if (stats.minDuration !== null && stats.maxDuration !== null) {
-                    text += ' (min ' + formatMins(stats.minDuration) + ' / max ' + formatMins(stats.maxDuration) + ')';
-                }
+                text += 'Durée moyenne : ' + formatMins(stats.avgDuration);
+                if (stats.minDuration !== null && stats.maxDuration !== null) text += ' (min ' + formatMins(stats.minDuration) + ' / max ' + formatMins(stats.maxDuration) + ')';
                 text += '\n';
             }
-            if (stats.topProfile) text += 'Contexte principal : ' + stats.topProfile.name + '\n';
-            if (stats.topType) text += 'Type le plus fréquent : ' + stats.topType.name + ' (' + stats.topType.count + ' fois)\n';
+            if (stats.profiles.length) text += 'Contexte principal : ' + stats.profiles[0].name + '\n';
+            if (stats.types.length) text += 'Type le plus fréquent : ' + stats.types[0].name + '\n';
             var last = sinceLastCrisis();
             if (last) text += 'Dernière crise : ' + last + '\n';
-            if (stats.triggerStats.length) {
+            if (stats.triggers.length) {
                 text += '\nDéclencheurs :\n';
-                var top5t = stats.triggerStats.slice(0, 5);
-                for (var ti = 0; ti < top5t.length; ti++) {
-                    var t = top5t[ti];
-                    text += '  ' + (ti + 1) + '. ' + t.name + ' (' + t.count + 'x)';
-                    if (t.avgIntensity !== null) text += ' — ' + t.avgIntensity + '/10';
-                    text += '\n';
-                }
+                var top5t = stats.triggers.slice(0, 5);
+                for (var ti = 0; ti < top5t.length; ti++) text += '  ' + (ti + 1) + '. ' + top5t[ti].name + ' (' + top5t[ti].count + ' fois)\n';
             }
-            if (stats.besoinCounts.length) {
+            if (stats.besoins.length) {
                 text += '\nBesoins :\n';
-                var top5b = stats.besoinCounts.slice(0, 5);
-                for (var bi = 0; bi < top5b.length; bi++) {
-                    text += '  ' + (bi + 1) + '. ' + top5b[bi].name + ' (' + top5b[bi].count + 'x)\n';
-                }
+                var top5b = stats.besoins.slice(0, 5);
+                for (var bi = 0; bi < top5b.length; bi++) text += '  ' + (bi + 1) + '. ' + top5b[bi].name + ' (' + top5b[bi].count + ' fois)\n';
             }
-            text += '\nExport généré le ' + new Date().toLocaleDateString('fr-FR') + ' depuis Nora.';
+            if (stats.etats.length) {
+                text += '\nÉtats :\n';
+                var top5e = stats.etats.slice(0, 5);
+                for (var ei = 0; ei < top5e.length; ei++) text += '  ' + (ei + 1) + '. ' + top5e[ei].name + ' (' + top5e[ei].count + ' fois)\n';
+            }
+            if (stats.capacitesImposs.length) {
+                text += '\nSouvent impossible :\n';
+                var top5i = stats.capacitesImposs.slice(0, 5);
+                for (var ii = 0; ii < top5i.length; ii++) text += '  ' + (ii + 1) + '. ' + top5i[ii].name + ' (' + top5i[ii].count + ' fois)\n';
+            }
+            if (stats.capacitesDiff.length) {
+                text += '\nSouvent difficile :\n';
+                var top5d = stats.capacitesDiff.slice(0, 5);
+                for (var di2 = 0; di2 < top5d.length; di2++) text += '  ' + (di2 + 1) + '. ' + top5d[di2].name + ' (' + top5d[di2].count + ' fois)\n';
+            }
+            text += '\nExport du ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text)
                     .then(function() { alert('Résumé copié !'); })
                     .catch(function() { downloadText(text); });
-            } else {
-                downloadText(text);
-            }
+            } else { downloadText(text); }
         }
 
         function downloadText(text) {
@@ -1125,18 +756,15 @@
             var to = document.getElementById('dateTo').value;
             if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
             if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
-            customFrom = from;
-            customTo = to;
+            customFrom = from; customTo = to;
             renderCurrent();
         }
 
         function renderCurrent() {
-            try {
-                render(currentDays, customFrom, customTo);
-            } catch (err) {
+            try { render(currentDays, customFrom, customTo); }
+            catch (err) {
                 document.getElementById('mainContent').innerHTML =
-                    '<div class="empty-state"><div class="empty-icon">⚠️</div>' +
-                    '<div class="empty-text">Erreur de chargement.<br>Réessaie.</div></div>';
+                    '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Erreur de chargement.<br>Réessaie.</div></div>';
             }
         }
 

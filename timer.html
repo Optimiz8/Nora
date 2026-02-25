@@ -1413,7 +1413,7 @@
       const map = { cercle:'circleWrap', barre:'barWrap', segments:'segmentsWrap', pixels:'pixelsWrap', kawaii:'kawaiiWrap', espace:'spaceWrap' };
       Object.values(map).forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
       const el = document.getElementById(map[s]);
-      if (el) el.style.display = '';
+      if (el) el.style.display = 'block';
       document.getElementById('styleIcon').textContent  = STYLE_ICONS[s];
       document.getElementById('styleLabel').textContent = STYLE_LABELS[s];
       if (s === 'pixels') { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
