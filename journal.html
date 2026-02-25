@@ -740,9 +740,9 @@
 
             <div class="export-options">
                 <div class="export-option" onclick="exportPDF()">
-                    <div class="export-option-title">📄 Export PDF</div>
+                    <div class="export-option-title">📄 Export PDF / Impression</div>
                     <div class="export-option-desc">
-                        Format lisible et imprimable. Idéal pour partager avec des professionnels de santé ou archiver.
+                        Ouvre une vue lisible de toutes tes crises. Utilise le bouton "Imprimer" ou "Enregistrer en PDF" de ton navigateur. Idéal pour partager avec un professionnel de santé.
                     </div>
                 </div>
 
@@ -756,9 +756,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    
     <script>
         // Profils statiques par défaut + dynamiques depuis localStorage
         function getProfiles() {
@@ -1184,138 +1181,86 @@
                 return;
             }
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'landscape',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            // Titre avec prénom si disponible
             const prenom = localStorage.getItem('userPrenom') || '';
-            doc.setFontSize(18);
-            if (prenom) {
-                doc.text(`Journal de Crises de ${prenom}`, 15, 15);
-            } else {
-                doc.text('Journal de Crises', 15, 15);
-            }
+            const nom = localStorage.getItem('userNom') || '';
+            const nomComplet = [prenom, nom].filter(Boolean).join(' ');
+            const exportDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
-            doc.setFontSize(10);
-            const exportDate = new Date().toLocaleDateString('fr-FR', { 
-                day: '2-digit', 
-                month: '2-digit', 
-                year: 'numeric' 
-            }) + ' ' + new Date().toLocaleTimeString('fr-FR', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-            doc.text(`Export du ${exportDate}`, 240, 15);
-
-            const tableData = [];
             journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
 
+            let entriesHtml = '';
             journal.forEach(entry => {
                 const date = new Date(entry.horodatage);
-                const dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
                 const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-                
-                const profile = PROFILES[entry.profil] || { icon: entry.profilEmoji || '📍', name: entry.profilNom || '?' };
-                
-                // Détail des capacités
-                let capsDetail = '';
-                if (entry.capacites?.impossible?.length > 0) {
-                    capsDetail += 'Impossible :\n';
-                    entry.capacites.impossible.forEach(c => capsDetail += `  • ${c}\n`);
-                }
-                if (entry.capacites?.difficile?.length > 0) {
-                    capsDetail += 'Difficile :\n';
-                    entry.capacites.difficile.forEach(c => capsDetail += `  • ${c}\n`);
-                }
-                if (entry.capacites?.possible?.length > 0) {
-                    capsDetail += 'Possible :\n';
-                    entry.capacites.possible.forEach(c => capsDetail += `  • ${c}\n`);
-                }
-                if (entry.capacites?.incertain?.length > 0) {
-                    capsDetail += 'Incertain :\n';
-                    entry.capacites.incertain.forEach(c => capsDetail += `  • ${c}\n`);
-                }
-                capsDetail = capsDetail.trim();
-                if (!capsDetail) capsDetail = '-';
-                
-                // Détail des besoins
-                let needsDetail = '-';
-                if (entry.besoins?.length > 0) {
-                    needsDetail = '';
-                    entry.besoins.forEach(b => needsDetail += `• ${b.label || b}\n`);
-                    needsDetail = needsDetail.trim();
-                }
-                
-                // Détail des états
-                let statesDetail = '-';
-                if (entry.etats?.length > 0) {
-                    statesDetail = '';
-                    entry.etats.forEach(e => statesDetail += `• ${e.label || e}\n`);
-                    statesDetail = statesDetail.trim();
-                }
 
-                const intensityDisplay = entry.intensite !== undefined && entry.intensite !== '' 
-                    ? `${entry.intensite}/10` 
-                    : '-';
+                const profile = PROFILES[entry.profil] || { icon: '📍', name: entry.profil || '—' };
 
-                const triggersDisplay = entry.declencheurs && entry.declencheurs.length > 0 
-                    ? entry.declencheurs.join(', ') 
-                    : '-';
+                const lines = [];
+                if (entry.typeCrise) lines.push(`<strong>Type :</strong> ${entry.typeCrise}`);
+                const hasIntensity = entry.intensite !== undefined && entry.intensite !== '';
+                if (hasIntensity) lines.push(`<strong>Intensité :</strong> ${entry.intensite}/10`);
+                if (entry.duree) lines.push(`<strong>Durée :</strong> ${entry.duree}`);
+                if (entry.declencheurs && entry.declencheurs.length > 0) {
+                    lines.push(`<strong>Déclencheurs :</strong> ${entry.declencheurs.join(', ')}`);
+                }
+                if (entry.etats && entry.etats.length > 0) {
+                    lines.push(`<strong>États :</strong> ${entry.etats.map(e => e.label || e).join(', ')}`);
+                }
+                if (entry.besoins && entry.besoins.length > 0) {
+                    lines.push(`<strong>Besoins :</strong> ${entry.besoins.map(b => b.label || b).join(', ')}`);
+                }
+                if (entry.capacites) {
+                    const caps = [];
+                    if (entry.capacites.impossible && entry.capacites.impossible.length) caps.push(`impossible : ${entry.capacites.impossible.join(', ')}`);
+                    if (entry.capacites.difficile && entry.capacites.difficile.length) caps.push(`difficile : ${entry.capacites.difficile.join(', ')}`);
+                    if (entry.capacites.possible && entry.capacites.possible.length) caps.push(`possible : ${entry.capacites.possible.join(', ')}`);
+                    if (caps.length) lines.push(`<strong>Capacités :</strong> ${caps.join(' · ')}`);
+                }
+                if (entry.remarques) lines.push(`<strong>Remarques :</strong> ${entry.remarques}`);
 
-                tableData.push([
-                    `${dateStr}\n${timeStr}`,
-                    profile.name,
-                    entry.typeCrise || '-',
-                    intensityDisplay,
-                    entry.duree || '-',
-                    triggersDisplay,
-                    capsDetail,
-                    needsDetail,
-                    statesDetail,
-                    entry.remarques || '-'
-                ]);
+                entriesHtml += `<div class="entry">
+                    <div class="entry-header">
+                        <span class="entry-date">${dateStr} à ${timeStr}</span>
+                        <span class="entry-context">${profile.name}</span>
+                    </div>
+                    ${lines.map(l => `<div class="entry-line">${l}</div>`).join('')}
+                </div>`;
             });
 
-            doc.autoTable({
-                head: [['Date\nHeure', 'Contexte', 'Type', 'Int.', 'Durée', 'Déclencheurs', 'Capacités', 'Besoins', 'États', 'Remarques']],
-                body: tableData,
-                startY: 25,
-                theme: 'grid',
-                styles: {
-                    fontSize: 7,
-                    cellPadding: 2,
-                    textColor: [0, 0, 0],
-                    lineColor: [0, 0, 0],
-                    lineWidth: 0.1,
-                    valign: 'top',
-                    minCellHeight: 8
-                },
-                headStyles: {
-                    fillColor: [200, 200, 200],
-                    textColor: [0, 0, 0],
-                    fontStyle: 'bold',
-                    halign: 'center',
-                    valign: 'middle'
-                },
-                columnStyles: {
-                    0: { cellWidth: 16 },
-                    1: { cellWidth: 15 },
-                    2: { cellWidth: 20 },
-                    3: { cellWidth: 10 },
-                    4: { cellWidth: 12 },
-                    5: { cellWidth: 28 },
-                    6: { cellWidth: 30 },
-                    7: { cellWidth: 30 },
-                    8: { cellWidth: 30 },
-                    9: { cellWidth: 35 }
-                }
-            });
+            const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Journal de crises${nomComplet ? ' — ' + nomComplet : ''}</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 800px; margin: 0 auto; padding: 32px 24px; color: #111; font-size: 14px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .meta { color: #666; font-size: 13px; margin-bottom: 28px; }
+  .entry { border: 1px solid #ccc; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; page-break-inside: avoid; }
+  .entry-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e8e8e8; }
+  .entry-date { font-weight: 700; font-size: 14px; }
+  .entry-context { font-size: 13px; color: #555; }
+  .entry-line { margin-bottom: 4px; line-height: 1.5; }
+  .print-btn { background: #384657; color: #F5E4CC; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; cursor: pointer; margin-bottom: 24px; }
+  @media print { .print-btn { display: none; } }
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button>
+<h1>Journal de crises${nomComplet ? ' de ' + nomComplet : ''}</h1>
+<div class="meta">Export du ${exportDate} — ${journal.length} entrée${journal.length > 1 ? 's' : ''}</div>
+${entriesHtml}
+</body>
+</html>`;
 
-            doc.save(`journal-crises-${new Date().toISOString().split('T')[0]}.pdf`);
+            const win = window.open('', '_blank');
+            if (win) {
+                win.document.write(html);
+                win.document.close();
+            } else {
+                alert('Le navigateur a bloqué l\'ouverture de la fenêtre. Autorise les popups pour ce site.');
+            }
             closeModal(null, 'exportModal');
         }
 
