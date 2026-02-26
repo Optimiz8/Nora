@@ -186,7 +186,7 @@
         }
 
         .overlay-text {
-            font-size: 64px;
+            font-size: var(--overlay-font-size, 64px);
             font-weight: 700;
             color: var(--light);
             text-align: center;
@@ -363,6 +363,27 @@
         }
 
         .toast.visible { opacity: 1; }
+
+        /* ---------- LANDSCAPE ---------- */
+        @media (orientation: landscape) {
+            .cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .com-card {
+                min-height: 70px;
+            }
+            .fullscreen-overlay {
+                padding: 16px 28px;
+                overflow-y: auto;
+            }
+            .overlay-text {
+                font-size: min(var(--overlay-font-size, 64px), 9vh);
+                margin-bottom: 14px;
+            }
+            .overlay-subtext {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -542,7 +563,7 @@
 
             const overlayTextEl = document.getElementById('overlayText');
             overlayTextEl.textContent = card.text;
-            overlayTextEl.style.fontSize = getOverlayFontSize(card.text) + 'px';
+            overlayTextEl.style.setProperty('--overlay-font-size', getOverlayFontSize(card.text) + 'px');
 
             const subEl = document.getElementById('overlaySubtext');
             if (card.sousTexte) {

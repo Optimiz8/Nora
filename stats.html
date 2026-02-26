@@ -311,6 +311,134 @@
 
         .empty-icon { font-size: 48px; margin-bottom: 12px; }
         .empty-text { font-size: 16px; line-height: 1.5; }
+
+        /* ---------- BILAN COMPARAISON ---------- */
+
+        .bilan-comp-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px 6px;
+        }
+
+        .bilan-comp-spacer { flex: 1; }
+
+        .bilan-comp-col-hd {
+            width: 72px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--dark);
+            opacity: 0.45;
+        }
+
+        .bilan-comp-row {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            border-top: 1px solid rgba(46, 58, 89, 0.08);
+        }
+
+        .bilan-comp-label {
+            flex: 1;
+            font-size: 14px;
+            color: var(--dark);
+            opacity: 0.65;
+            font-weight: 500;
+            padding: 14px 8px 14px 0;
+        }
+
+        .bilan-comp-current {
+            width: 72px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+            padding: 14px 0;
+        }
+
+        .bilan-comp-prev {
+            width: 72px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.45;
+            padding: 14px 0;
+        }
+
+        .bilan-comp-trend {
+            width: 28px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--dark);
+            opacity: 0.7;
+            padding: 14px 0 14px 4px;
+        }
+
+        /* ---------- NOTE CAPACITÉS ---------- */
+
+        .cap-note {
+            font-size: 13px;
+            color: var(--light);
+            opacity: 0.5;
+            font-style: italic;
+            padding: 8px 4px 4px;
+            line-height: 1.5;
+        }
+
+        /* ---------- ACTIONS D'EXPORT ---------- */
+
+        .export-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .export-actions .export-btn { margin-top: 0; }
+
+        .export-row { display: flex; gap: 8px; }
+        .export-row .export-btn { flex: 1; }
+
+        /* ---------- IMPRESSION ---------- */
+
+        .print-header {
+            display: none;
+            font-size: 16px;
+            font-weight: 700;
+            color: #111;
+            padding: 0 0 12px;
+        }
+
+        @media print {
+            body { background: white !important; color: #111 !important; padding: 0 !important; }
+            .header, .period-header, .period-bar, .date-range-panel, .export-actions { display: none !important; }
+            .print-header { display: block !important; }
+            .main-content { padding: 8px !important; }
+            .section-tag { color: #333 !important; }
+            .stat-card { background: #f5f5f5 !important; border: 1px solid #ddd !important; }
+            .stat-label { color: #444 !important; opacity: 1 !important; }
+            .stat-value { color: #111 !important; }
+            .stat-sub, .stat-delta { color: #555 !important; opacity: 1 !important; }
+            .last-crisis-row { background: #f5f5f5 !important; border: 1px solid #ddd !important; }
+            .last-crisis-label { color: #444 !important; opacity: 1 !important; }
+            .last-crisis-value { color: #111 !important; }
+            .moment-grid { background: #ddd !important; }
+            .moment-cell { background: #f5f5f5 !important; }
+            .moment-cell.highlight { background: #2E3A59 !important; }
+            .moment-name, .moment-range, .moment-count { color: #111 !important; opacity: 1 !important; }
+            .moment-cell.highlight .moment-name,
+            .moment-cell.highlight .moment-range,
+            .moment-cell.highlight .moment-count { color: #F5E4CC !important; }
+            .rank-name { color: #111 !important; }
+            .rank-meta { color: #555 !important; opacity: 1 !important; }
+            .rank-bar-bg { background: #e0e0e0 !important; }
+            .rank-bar-fill { background: #888 !important; }
+            .cap-category { color: #333 !important; opacity: 1 !important; }
+        }
     </style>
 </head>
 <body>
@@ -319,7 +447,7 @@
         <h1 class="page-title">Statistiques</h1>
     </header>
 
-    <div style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
+    <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
     <div class="period-bar">
         <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
         <button class="period-btn" data-days="30" onclick="selectPeriod(30)">30 j</button>
@@ -338,6 +466,7 @@
         <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
     </div>
 
+    <div id="printHeader" class="print-header"></div>
     <main class="main-content" id="mainContent"></main>
 
     <script>
@@ -492,9 +621,27 @@
                 else hourSlots[3].count++;
             }
 
+            var prevIntensities = [], prevDurations = [];
+            for (var pk = 0; pk < prevEntries.length; pk++) {
+                var pe = prevEntries[pk];
+                var piv = parseFloat(pe.intensite); if (!isNaN(piv)) prevIntensities.push(piv);
+                var pdv = parseDuration(pe.duree); if (pdv !== null) prevDurations.push(pdv);
+            }
+            var prevAvgIntensity = null, prevAvgDuration = null;
+            if (prevIntensities.length) {
+                var pisum = 0; for (var ps = 0; ps < prevIntensities.length; ps++) pisum += prevIntensities[ps];
+                prevAvgIntensity = parseFloat((pisum / prevIntensities.length).toFixed(1));
+            }
+            if (prevDurations.length) {
+                var pdsum = 0; for (var pds = 0; pds < prevDurations.length; pds++) pdsum += prevDurations[pds];
+                prevAvgDuration = pdsum / prevDurations.length;
+            }
+
             return {
                 total: entries.length,
                 prevCount: prevEntries.length,
+                prevAvgIntensity: prevAvgIntensity,
+                prevAvgDuration: prevAvgDuration,
                 avgIntensity: avgIntensity,
                 minIntensity: minIntensity,
                 maxIntensity: maxIntensity,
@@ -529,6 +676,13 @@
         }
 
         /* ---------- RENDU ---------- */
+
+        function trendSym(cur, prev) {
+            if (cur === null || prev === null) return '<span style="opacity:0.3">—</span>';
+            if (cur > prev) return '▲';
+            if (cur < prev) return '▼';
+            return '=';
+        }
 
         function rankItems(list, maxCount) {
             var html = '';
@@ -565,24 +719,51 @@
             }
 
             /* Bilan */
-            var delta = stats.total - stats.prevCount;
-            var deltaHtml = stats.prevCount > 0
-                ? '<span class="stat-delta">' + (delta > 0 ? '▲' : '▼') + ' ' + Math.abs(delta) + ' vs préc.</span>'
-                : '';
+            var showComp = currentDays !== 0 && stats.prevCount > 0;
+            var bilanHtml;
 
-            var intensityHtml = stats.avgIntensity !== null ? stats.avgIntensity + '/10' : '—';
-            var intensitySub = (stats.minIntensity !== null && stats.maxIntensity !== null && stats.minIntensity !== stats.maxIntensity)
-                ? '<span class="stat-sub">min ' + stats.minIntensity + '/10 · max ' + stats.maxIntensity + '/10</span>'
-                : '';
-            var durationHtml = stats.avgDuration !== null ? formatMins(stats.avgDuration) : '—';
-            var durationSub = (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration)
-                ? '<span class="stat-sub">min ' + formatMins(stats.minDuration) + ' · max ' + formatMins(stats.maxDuration) + '</span>'
-                : '';
-
-            var bilanHtml =
-                '<div class="stat-row"><span class="stat-label">Crises</span><span class="stat-value large">' + stats.total + deltaHtml + '</span></div>' +
-                '<div class="stat-row"><span class="stat-label">Intensité moyenne</span><span class="stat-value">' + intensityHtml + intensitySub + '</span></div>' +
-                '<div class="stat-row"><span class="stat-label">Durée moyenne</span><span class="stat-value">' + durationHtml + durationSub + '</span></div>';
+            if (showComp) {
+                var prevIntStr = stats.prevAvgIntensity !== null ? stats.prevAvgIntensity + '/10' : '—';
+                var prevDurStr = stats.prevAvgDuration !== null ? formatMins(stats.prevAvgDuration) : '—';
+                bilanHtml =
+                    '<div class="bilan-comp-header">' +
+                    '<span class="bilan-comp-spacer"></span>' +
+                    '<span class="bilan-comp-col-hd">Actuel</span>' +
+                    '<span class="bilan-comp-col-hd">Précédent</span>' +
+                    '<span class="bilan-comp-col-hd"></span>' +
+                    '</div>' +
+                    '<div class="bilan-comp-row">' +
+                    '<span class="bilan-comp-label">Crises</span>' +
+                    '<span class="bilan-comp-current">' + stats.total + '</span>' +
+                    '<span class="bilan-comp-prev">' + stats.prevCount + '</span>' +
+                    '<span class="bilan-comp-trend">' + trendSym(stats.total, stats.prevCount) + '</span>' +
+                    '</div>' +
+                    '<div class="bilan-comp-row">' +
+                    '<span class="bilan-comp-label">Intensité moy.</span>' +
+                    '<span class="bilan-comp-current">' + (stats.avgIntensity !== null ? stats.avgIntensity + '/10' : '—') + '</span>' +
+                    '<span class="bilan-comp-prev">' + prevIntStr + '</span>' +
+                    '<span class="bilan-comp-trend">' + trendSym(stats.avgIntensity, stats.prevAvgIntensity) + '</span>' +
+                    '</div>' +
+                    '<div class="bilan-comp-row">' +
+                    '<span class="bilan-comp-label">Durée moy.</span>' +
+                    '<span class="bilan-comp-current">' + (stats.avgDuration !== null ? formatMins(stats.avgDuration) : '—') + '</span>' +
+                    '<span class="bilan-comp-prev">' + prevDurStr + '</span>' +
+                    '<span class="bilan-comp-trend">' + trendSym(stats.avgDuration, stats.prevAvgDuration) + '</span>' +
+                    '</div>';
+            } else {
+                var intensityHtml = stats.avgIntensity !== null ? stats.avgIntensity + '/10' : '—';
+                var intensitySub = (stats.minIntensity !== null && stats.maxIntensity !== null && stats.minIntensity !== stats.maxIntensity)
+                    ? '<span class="stat-sub">min ' + stats.minIntensity + '/10 · max ' + stats.maxIntensity + '/10</span>'
+                    : '';
+                var durationHtml = stats.avgDuration !== null ? formatMins(stats.avgDuration) : '—';
+                var durationSub = (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration)
+                    ? '<span class="stat-sub">min ' + formatMins(stats.minDuration) + ' · max ' + formatMins(stats.maxDuration) + '</span>'
+                    : '';
+                bilanHtml =
+                    '<div class="stat-row"><span class="stat-label">Crises</span><span class="stat-value large">' + stats.total + '</span></div>' +
+                    '<div class="stat-row"><span class="stat-label">Intensité moyenne</span><span class="stat-value">' + intensityHtml + intensitySub + '</span></div>' +
+                    '<div class="stat-row"><span class="stat-label">Durée moyenne</span><span class="stat-value">' + durationHtml + durationSub + '</span></div>';
+            }
 
             /* Moments */
             var maxMoment = 0;
@@ -668,20 +849,27 @@
                 '<div class="stat-card">' + etatsHtml + '</div>' +
                 '<div class="section-tag">Capacités</div>' +
                 '<div class="stat-card">' + capHtml + '</div>' +
-                '<button class="export-btn" onclick="exportStats()">📋 Copier le résumé</button>';
+                '<div class="cap-note">Seules les capacités souvent impossibles ou difficiles sont reprises ici. Ce qui reste possible n\'est pas listé.</div>' +
+                '<div class="export-actions">' +
+                '<button class="export-btn" onclick="exportStats()">📋 Copier le résumé</button>' +
+                '<div class="export-row">' +
+                '<button class="export-btn" onclick="shareStats()">↗️ Partager</button>' +
+                '<button class="export-btn" onclick="exportPDF()">📄 Exporter en PDF</button>' +
+                '</div>' +
+                '</div>';
         }
 
         /* ---------- EXPORT ---------- */
 
-        function exportStats() {
-            var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
-
-            var periodLabel = currentDays === 7 ? '7 derniers jours'
+        function getPeriodLabel() {
+            return currentDays === 7 ? '7 derniers jours'
                 : currentDays === 30 ? '30 derniers jours'
                 : currentDays === 365 ? 'dernière année'
                 : 'du ' + customFrom + ' au ' + customTo;
+        }
 
+        function buildSummaryText(stats) {
+            var periodLabel = getPeriodLabel();
             var text = '== Statistiques Nora — ' + periodLabel + ' ==\n\n';
             text += 'Crises : ' + stats.total + '\n';
             if (stats.avgIntensity !== null) text += 'Intensité moyenne : ' + stats.avgIntensity + '/10\n';
@@ -720,12 +908,42 @@
                 for (var di2 = 0; di2 < top5d.length; di2++) text += '  ' + (di2 + 1) + '. ' + top5d[di2].name + ' (' + top5d[di2].count + ' fois)\n';
             }
             text += '\nExport du ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
+            return text;
+        }
 
+        function exportStats() {
+            var stats = computeStats(currentDays, customFrom, customTo);
+            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
+            var text = buildSummaryText(stats);
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text)
                     .then(function() { alert('Résumé copié !'); })
                     .catch(function() { downloadText(text); });
             } else { downloadText(text); }
+        }
+
+        function shareStats() {
+            var stats = computeStats(currentDays, customFrom, customTo);
+            if (!stats) { alert('Aucune donnée à partager sur cette période.'); return; }
+            var text = buildSummaryText(stats);
+            if (navigator.share) {
+                navigator.share({ title: 'Statistiques Nora — ' + getPeriodLabel(), text: text })
+                    .catch(function() {});
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() { alert('Résumé copié dans le presse-papier.'); });
+            } else { downloadText(text); }
+        }
+
+        function exportPDF() {
+            var stats = computeStats(currentDays, customFrom, customTo);
+            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
+            var prenom = localStorage.getItem('userPrenom') || '';
+            var nom = localStorage.getItem('userNom') || '';
+            var nomComplet = [prenom, nom].filter(Boolean).join(' ');
+            var titre = 'Statistiques Nora' + (nomComplet ? ' — ' + nomComplet : '');
+            titre += ' — ' + getPeriodLabel() + ' — ' + new Date().toLocaleDateString('fr-FR');
+            document.getElementById('printHeader').textContent = titre;
+            window.print();
         }
 
         function downloadText(text) {

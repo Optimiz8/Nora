@@ -12,8 +12,22 @@
     <title>Nora – Journal de crises</title>
     <style>
         body {
-            padding-bottom: 20px;
+            padding-bottom: calc(var(--footer-height) + 20px);
         }
+
+        .footer-action {
+            flex: 1;
+            height: 46px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(245, 228, 204, 0.15);
+            color: var(--light);
+            cursor: pointer;
+        }
+
+        .footer-action:active { opacity: 0.7; transform: scale(0.98); }
 
         .header {
             justify-content: space-between;
@@ -339,6 +353,15 @@
             border-color: var(--accent);
         }
 
+        .duration-picker {
+            display: flex;
+            gap: 8px;
+        }
+
+        .duration-picker .form-select {
+            flex: 1;
+        }
+
         .intensity-slider {
             width: 100%;
             margin-top: 8px;
@@ -603,8 +626,6 @@
             <button class="back-button" onclick="goHome()" aria-label="Retour">⬅️</button>
             <h1 class="page-title">Journal de crises</h1>
         </div>
-        <button class="export-button" onclick="window.location.href='stats.html'" aria-label="Statistiques">📊</button>
-        <button class="export-button" onclick="showExportOptions()">📤</button>
         <button class="back-button" onclick="window.location.href='index.html'">🏠</button>
     </header>
 
@@ -691,7 +712,37 @@
 
             <div class="form-group">
                 <label class="form-label">Durée estimée</label>
-                <input type="text" class="form-input" id="formDuration" placeholder="Ex: 30 min, 1h30...">
+                <div class="duration-picker">
+                    <select class="form-select" id="formDurationH">
+                        <option value="0">0 h</option>
+                        <option value="1">1 h</option>
+                        <option value="2">2 h</option>
+                        <option value="3">3 h</option>
+                        <option value="4">4 h</option>
+                        <option value="5">5 h</option>
+                        <option value="6">6 h</option>
+                        <option value="7">7 h</option>
+                        <option value="8">8 h</option>
+                        <option value="9">9 h</option>
+                        <option value="10">10 h</option>
+                        <option value="11">11 h</option>
+                        <option value="12">12 h</option>
+                    </select>
+                    <select class="form-select" id="formDurationM">
+                        <option value="0">00 min</option>
+                        <option value="5">05 min</option>
+                        <option value="10">10 min</option>
+                        <option value="15">15 min</option>
+                        <option value="20">20 min</option>
+                        <option value="25">25 min</option>
+                        <option value="30">30 min</option>
+                        <option value="35">35 min</option>
+                        <option value="40">40 min</option>
+                        <option value="45">45 min</option>
+                        <option value="50">50 min</option>
+                        <option value="55">55 min</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">
@@ -750,6 +801,13 @@
                     <div class="export-option-title">💾 Export JSON</div>
                     <div class="export-option-desc">
                         Format de sauvegarde technique. Permet de réimporter tes données ou de les transférer sur un autre appareil en conservant toutes les informations.
+                    </div>
+                </div>
+
+                <div class="export-option" onclick="shareJournal()">
+                    <div class="export-option-title">↗️ Partager le journal</div>
+                    <div class="export-option-desc">
+                        Partage un résumé textuel de tes crises via l'application de ton choix (messagerie, e-mail…). Idéal pour un envoi rapide à un professionnel.
                     </div>
                 </div>
             </div>
@@ -833,6 +891,32 @@
                 const row = createTableRow(entry, index);
                 tbody.appendChild(row);
             });
+        }
+
+        function formatDuration(h, m) {
+            if (h === 0 && m === 0) return '';
+            if (h === 0) return m + ' min';
+            if (m === 0) return h + 'h';
+            return h + 'h' + String(m).padStart(2, '0');
+        }
+
+        function parseDurationString(str) {
+            if (!str) return { h: 0, m: 0 };
+            str = str.trim();
+            var hMatch = str.match(/^(\d+)h(\d+)?$/);
+            if (hMatch) {
+                return { h: parseInt(hMatch[1]), m: hMatch[2] ? parseInt(hMatch[2]) : 0 };
+            }
+            var minMatch = str.match(/^(\d+)\s*min/);
+            if (minMatch) {
+                var total = parseInt(minMatch[1]);
+                return { h: Math.floor(total / 60), m: total % 60 };
+            }
+            return { h: 0, m: 0 };
+        }
+
+        function snapToFive(m) {
+            return Math.min(55, Math.round(m / 5) * 5);
         }
 
         function createTableRow(entry, index) {
@@ -923,7 +1007,7 @@
                 <div class="modal-section">
                     <div class="modal-section-title">📅 Informations générales</div>
                     <div class="modal-text"><strong>Date :</strong> ${dateStr} à ${timeStr}</div>
-                    <div class="modal-text"><strong>Contexte :</strong> ${profile.icon} ${profile.name}</div>
+                    <div class="modal-text"><strong>Contexte :</strong> ${profile.name}</div>
                     ${entry.typeCrise ? `<div class="modal-text"><strong>Type :</strong> ${entry.typeCrise}</div>` : ''}
                     ${entry.intensite !== undefined && entry.intensite !== '' ? `<div class="modal-text"><strong>Intensité :</strong> ${intensityText}</div>` : ''}
                     ${entry.duree ? `<div class="modal-text"><strong>Durée :</strong> ${entry.duree}</div>` : ''}
@@ -963,28 +1047,47 @@
                 modalTitle.textContent = 'Ajouter une crise manuellement';
                 dateGroup.style.display = 'block';
                 
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('formDate').value = today;
+                const now = new Date();
+                const ty = now.getFullYear();
+                const tm = String(now.getMonth() + 1).padStart(2, '0');
+                const td = String(now.getDate()).padStart(2, '0');
+                document.getElementById('formDate').value = `${ty}-${tm}-${td}`;
                 document.getElementById('formTime').value = '';
                 document.getElementById('formType').value = '';
                 document.getElementById('formIntensity').value = '5';
                 updateFormIntensityDisplay();
-                document.getElementById('formDuration').value = '';
+                document.getElementById('formDurationH').value = '0';
+                document.getElementById('formDurationM').value = '0';
                 document.getElementById('formRemarks').value = '';
                 selectedTriggers = [];
                 updateTriggersPreview();
             } else {
                 modalTitle.textContent = 'Modifier la crise';
-                dateGroup.style.display = 'none';
-                
+                dateGroup.style.display = 'block';
+
                 const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
                 journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
                 const entry = journal[index];
-                
+
+                // Pré-remplir date et heure depuis l'horodatage
+                const d = new Date(entry.horodatage);
+                const yr = d.getFullYear();
+                const mo = String(d.getMonth() + 1).padStart(2, '0');
+                const dy = String(d.getDate()).padStart(2, '0');
+                document.getElementById('formDate').value = `${yr}-${mo}-${dy}`;
+                const fh = String(d.getHours()).padStart(2, '0');
+                const fm = String(d.getMinutes()).padStart(2, '0');
+                document.getElementById('formTime').value = `${fh}:${fm}`;
+
                 document.getElementById('formType').value = entry.typeCrise || '';
                 document.getElementById('formIntensity').value = entry.intensite || '5';
                 updateFormIntensityDisplay();
-                document.getElementById('formDuration').value = entry.duree || '';
+
+                // Pré-remplir la durée dans les sélecteurs
+                const parsed = parseDurationString(entry.duree || '');
+                document.getElementById('formDurationH').value = Math.min(parsed.h, 12);
+                document.getElementById('formDurationM').value = snapToFive(parsed.m);
+
                 document.getElementById('formRemarks').value = entry.remarques || '';
                 selectedTriggers = Array.isArray(entry.declencheurs) ? [...entry.declencheurs] : [];
                 updateTriggersPreview();
@@ -1099,7 +1202,10 @@
                     etats: JSON.parse(localStorage.getItem('currentEtats') || '[]'),
                     typeCrise: document.getElementById('formType').value,
                     intensite: document.getElementById('formIntensity').value,
-                    duree: document.getElementById('formDuration').value,
+                    duree: formatDuration(
+                        parseInt(document.getElementById('formDurationH').value) || 0,
+                        parseInt(document.getElementById('formDurationM').value) || 0
+                    ),
                     declencheurs: [...selectedTriggers],
                     remarques: document.getElementById('formRemarks').value,
                     manual: true
@@ -1116,9 +1222,28 @@
                 const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
                 const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
                 
+                // Mettre à jour l'horodatage si la date/heure a été modifiée
+                const editDate = document.getElementById('formDate').value;
+                const editTime = document.getElementById('formTime').value;
+                if (editDate) {
+                    let newHorodatage;
+                    if (editTime) {
+                        newHorodatage = new Date(`${editDate}T${editTime}:00`).toISOString();
+                    } else {
+                        const existing = new Date(sorted[currentEntryIndex].horodatage);
+                        const base = new Date(editDate);
+                        base.setHours(existing.getHours(), existing.getMinutes(), existing.getSeconds());
+                        newHorodatage = base.toISOString();
+                    }
+                    sorted[currentEntryIndex].horodatage = newHorodatage;
+                }
+
                 sorted[currentEntryIndex].typeCrise = document.getElementById('formType').value;
                 sorted[currentEntryIndex].intensite = document.getElementById('formIntensity').value;
-                sorted[currentEntryIndex].duree = document.getElementById('formDuration').value;
+                sorted[currentEntryIndex].duree = formatDuration(
+                    parseInt(document.getElementById('formDurationH').value) || 0,
+                    parseInt(document.getElementById('formDurationM').value) || 0
+                );
                 sorted[currentEntryIndex].declencheurs = [...selectedTriggers];
                 sorted[currentEntryIndex].remarques = document.getElementById('formRemarks').value;
                 
@@ -1264,6 +1389,64 @@ ${entriesHtml}
             closeModal(null, 'exportModal');
         }
 
+        function shareJournal() {
+            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            if (!journal.length) { alert('Aucune crise à partager.'); return; }
+
+            const prenom = localStorage.getItem('userPrenom') || '';
+            const nom = localStorage.getItem('userNom') || '';
+            const nomComplet = [prenom, nom].filter(Boolean).join(' ');
+            const exportDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+
+            let text = 'Journal de crises' + (nomComplet ? ' — ' + nomComplet : '') + '\n';
+            text += 'Export du ' + exportDate + ' — ' + journal.length + ' entrée' + (journal.length > 1 ? 's' : '') + '\n\n';
+
+            journal.forEach(entry => {
+                const date = new Date(entry.horodatage);
+                const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+                const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                const profile = PROFILES[entry.profil] || { name: entry.profil || '—' };
+
+                text += dateStr + ' à ' + timeStr + ' — ' + profile.name + '\n';
+                if (entry.typeCrise) text += '  Type : ' + entry.typeCrise + '\n';
+                const hasIntensity = entry.intensite !== undefined && entry.intensite !== '';
+                const hasDuree = !!entry.duree;
+                if (hasIntensity || hasDuree) {
+                    let line = '';
+                    if (hasIntensity) line += 'Intensité : ' + entry.intensite + '/10';
+                    if (hasDuree) line += (line ? ' · ' : '') + 'Durée : ' + entry.duree;
+                    text += '  ' + line + '\n';
+                }
+                if (entry.declencheurs && entry.declencheurs.length > 0) {
+                    text += '  Déclencheurs : ' + entry.declencheurs.join(', ') + '\n';
+                }
+                if (entry.remarques) text += '  Remarques : ' + entry.remarques + '\n';
+                text += '\n';
+            });
+
+            text += '— Nora';
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Journal de crises' + (nomComplet ? ' — ' + nomComplet : ''),
+                    text: text
+                }).catch(function() {});
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() { alert('Journal copié dans le presse-papier.'); });
+            } else {
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'journal-nora-' + new Date().toISOString().split('T')[0] + '.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+            closeModal(null, 'exportModal');
+        }
+
         function closeModal(event, modalId) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById(modalId).classList.remove('visible');
@@ -1275,6 +1458,11 @@ ${entriesHtml}
 
         loadJournal();
     </script>
+    <footer class="footer">
+        <button class="footer-action" onclick="window.location.href='stats.html'">📊 Statistiques</button>
+        <button class="footer-action" onclick="showExportOptions()">📤 Exporter</button>
+    </footer>
+
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); } });</script>
     <script src="nora-scroll.js"></script>
 </body>

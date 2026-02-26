@@ -7,7 +7,7 @@
   "background_color": "#384657",
   "theme_color": "#384657",
   "lang": "fr",
-  "orientation": "portrait",
+  "orientation": "any",
   "shortcuts": [
     {
       "name": "Carte d'urgence",

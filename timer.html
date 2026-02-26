@@ -486,7 +486,7 @@
       display: none;
       position: relative;
       width: min(160px, 44vw);
-      height: min(370px, 73vh);
+      height: min(430px, 82vh);
       background: rgba(80, 100, 200, 0.1);
       border: 1px solid rgba(100, 130, 220, 0.15);
       border-radius: 20px;
@@ -520,7 +520,7 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
-      width: min(300px, 82vw);
+      width: min(340px, 92vw);
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
@@ -553,7 +553,7 @@
     .pixels-wrap {
       display: none;
       position: relative;
-      width: min(260px, 78vw);
+      width: min(310px, 88vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -595,13 +595,7 @@
       position: absolute;
       font-size: 18px;
       opacity: 0.55;
-      animation: kawaiiFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes kawaiiFloat {
-      0%, 100% { transform: translateY(0)    scale(1)    rotate(0deg); }
-      30%       { transform: translateY(-8px) scale(1.12) rotate(6deg); }
-      70%       { transform: translateY(5px)  scale(0.94) rotate(-4deg); }
+      transform: translate(-50%, -50%);
     }
 
     .kawaii-arc { position: absolute; inset: 4px; border-radius: 50%; }
@@ -647,6 +641,7 @@
       background: radial-gradient(circle at 30% 40%, #7c3aed 0%, transparent 50%),
                   radial-gradient(circle at 70% 60%, #0ea5e9 0%, transparent 50%),
                   radial-gradient(circle at 50% 50%, #6d28d9 0%, transparent 70%);
+      transition: transform 0.9s linear;
     }
 
     @keyframes nebulaRotate {
@@ -702,19 +697,21 @@
     /* ---------- ALARME THÈME ---------- */
 
     .alarm-overlay.theme-kawaii {
-      background: linear-gradient(135deg, #ff6b9d 0%, #ffd93d 50%, #6bceff 100%);
+      background: var(--dark);
       overflow: hidden;
     }
 
-    .alarm-overlay.theme-kawaii .alarm-icon {
-      font-size: 5rem;
-      animation: kawaiiEndBounce 0.7s ease-in-out infinite;
+    .alarm-overlay.theme-kawaii .alarm-icon { display: none; }
+
+    .kawaii-alarm-video {
+      display: none;
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 16px;
     }
 
-    @keyframes kawaiiEndBounce {
-      0%, 100% { transform: scale(1) rotate(-8deg); }
-      50%       { transform: scale(1.3) rotate(8deg); }
-    }
+    .alarm-overlay.theme-kawaii .kawaii-alarm-video { display: block; }
 
     .alarm-sparkles {
       position: absolute;
@@ -737,7 +734,27 @@
 
     .alarm-overlay.theme-espace {
       background: #060b1a;
+      overflow: hidden;
     }
+
+    .alarm-overlay.theme-espace::before {
+      content: '';
+      position: absolute;
+      inset: -20%;
+      background: radial-gradient(circle at 35% 40%, rgba(124,58,237,0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 65% 60%, rgba(14,165,233,0.2) 0%, transparent 55%),
+                  radial-gradient(circle at 50% 50%, rgba(109,40,217,0.3) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    #alarmStarsCanvas {
+      display: none;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .alarm-overlay.theme-espace #alarmStarsCanvas { display: block; }
 
     .alarm-overlay.theme-espace .alarm-icon { display: none; }
 
@@ -767,8 +784,6 @@
       object-fit: cover;
       opacity: 0.45;
     }
-
-    .alarm-overlay.theme-kawaii .glitter-bg { display: block; }
 
     /* ---------- FOOTER TIMER (override) ---------- */
 
@@ -975,12 +990,16 @@
 
   <!-- Alarm overlay -->
   <div class="alarm-overlay" id="alarmOverlay">
+    <canvas id="alarmStarsCanvas"></canvas>
     <video class="glitter-bg" id="glitterBg" loop muted playsinline>
       <source src="assets/Glitter-Star.webm" type="video/webm">
     </video>
     <div class="alarm-sparkles" id="alarmSparkles"></div>
     <div class="alarm-content">
       <div class="alarm-icon">⏰</div>
+      <video id="kawaiiAlarmVideo" class="kawaii-alarm-video" loop muted playsinline>
+        <source src="assets/Glitter-Star.webm" type="video/webm">
+      </video>
       <video id="spaceManVideo" class="alarm-lottie" loop muted playsinline>
         <source src="assets/Space-Man.webm" type="video/webm">
       </video>
@@ -1136,6 +1155,9 @@
     let sonMode    = localStorage.getItem('timerSonMode')  || 'bip';
     let finMode    = localStorage.getItem('timerFinMode')  || 'flash';
     let timerStyle = localStorage.getItem('timerStyle')    || 'cercle';
+
+    let kawaiiAnimFrame = null;
+    const kawaiiParticles = [];
 
     /* ---------- INIT ---------- */
     document.addEventListener('DOMContentLoaded', () => {
@@ -1302,8 +1324,11 @@
       endTimestamp  = null;
       announcedSet  = new Set();
       stopSparkles();
+      var kawaiiVideo = document.getElementById('kawaiiAlarmVideo');
+      kawaiiVideo.pause(); kawaiiVideo.currentTime = 0;
       const resetOverlay = document.getElementById('alarmOverlay');
       resetOverlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      resetOverlay.style.background = '';
       document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
       document.getElementById('alarmText').textContent = 'Temps écoulé !';
       updateUI();
@@ -1317,15 +1342,17 @@
       const overlay = document.getElementById('alarmOverlay');
       overlay.classList.add('visible');
       if (timerStyle === 'kawaii') {
-        document.querySelector('#alarmOverlay .alarm-icon').textContent = '🌈';
         document.getElementById('alarmText').textContent = 'Pluie de paillettes terminée !';
         overlay.classList.add('theme-kawaii');
-        startGlitter();
-        startSparkles();
+        const progress = totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 1;
+        const hue = Math.round(progress * 300);
+        overlay.style.background = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
+        document.getElementById('kawaiiAlarmVideo').play().catch(function() {});
       } else if (timerStyle === 'espace') {
         document.querySelector('#alarmOverlay .alarm-icon').textContent = '👨‍🚀';
         document.getElementById('alarmText').textContent = 'Houston, le temps est écoulé.';
         overlay.classList.add('theme-espace');
+        drawAlarmStars();
         var spaceVideo = document.getElementById('spaceManVideo');
         spaceVideo.play().catch(function() {});
       } else if (finMode === 'flash') {
@@ -1397,10 +1424,12 @@
       stopSparkles();
       stopGlitter();
       var spaceVideo = document.getElementById('spaceManVideo');
-      spaceVideo.pause();
-      spaceVideo.currentTime = 0;
+      spaceVideo.pause(); spaceVideo.currentTime = 0;
+      var kawaiiVideo = document.getElementById('kawaiiAlarmVideo');
+      kawaiiVideo.pause(); kawaiiVideo.currentTime = 0;
       const overlay = document.getElementById('alarmOverlay');
       overlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      overlay.style.background = '';
       document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
       document.getElementById('alarmText').textContent = 'Temps écoulé !';
       closeSnoozeSheet();
@@ -1423,8 +1452,11 @@
     function doSnooze(seconds) {
       stopAlarmEffects();
       stopSparkles();
+      var kawaiiVideo = document.getElementById('kawaiiAlarmVideo');
+      kawaiiVideo.pause(); kawaiiVideo.currentTime = 0;
       const snoozeOverlay = document.getElementById('alarmOverlay');
       snoozeOverlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      snoozeOverlay.style.background = '';
       document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
       document.getElementById('alarmText').textContent = 'Temps écoulé !';
       closeSnoozeSheet();
@@ -1640,6 +1672,11 @@
       document.getElementById('styleLabel').textContent = STYLE_LABELS[s];
       if (s === 'pixels')   { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
       if (s === 'segments') buildSegmentsSvg();
+
+      if (s !== 'kawaii') stopKawaiiAnim();
+      else if (!kawaiiAnimFrame && kawaiiParticles.length > 0) {
+        kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+      }
 
       /* Fond de page */
       const pageBg       = document.getElementById('pageBg');
@@ -1886,17 +1923,56 @@
     function initKawaii() {
       const container = document.getElementById('kawaiiStickers');
       container.innerHTML = '';
-      KAWAII_STICKERS.forEach((s, i) => {
+      kawaiiParticles.length = 0;
+      KAWAII_STICKERS.forEach(s => {
         const el = document.createElement('span');
         el.className = 'kawaii-sticker';
         el.textContent = s;
-        el.style.left = (8 + Math.random() * 72) + '%';
-        el.style.top  = (8 + Math.random() * 72) + '%';
-        el.style.animationDelay    = (i * 0.3) + 's';
-        el.style.animationDuration = (2.5 + Math.random() * 2) + 's';
         container.appendChild(el);
+        const angle = Math.random() * Math.PI * 2;
+        const dist  = Math.random() * 0.65;
+        const x = 50 + dist * 38 * Math.cos(angle);
+        const y = 50 + dist * 38 * Math.sin(angle);
+        const speed  = 0.25 + Math.random() * 0.45;
+        const vAngle = Math.random() * Math.PI * 2;
+        kawaiiParticles.push({ el, x, y, vx: speed * Math.cos(vAngle), vy: speed * Math.sin(vAngle) });
+        el.style.left = x + '%';
+        el.style.top  = y + '%';
       });
       updateKawaiiColors(0);
+      if (kawaiiAnimFrame) cancelAnimationFrame(kawaiiAnimFrame);
+      kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+    }
+
+    function animateKawaii() {
+      kawaiiParticles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        const dx   = p.x - 50;
+        const dy   = p.y - 50;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const maxD = 37;
+        if (dist > maxD) {
+          const nx  = dx / dist, ny = dy / dist;
+          const dot = p.vx * nx + p.vy * ny;
+          p.vx -= 2 * dot * nx;
+          p.vy -= 2 * dot * ny;
+          p.x = 50 + nx * (maxD - 0.5);
+          p.y = 50 + ny * (maxD - 0.5);
+        }
+        p.vx += (Math.random() - 0.5) * 0.04;
+        p.vy += (Math.random() - 0.5) * 0.04;
+        const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        if (spd > 0.7)  { p.vx *= 0.7 / spd; p.vy *= 0.7 / spd; }
+        if (spd < 0.15) { p.vx += (Math.random() - 0.5) * 0.1; p.vy += (Math.random() - 0.5) * 0.1; }
+        p.el.style.left = p.x + '%';
+        p.el.style.top  = p.y + '%';
+      });
+      kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+    }
+
+    function stopKawaiiAnim() {
+      if (kawaiiAnimFrame) { cancelAnimationFrame(kawaiiAnimFrame); kawaiiAnimFrame = null; }
     }
 
     function updateKawaiiColors(progress) {
@@ -1934,7 +2010,26 @@
 
     function updateSpaceArc(progress) {
       const arc = document.getElementById('spaceArc');
-      if (arc) arc.style.stroke = `hsl(${265 + progress * 20}, 85%, 72%)`;
+      if (arc) arc.style.stroke = 'hsl(265, 85%, 72%)';
+      const spaceWrap = document.getElementById('spaceWrap');
+      if (spaceWrap) {
+        const nebula = spaceWrap.querySelector('.space-nebula');
+        if (nebula) nebula.style.transform = `rotate(${-progress * 360}deg)`;
+      }
+    }
+
+    function drawAlarmStars() {
+      const canvas = document.getElementById('alarmStarsCanvas');
+      if (!canvas) return;
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+      for (let i = 0; i < 160; i++) {
+        const x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+        const r = Math.random() * 1.8, a = 0.3 + Math.random() * 0.7;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,220,255,${a})`; ctx.fill();
+      }
     }
 
     function drawFullPageStars() {
