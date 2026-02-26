@@ -30,13 +30,13 @@
 
         .progress-dots {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background: rgba(245, 228, 204, 0.2);
             transition: all 0.35s ease;
@@ -45,13 +45,11 @@
 
         .dot.active {
             background: var(--light);
-            width: 24px;
+            width: 20px;
             border-radius: 4px;
         }
 
-        .dot.done {
-            background: rgba(245, 228, 204, 0.55);
-        }
+        .dot.done { background: rgba(245, 228, 204, 0.55); }
 
         .skip-link {
             background: none;
@@ -75,35 +73,20 @@
 
         /* ---------- ÉTAPES ---------- */
 
-        .steps-container {
-            padding-top: 52px;
-        }
-
         .step {
             display: none;
-            flex-direction: column;
-            min-height: calc(100vh - 52px);
-            padding: 36px 24px 24px;
+            padding: 88px 24px 140px;
             box-sizing: border-box;
         }
 
         .step.active {
-            display: flex;
+            display: block;
             animation: stepIn 0.3s ease;
         }
 
         @keyframes stepIn {
             from { opacity: 0; transform: translateY(10px); }
             to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .step-content {
-            flex: 1;
-        }
-
-        .step-actions {
-            margin-top: auto;
-            padding-top: 28px;
         }
 
         /* ---------- TYPOGRAPHIE ---------- */
@@ -121,6 +104,23 @@
             color: rgba(245, 228, 204, 0.8);
             line-height: 1.6;
             margin-bottom: 20px;
+        }
+
+        /* ---------- FOOTER FIXE ---------- */
+
+        .step-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 14px 24px;
+            padding-bottom: max(14px, env(safe-area-inset-bottom));
+            background: var(--bg);
+            border-top: 1px solid rgba(245, 228, 204, 0.1);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         /* ---------- BOUTONS ---------- */
@@ -141,9 +141,21 @@
 
         .btn-primary:active { transform: scale(0.97); }
 
-        .btn-secondary {
+        .btn-ghost {
+            background: none;
+            border: none;
+            color: rgba(245, 228, 204, 0.5);
+            font-size: 15px;
+            cursor: pointer;
+            width: 100%;
+            padding: 10px;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .pwa-btn {
             background: rgba(245, 228, 204, 0.08);
-            border: 2px solid rgba(245, 228, 204, 0.15);
+            border: 2px solid rgba(245, 228, 204, 0.2);
             color: var(--light);
             padding: 14px;
             border-radius: 14px;
@@ -152,23 +164,10 @@
             cursor: pointer;
             width: 100%;
             font-family: inherit;
-            margin-top: 10px;
             transition: transform 0.15s;
         }
 
-        .btn-secondary:active { transform: scale(0.97); }
-
-        .btn-ghost {
-            background: none;
-            border: none;
-            color: rgba(245, 228, 204, 0.5);
-            font-size: 15px;
-            cursor: pointer;
-            width: 100%;
-            padding: 14px;
-            font-family: inherit;
-            text-align: center;
-        }
+        .pwa-btn:active { transform: scale(0.97); }
 
         /* ---------- ÉTAPE 1 : BIENVENUE ---------- */
 
@@ -197,7 +196,8 @@
         }
 
         .welcome-tag {
-            display: inline-block;
+            display: block;
+            width: fit-content;
             background: rgba(247, 184, 156, 0.15);
             border: 1px solid rgba(247, 184, 156, 0.3);
             color: var(--accent);
@@ -206,8 +206,6 @@
             padding: 6px 14px;
             border-radius: 20px;
             margin: 0 auto 32px;
-            display: block;
-            width: fit-content;
         }
 
         /* ---------- ÉTAPE 2 : PRÉNOM ---------- */
@@ -231,9 +229,7 @@
             border-color: var(--light);
         }
 
-        .prenom-input::placeholder {
-            color: rgba(245, 228, 204, 0.3);
-        }
+        .prenom-input::placeholder { color: rgba(245, 228, 204, 0.3); }
 
         .privacy-note {
             font-size: 14px;
@@ -242,7 +238,108 @@
             margin-top: 8px;
         }
 
-        /* ---------- ÉTAPES 3-4 : MINI PREVIEW ---------- */
+        .name-hint {
+            font-size: 14px;
+            color: rgba(245, 228, 204, 0.6);
+            line-height: 1.5;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: rgba(245, 228, 204, 0.05);
+            border-radius: 8px;
+        }
+
+        /* ---------- ANIMATIONS ---------- */
+
+        @keyframes itemFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .step.active .pilier-item {
+            opacity: 0;
+            animation: itemFadeIn 0.35s ease forwards;
+        }
+
+        .step.active .pilier-item:nth-child(1) { animation-delay: 0.15s; }
+        .step.active .pilier-item:nth-child(2) { animation-delay: 0.25s; }
+        .step.active .pilier-item:nth-child(3) { animation-delay: 0.35s; }
+        .step.active .pilier-item:nth-child(4) { animation-delay: 0.45s; }
+        .step.active .pilier-item:nth-child(5) { animation-delay: 0.55s; }
+
+        @keyframes checkPop {
+            0%   { transform: scale(0.3); opacity: 0; }
+            70%  { transform: scale(1.25); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .summary-item-status {
+            display: inline-block;
+            animation: checkPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        .summary-item:nth-child(2) .summary-item-status { animation-delay: 0.15s; }
+
+        @keyframes dotActive {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.6; }
+        }
+
+        .dot.active { animation: dotActive 2.2s ease-in-out infinite; }
+
+        /* ---------- ÉTAPES 3-4 : FONCTIONNALITÉS ---------- */
+
+        .pilier-card {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .pilier-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .pilier-icon { font-size: 28px; }
+
+        .pilier-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+
+        .pilier-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pilier-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: var(--dark);
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.07);
+        }
+
+        .pilier-item:last-child { border-bottom: none; }
+
+        .pilier-item-icon { font-size: 16px; min-width: 22px; text-align: center; }
+
+        .pilier-item-label { flex: 1; font-weight: 500; }
+
+        .pilier-item-desc {
+            font-size: 13px;
+            color: rgba(46, 58, 89, 0.55);
+            margin-top: 1px;
+        }
+
+        /* ---------- ÉTAPE 5 : CARTE D'URGENCE ---------- */
 
         .feature-icon {
             font-size: 36px;
@@ -250,26 +347,16 @@
             display: block;
         }
 
-        .mini-carte {
-            background: var(--light);
-            border-radius: 12px;
-            padding: 14px 16px;
-            margin: 20px 0;
+        .prefilled-hint {
+            font-size: 14px;
+            color: rgba(247, 184, 156, 0.9);
+            background: rgba(247, 184, 156, 0.08);
+            border: 1px solid rgba(247, 184, 156, 0.2);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
         }
-
-        .mini-carte-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
-            font-size: 15px;
-            color: var(--dark);
-        }
-
-        .mini-carte-row:last-child { border-bottom: none; }
-
-        .mini-carte-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
 
         .status-badge {
             display: inline-flex;
@@ -294,11 +381,34 @@
             border: 1px solid rgba(247, 184, 156, 0.3);
         }
 
+        .mini-carte {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin: 16px 0;
+        }
+
+        .mini-carte-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
+            font-size: 15px;
+            color: var(--dark);
+        }
+
+        .mini-carte-row:last-child { border-bottom: none; }
+
+        .mini-carte-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* ---------- ÉTAPE 6 : CARTES DE COMMUNICATION ---------- */
+
         .cartes-preview-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin: 20px 0;
+            margin: 16px 0 8px;
         }
 
         .carte-preview-item {
@@ -318,7 +428,15 @@
             margin-bottom: 6px;
         }
 
-        /* ---------- ÉTAPE 5 : RÉSUMÉ ---------- */
+        .cartes-status-note {
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.45);
+            text-align: center;
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        /* ---------- ÉTAPE 7 : RÉSUMÉ ---------- */
 
         .summary-icon {
             font-size: 56px;
@@ -330,7 +448,7 @@
         .summary-list {
             background: rgba(245, 228, 204, 0.06);
             border-radius: 12px;
-            margin: 20px 0;
+            margin: 20px 0 12px;
             overflow: hidden;
         }
 
@@ -342,32 +460,21 @@
             border-bottom: 1px solid rgba(245, 228, 204, 0.07);
             font-size: 15px;
             color: var(--light);
+            cursor: pointer;
         }
 
         .summary-item:last-child { border-bottom: none; }
+        .summary-item:active { background: rgba(245, 228, 204, 0.05); }
 
         .summary-item-label { opacity: 0.8; }
-
         .summary-item-status { font-size: 18px; }
 
-        .pwa-btn {
-            background: rgba(245, 228, 204, 0.08);
-            border: 2px solid rgba(245, 228, 204, 0.2);
-            color: var(--light);
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            font-family: inherit;
-            margin-bottom: 10px;
-            display: none;
-            transition: transform 0.15s;
+        .explore-hint {
+            font-size: 14px;
+            color: rgba(245, 228, 204, 0.5);
+            text-align: center;
+            line-height: 1.6;
         }
-
-        .pwa-btn.visible { display: block; }
-        .pwa-btn:active { transform: scale(0.97); }
 
     </style>
 </head>
@@ -375,119 +482,202 @@
 
     <!-- Header onboarding -->
     <div class="onboarding-header">
-        <button class="back-link" id="backBtn" onclick="window.location.href='parametres.html'" style="display:none">⬅️</button>
+        <button class="back-link" id="backBtn" onclick="goBack()" style="display:none">⬅️</button>
         <div class="progress-dots" id="progressDots" style="visibility:hidden">
             <span class="dot" id="dot-2"></span>
             <span class="dot" id="dot-3"></span>
             <span class="dot" id="dot-4"></span>
             <span class="dot" id="dot-5"></span>
+            <span class="dot" id="dot-6"></span>
+            <span class="dot" id="dot-7"></span>
         </div>
         <button class="skip-link" id="skipLink" onclick="skipOnboarding()" style="visibility:hidden">Passer ›</button>
     </div>
 
-    <div class="steps-container">
+    <!-- ÉTAPE 1 : Bienvenue -->
+    <div class="step active" id="step-1" style="text-align:center">
+        <img src="assets/images/logo.png" alt="Nora" class="welcome-logo">
+        <h1 class="welcome-title">Bonjour&nbsp;!</h1>
+        <p class="welcome-text">Je suis Nora, ton compagnon pour les moments difficiles.</p>
+        <span class="welcome-tag">Quelques étapes rapides</span>
+    </div>
 
-        <!-- ÉTAPE 1 : Bienvenue -->
-        <div class="step active" id="step-1">
-            <div class="step-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
-                <img src="assets/images/logo.png" alt="Nora" class="welcome-logo">
-                <h1 class="welcome-title">Bonjour&nbsp;!</h1>
-                <p class="welcome-text">Je suis Nora, ton compagnon pour les moments difficiles.</p>
-                <span class="welcome-tag">3 étapes rapides</span>
+    <!-- ÉTAPE 2 : Prénom + Nom -->
+    <div class="step" id="step-2">
+        <h2 class="step-title">Comment tu t'appelles&nbsp;?</h2>
+        <p class="step-text">Ces informations apparaîtront sur ta carte d'urgence.</p>
+        <input
+            type="text"
+            id="prenomInput"
+            class="prenom-input"
+            placeholder="Ton prénom"
+            autocomplete="given-name"
+            maxlength="40"
+        >
+        <input
+            type="text"
+            id="nomInput"
+            class="prenom-input"
+            placeholder="Ton nom de famille (facultatif)"
+            autocomplete="family-name"
+            maxlength="60"
+        >
+        <p class="name-hint">💡 Le nom de famille aide les secours à t'identifier — notamment si tu ne peux pas parler.</p>
+        <p class="privacy-note">🔒 Tes données restent sur ton téléphone.</p>
+    </div>
+
+    <!-- ÉTAPE 3 : Aide et communication -->
+    <div class="step" id="step-3">
+        <h2 class="step-title">Aide et communication</h2>
+        <p class="step-text">Le premier bouton de l'accueil. Pour les moments où les mots ne viennent plus ou où la situation dépasse.</p>
+        <div class="pilier-card">
+            <div class="pilier-header">
+                <span class="pilier-icon">💬</span>
+                <div class="pilier-title">J'ai besoin d'aide et de communiquer</div>
             </div>
-            <div class="step-actions">
-                <button class="btn-primary" onclick="goToStep(2)">Commencer&nbsp;›</button>
-                <button class="btn-ghost" onclick="skipOnboarding()">Explorer d'abord</button>
-            </div>
-        </div>
-
-        <!-- ÉTAPE 2 : Prénom -->
-        <div class="step" id="step-2">
-            <div class="step-content">
-                <h2 class="step-title">Comment tu t'appelles&nbsp;?</h2>
-                <p class="step-text">Ton prénom sera utilisé dans ta carte d'urgence et dans le journal.</p>
-                <input
-                    type="text"
-                    id="prenomInput"
-                    class="prenom-input"
-                    placeholder="Ton prénom"
-                    autocomplete="given-name"
-                    maxlength="40"
-                >
-                <p class="privacy-note">🔒 Tes données restent sur ton téléphone.</p>
-            </div>
-            <div class="step-actions">
-                <button class="btn-primary" onclick="savePrenomAndContinue()">Continuer&nbsp;›</button>
-            </div>
-        </div>
-
-        <!-- ÉTAPE 3 : Carte d'urgence -->
-        <div class="step" id="step-3">
-            <div class="step-content">
-                <span class="feature-icon">🪪</span>
-                <h2 class="step-title">Ta carte d'urgence</h2>
-                <p class="step-text">C'est le document que tu montres quand tu ne peux plus parler. Il contient tes consignes, tes contacts et tes infos médicales.</p>
-
-                <span class="status-badge" id="carteStatus"></span>
-
-                <div class="mini-carte">
-                    <div class="mini-carte-row">
-                        <span class="mini-carte-icon">👤</span>
-                        <span id="miniCarteNom">Ton identité</span>
+            <div class="pilier-items">
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">🪪</span>
+                    <div>
+                        <div class="pilier-item-label">Carte d'urgence</div>
+                        <div class="pilier-item-desc">À montrer aux secours ou aux passants</div>
                     </div>
-                    <div class="mini-carte-row">
-                        <span class="mini-carte-icon">📋</span>
-                        <span>Consignes pour les secours</span>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">🧭</span>
+                    <div>
+                        <div class="pilier-item-label">Fiches de contexte</div>
+                        <div class="pilier-item-desc">Conseils selon ta situation : maison, extérieur, travail, secours</div>
                     </div>
-                    <div class="mini-carte-row">
-                        <span class="mini-carte-icon">💊</span>
-                        <span>Infos médicales</span>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">💬</span>
+                    <div>
+                        <div class="pilier-item-label">Cartes de communication</div>
+                        <div class="pilier-item-desc">Messages courts à montrer à ton interlocuteur</div>
                     </div>
-                    <div class="mini-carte-row">
-                        <span class="mini-carte-icon">📞</span>
-                        <span>Contacts d'urgence</span>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">⏱️</span>
+                    <div>
+                        <div class="pilier-item-label">Timer visuel</div>
+                        <div class="pilier-item-desc">Pour rythmer le temps d'une crise</div>
                     </div>
                 </div>
             </div>
-            <div class="step-actions">
-                <button class="btn-primary" onclick="goToCarteConfig()">✏️ Configurer ma carte</button>
-                <button class="btn-ghost" onclick="goToStep(4)">Configurer plus tard — disponible dans Paramètres</button>
-            </div>
         </div>
-
-        <!-- ÉTAPE 4 : Cartes de communication -->
-        <div class="step" id="step-4">
-            <div class="step-content">
-                <span class="feature-icon">💬</span>
-                <h2 class="step-title">Tes cartes de communication</h2>
-                <p class="step-text">Des messages courts à montrer à ton interlocuteur quand les mots sont difficiles.</p>
-
-                <span class="status-badge" id="cartesComStatus"></span>
-
-                <div class="cartes-preview-grid" id="cartesPreviewGrid"></div>
-            </div>
-            <div class="step-actions">
-                <button class="btn-primary" onclick="goToCartesComConfig()">💬 Gérer mes cartes</button>
-                <button class="btn-ghost" onclick="goToStep(5)">Passer pour l'instant</button>
-            </div>
-        </div>
-
-        <!-- ÉTAPE 5 : C'est prêt -->
-        <div class="step" id="step-5">
-            <div class="step-content">
-                <span class="summary-icon">✅</span>
-                <h2 class="step-title" id="finalTitle">Nora est prête&nbsp;!</h2>
-                <p class="step-text">Tu retrouveras ce tutoriel à tout moment dans Paramètres.</p>
-
-                <div class="summary-list" id="summaryList"></div>
-            </div>
-            <div class="step-actions">
-                <button class="pwa-btn" id="pwaBtn" onclick="installPWA()">📲 Ajouter à mon écran d'accueil</button>
-                <button class="btn-primary" onclick="finishOnboarding()">Aller à l'accueil</button>
-            </div>
-        </div>
-
     </div>
+
+    <!-- ÉTAPE 4 : S'apaiser -->
+    <div class="step" id="step-4">
+        <h2 class="step-title">S'apaiser</h2>
+        <p class="step-text">Le deuxième bouton de l'accueil. Pour redescendre, te réguler et retrouver un état stable.</p>
+        <div class="pilier-card">
+            <div class="pilier-header">
+                <span class="pilier-icon">🌸</span>
+                <div class="pilier-title">J'ai besoin de m'apaiser</div>
+            </div>
+            <div class="pilier-items">
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">🫁</span>
+                    <div>
+                        <div class="pilier-item-label">Cohérence cardiaque</div>
+                        <div class="pilier-item-desc">Respiration guidée avec animation visuelle</div>
+                    </div>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">🎧</span>
+                    <div>
+                        <div class="pilier-item-label">Sons relaxants</div>
+                        <div class="pilier-item-desc">Pour apaiser l'environnement sonore</div>
+                    </div>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">🧩</span>
+                    <div>
+                        <div class="pilier-item-label">Fidget numérique</div>
+                        <div class="pilier-item-desc">Pour occuper les mains et te concentrer</div>
+                    </div>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">☁️</span>
+                    <div>
+                        <div class="pilier-item-label">Harmonie visuelle</div>
+                        <div class="pilier-item-desc">Animation apaisante pour détourner l'attention</div>
+                    </div>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">✓</span>
+                    <div>
+                        <div class="pilier-item-label">Conseils</div>
+                        <div class="pilier-item-desc">Recommandations pour redescendre</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉTAPE 5 : Carte d'urgence -->
+    <div class="step" id="step-5">
+        <span class="feature-icon">🪪</span>
+        <h2 class="step-title">Ta carte d'urgence</h2>
+        <p class="step-text">C'est le document que tu montres quand tu ne peux plus parler. Il contient tes consignes, tes contacts et tes infos médicales.</p>
+        <p class="prefilled-hint">Un texte est pré-rempli dans chaque section — conserve-le tel quel ou modifie-le selon tes besoins.</p>
+        <span class="status-badge" id="carteStatus"></span>
+        <div class="mini-carte">
+            <div class="mini-carte-row">
+                <span class="mini-carte-icon">👤</span>
+                <span id="miniCarteNom">Ton identité</span>
+            </div>
+            <div class="mini-carte-row">
+                <span class="mini-carte-icon">📋</span>
+                <span>Consignes pour les secours</span>
+            </div>
+            <div class="mini-carte-row">
+                <span class="mini-carte-icon">💊</span>
+                <span>Infos médicales</span>
+            </div>
+            <div class="mini-carte-row">
+                <span class="mini-carte-icon">📞</span>
+                <span>Contacts d'urgence</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉTAPE 6 : Cartes de communication -->
+    <div class="step" id="step-6">
+        <span class="feature-icon">💬</span>
+        <h2 class="step-title">Tes cartes de communication</h2>
+        <p class="step-text">Des messages courts à montrer quand les mots sont difficiles. Tu peux les personnaliser selon tes besoins.</p>
+        <span class="status-badge" id="cartesComStatus"></span>
+        <div class="cartes-preview-grid">
+            <div class="carte-preview-item">
+                <span class="carte-preview-emoji">🤫</span>J'ai besoin de calme
+            </div>
+            <div class="carte-preview-item">
+                <span class="carte-preview-emoji">🚪</span>Laisse-moi seul(e)
+            </div>
+            <div class="carte-preview-item">
+                <span class="carte-preview-emoji">💧</span>J'ai besoin d'eau
+            </div>
+            <div class="carte-preview-item">
+                <span class="carte-preview-emoji">⏳</span>Attends un instant
+            </div>
+        </div>
+        <p class="cartes-status-note" id="cartesStatusNote"></p>
+    </div>
+
+    <!-- ÉTAPE 7 : C'est prêt -->
+    <div class="step" id="step-7">
+        <span class="summary-icon">✅</span>
+        <h2 class="step-title" id="finalTitle">Nora est prête&nbsp;!</h2>
+        <p class="step-text">Tu retrouveras ce tutoriel à tout moment dans Paramètres.</p>
+        <div class="summary-list" id="summaryList"></div>
+        <p class="explore-hint">Depuis l'accueil, explore l'aide en situation de crise et les outils d'apaisement.</p>
+    </div>
+
+    <!-- Footer fixe (boutons d'action, mis à jour à chaque étape) -->
+    <div class="step-footer" id="footerActions"></div>
 
     <script>
         var currentStep = 1;
@@ -499,9 +689,7 @@
         window.addEventListener('beforeinstallprompt', function(e) {
             e.preventDefault();
             deferredInstallPrompt = e;
-            if (currentStep === 5) {
-                document.getElementById('pwaBtn').classList.add('visible');
-            }
+            if (currentStep === 7) renderFooter(7);
         });
 
         function installPWA() {
@@ -509,7 +697,7 @@
             deferredInstallPrompt.prompt();
             deferredInstallPrompt.userChoice.then(function() {
                 deferredInstallPrompt = null;
-                document.getElementById('pwaBtn').classList.remove('visible');
+                renderFooter(7);
             });
         }
 
@@ -521,13 +709,23 @@
             document.getElementById('step-' + n).classList.add('active');
             localStorage.setItem('tutorielStep', n);
             updateHeader();
+            renderFooter(n);
+            window.scrollTo(0, 0);
 
             if (n === 2) {
                 setTimeout(function() { document.getElementById('prenomInput').focus(); }, 350);
             }
-            if (n === 3) renderStep3();
-            if (n === 4) renderStep4();
             if (n === 5) renderStep5();
+            if (n === 6) renderStep6();
+            if (n === 7) renderStep7();
+        }
+
+        function goBack() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            } else if (isReviewMode) {
+                window.location.href = 'parametres.html';
+            }
         }
 
         function updateHeader() {
@@ -538,23 +736,48 @@
             if (currentStep === 1) {
                 dots.style.visibility = 'hidden';
                 skip.style.visibility = 'hidden';
-                back.style.display = 'none';
-            } else if (currentStep === 5) {
+                back.style.display = isReviewMode ? 'block' : 'none';
+            } else if (currentStep === 7) {
                 dots.style.visibility = 'visible';
                 skip.style.visibility = 'hidden';
-                if (isReviewMode) back.style.display = 'block';
+                back.style.display = 'block';
             } else {
                 dots.style.visibility = 'visible';
                 skip.style.visibility = 'visible';
-                if (isReviewMode) back.style.display = 'block';
+                back.style.display = 'block';
             }
 
-            // Mise à jour des points
-            for (var i = 2; i <= 5; i++) {
+            for (var i = 2; i <= 7; i++) {
                 var dot = document.getElementById('dot-' + i);
                 dot.classList.remove('active', 'done');
                 if (i === currentStep) dot.classList.add('active');
                 else if (i < currentStep) dot.classList.add('done');
+            }
+        }
+
+        function renderFooter(n) {
+            var el = document.getElementById('footerActions');
+            if (n === 1) {
+                el.innerHTML =
+                    '<button class="btn-primary" onclick="goToStep(2)">Commencer\u00a0›</button>' +
+                    '<button class="btn-ghost" onclick="skipOnboarding()">Explorer d\'abord</button>';
+            } else if (n === 2) {
+                el.innerHTML = '<button class="btn-primary" onclick="savePrenomAndContinue()">Continuer\u00a0›</button>';
+            } else if (n === 3 || n === 4) {
+                el.innerHTML = '<button class="btn-primary" onclick="goToStep(' + (n + 1) + ')">Continuer\u00a0›</button>';
+            } else if (n === 5) {
+                el.innerHTML =
+                    '<button class="btn-primary" onclick="goToCarteConfig()">✏️ Configurer ma carte</button>' +
+                    '<button class="btn-ghost" onclick="goToStep(6)">Configurer plus tard — disponible dans Paramètres</button>';
+            } else if (n === 6) {
+                el.innerHTML =
+                    '<button class="btn-primary" onclick="goToCartesCom()">💬 Voir mes cartes de communication</button>' +
+                    '<button class="btn-ghost" onclick="goToStep(7)">Passer pour l\'instant</button>';
+            } else if (n === 7) {
+                var pwaHtml = deferredInstallPrompt
+                    ? '<button class="pwa-btn" onclick="installPWA()">📲 Ajouter à mon écran d\'accueil</button>'
+                    : '';
+                el.innerHTML = pwaHtml + '<button class="btn-primary" onclick="finishOnboarding()">Aller à l\'accueil</button>';
             }
         }
 
@@ -574,8 +797,10 @@
         /* ---------- ÉTAPE 2 : PRÉNOM ---------- */
 
         function savePrenomAndContinue() {
-            var val = document.getElementById('prenomInput').value.trim();
-            if (val) localStorage.setItem('userPrenom', val);
+            var prenom = document.getElementById('prenomInput').value.trim();
+            var nom = document.getElementById('nomInput').value.trim();
+            if (prenom) localStorage.setItem('userPrenom', prenom);
+            if (nom) localStorage.setItem('userNom', nom);
             goToStep(3);
         }
 
@@ -583,15 +808,16 @@
             if (e.key === 'Enter' && currentStep === 2) savePrenomAndContinue();
         });
 
-        /* ---------- ÉTAPE 3 : CARTE D'URGENCE ---------- */
+        /* ---------- ÉTAPE 5 : CARTE D'URGENCE ---------- */
 
-        function renderStep3() {
+        function renderStep5() {
             var prenom = localStorage.getItem('userPrenom') || '';
             var nom = localStorage.getItem('userNom') || '';
             var nomComplet = [prenom, nom].filter(Boolean).join(' ');
             document.getElementById('miniCarteNom').textContent = nomComplet || 'Ton identité';
 
-            var carteConfigured = localStorage.getItem('carteConsignes') || localStorage.getItem('carteInformations');
+            var carteConfigured = localStorage.getItem('carteConfigured') === 'true'
+                || localStorage.getItem('carteShowIdentity') !== null;
             var badge = document.getElementById('carteStatus');
             if (carteConfigured) {
                 badge.textContent = '✅ Configurée';
@@ -603,101 +829,86 @@
         }
 
         function goToCarteConfig() {
-            localStorage.setItem('tutorielRetour', '4');
+            localStorage.setItem('tutorielRetour', '5');
             location.href = 'carte-config.html';
         }
 
-        /* ---------- ÉTAPE 4 : CARTES DE COM ---------- */
+        /* ---------- ÉTAPE 6 : CARTES DE COM ---------- */
 
-        function renderStep4() {
+        function renderStep6() {
             var cartes = [];
             try { cartes = JSON.parse(localStorage.getItem('cartesCommunication') || '[]'); } catch(e) {}
 
             var badge = document.getElementById('cartesComStatus');
-            var grid = document.getElementById('cartesPreviewGrid');
+            var note = document.getElementById('cartesStatusNote');
 
             if (cartes.length > 0) {
                 badge.textContent = cartes.length + ' carte' + (cartes.length > 1 ? 's' : '') + ' configurée' + (cartes.length > 1 ? 's' : '');
                 badge.className = 'status-badge configured';
-                var shown = cartes.slice(0, 4);
-                grid.innerHTML = shown.map(function(c) {
-                    return '<div class="carte-preview-item">' +
-                        (c.emoji ? '<span class="carte-preview-emoji">' + c.emoji + '</span>' : '') +
-                        (c.texte || '') +
-                        '</div>';
-                }).join('');
+                note.textContent = 'Exemples ci-dessus — tes vraies cartes s\'affichent dans l\'application.';
             } else {
-                badge.textContent = 'Aucune carte';
+                badge.textContent = 'Aucune carte configurée';
                 badge.className = 'status-badge empty';
-                var exemples = [
-                    { emoji: '🤫', texte: "J'ai besoin de calme" },
-                    { emoji: '🚪', texte: 'Laisse-moi seul(e)' },
-                    { emoji: '💧', texte: "J'ai besoin d'eau" },
-                    { emoji: '⏳', texte: "Attends un instant" }
-                ];
-                grid.innerHTML = exemples.map(function(c) {
-                    return '<div class="carte-preview-item" style="opacity:0.5">' +
-                        '<span class="carte-preview-emoji">' + c.emoji + '</span>' + c.texte +
-                        '</div>';
-                }).join('');
+                note.textContent = 'Voici des exemples de cartes.';
             }
         }
 
-        function goToCartesComConfig() {
-            localStorage.setItem('tutorielRetour', '5');
-            location.href = 'cartes-com-config.html';
+        function goToCartesCom() {
+            location.href = 'cartes-communication.html';
         }
 
-        /* ---------- ÉTAPE 5 : RÉSUMÉ ---------- */
+        /* ---------- ÉTAPE 7 : RÉSUMÉ ---------- */
 
-        function renderStep5() {
+        function renderStep7() {
             var prenom = localStorage.getItem('userPrenom') || '';
             if (prenom) {
                 document.getElementById('finalTitle').textContent = 'Nora est prête, ' + prenom + '\u00a0!';
             }
 
-            var carteOk = !!(localStorage.getItem('carteConsignes') || localStorage.getItem('carteInformations'));
+            var carteOk = localStorage.getItem('carteConfigured') === 'true'
+                || localStorage.getItem('carteShowIdentity') !== null;
             var cartes = [];
             try { cartes = JSON.parse(localStorage.getItem('cartesCommunication') || '[]'); } catch(e) {}
             var cartesOk = cartes.length > 0;
 
             document.getElementById('summaryList').innerHTML =
-                '<div class="summary-item"><span class="summary-item-label">🪪 Carte d\'urgence</span><span class="summary-item-status">' + (carteOk ? '✅' : '⚠️') + '</span></div>' +
-                '<div class="summary-item"><span class="summary-item-label">💬 Cartes de communication</span><span class="summary-item-status">' + (cartesOk ? '✅' : '⚠️') + '</span></div>';
-
-            if (deferredInstallPrompt) {
-                document.getElementById('pwaBtn').classList.add('visible');
-            }
+                '<div class="summary-item" onclick="' + (carteOk ? 'location.href=\'carte.html\'' : 'goToStep(5)') + '">' +
+                    '<span class="summary-item-label">🪪 Carte d\'urgence</span>' +
+                    '<span class="summary-item-status">' + (carteOk ? '✅' : '⚠️ Configurer') + '</span>' +
+                '</div>' +
+                '<div class="summary-item" onclick="location.href=\'cartes-communication.html\'">' +
+                    '<span class="summary-item-label">💬 Cartes de communication</span>' +
+                    '<span class="summary-item-status">' + (cartesOk ? '✅' : '⚠️ Configurer') + '</span>' +
+                '</div>';
         }
 
         /* ---------- INIT ---------- */
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Mode révision depuis Paramètres
-            if (isReviewMode) {
-                document.getElementById('backBtn').style.display = 'block';
-            }
-
-            // Reprendre là où on s'est arrêté
+            // Reprendre là où on s'est arrêté (retour depuis une page externe)
             var savedStep = parseInt(localStorage.getItem('tutorielRetour') || '0');
-            if (savedStep >= 2 && savedStep <= 5) {
+            if (savedStep >= 2 && savedStep <= 7) {
                 localStorage.removeItem('tutorielRetour');
                 goToStep(savedStep);
                 return;
             }
 
+            // Reprendre en cours de tutoriel
             var resumeStep = parseInt(localStorage.getItem('tutorielStep') || '1');
-            if (resumeStep >= 2 && resumeStep <= 5) {
+            if (resumeStep >= 2 && resumeStep <= 7) {
                 goToStep(resumeStep);
                 return;
             }
 
-            // Premier écran
+            // Étape 1 initiale
             updateHeader();
+            renderFooter(1);
 
-            // Pré-remplir le prénom si déjà connu
+            // Pré-remplir le prénom et nom si déjà connus
             var prenom = localStorage.getItem('userPrenom') || '';
             if (prenom) document.getElementById('prenomInput').value = prenom;
+            var nom = localStorage.getItem('userNom') || '';
+            if (nom) document.getElementById('nomInput').value = nom;
         });
     </script>
     <script src="nora-scroll.js"></script>

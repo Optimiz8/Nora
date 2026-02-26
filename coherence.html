@@ -16,11 +16,21 @@
 
 .main {
   height: calc(100vh - var(--header-height));
-  padding: 14px 16px 20px;
+  padding: 12px 16px 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 14px;
   overflow-y: auto;
+}
+
+/* ---------- BOUTON COMMENCER (toujours visible) ---------- */
+.main > .start-btn-wrap {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+  padding: 8px 0 16px;
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 /* ---------- SECTION TITLES ---------- */
@@ -90,11 +100,11 @@ h2 {
   color: rgba(46,58,89,0.55);
 }
 
-/* ---------- TWO-COL SECTION ---------- */
+/* ---------- TWO-COL SECTION (animation + preview) ---------- */
 .two-col-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 .toggle-group {
@@ -126,46 +136,50 @@ h2 {
   font-weight: 700;
 }
 
-/* ---------- PREVIEW ---------- */
+/* ---------- SON (pleine largeur, boutons côte à côte) ---------- */
+.son-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.son-toggle-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* ---------- PREVIEW (dans la colonne droite) ---------- */
 .preview-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 6px;
-}
-
-.preview-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: rgba(245,228,204,0.35);
-  text-align: center;
 }
 
 .preview-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 88px;
+  flex: 1;
+  min-height: 100px;
 }
 
 .preview-circle {
-  width: 58px;
-  height: 58px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(247,184,156,.9), rgba(247,184,156,.3));
   box-shadow: 0 0 28px rgba(247,184,156,0.35);
-  animation: previewPulse 3s ease-in-out infinite;
+  animation: previewPulse 5s ease-in-out infinite;
 }
 
 @keyframes previewPulse {
   0%, 100% { transform: scale(0.72); }
-  50% { transform: scale(1.08); }
+  50% { transform: scale(1.06); }
 }
 
 .preview-oval {
-  width: 34px;
-  height: 74px;
+  width: 42px;
+  height: 100px;
   border-radius: 9999px;
   border: 2px solid rgba(245,228,204,.2);
   background: rgba(245,228,204,.05);
@@ -181,14 +195,14 @@ h2 {
   aspect-ratio: 1;
   border-radius: 50%;
   background: linear-gradient(to top, rgba(247,184,156,.4), rgba(247,184,156,.75));
-  animation: previewFloat 3s ease-in-out infinite;
+  animation: previewFloat 5s ease-in-out infinite;
   position: absolute;
   bottom: 0;
 }
 
 @keyframes previewFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-46px); }
+  50% { transform: translateY(-56px); }
 }
 
 /* ---------- DURATION CAROUSEL ---------- */
@@ -246,7 +260,7 @@ h2 {
 }
 
 /* ---------- START BUTTON ---------- */
-.main > button {
+.start-btn {
   padding: 18px;
   border-radius: 20px;
   border: none;
@@ -257,12 +271,12 @@ h2 {
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(247,184,156,0.3);
   transition: all 0.2s;
-  flex-shrink: 0;
   width: 100%;
   letter-spacing: 0.01em;
+  font-family: inherit;
 }
 
-.main > button:active {
+.start-btn:active {
   transform: translateY(2px);
   box-shadow: 0 2px 8px rgba(247,184,156,0.2);
 }
@@ -499,7 +513,7 @@ h2 {
     </div>
   </div>
 
-  <!-- Animation + Son -->
+  <!-- Animation + Aperçu côte à côte -->
   <div class="two-col-section">
     <div>
       <h2>Animation</h2>
@@ -508,20 +522,20 @@ h2 {
         <button class="toggle-btn" id="animOval">Bulle</button>
       </div>
     </div>
-    <div>
-      <h2>Son</h2>
-      <div class="toggle-group">
-        <button class="toggle-btn active" id="btnSoundOn">Avec son</button>
-        <button class="toggle-btn" id="btnSoundOff">Sans son</button>
+    <div class="preview-section">
+      <h2>Aperçu</h2>
+      <div class="preview-container" id="previewContainer">
+        <div class="preview-circle"></div>
       </div>
     </div>
   </div>
 
-  <!-- Preview -->
-  <div class="preview-section">
-    <div class="preview-label">Prévisualisation</div>
-    <div class="preview-container" id="previewContainer">
-      <div class="preview-circle"></div>
+  <!-- Son pleine largeur -->
+  <div class="son-section">
+    <h2>Son</h2>
+    <div class="son-toggle-row">
+      <button class="toggle-btn active" id="btnSoundOn">Avec son</button>
+      <button class="toggle-btn" id="btnSoundOff">Sans son</button>
     </div>
   </div>
 
@@ -536,7 +550,9 @@ h2 {
     </div>
   </div>
 
-  <button onclick="start()">Commencer</button>
+  <div class="start-btn-wrap">
+    <button class="start-btn" onclick="start()">Commencer</button>
+  </div>
 </div>
 
 <div class="main" id="breathing">

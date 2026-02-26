@@ -958,8 +958,15 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
             // Sauvegarder le toggle médical
             localStorage.setItem('carteMedical', showMedical ? 'true' : 'false');
 
+            localStorage.setItem('carteConfigured', 'true');
             hasUnsavedChanges = false;
             showToast();
+
+            if (localStorage.getItem('tutorielRetour')) {
+                setTimeout(function() {
+                    window.location.href = 'tutoriel.html';
+                }, 1800);
+            }
         }
 
         function insertDefault() {
