@@ -329,6 +329,10 @@
 
         .pilier-item:last-child { border-bottom: none; }
 
+        .pilier-item[onclick] { cursor: pointer; }
+        .pilier-item[onclick]:active { background: rgba(46, 58, 89, 0.07); }
+        .pilier-item-arrow { color: rgba(46, 58, 89, 0.3); font-size: 18px; flex-shrink: 0; margin-left: 4px; }
+
         .pilier-item-icon { font-size: 16px; min-width: 22px; text-align: center; }
 
         .pilier-item-label { flex: 1; font-weight: 500; }
@@ -536,33 +540,37 @@
                 <div class="pilier-title">J'ai besoin d'aide et de communiquer</div>
             </div>
             <div class="pilier-items">
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('carte.html')">
                     <span class="pilier-item-icon">🪪</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Carte d'urgence</div>
                         <div class="pilier-item-desc">À montrer aux secours ou aux passants</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('contextes-liste.html')">
                     <span class="pilier-item-icon">🧭</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Fiches de contexte</div>
                         <div class="pilier-item-desc">Conseils selon ta situation : maison, extérieur, travail, secours</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('cartes-communication.html')">
                     <span class="pilier-item-icon">💬</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Cartes de communication</div>
                         <div class="pilier-item-desc">Messages courts à montrer à ton interlocuteur</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('timer.html')">
                     <span class="pilier-item-icon">⏱️</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Timer visuel</div>
                         <div class="pilier-item-desc">Pour rythmer le temps d'une crise</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
             </div>
         </div>
@@ -578,40 +586,45 @@
                 <div class="pilier-title">J'ai besoin de m'apaiser</div>
             </div>
             <div class="pilier-items">
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('coherence.html')">
                     <span class="pilier-item-icon">🫁</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Cohérence cardiaque</div>
                         <div class="pilier-item-desc">Respiration guidée avec animation visuelle</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('sons.html')">
                     <span class="pilier-item-icon">🎧</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Sons relaxants</div>
                         <div class="pilier-item-desc">Pour apaiser l'environnement sonore</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('fidgets.html')">
                     <span class="pilier-item-icon">🧩</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Fidget numérique</div>
                         <div class="pilier-item-desc">Pour occuper les mains et te concentrer</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('harmonie-visuelle.html')">
                     <span class="pilier-item-icon">☁️</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Harmonie visuelle</div>
                         <div class="pilier-item-desc">Animation apaisante pour détourner l'attention</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item">
+                <div class="pilier-item" onclick="previewFeature('conseils.html')">
                     <span class="pilier-item-icon">✓</span>
-                    <div>
+                    <div style="flex:1">
                         <div class="pilier-item-label">Conseils</div>
                         <div class="pilier-item-desc">Recommandations pour redescendre</div>
                     </div>
+                    <span class="pilier-item-arrow">›</span>
                 </div>
             </div>
         </div>
@@ -682,7 +695,7 @@
     <script>
         var currentStep = 1;
         var deferredInstallPrompt = null;
-        var isReviewMode = !!localStorage.getItem('onboardingDone');
+        var isReviewMode = !!localStorage.getItem('onboardingDone') || !!localStorage.getItem('onboardingSkipped');
 
         /* ---------- PWA INSTALL ---------- */
 
@@ -779,6 +792,11 @@
                     : '';
                 el.innerHTML = pwaHtml + '<button class="btn-primary" onclick="finishOnboarding()">Aller à l\'accueil</button>';
             }
+        }
+
+        function previewFeature(url) {
+            localStorage.setItem('tutorielRetour', String(currentStep));
+            location.href = url;
         }
 
         function skipOnboarding() {
@@ -879,6 +897,14 @@
                 '<div class="summary-item" onclick="location.href=\'cartes-communication.html\'">' +
                     '<span class="summary-item-label">💬 Cartes de communication</span>' +
                     '<span class="summary-item-status">' + (cartesOk ? '✅' : '⚠️ Configurer') + '</span>' +
+                '</div>' +
+                '<div class="summary-item" onclick="location.href=\'timer.html\'">' +
+                    '<span class="summary-item-label">⏱️ Timer visuel</span>' +
+                    '<span class="summary-item-status">›</span>' +
+                '</div>' +
+                '<div class="summary-item" onclick="location.href=\'coherence.html\'">' +
+                    '<span class="summary-item-label">🫁 Cohérence cardiaque</span>' +
+                    '<span class="summary-item-status">›</span>' +
                 '</div>';
         }
 

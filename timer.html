@@ -414,6 +414,8 @@
       padding: 36px 28px;
       width: 100%;
       max-width: 320px;
+      position: relative;
+      z-index: 1;
     }
 
     .alarm-icon { font-size: 3.5rem; animation: alarmPulse 0.9s ease-in-out infinite; }
@@ -667,7 +669,7 @@
     #kawaiiBgRain {
       position: fixed;
       inset: 0;
-      z-index: 0;
+      z-index: -1;
       pointer-events: none;
       overflow: hidden;
       display: none;
@@ -675,16 +677,20 @@
 
     .bg-sparkle {
       position: absolute;
-      top: -40px;
+      top: -20px;
+      border-radius: 1px;
       animation: bgSparkleFall linear infinite;
-      font-size: 18px;
-      opacity: 0.7;
+      transform-origin: center center;
     }
 
     @keyframes bgSparkleFall {
-      0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
-      90%  { opacity: 0.5; }
-      100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
+      0%   { transform: translateY(0) rotate(0deg) scale(1, 0.15); opacity: 0; }
+      6%   { opacity: 0.9; }
+      25%  { transform: translateY(25vh) rotate(90deg) scale(0.15, 1); }
+      50%  { transform: translateY(50vh) rotate(180deg) scale(1, 0.15); }
+      75%  { transform: translateY(75vh) rotate(270deg) scale(0.15, 1); opacity: 0.6; }
+      93%  { opacity: 0; }
+      100% { transform: translateY(110vh) rotate(360deg) scale(1, 0.15); opacity: 0; }
     }
 
     /* ---------- FOND DE PAGE THÈME ---------- */
@@ -747,13 +753,19 @@
     .sparkle-particle {
       position: absolute;
       top: -50px;
+      border-radius: 1px;
       animation: sparkleFall linear infinite;
+      transform-origin: center center;
     }
 
     @keyframes sparkleFall {
-      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-      80%  { opacity: 0.8; }
-      100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+      0%   { transform: translateY(0) rotate(0deg) scale(1, 0.15); opacity: 0; }
+      6%   { opacity: 1; }
+      25%  { transform: translateY(25vh) rotate(90deg) scale(0.15, 1); }
+      50%  { transform: translateY(50vh) rotate(180deg) scale(1, 0.15); }
+      75%  { transform: translateY(75vh) rotate(270deg) scale(0.15, 1); opacity: 0.7; }
+      93%  { opacity: 0; }
+      100% { transform: translateY(110vh) rotate(360deg) scale(1, 0.15); opacity: 0; }
     }
 
     .alarm-overlay.theme-espace {
@@ -784,19 +796,13 @@
 
     .alarm-lottie {
       display: none;
-      width: 150px;
-      height: 150px;
+      width: 190px;
+      height: 190px;
       border-radius: 4px;
     }
 
     .alarm-overlay.theme-espace .alarm-lottie {
       display: block;
-      animation: spaceFloat 1.8s ease-in-out infinite;
-    }
-
-    @keyframes spaceFloat {
-      0%, 100% { transform: translateY(0) rotate(-5deg); }
-      50%       { transform: translateY(-24px) rotate(10deg); }
     }
 
     .glitter-bg {
@@ -1335,12 +1341,14 @@
         releaseWakeLock();
         localStorage.removeItem('timerRunningState');
         state = 'paused';
+        if (timerStyle === 'kawaii') stopBgRain();
       } else if (state === 'paused') {
         endTimestamp = Date.now() + timeRemaining * 1000;
         state = 'running';
         startInterval();
         saveRunningState();
         requestWakeLock();
+        if (timerStyle === 'kawaii') startBgRain();
       }
       updateUI();
     }
@@ -1379,6 +1387,7 @@
         const hue = Math.round(progress * 300);
         overlay.style.background = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
         document.getElementById('kawaiiAlarmVideo').play().catch(function() {});
+        startSparkles();
       } else if (timerStyle === 'espace') {
         document.querySelector('#alarmOverlay .alarm-icon').textContent = '👨‍🚀';
         document.getElementById('alarmText').textContent = 'Houston, le temps est écoulé.';
@@ -1422,15 +1431,17 @@
     function startSparkles() {
       const container = document.getElementById('alarmSparkles');
       container.innerHTML = '';
-      const emojis = ['✨', '⭐', '🌟', '💫'];
-      for (let i = 0; i < 10; i++) {
-        const p = document.createElement('span');
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
         p.className = 'sparkle-particle';
-        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        const color = SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)];
+        p.style.background = color;
         p.style.left = (Math.random() * 100) + '%';
-        p.style.animationDelay = (Math.random() * 2.5) + 's';
-        p.style.animationDuration = (1.8 + Math.random() * 2.2) + 's';
-        p.style.fontSize = (14 + Math.floor(Math.random() * 18)) + 'px';
+        const sz = (5 + Math.floor(Math.random() * 7)) + 'px';
+        p.style.width = sz;
+        p.style.height = sz;
+        p.style.animationDuration = (7 + Math.random() * 8) + 's';
+        p.style.animationDelay = (-Math.random() * 14) + 's';
         container.appendChild(p);
       }
     }
@@ -1972,7 +1983,7 @@
         const dist  = Math.random() * 0.65;
         const x = 50 + dist * 38 * Math.cos(angle);
         const y = 50 + dist * 38 * Math.sin(angle);
-        const speed  = 0.06 + Math.random() * 0.08;
+        const speed  = 0.025 + Math.random() * 0.035;
         const vAngle = Math.random() * Math.PI * 2;
         kawaiiParticles.push({ el, x, y, vx: speed * Math.cos(vAngle), vy: speed * Math.sin(vAngle) });
         el.style.left = x + '%';
@@ -1999,11 +2010,11 @@
           p.x = 50 + nx * (maxD - 0.5);
           p.y = 50 + ny * (maxD - 0.5);
         }
-        p.vx += (Math.random() - 0.5) * 0.01;
-        p.vy += (Math.random() - 0.5) * 0.01;
+        p.vx += (Math.random() - 0.5) * 0.004;
+        p.vy += (Math.random() - 0.5) * 0.004;
         const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-        if (spd > 0.18) { p.vx *= 0.18 / spd; p.vy *= 0.18 / spd; }
-        if (spd < 0.03) { p.vx += (Math.random() - 0.5) * 0.03; p.vy += (Math.random() - 0.5) * 0.03; }
+        if (spd > 0.08) { p.vx *= 0.08 / spd; p.vy *= 0.08 / spd; }
+        if (spd < 0.012) { p.vx += (Math.random() - 0.5) * 0.015; p.vy += (Math.random() - 0.5) * 0.015; }
         p.el.style.left = p.x + '%';
         p.el.style.top  = p.y + '%';
       });
@@ -2014,20 +2025,23 @@
       if (kawaiiAnimFrame) { cancelAnimationFrame(kawaiiAnimFrame); kawaiiAnimFrame = null; }
     }
 
-    const BG_RAIN_EMOJIS = ['✨','⭐','💫','🌟','🎀','💖','🍭','🌸'];
+    const SPARKLE_COLORS = ['#FFD700','#FFF9C4','#FFE4E4','#E8D5FF','#D4F0FF','#FFFFFF','#F7B89C','#FFB6C1'];
 
     function startBgRain() {
       const container = document.getElementById('kawaiiBgRain');
       container.innerHTML = '';
       container.style.display = 'block';
-      for (let i = 0; i < 18; i++) {
-        const p = document.createElement('span');
+      for (let i = 0; i < 22; i++) {
+        const p = document.createElement('div');
         p.className = 'bg-sparkle';
-        p.textContent = BG_RAIN_EMOJIS[Math.floor(Math.random() * BG_RAIN_EMOJIS.length)];
+        const color = SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)];
+        p.style.background = color;
         p.style.left = (Math.random() * 100) + '%';
-        p.style.fontSize = (12 + Math.floor(Math.random() * 14)) + 'px';
-        p.style.animationDuration = (4 + Math.random() * 6) + 's';
-        p.style.animationDelay = (-Math.random() * 10) + 's';
+        const sz = (5 + Math.floor(Math.random() * 6)) + 'px';
+        p.style.width = sz;
+        p.style.height = sz;
+        p.style.animationDuration = (8 + Math.random() * 9) + 's';
+        p.style.animationDelay = (-Math.random() * 17) + 's';
         container.appendChild(p);
       }
     }

@@ -172,6 +172,22 @@
             border-bottom: none;
         }
 
+        /* ---------- BADGE TOOLTIP ---------- */
+        #badgeTooltip {
+            position: fixed;
+            background: var(--dark);
+            color: var(--light);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+            max-width: 210px;
+            z-index: 500;
+            display: none;
+            border: 1px solid rgba(245,228,204,0.15);
+        }
+
         .badge-modal-empty {
             color: var(--dark);
             opacity: 0.5;
@@ -617,7 +633,7 @@
                         <th style="width: 110px;">Type</th>
                         <th style="width: 70px;">Intensité</th>
                         <th style="width: 80px;">Durée</th>
-                        <th>Déclencheurs</th>
+                        <th style="min-width: 220px;">Déclencheurs</th>
                         <th style="width: 80px;">Cap.</th>
                         <th style="width: 80px;">Bes.</th>
                         <th style="width: 80px;">États</th>
@@ -788,6 +804,8 @@
         </div>
     </div>
 
+    <div id="badgeTooltip"></div>
+
     <div class="modal" id="badgeModal" onclick="closeModal(event, 'badgeModal')" role="dialog" aria-modal="true" aria-label="Détail">
         <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 360px;">
             <div class="modal-header">
@@ -935,10 +953,10 @@
                 <td>${entry.typeCrise || '-'}</td>
                 <td>${intensityDisplay}</td>
                 <td>${entry.duree || '-'}</td>
-                <td style="max-width: 150px;">${triggersDisplay}</td>
-                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(${index}, 'caps')">${capsCount}</span></td>
-                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(${index}, 'besoins')">${needsCount}</span></td>
-                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(${index}, 'etats')">${statesCount}</span></td>
+                <td style="min-width: 220px; max-width: 260px;">${triggersDisplay}</td>
+                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'caps')">${capsCount}</span></td>
+                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'besoins')">${needsCount}</span></td>
+                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'etats')">${statesCount}</span></td>
                 <td style="max-width: 200px;">${entry.remarques || '-'}</td>
                 <td class="actions-cell" style="white-space: nowrap;">
                     <button class="action-btn" onclick="event.stopPropagation(); openFormModal('edit', ${index})" title="Modifier">✏️</button>
@@ -1410,7 +1428,9 @@ ${entriesHtml}
             closeModal(null, 'exportModal');
         }
 
-        function openBadgeModal(index, type) {
+        let _tooltipTimer = null;
+
+        function openBadgeModal(el, index, type) {
             const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
             journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
             const entry = journal[index];
@@ -1431,17 +1451,28 @@ ${entriesHtml}
                 title = 'États';
                 items = (entry.etats || []).map(e => e.label || e);
             }
-            document.getElementById('badgeModalTitle').textContent = title;
-            const list = document.getElementById('badgeModalList');
-            if (items.length === 0) {
-                list.innerHTML = '<p class="badge-modal-empty">Aucun élément</p>';
-            } else {
-                list.innerHTML = '<ul class="badge-modal-list">' +
-                    items.map(item => `<li>• ${item}</li>`).join('') +
-                    '</ul>';
-            }
-            document.getElementById('badgeModal').classList.add('visible');
+            const tooltip = document.getElementById('badgeTooltip');
+            tooltip.innerHTML = items.length === 0
+                ? `<strong>${title}</strong><br><span style="opacity:0.5">Aucun élément</span>`
+                : `<strong>${title}</strong><br>` + items.map(i => `• ${i}`).join('<br>');
+            tooltip.style.display = 'block';
+            const rect = el.getBoundingClientRect();
+            let left = rect.left;
+            let top = rect.bottom + 6;
+            if (left + 214 > window.innerWidth - 6) left = window.innerWidth - 220;
+            if (left < 6) left = 6;
+            if (top + tooltip.offsetHeight > window.innerHeight - 6) top = rect.top - tooltip.offsetHeight - 6;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            clearTimeout(_tooltipTimer);
+            _tooltipTimer = setTimeout(() => { tooltip.style.display = 'none'; }, 4500);
         }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('count-badge')) {
+                document.getElementById('badgeTooltip').style.display = 'none';
+            }
+        });
 
         function closeModal(event, modalId) {
             if (event && event.target !== event.currentTarget) return;

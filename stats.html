@@ -274,10 +274,35 @@
         }
 
         .cap-category.cap-sep {
-            border-top: 1px solid rgba(46, 58, 89, 0.08);
-            padding-top: 14px;
-            margin-top: 4px;
+            border-top: 2px solid rgba(46, 58, 89, 0.13);
+            padding-top: 16px;
+            margin-top: 6px;
         }
+
+        /* ---------- BILAN TENDANCES ---------- */
+
+        .bilan-comp-col-hd.col-current { opacity: 0.9; }
+
+        .bilan-trend {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.55;
+            margin-top: 1px;
+        }
+
+        .bilan-minmax {
+            padding: 8px 16px 12px;
+            border-top: 1px solid rgba(46, 58, 89, 0.08);
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.55;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bilan-minmax strong { font-weight: 700; }
 
         /* ---------- EXPORT ---------- */
 
@@ -299,6 +324,30 @@
         }
 
         .export-btn:active { opacity: 0.8; transform: scale(0.98); }
+
+        /* ---------- TOOLTIP DÉFINITION ---------- */
+
+        #defTooltip {
+            position: fixed;
+            background: var(--dark);
+            color: var(--light);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+            max-width: 240px;
+            z-index: 500;
+            display: none;
+            border: 1px solid rgba(245,228,204,0.15);
+        }
+
+        .rank-name-def {
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 3px;
+            cursor: pointer;
+        }
 
         /* ---------- ÉTAT VIDE ---------- */
 
@@ -438,6 +487,8 @@
             .rank-bar-bg { background: #e0e0e0 !important; }
             .rank-bar-fill { background: #888 !important; }
             .cap-category { color: #333 !important; opacity: 1 !important; }
+            .bilan-trend { color: #333 !important; opacity: 0.6 !important; }
+            .bilan-minmax { color: #333 !important; opacity: 1 !important; }
         }
     </style>
 </head>
@@ -466,6 +517,7 @@
         <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
     </div>
 
+    <div id="defTooltip"></div>
     <div id="printHeader" class="print-header"></div>
     <main class="main-content" id="mainContent"></main>
 
@@ -669,31 +721,71 @@
                 var d = new Date(journal[i].horodatage);
                 if (!latest || d > latest) latest = d;
             }
-            var diff = Math.floor((Date.now() - latest) / 86400000);
-            if (diff === 0) return "aujourd'hui";
-            if (diff === 1) return 'hier';
-            return 'il y a ' + diff + ' j';
+            var today = new Date(); today.setHours(0, 0, 0, 0);
+            var latestDay = new Date(latest.getTime()); latestDay.setHours(0, 0, 0, 0);
+            var diffDays = Math.round((today - latestDay) / 86400000);
+            if (diffDays === 0) return "aujourd'hui";
+            if (diffDays === 1) return 'hier';
+            if (diffDays === 2) return 'avant-hier';
+            var JOURS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+            var MOIS = ['jan.','fév.','mar.','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.'];
+            var label = JOURS[latest.getDay()] + ' ' + latest.getDate() + ' ' + MOIS[latest.getMonth()] + ' ' + String(latest.getFullYear()).slice(2);
+            return label + ' (il y a ' + diffDays + ' j)';
         }
 
         /* ---------- RENDU ---------- */
 
-        function trendSym(cur, prev) {
-            if (cur === null || prev === null) return '<span style="opacity:0.3">—</span>';
-            if (cur > prev) return '▲';
-            if (cur < prev) return '▼';
-            return '=';
+        function trendHtml(cur, prev, formatFn) {
+            if (cur === null || prev === null) return '';
+            if (cur === prev) return '<span class="bilan-trend">=</span>';
+            var sym = cur > prev ? '↑' : '↓';
+            var diff = Math.abs(cur - prev);
+            var diffStr = formatFn ? formatFn(diff) : diff;
+            var sign = cur > prev ? '+' : '−';
+            return '<span class="bilan-trend">' + sym + sign + diffStr + '</span>';
         }
 
-        function rankItems(list, maxCount) {
+        var TYPE_DEFS = {
+            'Anticipatoire': 'Crise survenant avant un événement prévu, liée à l\'anticipation de celui-ci.',
+            'Réactionnelle': 'Crise survenant en réaction directe à un stimulus ou événement en cours.',
+            'Mixte': 'Crise combinant des éléments anticipatoires et réactionnels.'
+        };
+
+        var TRIGGER_DEFS = {
+            'Auditif': 'Présence de bruits latents (bourdonnements, bruits de fond subtils) ou survenue de bruits soudains',
+            'Visuel': 'Variations brusques de luminosité ou exposition à des lumières trop fortes',
+            'Olfactif': 'Perception d\'odeurs dérangeantes',
+            'Tactile': 'Contact physique (quelqu\'un qui nous touche) ou confrontation à certaines textures alimentaires',
+            'Proprioceptive': 'Difficultés à se représenter dans l\'espace ou ressenti d\'un inconfort spatio-temporel',
+            'Surcharge émotionnelle': 'Accumulation d\'émotions intenses',
+            'Instabilité': 'Arrivée d\'un changement, d\'un imprévu ou d\'une interaction imprévisible',
+            'Zone Secure': 'Modification de la zone secure ou obligation de s\'en éloigner',
+            'Perturbation de l\'organisation ou des routines personnelles': 'Rupture de structure habituelle',
+            'Non-respect des règles': 'Cadre : non respecté, règle enfreinte',
+            'Injustice': 'Confrontation à une situation ou un vécu injuste / non éthique',
+            'Intrusion': 'dans la zone secure / ton espace personnel',
+            'Situations sociales': 'Participation à des occasions sociales ou à des conversations superficielles (small talk)',
+            'Traitement social': 'Difficulté à lire les visages ou problèmes de compréhension dans les échanges',
+            'Barrière de communication': 'Difficulté à s\'exprimer ou à traduire la pensée de l\'autre',
+            'Gestion du temps': 'Difficulté de planification et de projection (dans le temps ou dans des scénarios abstraits)',
+            'Surcharge cognitive': 'Trop d\'informations ou de tâches à traiter simultanément ou non',
+            'Pression de résultat': 'Exigence de précision, de perfection et de performance',
+            'Besoin impérieux de corriger les erreurs': 'Réaction cognitive face à une erreur avec un besoin presque incontrôlable de corriger celle-ci. Peut entraîner des ruminations.'
+        };
+
+        function rankItems(list, maxCount, defs) {
             var html = '';
             for (var i = 0; i < list.length; i++) {
                 var item = list[i];
                 var pct = Math.round((item.count / maxCount) * 100);
                 var meta = item.count + ' fois';
                 if (item.avgIntensity != null) meta += ' · ' + item.avgIntensity + '/10';
-                html += '<div class="rank-item">' +
+                var hasDef = defs && defs[item.name];
+                var nameClass = hasDef ? 'rank-name rank-name-def' : 'rank-name';
+                var defAttr = hasDef ? ' data-def="' + item.name.replace(/"/g, '&quot;') + '"' : '';
+                html += '<div class="rank-item' + (hasDef ? ' has-def' : '') + '"' + defAttr + '>' +
                     '<div class="rank-header">' +
-                    '<span class="rank-name">' + item.name + '</span>' +
+                    '<span class="' + nameClass + '">' + item.name + '</span>' +
                     '<span class="rank-meta">' + meta + '</span>' +
                     '</div>' +
                     '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct + '%"></div></div>' +
@@ -725,31 +817,35 @@
             if (showComp) {
                 var prevIntStr = stats.prevAvgIntensity !== null ? stats.prevAvgIntensity + '/10' : '—';
                 var prevDurStr = stats.prevAvgDuration !== null ? formatMins(stats.prevAvgDuration) : '—';
+                var minmaxHtml = '';
+                if (stats.minIntensity !== null && stats.maxIntensity !== null && stats.minIntensity !== stats.maxIntensity) {
+                    minmaxHtml += '<div>Intensité : min <strong>' + stats.minIntensity + '/10</strong> · max <strong>' + stats.maxIntensity + '/10</strong></div>';
+                }
+                if (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration) {
+                    minmaxHtml += '<div>Durée : min <strong>' + formatMins(stats.minDuration) + '</strong> · max <strong>' + formatMins(stats.maxDuration) + '</strong></div>';
+                }
                 bilanHtml =
                     '<div class="bilan-comp-header">' +
                     '<span class="bilan-comp-spacer"></span>' +
-                    '<span class="bilan-comp-col-hd">Actuel</span>' +
+                    '<span class="bilan-comp-col-hd col-current">Actuel</span>' +
                     '<span class="bilan-comp-col-hd">Précédent</span>' +
-                    '<span class="bilan-comp-col-hd"></span>' +
                     '</div>' +
                     '<div class="bilan-comp-row">' +
                     '<span class="bilan-comp-label">Crises</span>' +
-                    '<span class="bilan-comp-current">' + stats.total + '</span>' +
+                    '<span class="bilan-comp-current">' + stats.total + trendHtml(stats.total, stats.prevCount, function(d) { return d; }) + '</span>' +
                     '<span class="bilan-comp-prev">' + stats.prevCount + '</span>' +
-                    '<span class="bilan-comp-trend">' + trendSym(stats.total, stats.prevCount) + '</span>' +
                     '</div>' +
                     '<div class="bilan-comp-row">' +
                     '<span class="bilan-comp-label">Intensité moy.</span>' +
-                    '<span class="bilan-comp-current">' + (stats.avgIntensity !== null ? stats.avgIntensity + '/10' : '—') + '</span>' +
+                    '<span class="bilan-comp-current">' + (stats.avgIntensity !== null ? stats.avgIntensity + '/10' : '—') + (stats.avgIntensity !== null ? trendHtml(stats.avgIntensity, stats.prevAvgIntensity, function(d) { return parseFloat(d.toFixed(1)) + '/10'; }) : '') + '</span>' +
                     '<span class="bilan-comp-prev">' + prevIntStr + '</span>' +
-                    '<span class="bilan-comp-trend">' + trendSym(stats.avgIntensity, stats.prevAvgIntensity) + '</span>' +
                     '</div>' +
                     '<div class="bilan-comp-row">' +
                     '<span class="bilan-comp-label">Durée moy.</span>' +
-                    '<span class="bilan-comp-current">' + (stats.avgDuration !== null ? formatMins(stats.avgDuration) : '—') + '</span>' +
+                    '<span class="bilan-comp-current">' + (stats.avgDuration !== null ? formatMins(stats.avgDuration) : '—') + (stats.avgDuration !== null ? trendHtml(stats.avgDuration, stats.prevAvgDuration, function(d) { return formatMins(Math.round(d)); }) : '') + '</span>' +
                     '<span class="bilan-comp-prev">' + prevDurStr + '</span>' +
-                    '<span class="bilan-comp-trend">' + trendSym(stats.avgDuration, stats.prevAvgDuration) + '</span>' +
-                    '</div>';
+                    '</div>' +
+                    (minmaxHtml ? '<div class="bilan-minmax">' + minmaxHtml + '</div>' : '');
             } else {
                 var intensityHtml = stats.avgIntensity !== null ? stats.avgIntensity + '/10' : '—';
                 var intensitySub = (stats.minIntensity !== null && stats.maxIntensity !== null && stats.minIntensity !== stats.maxIntensity)
@@ -792,14 +888,14 @@
             var topTypes = stats.types.slice(0, 5);
             var maxTy = topTypes.length ? topTypes[0].count : 1;
             var typesHtml = topTypes.length
-                ? rankItems(topTypes, maxTy)
+                ? rankItems(topTypes, maxTy, TYPE_DEFS)
                 : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun type enregistré</div>';
 
             /* Déclencheurs */
             var topTriggers = stats.triggers.slice(0, 5);
             var maxT = topTriggers.length ? topTriggers[0].count : 1;
             var triggersHtml = topTriggers.length
-                ? rankItems(topTriggers, maxT)
+                ? rankItems(topTriggers, maxT, TRIGGER_DEFS)
                 : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun déclencheur enregistré</div>';
 
             /* Besoins */
@@ -824,7 +920,7 @@
                 capHtml = '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucune capacité enregistrée</div>';
             } else {
                 if (topImposs.length) {
-                    capHtml += '<div class="cap-category">Souvent impossible</div>' + rankItems(topImposs, topImposs[0].count);
+                    capHtml += '<div class="cap-category">Impossible</div>' + rankItems(topImposs, topImposs[0].count);
                 }
                 if (topDiff.length) {
                     capHtml += '<div class="cap-category' + (topImposs.length ? ' cap-sep' : '') + '">Souvent difficile</div>' + rankItems(topDiff, topDiff[0].count);
@@ -898,7 +994,7 @@
                 for (var ei = 0; ei < top5e.length; ei++) text += '  ' + (ei + 1) + '. ' + top5e[ei].name + ' (' + top5e[ei].count + ' fois)\n';
             }
             if (stats.capacitesImposs.length) {
-                text += '\nSouvent impossible :\n';
+                text += '\nImpossible :\n';
                 var top5i = stats.capacitesImposs.slice(0, 5);
                 for (var ii = 0; ii < top5i.length; ii++) text += '  ' + (ii + 1) + '. ' + top5i[ii].name + ' (' + top5i[ii].count + ' fois)\n';
             }
@@ -977,6 +1073,37 @@
             customFrom = from; customTo = to;
             renderCurrent();
         }
+
+        /* ---------- TOOLTIP DÉFINITION ---------- */
+
+        var _defTimer = null;
+
+        function showDefTooltip(event, name, itemEl) {
+            var def = TYPE_DEFS[name] || TRIGGER_DEFS[name];
+            if (!def) return;
+            var tooltip = document.getElementById('defTooltip');
+            tooltip.innerHTML = '<strong>' + name + '</strong><br>' + def;
+            tooltip.style.display = 'block';
+            var rect = itemEl.getBoundingClientRect();
+            var left = rect.left + 8;
+            var top = rect.bottom + 6;
+            if (left + 244 > window.innerWidth - 6) left = window.innerWidth - 250;
+            if (left < 6) left = 6;
+            if (top + tooltip.offsetHeight > window.innerHeight - 6) top = rect.top - tooltip.offsetHeight - 6;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            clearTimeout(_defTimer);
+            _defTimer = setTimeout(function() { tooltip.style.display = 'none'; }, 5000);
+        }
+
+        document.addEventListener('click', function(e) {
+            var item = e.target.closest('.rank-item.has-def');
+            if (item) {
+                showDefTooltip(e, item.getAttribute('data-def'), item);
+            } else if (!e.target.closest('#defTooltip')) {
+                document.getElementById('defTooltip').style.display = 'none';
+            }
+        });
 
         function renderCurrent() {
             try { render(currentDays, customFrom, customTo); }

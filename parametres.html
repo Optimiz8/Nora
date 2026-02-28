@@ -473,7 +473,7 @@
     <div class="modal" id="resetModal" role="dialog" aria-modal="true" aria-label="Réinitialiser">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">⚠️ Confirmation</h2>
+                <h2 class="modal-title">⚠️ Suppression définitive</h2>
             </div>
             <div class="modal-text">
                 <strong>Attention !</strong><br><br>
@@ -485,7 +485,10 @@
                     <li>Tous tes paramètres de contextes</li>
                     <li>Ton journal de crises</li>
                 </ul>
-                <strong>Cette action est irréversible.</strong>
+                <strong>Cette action est irréversible.</strong><br><br>
+                <div style="background:rgba(245,228,204,0.08);border-radius:10px;padding:10px 12px;font-size:0.85rem;">
+                    💡 Tu peux d'abord <button onclick="closeResetModal(); confirmExport();" style="background:none;border:none;color:var(--accent);font-weight:700;cursor:pointer;padding:0;font-size:inherit;font-family:inherit;text-decoration:underline;">sauvegarder tes données</button> sur ton appareil avant de continuer.
+                </div>
             </div>
             <div class="modal-actions">
                 <button class="modal-button secondary" onclick="closeResetModal()">Annuler</button>
