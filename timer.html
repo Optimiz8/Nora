@@ -39,7 +39,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .circle-wrap svg { width: 100%; height: 100%; transform: scaleX(-1); }
+    .circle-wrap svg { width: 100%; height: 100%; }
 
     .track {
       fill: none;
@@ -650,7 +650,7 @@
     }
 
     .space-arc { position: absolute; inset: 4px; border-radius: 50%; }
-    .space-arc svg { width: 100%; height: 100%; transform: scaleX(-1); }
+    .space-arc svg { width: 100%; height: 100%; }
 
     .space-center {
       position: absolute;
@@ -661,6 +661,30 @@
       justify-content: center;
       gap: 6px;
       pointer-events: none;
+    }
+
+    /* ---------- PLUIE DE PAILLETTES (fond kawaii) ---------- */
+    #kawaiiBgRain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      display: none;
+    }
+
+    .bg-sparkle {
+      position: absolute;
+      top: -40px;
+      animation: bgSparkleFall linear infinite;
+      font-size: 18px;
+      opacity: 0.7;
+    }
+
+    @keyframes bgSparkleFall {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+      90%  { opacity: 0.5; }
+      100% { transform: translateY(105vh) rotate(360deg); opacity: 0; }
     }
 
     /* ---------- FOND DE PAGE THÈME ---------- */
@@ -988,6 +1012,9 @@
     </div>
   </div>
 
+  <!-- Fond pluie de paillettes kawaii -->
+  <div id="kawaiiBgRain"></div>
+
   <!-- Alarm overlay -->
   <div class="alarm-overlay" id="alarmOverlay">
     <canvas id="alarmStarsCanvas"></canvas>
@@ -1264,18 +1291,22 @@
     }
 
     function startInterval() {
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
+      clearTimeout(timerInterval);
+      function tick() {
         if (!endTimestamp) return;
-        timeRemaining = Math.max(0, Math.floor((endTimestamp - Date.now()) / 1000));
+        const ms = endTimestamp - Date.now();
+        timeRemaining = Math.max(0, Math.ceil(ms / 1000));
         checkAnnouncements();
         updateDisplay();
         if (timeRemaining <= 0) {
-          clearInterval(timerInterval);
           localStorage.removeItem('timerRunningState');
           triggerAlarm();
+          return;
         }
-      }, 500);
+        const delay = ms % 1000;
+        timerInterval = setTimeout(tick, delay > 0 ? delay : 1000);
+      }
+      tick();
     }
 
     function onCircleTap() {
@@ -1452,6 +1483,9 @@
     function doSnooze(seconds) {
       stopAlarmEffects();
       stopSparkles();
+      stopGlitter();
+      var spaceVideo = document.getElementById('spaceManVideo');
+      spaceVideo.pause(); spaceVideo.currentTime = 0;
       var kawaiiVideo = document.getElementById('kawaiiAlarmVideo');
       kawaiiVideo.pause(); kawaiiVideo.currentTime = 0;
       const snoozeOverlay = document.getElementById('alarmOverlay');
@@ -1673,9 +1707,12 @@
       if (s === 'pixels')   { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
       if (s === 'segments') buildSegmentsSvg();
 
-      if (s !== 'kawaii') stopKawaiiAnim();
-      else if (!kawaiiAnimFrame && kawaiiParticles.length > 0) {
-        kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+      if (s !== 'kawaii') { stopKawaiiAnim(); stopBgRain(); }
+      else {
+        if (!kawaiiAnimFrame && kawaiiParticles.length > 0) {
+          kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+        }
+        startBgRain();
       }
 
       /* Fond de page */
@@ -1757,7 +1794,8 @@
       function onMove(y) {
         if (!isDragging) return;
         const minOff = -(max - min) * ITEM_H;
-        const next = Math.max(minOff, Math.min(0, startOffset + (y - startY)));
+        const delta = startOffset + (y - startY);
+        const next = Math.max(minOff - ITEM_H, Math.min(ITEM_H, delta));
         track.style.transform = `translateY(${next}px)`;
       }
 
@@ -1779,7 +1817,8 @@
     }
 
     function snapTo(trackId, drumId, idx, min, max) {
-      idx = Math.max(0, Math.min(max - min, idx));
+      const range = max - min + 1;
+      idx = ((idx % range) + range) % range;
       const track = document.getElementById(trackId);
       track.style.transition = 'transform 0.18s ease';
       track.style.transform  = `translateY(${-idx * ITEM_H}px)`;
@@ -1933,7 +1972,7 @@
         const dist  = Math.random() * 0.65;
         const x = 50 + dist * 38 * Math.cos(angle);
         const y = 50 + dist * 38 * Math.sin(angle);
-        const speed  = 0.25 + Math.random() * 0.45;
+        const speed  = 0.06 + Math.random() * 0.08;
         const vAngle = Math.random() * Math.PI * 2;
         kawaiiParticles.push({ el, x, y, vx: speed * Math.cos(vAngle), vy: speed * Math.sin(vAngle) });
         el.style.left = x + '%';
@@ -1960,11 +1999,11 @@
           p.x = 50 + nx * (maxD - 0.5);
           p.y = 50 + ny * (maxD - 0.5);
         }
-        p.vx += (Math.random() - 0.5) * 0.04;
-        p.vy += (Math.random() - 0.5) * 0.04;
+        p.vx += (Math.random() - 0.5) * 0.01;
+        p.vy += (Math.random() - 0.5) * 0.01;
         const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-        if (spd > 0.7)  { p.vx *= 0.7 / spd; p.vy *= 0.7 / spd; }
-        if (spd < 0.15) { p.vx += (Math.random() - 0.5) * 0.1; p.vy += (Math.random() - 0.5) * 0.1; }
+        if (spd > 0.18) { p.vx *= 0.18 / spd; p.vy *= 0.18 / spd; }
+        if (spd < 0.03) { p.vx += (Math.random() - 0.5) * 0.03; p.vy += (Math.random() - 0.5) * 0.03; }
         p.el.style.left = p.x + '%';
         p.el.style.top  = p.y + '%';
       });
@@ -1973,6 +2012,30 @@
 
     function stopKawaiiAnim() {
       if (kawaiiAnimFrame) { cancelAnimationFrame(kawaiiAnimFrame); kawaiiAnimFrame = null; }
+    }
+
+    const BG_RAIN_EMOJIS = ['✨','⭐','💫','🌟','🎀','💖','🍭','🌸'];
+
+    function startBgRain() {
+      const container = document.getElementById('kawaiiBgRain');
+      container.innerHTML = '';
+      container.style.display = 'block';
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement('span');
+        p.className = 'bg-sparkle';
+        p.textContent = BG_RAIN_EMOJIS[Math.floor(Math.random() * BG_RAIN_EMOJIS.length)];
+        p.style.left = (Math.random() * 100) + '%';
+        p.style.fontSize = (12 + Math.floor(Math.random() * 14)) + 'px';
+        p.style.animationDuration = (4 + Math.random() * 6) + 's';
+        p.style.animationDelay = (-Math.random() * 10) + 's';
+        container.appendChild(p);
+      }
+    }
+
+    function stopBgRain() {
+      const container = document.getElementById('kawaiiBgRain');
+      container.style.display = 'none';
+      container.innerHTML = '';
     }
 
     function updateKawaiiColors(progress) {
