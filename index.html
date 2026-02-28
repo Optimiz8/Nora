@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="only light">
     <meta name="theme-color" content="#384657">
+    <script>if (!localStorage.getItem('onboardingDone') && !localStorage.getItem('onboardingSkipped')) { location.replace('tutoriel.html'); }</script>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
@@ -43,8 +44,8 @@
             background-color: var(--light);
             color: var(--dark);
             border-radius: 32px;
-            height: 180px;
-            padding: 24px;
+            height: 155px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             display: flex;
@@ -256,6 +257,93 @@
         .crisis-toast.visible {
             opacity: 1;
         }
+
+        /* Bandeau setup non terminé */
+        .setup-banner {
+            display: none;
+            background: rgba(245, 228, 204, 0.08);
+            border: 1.5px solid rgba(245, 228, 204, 0.2);
+            color: var(--light);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .setup-banner.visible { display: flex; }
+
+        .setup-banner-icon { font-size: 22px; flex-shrink: 0; }
+
+        .setup-banner-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .setup-banner-text strong { font-size: 16px; font-weight: 600; }
+
+        .setup-banner-text span { font-size: 13px; opacity: 0.65; }
+
+        .setup-banner-arrow { font-size: 20px; opacity: 0.5; }
+
+        /* ---------- MODAL PRÉ-CRISE ---------- */
+        .precrisis-group {
+            margin-bottom: 20px;
+        }
+
+        .precrisis-label {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--light);
+            margin-bottom: 2px;
+        }
+
+        .precrisis-desc {
+            font-size: 12px;
+            color: var(--light);
+            opacity: 0.55;
+            margin-bottom: 10px;
+        }
+
+        .precrisis-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(245, 228, 204, 0.2);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .precrisis-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+        }
+
+        .precrisis-slider::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: none;
+        }
+
+        .precrisis-value {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-top: 6px;
+        }
     </style>
 </head>
 
@@ -271,6 +359,14 @@
             <div class="crisis-banner-dot"></div>
             <div class="crisis-banner-text">Crise en cours</div>
             <div class="crisis-banner-arrow">›</div>
+        </div>
+        <div class="setup-banner" id="setupBanner">
+            <div class="setup-banner-icon">⚙️</div>
+            <div class="setup-banner-text">
+                <strong>Terminer la configuration</strong>
+                <span>3 étapes rapides pour personnaliser Nora</span>
+            </div>
+            <div class="setup-banner-arrow">›</div>
         </div>
         <h1 class="main-title">De quoi as-tu besoin&nbsp;?</h1>
 
@@ -380,6 +476,42 @@
         </div>
     </div>
 
+    <!-- Modale état pré-crise -->
+    <div class="modal" id="precrisisModal" role="dialog" aria-modal="true" aria-label="État avant la crise">
+        <div class="modal-content">
+            <div class="modal-title">Ton état avant la crise</div>
+            <div class="crisis-modal-text" style="font-size:14px; margin-bottom:20px;">
+                Comment te sentais-tu <strong>avant</strong> que ça commence&nbsp;?
+            </div>
+
+            <div class="precrisis-group">
+                <div class="precrisis-label">⚡ Énergie</div>
+                <div class="precrisis-desc">0 = épuisé(e) &nbsp;·&nbsp; 100 = plein(e) d'énergie</div>
+                <input type="range" class="precrisis-slider" id="sliderEnergie" min="0" max="100" value="50" oninput="updatePrecrisisValue('Energie')">
+                <div class="precrisis-value" id="valEnergie">50 — Modérée</div>
+            </div>
+
+            <div class="precrisis-group">
+                <div class="precrisis-label">🧠 Charge mentale</div>
+                <div class="precrisis-desc">0 = légère &nbsp;·&nbsp; 100 = saturé(e)</div>
+                <input type="range" class="precrisis-slider" id="sliderMentale" min="0" max="100" value="50" oninput="updatePrecrisisValue('Mentale')">
+                <div class="precrisis-value" id="valMentale">50 — Modérée</div>
+            </div>
+
+            <div class="precrisis-group" style="margin-bottom:24px;">
+                <div class="precrisis-label">👥 Charge sociale</div>
+                <div class="precrisis-desc">0 = légère &nbsp;·&nbsp; 100 = saturé(e)</div>
+                <input type="range" class="precrisis-slider" id="sliderSociale" min="0" max="100" value="50" oninput="updatePrecrisisValue('Sociale')">
+                <div class="precrisis-value" id="valSociale">50 — Modérée</div>
+            </div>
+
+            <div class="crisis-modal-actions">
+                <button class="crisis-btn primary" onclick="saveWithPrecrisis()">Enregistrer</button>
+                <button class="crisis-btn secondary" onclick="skipPrecrisis()">Passer</button>
+            </div>
+        </div>
+    </div>
+
     <div class="crisis-toast" id="crisisToast"></div>
 
     <script>
@@ -479,10 +611,13 @@
     }
 
     function registerCrisisNow() {
-        createJournalEntry();
-        cleanupCrisisData();
         document.getElementById('crisisRegisterModal').classList.remove('visible');
-        showCrisisToast('✅ Crise enregistrée dans le journal !');
+        // Réinitialiser les sliders à 50 avant d'afficher
+        ['Energie', 'Mentale', 'Sociale'].forEach(function(k) {
+            document.getElementById('slider' + k).value = 50;
+            updatePrecrisisValue(k);
+        });
+        document.getElementById('precrisisModal').classList.add('visible');
     }
 
     function registerCrisisLater() {
@@ -500,7 +635,35 @@
         showCrisisToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
     }
 
-    function createJournalEntry() {
+    function getPrecrisisLabel(val) {
+        if (val <= 33) return 'Faible';
+        if (val <= 66) return 'Modérée';
+        return 'Élevée';
+    }
+
+    function updatePrecrisisValue(key) {
+        var val = parseInt(document.getElementById('slider' + key).value);
+        document.getElementById('val' + key).textContent = val + ' — ' + getPrecrisisLabel(val);
+    }
+
+    function saveWithPrecrisis() {
+        var energie = parseInt(document.getElementById('sliderEnergie').value);
+        var mentale = parseInt(document.getElementById('sliderMentale').value);
+        var sociale = parseInt(document.getElementById('sliderSociale').value);
+        document.getElementById('precrisisModal').classList.remove('visible');
+        createJournalEntry({ energie: energie, chargeMentale: mentale, chargeSociale: sociale });
+        cleanupCrisisData();
+        showCrisisToast('✅ Crise enregistrée dans le journal !');
+    }
+
+    function skipPrecrisis() {
+        document.getElementById('precrisisModal').classList.remove('visible');
+        createJournalEntry(null);
+        cleanupCrisisData();
+        showCrisisToast('✅ Crise enregistrée dans le journal !');
+    }
+
+    function createJournalEntry(precrisisData) {
         const profil = localStorage.getItem('profilActuel') || 'commun';
         const capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
         const besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
@@ -541,7 +704,8 @@
             duree: duree,
             declencheurs: [],
             remarques: '',
-            manual: false
+            manual: false,
+            precrisis: precrisisData || null
         };
 
         const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
@@ -631,6 +795,13 @@
         if (localStorage.getItem('criseEnCours') === 'true') {
             document.getElementById('crisisBanner').classList.add('visible');
         }
+
+        // Afficher la bannière setup si onboarding skippé mais non terminé
+        var setupBanner = document.getElementById('setupBanner');
+        if (localStorage.getItem('onboardingSkipped') === 'true' && !localStorage.getItem('onboardingDone')) {
+            setupBanner.classList.add('visible');
+        }
+        setupBanner.onclick = function() { location.href = 'tutoriel.html'; };
 
         // Vérifier fin de crise après un court délai (laisser la page se charger)
         setTimeout(checkCrisisEnd, 500);

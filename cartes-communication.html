@@ -186,7 +186,7 @@
         }
 
         .overlay-text {
-            font-size: 64px;
+            font-size: var(--overlay-font-size, 64px);
             font-weight: 700;
             color: var(--light);
             text-align: center;
@@ -344,21 +344,46 @@
         /* ---------- TOAST ---------- */
         .toast {
             position: fixed;
-            bottom: calc(var(--footer-height) + 12px);
-            left: 20px;
-            right: 20px;
-            background-color: var(--accent);
-            color: var(--dark);
-            padding: 14px 16px;
-            border-radius: 12px;
+            bottom: calc(var(--footer-height) + 16px);
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 58, 89, 0.95);
+            color: var(--light);
+            padding: 13px 22px;
+            border-radius: 24px;
             text-align: center;
             font-weight: 600;
             font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 300;
-            display: none;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
-        .toast.visible { display: block; }
+        .toast.visible { opacity: 1; }
+
+        /* ---------- LANDSCAPE ---------- */
+        @media (orientation: landscape) {
+            .cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .com-card {
+                min-height: 70px;
+            }
+            .fullscreen-overlay {
+                padding: 16px 28px;
+                overflow-y: auto;
+            }
+            .overlay-text {
+                font-size: min(var(--overlay-font-size, 64px), 9vh);
+                margin-bottom: 14px;
+            }
+            .overlay-subtext {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -538,7 +563,7 @@
 
             const overlayTextEl = document.getElementById('overlayText');
             overlayTextEl.textContent = card.text;
-            overlayTextEl.style.fontSize = getOverlayFontSize(card.text) + 'px';
+            overlayTextEl.style.setProperty('--overlay-font-size', getOverlayFontSize(card.text) + 'px');
 
             const subEl = document.getElementById('overlaySubtext');
             if (card.sousTexte) {

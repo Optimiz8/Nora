@@ -63,3 +63,9 @@ Mise en production : `git checkout main` → `git merge dev` → `git push` → 
 - Tester mentalement le comportement sur mobile (375px, tactile)
 - Pour une inspiration externe (React, etc.) : adapter au pattern vanilla HTML existant, ne pas copier la structure React
 - Si une modification touche `nora-common.css`, vérifier l'impact sur les autres pages
+
+## Limite de tokens — anti-boucle
+Les fichiers volumineux (ex. `timer.html` > 80 KB) peuvent provoquer une erreur `API Error: response exceeded 32000 output token maximum` si trop de code est généré en une seule réponse. Pour éviter ça :
+- Faire les modifications **une par une**, via l'outil `Edit` (diff seulement, pas réécriture complète)
+- Ne jamais réécrire un fichier entier avec `Write` si >300 lignes
+- Écrire des messages courts entre chaque modification, sans paraphraser chaque ligne de code

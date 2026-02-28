@@ -11,19 +11,7 @@
     <link rel="stylesheet" href="nora-common.css">
     <title>Nora – Statistiques</title>
     <style>
-        body { padding-bottom: 32px; }
-
-        /* ---------- LABEL DE SECTION ---------- */
-
-        .section-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--light);
-            opacity: 0.45;
-            padding: 16px 16px 4px;
-        }
+        body { padding-bottom: 40px; }
 
         /* ---------- PÉRIODE ---------- */
 
@@ -38,7 +26,7 @@
             background: rgba(245, 228, 204, 0.1);
             border: 2px solid rgba(245, 228, 204, 0.15);
             color: var(--light);
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             padding: 10px 4px;
             border-radius: 10px;
@@ -64,17 +52,12 @@
 
         .date-range-panel.visible { display: flex; }
 
-        .date-range-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .date-range-row { display: flex; gap: 10px; align-items: center; }
 
         .date-range-label {
             font-size: 14px;
             font-weight: 600;
             color: var(--light);
-            white-space: nowrap;
             width: 44px;
             flex-shrink: 0;
         }
@@ -91,10 +74,7 @@
             color-scheme: dark;
         }
 
-        .date-range-input:focus {
-            outline: none;
-            border-color: var(--light);
-        }
+        .date-range-input:focus { outline: none; border-color: var(--light); }
 
         .date-range-apply {
             background: var(--accent);
@@ -116,111 +96,107 @@
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-        }
-
-        /* ---------- RÉSUMÉ NARRATIF ---------- */
-
-        .narrative-card {
-            background: var(--light);
-            border-radius: 14px;
-            padding: 16px;
-            font-size: 15px;
-            line-height: 1.65;
-            color: var(--dark);
-        }
-
-        .narrative-card strong { font-weight: 700; }
-
-        /* ---------- CARTES MÉTRIQUES ---------- */
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .metric-card {
-            background: var(--light);
-            border-radius: 14px;
-            padding: 13px 12px 11px;
-        }
-
-        .metric-card.wide { grid-column: 1 / -1; }
-
-        .metric-header {
-            display: flex;
-            align-items: center;
             gap: 6px;
-            margin-bottom: 6px;
         }
 
-        .metric-icon { font-size: 15px; line-height: 1; }
+        /* ---------- TITRES DE SECTION ---------- */
 
-        .metric-label {
-            font-size: 12px;
+        .section-tag {
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--accent);
+            padding: 18px 2px 6px;
+        }
+
+        /* ---------- CARTE BLANCHE ---------- */
+
+        .stat-card {
+            background: var(--light);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        /* ---------- LIGNES LABEL / VALEUR ---------- */
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 16px;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
+            gap: 12px;
+        }
+
+        .stat-row:last-child { border-bottom: none; }
+
+        .stat-label {
+            font-size: 15px;
+            color: var(--dark);
+            opacity: 0.65;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            text-align: right;
+        }
+
+        .stat-value.large { font-size: 28px; }
+
+        .stat-delta {
+            font-size: 13px;
             font-weight: 600;
+            margin-left: 6px;
             color: var(--dark);
             opacity: 0.55;
         }
 
-        .metric-value {
-            font-size: 26px;
-            font-weight: 700;
+        .stat-sub {
+            font-size: 13px;
+            font-weight: 400;
             color: var(--dark);
-            line-height: 1.1;
-        }
-
-        .metric-value.small { font-size: 18px; }
-
-        .metric-sub {
-            font-size: 11px;
-            color: var(--dark);
-            opacity: 0.45;
-            margin-top: 3px;
-        }
-
-        .metric-delta {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--dark);
-            opacity: 0.45;
+            opacity: 0.5;
+            display: block;
             margin-top: 2px;
         }
 
-        /* ---------- SECTIONS ---------- */
+        /* ---------- DERNIÈRE CRISE ---------- */
 
-        .section {
+        .last-crisis-row {
             background: var(--light);
             border-radius: 14px;
-            padding: 14px 14px 8px;
-        }
-
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 12px;
-        }
-
-        .subsection-title {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--dark);
-            opacity: 0.5;
-            margin-bottom: 8px;
-            margin-top: 12px;
-        }
-
-        /* ---------- TOGGLE RAPIDE / DÉTAIL ---------- */
-
-        .section-header {
+            padding: 13px 16px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .last-crisis-label { font-size: 15px; color: var(--dark); opacity: 0.65; }
+        .last-crisis-value { font-size: 18px; font-weight: 700; color: var(--dark); }
+
+        /* ---------- GRILLE MOMENTS ---------- */
+
+        .moment-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: rgba(46, 58, 89, 0.08);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .moment-cell {
+            background: var(--light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            padding: 14px 4px;
         }
 
         .view-toggle {
@@ -577,6 +553,16 @@
             align-items: center;
             gap: 10px;
             font-size: 15px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .filter-apply {
+            flex: 2;
+            background: var(--accent);
+            border: none;
             color: var(--dark);
         }
 
@@ -837,7 +823,7 @@
         <h1 class="page-title">Statistiques</h1>
     </header>
 
-    <div class="section-label">Période</div>
+    <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
     <div class="period-bar">
         <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
         <button class="period-btn" data-days="30" onclick="selectPeriod(30)">30 j</button>
@@ -928,28 +914,13 @@
         /* ---------- DONNÉES ---------- */
 
         function getJournal() {
-            try {
-                return JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            } catch (e) {
-                return [];
-            }
+            try { return JSON.parse(localStorage.getItem('journalCrises') || '[]'); }
+            catch (e) { return []; }
         }
 
         function getProfileName(profileId) {
-            var names = {
-                commun: 'Profil commun',
-                maison: 'Maison',
-                exterieur: 'Extérieur',
-                travail: 'Travail',
-                secours: 'Secours'
-            };
-            var icons = {
-                commun: '🌐', maison: '🏠', exterieur: '🌍', travail: '💼', secours: '🚑'
-            };
-            return {
-                name: names[profileId] || profileId || 'Inconnu',
-                icon: icons[profileId] || '📍'
-            };
+            var names = { commun: 'Profil commun', maison: 'Maison', exterieur: 'Extérieur', travail: 'Travail', secours: 'Secours' };
+            return names[profileId] || profileId || '—';
         }
 
         /* ---------- DURÉE ---------- */
@@ -957,29 +928,24 @@
         function parseDuration(str) {
             if (!str) return null;
             str = str.toLowerCase().trim();
-            var mins = 0;
-            var found = false;
+            var mins = 0, found = false;
             var hMatch = str.match(/(\d+)\s*h/);
             if (hMatch) { mins += parseInt(hMatch[1], 10) * 60; found = true; }
             var mMatch = str.match(/(\d+)\s*(min|mn|m\b)/);
             if (mMatch) { mins += parseInt(mMatch[1], 10); found = true; }
-            if (!found) {
-                var numMatch = str.match(/^(\d+)$/);
-                if (numMatch) { mins = parseInt(numMatch[1], 10); found = true; }
-            }
+            if (!found) { var n = str.match(/^(\d+)$/); if (n) { mins = parseInt(n[1], 10); found = true; } }
             return (found && mins > 0) ? mins : null;
         }
 
         function formatMins(m) {
             m = Math.round(m);
             if (m < 60) return m + ' min';
-            var h = Math.floor(m / 60);
-            var r = m % 60;
+            var h = Math.floor(m / 60), r = m % 60;
             return r > 0 ? h + 'h' + (r < 10 ? '0' : '') + r : h + 'h';
         }
 
-        function formatDateFR(dateStr) {
-            return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+        function formatDateFR(s) {
+            return new Date(s).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
         }
 
         /* ---------- FRÉQUENCES ---------- */
@@ -987,13 +953,10 @@
         function countFreq(arr) {
             var freq = {};
             for (var i = 0; i < arr.length; i++) {
-                var val = arr[i];
-                if (val) freq[val] = (freq[val] || 0) + 1;
+                if (arr[i]) freq[arr[i]] = (freq[arr[i]] || 0) + 1;
             }
             var result = [];
-            for (var key in freq) {
-                result.push({ name: key, count: freq[key] });
-            }
+            for (var k in freq) result.push({ name: k, count: freq[k] });
             result.sort(function(a, b) { return b.count - a.count; });
             return result;
         }
@@ -1056,26 +1019,25 @@
 
         function computeStats(days, from, to) {
             var journal = getJournal();
-            var entries = [];
-            var prevEntries = [];
+            var entries = [], prevEntries = [];
 
             if (days === 0 && from && to) {
                 var start = new Date(from); start.setHours(0, 0, 0, 0);
                 var end = new Date(to); end.setHours(23, 59, 59, 999);
-                var periodMs = end - start;
+                var span = end - start;
                 for (var i = 0; i < journal.length; i++) {
                     var d = new Date(journal[i].horodatage);
                     if (d >= start && d <= end) entries.push(journal[i]);
-                    else if (d >= new Date(start - periodMs) && d < start) prevEntries.push(journal[i]);
+                    else if (d >= new Date(start - span) && d < start) prevEntries.push(journal[i]);
                 }
             } else {
                 var now = new Date();
                 var cutoff = new Date(now); cutoff.setDate(now.getDate() - days); cutoff.setHours(0, 0, 0, 0);
-                var prevCutoff = new Date(now); prevCutoff.setDate(now.getDate() - days * 2); prevCutoff.setHours(0, 0, 0, 0);
+                var prevCut = new Date(now); prevCut.setDate(now.getDate() - days * 2); prevCut.setHours(0, 0, 0, 0);
                 for (var j = 0; j < journal.length; j++) {
                     var dj = new Date(journal[j].horodatage);
                     if (dj >= cutoff) entries.push(journal[j]);
-                    else if (dj >= prevCutoff) prevEntries.push(journal[j]);
+                    else if (dj >= prevCut) prevEntries.push(journal[j]);
                 }
             }
 
@@ -1119,9 +1081,7 @@
                     else if (e.typeCrise === 'Mixte') mixteTypeCount++;
                 }
                 var decl = e.declencheurs || [];
-                for (var d2 = 0; d2 < decl.length; d2++) {
-                    if (decl[d2]) triggerFreq[decl[d2]] = (triggerFreq[decl[d2]] || 0) + 1;
-                }
+                for (var d2 = 0; d2 < decl.length; d2++) { if (decl[d2]) triggerArr.push(decl[d2]); }
                 var bess = e.besoins || [];
                 for (var b = 0; b < bess.length; b++) {
                     var bl = extractLabel(bess[b]);
@@ -1348,11 +1308,29 @@
                 });
             }
 
+            var prevIntensities = [], prevDurations = [];
+            for (var pk = 0; pk < prevEntries.length; pk++) {
+                var pe = prevEntries[pk];
+                var piv = parseFloat(pe.intensite); if (!isNaN(piv)) prevIntensities.push(piv);
+                var pdv = parseDuration(pe.duree); if (pdv !== null) prevDurations.push(pdv);
+            }
+            var prevAvgIntensity = null, prevAvgDuration = null;
+            if (prevIntensities.length) {
+                var pisum = 0; for (var ps = 0; ps < prevIntensities.length; ps++) pisum += prevIntensities[ps];
+                prevAvgIntensity = parseFloat((pisum / prevIntensities.length).toFixed(1));
+            }
+            if (prevDurations.length) {
+                var pdsum = 0; for (var pds = 0; pds < prevDurations.length; pds++) pdsum += prevDurations[pds];
+                prevAvgDuration = pdsum / prevDurations.length;
+            }
+
             return {
                 total: entries.length,
                 entries: entries,
                 prev: prev,
                 avgIntensity: avgIntensity,
+                minIntensity: minIntensity,
+                maxIntensity: maxIntensity,
                 minIntensity: minIntensity,
                 maxIntensity: maxIntensity,
                 avgDuration: avgDuration,
@@ -1914,14 +1892,14 @@
             var last = sinceLastCrisis();
             var main = document.getElementById('mainContent');
 
-            var lastCard = last
-                ? '<div class="last-crisis-card"><span style="font-size:18px">⌛</span>Dernière crise : <span class="last-crisis-value">' + last + '</span></div>'
+            var lastRow = last
+                ? '<div class="last-crisis-row"><span class="last-crisis-label">Dernière crise</span><span class="last-crisis-value">' + last + '</span></div>'
                 : '';
 
             if (!stats) {
-                main.innerHTML = lastCard +
+                main.innerHTML = lastRow +
                     '<div class="empty-state"><div class="empty-icon">📊</div>' +
-                    '<div class="empty-text">Aucune crise enregistrée<br>sur cette période</div></div>';
+                    '<div class="empty-text">Aucune crise enregistrée<br>sur cette période.</div></div>';
                 return;
             }
 
@@ -1995,9 +1973,10 @@
             /* ========== MOMENTS DE LA JOURNÉE ========== */
             html += '<div class="section-tag">Quand</div>';
 
-            var maxDayCount = 0;
-            for (var di = 0; di < stats.dayOfWeek.length; di++) {
-                if (stats.dayOfWeek[di].count > maxDayCount) maxDayCount = stats.dayOfWeek[di].count;
+            /* Moments */
+            var maxMoment = 0;
+            for (var mi = 0; mi < stats.hourSlots.length; mi++) {
+                if (stats.hourSlots[mi].count > maxMoment) maxMoment = stats.hourSlots[mi].count;
             }
             if (maxDayCount === 0) maxDayCount = 1;
 
@@ -2181,15 +2160,15 @@
 
         /* ---------- EXPORT ---------- */
 
-        function exportStats() {
-            var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
-
-            var periodLabel = currentDays === 7 ? '7 derniers jours'
+        function getPeriodLabel() {
+            return currentDays === 7 ? '7 derniers jours'
                 : currentDays === 30 ? '30 derniers jours'
                 : currentDays === 365 ? 'dernière année'
                 : 'du ' + customFrom + ' au ' + customTo;
+        }
 
+        function buildSummaryText(stats) {
+            var periodLabel = getPeriodLabel();
             var text = '== Statistiques Nora — ' + periodLabel + ' ==\n\n';
             text += 'Crises : ' + stats.total;
             if (stats.prev && stats.prev.count > 0) {
@@ -2199,10 +2178,8 @@
             text += '\n';
             if (stats.avgIntensity !== null) text += 'Intensité moyenne : ' + stats.avgIntensity + '/10\n';
             if (stats.avgDuration !== null) {
-                text += 'Durée moyenne : ~' + formatMins(stats.avgDuration);
-                if (stats.minDuration !== null && stats.maxDuration !== null) {
-                    text += ' (min ' + formatMins(stats.minDuration) + ' / max ' + formatMins(stats.maxDuration) + ')';
-                }
+                text += 'Durée moyenne : ' + formatMins(stats.avgDuration);
+                if (stats.minDuration !== null && stats.maxDuration !== null) text += ' (min ' + formatMins(stats.minDuration) + ' / max ' + formatMins(stats.maxDuration) + ')';
                 text += '\n';
             }
             if (stats.topProfile) text += 'Contexte principal : ' + stats.topProfile.name + '\n';
@@ -2213,32 +2190,68 @@
             if (stats.avgChargeSociale !== null) text += 'Charge sociale moy. : ' + stats.avgChargeSociale + '/10\n';
             var last = sinceLastCrisis();
             if (last) text += 'Dernière crise : ' + last + '\n';
-            if (stats.triggerStats.length) {
+            if (stats.triggers.length) {
                 text += '\nDéclencheurs :\n';
-                var top5t = stats.triggerStats.slice(0, 5);
-                for (var ti = 0; ti < top5t.length; ti++) {
-                    var t = top5t[ti];
-                    text += '  ' + (ti + 1) + '. ' + t.name + ' (' + t.count + 'x)';
-                    if (t.avgIntensity !== null) text += ' — ' + t.avgIntensity + '/10';
-                    text += '\n';
-                }
+                var top5t = stats.triggers.slice(0, 5);
+                for (var ti = 0; ti < top5t.length; ti++) text += '  ' + (ti + 1) + '. ' + top5t[ti].name + ' (' + top5t[ti].count + ' fois)\n';
             }
-            if (stats.besoinCounts.length) {
+            if (stats.besoins.length) {
                 text += '\nBesoins :\n';
-                var top5b = stats.besoinCounts.slice(0, 5);
-                for (var bi = 0; bi < top5b.length; bi++) {
-                    text += '  ' + (bi + 1) + '. ' + top5b[bi].name + ' (' + top5b[bi].count + 'x)\n';
-                }
+                var top5b = stats.besoins.slice(0, 5);
+                for (var bi = 0; bi < top5b.length; bi++) text += '  ' + (bi + 1) + '. ' + top5b[bi].name + ' (' + top5b[bi].count + ' fois)\n';
             }
-            text += '\nExport généré le ' + new Date().toLocaleDateString('fr-FR') + ' depuis Nora.';
+            if (stats.etats.length) {
+                text += '\nÉtats :\n';
+                var top5e = stats.etats.slice(0, 5);
+                for (var ei = 0; ei < top5e.length; ei++) text += '  ' + (ei + 1) + '. ' + top5e[ei].name + ' (' + top5e[ei].count + ' fois)\n';
+            }
+            if (stats.capacitesImposs.length) {
+                text += '\nImpossible :\n';
+                var top5i = stats.capacitesImposs.slice(0, 5);
+                for (var ii = 0; ii < top5i.length; ii++) text += '  ' + (ii + 1) + '. ' + top5i[ii].name + ' (' + top5i[ii].count + ' fois)\n';
+            }
+            if (stats.capacitesDiff.length) {
+                text += '\nSouvent difficile :\n';
+                var top5d = stats.capacitesDiff.slice(0, 5);
+                for (var di2 = 0; di2 < top5d.length; di2++) text += '  ' + (di2 + 1) + '. ' + top5d[di2].name + ' (' + top5d[di2].count + ' fois)\n';
+            }
+            text += '\nExport du ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
+            return text;
+        }
 
+        function exportStats() {
+            var stats = computeStats(currentDays, customFrom, customTo);
+            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
+            var text = buildSummaryText(stats);
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text)
                     .then(function() { alert('Résumé copié !'); })
                     .catch(function() { downloadText(text); });
-            } else {
-                downloadText(text);
-            }
+            } else { downloadText(text); }
+        }
+
+        function shareStats() {
+            var stats = computeStats(currentDays, customFrom, customTo);
+            if (!stats) { alert('Aucune donnée à partager sur cette période.'); return; }
+            var text = buildSummaryText(stats);
+            if (navigator.share) {
+                navigator.share({ title: 'Statistiques Nora — ' + getPeriodLabel(), text: text })
+                    .catch(function() {});
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() { alert('Résumé copié dans le presse-papier.'); });
+            } else { downloadText(text); }
+        }
+
+        function exportPDF() {
+            var stats = computeStats(currentDays, customFrom, customTo);
+            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
+            var prenom = localStorage.getItem('userPrenom') || '';
+            var nom = localStorage.getItem('userNom') || '';
+            var nomComplet = [prenom, nom].filter(Boolean).join(' ');
+            var titre = 'Statistiques Nora' + (nomComplet ? ' — ' + nomComplet : '');
+            titre += ' — ' + getPeriodLabel() + ' — ' + new Date().toLocaleDateString('fr-FR');
+            document.getElementById('printHeader').textContent = titre;
+            window.print();
         }
 
         function downloadText(text) {
@@ -2370,9 +2383,134 @@
             var to = document.getElementById('dateTo').value;
             if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
             if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
-            customFrom = from;
-            customTo = to;
+            customFrom = from; customTo = to;
             renderCurrent();
+        }
+
+        /* ---------- TOOLTIP DÉFINITION ---------- */
+
+        var _defTimer = null;
+
+        function showDefTooltip(event, name, itemEl) {
+            var def = TYPE_DEFS[name] || TRIGGER_DEFS[name];
+            if (!def) return;
+            var tooltip = document.getElementById('defTooltip');
+            tooltip.innerHTML = '<strong>' + name + '</strong><br>' + def;
+            tooltip.style.display = 'block';
+            var rect = itemEl.getBoundingClientRect();
+            var left = rect.left + 8;
+            var top = rect.bottom + 6;
+            if (left + 244 > window.innerWidth - 6) left = window.innerWidth - 250;
+            if (left < 6) left = 6;
+            if (top + tooltip.offsetHeight > window.innerHeight - 6) top = rect.top - tooltip.offsetHeight - 6;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            clearTimeout(_defTimer);
+            _defTimer = setTimeout(function() { tooltip.style.display = 'none'; }, 5000);
+        }
+
+        document.addEventListener('click', function(e) {
+            var item = e.target.closest('.rank-item.has-def');
+            if (item) {
+                showDefTooltip(e, item.getAttribute('data-def'), item);
+            } else if (!e.target.closest('#defTooltip')) {
+                document.getElementById('defTooltip').style.display = 'none';
+            }
+        });
+
+        /* ---------- FILTRES AVANCÉS ---------- */
+
+        function getContextesFromJournal() {
+            var journal = getJournal();
+            var seen = {}, result = [];
+            for (var i = 0; i < journal.length; i++) {
+                var p = journal[i].profil || 'commun';
+                if (!seen[p]) { seen[p] = true; result.push(p); }
+            }
+            return result;
+        }
+
+        function filterEntries(entries) {
+            if (!activeFilters.contexte.length && !activeFilters.origine.length && !activeFilters.type.length) return entries;
+            var result = [];
+            for (var i = 0; i < entries.length; i++) {
+                var e = entries[i];
+                var pass = true;
+                if (activeFilters.contexte.length && activeFilters.contexte.indexOf(e.profil || 'commun') === -1) pass = false;
+                if (pass && activeFilters.origine.length && activeFilters.origine.indexOf(e.typeCrise || '') === -1) pass = false;
+                if (pass && activeFilters.type.length && activeFilters.type.indexOf(e.typeManifestation || '') === -1) pass = false;
+                if (pass) result.push(e);
+            }
+            return result;
+        }
+
+        function openFilterSheet() {
+            pendingFilters = { contexte: activeFilters.contexte.slice(), origine: activeFilters.origine.slice(), type: activeFilters.type.slice() };
+            var ctxDiv = document.getElementById('filterContexteChips');
+            var contextes = getContextesFromJournal();
+            ctxDiv.innerHTML = '';
+            if (contextes.length) {
+                for (var i = 0; i < contextes.length; i++) {
+                    var id = contextes[i];
+                    var btn = document.createElement('button');
+                    btn.className = 'filter-chip' + (pendingFilters.contexte.indexOf(id) !== -1 ? ' active' : '');
+                    btn.setAttribute('data-group', 'contexte');
+                    btn.setAttribute('data-value', id);
+                    btn.textContent = getProfileName(id);
+                    btn.onclick = function() { toggleChip(this); };
+                    ctxDiv.appendChild(btn);
+                }
+            } else {
+                ctxDiv.innerHTML = '<span class="filter-empty">Aucun contexte enregistré</span>';
+            }
+            var fixed = document.querySelectorAll('#filterOrigineChips .filter-chip, #filterTypeChips .filter-chip');
+            for (var j = 0; j < fixed.length; j++) {
+                var grp = fixed[j].getAttribute('data-group');
+                var val = fixed[j].getAttribute('data-value');
+                fixed[j].classList.toggle('active', pendingFilters[grp].indexOf(val) !== -1);
+            }
+            document.getElementById('filterOverlay').classList.add('visible');
+            document.getElementById('filterSheet').classList.add('visible');
+        }
+
+        function closeFilterSheet() {
+            document.getElementById('filterOverlay').classList.remove('visible');
+            document.getElementById('filterSheet').classList.remove('visible');
+        }
+
+        function toggleChip(btn) {
+            var grp = btn.getAttribute('data-group');
+            var val = btn.getAttribute('data-value');
+            var idx = pendingFilters[grp].indexOf(val);
+            if (idx === -1) { pendingFilters[grp].push(val); btn.classList.add('active'); }
+            else { pendingFilters[grp].splice(idx, 1); btn.classList.remove('active'); }
+        }
+
+        function resetFilters() {
+            pendingFilters = { contexte: [], origine: [], type: [] };
+            activeFilters = { contexte: [], origine: [], type: [] };
+            closeFilterSheet();
+            updateFilterBtn();
+            renderCurrent();
+        }
+
+        function applyFilters() {
+            activeFilters = { contexte: pendingFilters.contexte.slice(), origine: pendingFilters.origine.slice(), type: pendingFilters.type.slice() };
+            closeFilterSheet();
+            updateFilterBtn();
+            renderCurrent();
+        }
+
+        function updateFilterBtn() {
+            var total = activeFilters.contexte.length + activeFilters.origine.length + activeFilters.type.length;
+            var btn = document.getElementById('filterBtn');
+            if (total > 0) {
+                btn.classList.add('has-filters');
+                btn.innerHTML = '⚙️ Filtres <span class="filter-badge">' + total + '</span>';
+            } else {
+                btn.classList.remove('has-filters');
+                btn.textContent = '⚙️ Filtres';
+            }
         }
 
         function renderCurrent() {
@@ -2381,8 +2519,7 @@
             } catch (err) {
                 console.error('Stats render error:', err);
                 document.getElementById('mainContent').innerHTML =
-                    '<div class="empty-state"><div class="empty-icon">⚠️</div>' +
-                    '<div class="empty-text">Erreur de chargement.<br>Réessaie.</div></div>';
+                    '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Erreur de chargement.<br>Réessaie.</div></div>';
             }
         }
 

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <meta name="theme-color" content="#384657">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/images/favicone.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="stylesheet" href="nora-common.css">
+    <title>Page introuvable – Nora</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+            padding: 32px 24px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .animation-wrap {
+            width: min(280px, 80vw);
+            margin-bottom: 8px;
+        }
+
+        #anim {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .emoji-fallback {
+            display: none;
+            font-size: 72px;
+            line-height: 1.2;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: rgba(245, 228, 204, 0.65);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .btn-home {
+            background-color: var(--accent);
+            color: var(--dark);
+            border: none;
+            border-radius: 14px;
+            padding: 16px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-wrap">
+        <video id="anim" autoplay loop muted playsinline>
+            <source src="assets/Search-Empty404.webm" type="video/webm">
+        </video>
+        <div class="emoji-fallback" id="fallback">🌈<br>👨‍🚀</div>
+    </div>
+
+    <p class="title">Oups, cette page est introuvable</p>
+    <p class="subtitle">Il semble que cette page n'existe pas ou a été déplacée.</p>
+
+    <button class="btn-home" onclick="window.location.href='index.html'">Retour à l'accueil</button>
+
+    <script>
+        var anim = document.getElementById('anim');
+        var fallback = document.getElementById('fallback');
+
+        function showFallback() {
+            anim.style.display = 'none';
+            fallback.style.display = 'block';
+        }
+
+        anim.addEventListener('error', showFallback);
+        anim.addEventListener('loadeddata', function() {
+            if (anim.readyState === 0) showFallback();
+        });
+        setTimeout(function() {
+            if (anim.readyState === 0) showFallback();
+        }, 3000);
+    </script>
+</body>
+</html>

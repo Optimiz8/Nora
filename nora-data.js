@@ -14,7 +14,7 @@ const NORA_DATA = {
     // CAPACITÉS PAR DÉFAUT (18 items)
     CAPACITES: [
         { id: 'parler', emoji: '💬', nom: 'Parler' },
-        { id: 'etre-touchee', emoji: '🤝', nom: 'Être touchée' },
+        { id: 'etre-touchee', emoji: '🤝', nom: 'Être touché(e)' },
         { id: 'bouger', emoji: '🚶', nom: 'Bouger' },
         { id: 'rester-ici', emoji: '📍', nom: 'Rester ici' },
         { id: 'ecrire', emoji: '⌨️', nom: 'Écrire / taper sur un clavier' },
@@ -47,8 +47,8 @@ const NORA_DATA = {
         { id: 'aller-wc', emoji: '🚻', nom: 'Aller aux WC' },
         { id: 'dormir', emoji: '😴', nom: 'Dormir' },
         { id: 'calin', emoji: '🤗', nom: 'Un câlin' },
-        { id: 'etre-seule', emoji: '🚪', nom: 'Être seule' },
-        { id: 'etre-accompagnee', emoji: '👥', nom: 'Être accompagnée' },
+        { id: 'etre-seule', emoji: '🚪', nom: 'Être seul(e)' },
+        { id: 'etre-accompagnee', emoji: '👥', nom: 'Être accompagné(e)' },
         { id: 'rester-avec-moi', emoji: '🫂', nom: 'Qu\'on reste avec moi' },
         { id: 'attendre', emoji: '⏳', nom: 'Attendre' },
         { id: 'appeler-quelquun', emoji: '📞', nom: 'Appeler quelqu\'un' },

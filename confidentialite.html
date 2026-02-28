@@ -102,14 +102,17 @@
 
                 <div class="subsection-title">Quelles données sont stockées ?</div>
                 <p class="text">Nora stocke localement sur ton appareil :</p>
-                <p class="text"><ul>
+                <ul class="text" id="dataList">
                     <li>Ton prénom et nom (optionnel)</li>
                     <li>Tes contacts d'urgence (nom, téléphone, lien)</li>
                     <li>Tes informations médicales (groupe sanguin, allergies, traitements...)</li>
                     <li>La configuration de ta carte d'urgence numérique</li>
+                    <li>Tes cartes de communication personnalisées</li>
                     <li>Tes paramètres de contextes</li>
                     <li>Ton journal de crises</li>
-                </ul></p>
+                    <li>Tes préférences d'affichage (timer, son…)</li>
+                </ul>
+                <div id="dynamicDataSummary" style="margin-top:12px"></div>
 
                 <div class="divider"></div>
 
@@ -127,10 +130,15 @@
 
                 <div class="divider"></div>
 
-                <div class="subsection-title">Que se passe-t-il si je désinstalle l'app ?</div>
-                <p class="text">
-                    Si tu supprimes l'application ou vides les données de ton navigateur, toutes tes données Nora seront définitivement effacées. Pense à les exporter au préalable (Paramètres > Données > Exporter).
-                </p>
+                <div class="subsection-title">Désinstaller vs supprimer les données</div>
+                <p class="text"><strong>Si tu désinstalles l'application</strong> (appui long sur l'icône → "Désinstaller") :</p>
+                <ul class="text">
+                    <li>Sur iPhone/iPad : les données sont supprimées avec l'application.</li>
+                    <li>Sur Android : les données sont généralement supprimées avec l'application.</li>
+                    <li>En cas de doute, exporte tes données avant de désinstaller (Paramètres → Données → Exporter).</li>
+                </ul>
+                <p class="text"><strong>Pour effacer tes données sans désinstaller</strong> : Paramètres → Données → Réinitialiser les données.</p>
+                <p class="text"><strong>Supprimer le raccourci</strong> de l'écran d'accueil <em>sans désinstaller</em> ne supprime pas tes données — tu peux réinstaller Nora et les retrouver intactes.</p>
 
                 <div class="divider"></div>
 
@@ -155,6 +163,26 @@
         function goBack() {
             window.location.href = 'parametres.html';
         }
+
+        function renderDataSummary() {
+            var checks = [
+                { key: 'userPrenom', label: 'Prénom / nom' },
+                { key: 'carteConsignes', label: 'Carte d\'urgence (consignes)' },
+                { key: 'contactsUrgence', label: 'Contacts d\'urgence' },
+                { key: 'cartesCommunication', label: 'Cartes de communication' },
+                { key: 'journalCrises', label: 'Journal de crises' },
+                { key: 'carteInformations', label: 'Infos médicales' },
+            ];
+            var present = checks.filter(function(c) { return !!localStorage.getItem(c.key); });
+            if (present.length === 0) return;
+            var wrap = document.getElementById('dynamicDataSummary');
+            wrap.innerHTML = '<div style="font-size:13px;color:rgba(46,58,89,0.6);margin-bottom:6px">Données actuellement enregistrées sur cet appareil :</div>' +
+                present.map(function(c) {
+                    return '<div style="font-size:14px;color:rgba(46,58,89,0.85);padding:3px 0">✓ ' + c.label + '</div>';
+                }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', renderDataSummary);
     </script>
     <script src="nora-scroll.js"></script>
 </body>

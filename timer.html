@@ -26,14 +26,14 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 12px 12px 4px;
+      padding: 8px 12px 80px;
       gap: 20px;
     }
 
     /* ---------- CERCLE SVG (style 1) ---------- */
     .circle-wrap {
       position: relative;
-      width: min(270px, 72vw);
+      width: min(300px, 82vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -50,7 +50,7 @@
     .progress {
       fill: none;
       stroke: var(--accent);
-      stroke-width: 8;
+      stroke-width: 6;
       stroke-linecap: round;
       transition: stroke-dashoffset 0.9s linear;
     }
@@ -96,11 +96,12 @@
       display: flex;
       gap: 16px;
       align-items: center;
+      margin-top: 14px;
     }
 
     .ctrl-btn {
-      width: 64px;
-      height: 64px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       border: none;
       cursor: pointer;
@@ -110,12 +111,11 @@
       justify-content: center;
       gap: 2px;
       -webkit-appearance: none;
+      appearance: none;
       -webkit-tap-highlight-color: transparent;
     }
 
     .ctrl-btn.play-btn {
-      width: 76px;
-      height: 76px;
       background: var(--accent);
       color: var(--dark);
     }
@@ -128,8 +128,7 @@
 
     .ctrl-btn:disabled { opacity: 0.3; pointer-events: none; }
 
-    .ctrl-icon { font-size: 24px; line-height: 1; }
-    .ctrl-btn.play-btn .ctrl-icon { font-size: 28px; }
+    .ctrl-icon { font-size: 26px; line-height: 1; }
 
     .ctrl-label {
       font-size: 9px;
@@ -169,6 +168,7 @@
       line-height: 1.1;
       cursor: pointer;
       -webkit-appearance: none;
+      appearance: none;
       gap: 1px;
     }
 
@@ -414,6 +414,8 @@
       padding: 36px 28px;
       width: 100%;
       max-width: 320px;
+      position: relative;
+      z-index: 1;
     }
 
     .alarm-icon { font-size: 3.5rem; animation: alarmPulse 0.9s ease-in-out infinite; }
@@ -485,9 +487,10 @@
     .bar-wrap {
       display: none;
       position: relative;
-      width: min(100px, 28vw);
-      height: min(270px, 60vh);
-      background: rgba(245, 228, 204, 0.08);
+      width: min(160px, 44vw);
+      height: min(430px, 82vh);
+      background: rgba(80, 100, 200, 0.1);
+      border: 1px solid rgba(100, 130, 220, 0.15);
       border-radius: 20px;
       overflow: hidden;
       cursor: pointer;
@@ -497,7 +500,7 @@
     .bar-fill {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: var(--accent);
+      background: linear-gradient(to top, var(--dark), rgba(90, 120, 210, 0.85));
       border-radius: 0 0 20px 20px;
       transition: height 0.9s linear;
     }
@@ -516,31 +519,43 @@
     /* ---------- STYLE 3 — SEGMENTS ---------- */
     .segments-wrap {
       display: none;
-      position: relative;
-      width: min(270px, 72vw);
-      aspect-ratio: 1;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      width: min(340px, 92vw);
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .segments-wrap svg { width: 100%; height: 100%; }
-
     .seg-center {
-      position: absolute;
-      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 6px;
       pointer-events: none;
     }
+
+    .seg-pills {
+      display: flex;
+      gap: 5px;
+      height: 42px;
+      width: 100%;
+    }
+
+    .seg-pill {
+      flex: 1;
+      border-radius: 8px;
+      background: rgba(245, 228, 204, 0.1);
+      transition: background 0.5s ease;
+    }
+
+    .seg-pill.active { background: var(--accent); }
 
     /* ---------- STYLE 4 — PIXELS ---------- */
     .pixels-wrap {
       display: none;
       position: relative;
-      width: min(270px, 72vw);
+      width: min(310px, 88vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -548,22 +563,19 @@
 
     .pixels-canvas { width: 100%; height: 100%; border-radius: 20px; }
 
-    .pixels-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
+    .pixels-time {
+      display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      pointer-events: none;
+      gap: 2px;
+      margin-top: 8px;
     }
 
     /* ---------- STYLE 5 — KAWAII ---------- */
     .kawaii-wrap {
       display: none;
       position: relative;
-      width: min(270px, 72vw);
+      width: min(300px, 82vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -585,12 +597,7 @@
       position: absolute;
       font-size: 18px;
       opacity: 0.55;
-      animation: kawaiiFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes kawaiiFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50%       { transform: translateY(-6px) rotate(8deg); }
+      transform: translate(-50%, -50%);
     }
 
     .kawaii-arc { position: absolute; inset: 4px; border-radius: 50%; }
@@ -607,21 +614,11 @@
       pointer-events: none;
     }
 
-    @keyframes kawaiiGlitch {
-      0%   { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
-      10%  { filter: hue-rotate(40deg) saturate(2); transform: translate(2px,-1px); }
-      20%  { filter: hue-rotate(80deg) saturate(1.8); transform: translate(-2px,1px); }
-      30%  { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
-      100% { filter: hue-rotate(0deg) saturate(1.5); transform: translate(0,0); }
-    }
-
-    .kawaii-wrap.running { animation: kawaiiGlitch 4s ease-in-out infinite; }
-
     /* ---------- STYLE 6 — ESPACE ---------- */
     .space-wrap {
       display: none;
       position: relative;
-      width: min(270px, 72vw);
+      width: min(300px, 82vw);
       aspect-ratio: 1;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -646,7 +643,7 @@
       background: radial-gradient(circle at 30% 40%, #7c3aed 0%, transparent 50%),
                   radial-gradient(circle at 70% 60%, #0ea5e9 0%, transparent 50%),
                   radial-gradient(circle at 50% 50%, #6d28d9 0%, transparent 70%);
-      animation: nebulaRotate 20s linear infinite;
+      transition: transform 0.9s linear;
     }
 
     @keyframes nebulaRotate {
@@ -667,9 +664,190 @@
       gap: 6px;
       pointer-events: none;
     }
+
+    /* ---------- PLUIE DE PAILLETTES (fond kawaii) ---------- */
+    #kawaiiBgRain {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+      display: none;
+    }
+
+    .bg-sparkle {
+      position: absolute;
+      top: -20px;
+      border-radius: 1px;
+      animation: bgSparkleFall linear infinite;
+      transform-origin: center center;
+    }
+
+    @keyframes bgSparkleFall {
+      0%   { transform: translateY(0) rotate(0deg) scale(1, 0.15); opacity: 0; }
+      6%   { opacity: 0.9; }
+      25%  { transform: translateY(25vh) rotate(90deg) scale(0.15, 1); }
+      50%  { transform: translateY(50vh) rotate(180deg) scale(1, 0.15); }
+      75%  { transform: translateY(75vh) rotate(270deg) scale(0.15, 1); opacity: 0.6; }
+      93%  { opacity: 0; }
+      100% { transform: translateY(110vh) rotate(360deg) scale(1, 0.15); opacity: 0; }
+    }
+
+    /* ---------- FOND DE PAGE THÈME ---------- */
+
+    #pageBg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      display: none;
+      opacity: 0.3;
+    }
+
+    #pageBgCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      display: none;
+    }
+
+    #pageBgNebula {
+      position: fixed;
+      inset: -10%;
+      z-index: -2;
+      pointer-events: none;
+      display: none;
+      opacity: 0.22;
+      background: radial-gradient(circle at 30% 40%, #7c3aed 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, #a78bfa 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, #6d28d9 0%, transparent 70%);
+    }
+
+    /* ---------- ALARME THÈME ---------- */
+
+    .alarm-overlay.theme-kawaii {
+      background: var(--dark);
+      overflow: hidden;
+    }
+
+    .alarm-overlay.theme-kawaii .alarm-icon { display: none; }
+
+    .kawaii-alarm-video {
+      display: none;
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+
+    .alarm-overlay.theme-kawaii .kawaii-alarm-video { display: block; }
+
+    .alarm-sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .sparkle-particle {
+      position: absolute;
+      top: -50px;
+      border-radius: 1px;
+      animation: sparkleFall linear infinite;
+      transform-origin: center center;
+    }
+
+    @keyframes sparkleFall {
+      0%   { transform: translateY(0) rotate(0deg) scale(1, 0.15); opacity: 0; }
+      6%   { opacity: 1; }
+      25%  { transform: translateY(25vh) rotate(90deg) scale(0.15, 1); }
+      50%  { transform: translateY(50vh) rotate(180deg) scale(1, 0.15); }
+      75%  { transform: translateY(75vh) rotate(270deg) scale(0.15, 1); opacity: 0.7; }
+      93%  { opacity: 0; }
+      100% { transform: translateY(110vh) rotate(360deg) scale(1, 0.15); opacity: 0; }
+    }
+
+    .alarm-overlay.theme-espace {
+      background: #060b1a;
+      overflow: hidden;
+    }
+
+    .alarm-overlay.theme-espace::before {
+      content: '';
+      position: absolute;
+      inset: -20%;
+      background: radial-gradient(circle at 35% 40%, rgba(124,58,237,0.45) 0%, transparent 55%),
+                  radial-gradient(circle at 65% 60%, rgba(14,165,233,0.2) 0%, transparent 55%),
+                  radial-gradient(circle at 50% 50%, rgba(109,40,217,0.3) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    #alarmStarsCanvas {
+      display: none;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .alarm-overlay.theme-espace #alarmStarsCanvas { display: block; }
+
+    .alarm-overlay.theme-espace .alarm-icon { display: none; }
+
+    .alarm-lottie {
+      display: none;
+      width: 190px;
+      height: 190px;
+      border-radius: 4px;
+    }
+
+    .alarm-overlay.theme-espace .alarm-lottie {
+      display: block;
+    }
+
+    .glitter-bg {
+      display: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.45;
+    }
+
+    /* ---------- FOOTER TIMER (override) ---------- */
+
+    .timer-footer {
+      height: 72px !important;
+    }
+
+    .t-btn {
+      height: 56px;
+    }
+
+    .t-btn.active {
+      background: rgba(245, 228, 204, 0.15);
+      border-color: rgba(245, 228, 204, 0.1);
+    }
+
+    .btn-cat {
+      font-size: 10px;
+    }
+
+    .t-btn > .btn-icon { font-size: 18px; }
+
+    .t-btn > small {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
+
+  <div id="pageBg"></div>
+  <canvas id="pageBgCanvas"></canvas>
+  <div id="pageBgNebula"></div>
 
   <header class="header">
     <button class="back-button" onclick="onBack()" aria-label="Retour">⬅️</button>
@@ -703,20 +881,20 @@
 
     <!-- Style 3 : Segments -->
     <div class="segments-wrap" id="segmentsWrap" onclick="onCircleTap()">
-      <svg viewBox="0 0 100 100" id="segmentsSvg" aria-hidden="true"></svg>
       <div class="seg-center">
         <div class="time-display" id="timeDisplay3" onclick="onTimeTap(event)">15:00</div>
         <div class="time-hint" id="timeHint3">Appuie pour régler</div>
       </div>
+      <div class="seg-pills" id="segPills"></div>
     </div>
 
     <!-- Style 4 : Pixels -->
     <div class="pixels-wrap" id="pixelsWrap" onclick="onCircleTap()">
       <canvas class="pixels-canvas" id="pixelsCanvas"></canvas>
-      <div class="pixels-center">
-        <div class="time-display" id="timeDisplay4" onclick="onTimeTap(event)" style="text-shadow:0 0 16px rgba(0,0,0,0.8)">15:00</div>
-        <div class="time-hint" id="timeHint4">Appuie pour régler</div>
-      </div>
+    </div>
+    <div class="pixels-time" id="pixelsTimeRow">
+      <div class="time-display" id="timeDisplay4" onclick="onTimeTap(event)" style="text-shadow:0 0 16px rgba(0,0,0,0.8)">15:00</div>
+      <div class="time-hint" id="timeHint4">Appuie pour régler</div>
     </div>
 
     <!-- Style 5 : Kawaii -->
@@ -840,11 +1018,25 @@
     </div>
   </div>
 
+  <!-- Fond pluie de paillettes kawaii -->
+  <div id="kawaiiBgRain"></div>
+
   <!-- Alarm overlay -->
   <div class="alarm-overlay" id="alarmOverlay">
+    <canvas id="alarmStarsCanvas"></canvas>
+    <video class="glitter-bg" id="glitterBg" loop muted playsinline>
+      <source src="assets/Glitter-Star.webm" type="video/webm">
+    </video>
+    <div class="alarm-sparkles" id="alarmSparkles"></div>
     <div class="alarm-content">
       <div class="alarm-icon">⏰</div>
-      <div class="alarm-text">Temps écoulé !</div>
+      <video id="kawaiiAlarmVideo" class="kawaii-alarm-video" loop muted playsinline>
+        <source src="assets/Glitter-Star.webm" type="video/webm">
+      </video>
+      <video id="spaceManVideo" class="alarm-lottie" loop muted playsinline>
+        <source src="assets/Space-Man.webm" type="video/webm">
+      </video>
+      <div class="alarm-text" id="alarmText">Temps écoulé !</div>
       <div class="alarm-actions">
         <button class="alarm-btn primary" onclick="openSnoozeSheet()">Prolonger</button>
         <button class="alarm-btn secondary" onclick="stopAlarm()">Arrêter</button>
@@ -944,6 +1136,20 @@
       120:  'Il reste deux minutes'
     };
 
+    const THRESHOLD_MSGS_KAWAII = {
+      3600: 'Encore une heure de paillettes',
+      1800: 'Encore trente minutes de paillettes',
+      900:  'Encore quinze minutes de paillettes',
+      120:  'Encore deux minutes de paillettes'
+    };
+
+    const THRESHOLD_MSGS_ESPACE = {
+      3600: 'Fin de la mission orbitale dans une heure',
+      1800: 'Fin de la mission orbitale dans trente minutes',
+      900:  'Fin de la mission orbitale dans quinze minutes',
+      120:  'Fin de la mission orbitale dans deux minutes'
+    };
+
     const SON_CYCLE  = ['bip', 'voix', 'vibration', 'mute'];
     const SON_ICONS  = { bip: '🔔', voix: '🗣️', vibration: '📳', mute: '🔇' };
     const SON_LABELS = { bip: 'BIP', voix: 'VOIX', vibration: 'VIB', mute: 'MUET' };
@@ -982,6 +1188,9 @@
     let sonMode    = localStorage.getItem('timerSonMode')  || 'bip';
     let finMode    = localStorage.getItem('timerFinMode')  || 'flash';
     let timerStyle = localStorage.getItem('timerStyle')    || 'cercle';
+
+    let kawaiiAnimFrame = null;
+    const kawaiiParticles = [];
 
     /* ---------- INIT ---------- */
     document.addEventListener('DOMContentLoaded', () => {
@@ -1088,18 +1297,22 @@
     }
 
     function startInterval() {
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
+      clearTimeout(timerInterval);
+      function tick() {
         if (!endTimestamp) return;
-        timeRemaining = Math.max(0, Math.floor((endTimestamp - Date.now()) / 1000));
+        const ms = endTimestamp - Date.now();
+        timeRemaining = Math.max(0, Math.ceil(ms / 1000));
         checkAnnouncements();
         updateDisplay();
         if (timeRemaining <= 0) {
-          clearInterval(timerInterval);
           localStorage.removeItem('timerRunningState');
           triggerAlarm();
+          return;
         }
-      }, 500);
+        const delay = ms % 1000;
+        timerInterval = setTimeout(tick, delay > 0 ? delay : 1000);
+      }
+      tick();
     }
 
     function onCircleTap() {
@@ -1128,12 +1341,14 @@
         releaseWakeLock();
         localStorage.removeItem('timerRunningState');
         state = 'paused';
+        if (timerStyle === 'kawaii') stopBgRain();
       } else if (state === 'paused') {
         endTimestamp = Date.now() + timeRemaining * 1000;
         state = 'running';
         startInterval();
         saveRunningState();
         requestWakeLock();
+        if (timerStyle === 'kawaii') startBgRain();
       }
       updateUI();
     }
@@ -1147,7 +1362,14 @@
       timeRemaining = totalDuration;
       endTimestamp  = null;
       announcedSet  = new Set();
-      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      stopSparkles();
+      var kawaiiVideo = document.getElementById('kawaiiAlarmVideo');
+      kawaiiVideo.pause(); kawaiiVideo.currentTime = 0;
+      const resetOverlay = document.getElementById('alarmOverlay');
+      resetOverlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      resetOverlay.style.background = '';
+      document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
+      document.getElementById('alarmText').textContent = 'Temps écoulé !';
       updateUI();
     }
 
@@ -1158,14 +1380,34 @@
       updateUI();
       const overlay = document.getElementById('alarmOverlay');
       overlay.classList.add('visible');
-      if (finMode === 'flash')     overlay.classList.add('flashing');
+      if (timerStyle === 'kawaii') {
+        document.getElementById('alarmText').textContent = 'Pluie de paillettes terminée !';
+        overlay.classList.add('theme-kawaii');
+        const progress = totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 1;
+        const hue = Math.round(progress * 300);
+        overlay.style.background = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
+        document.getElementById('kawaiiAlarmVideo').play().catch(function() {});
+        startSparkles();
+      } else if (timerStyle === 'espace') {
+        document.querySelector('#alarmOverlay .alarm-icon').textContent = '👨‍🚀';
+        document.getElementById('alarmText').textContent = 'Houston, le temps est écoulé.';
+        overlay.classList.add('theme-espace');
+        drawAlarmStars();
+        var spaceVideo = document.getElementById('spaceManVideo');
+        spaceVideo.play().catch(function() {});
+      } else if (finMode === 'flash') {
+        overlay.classList.add('flashing');
+      }
       if (finMode === 'voix')      startAlarmVoice();
       if (finMode === 'vibration') startAlarmVibration();
     }
 
     function startAlarmVoice() {
+      let text = 'Le temps est écoulé';
+      if (timerStyle === 'kawaii') text = 'Pluie de paillettes terminée';
+      else if (timerStyle === 'espace') text = 'Houston, le temps est écoulé';
       const say = () => {
-        const u = new SpeechSynthesisUtterance('Le temps est écoulé');
+        const u = new SpeechSynthesisUtterance(text);
         u.lang = 'fr-FR';
         speechSynthesis.speak(u);
       };
@@ -1186,9 +1428,52 @@
       navigator.vibrate && navigator.vibrate(0);
     }
 
+    function startSparkles() {
+      const container = document.getElementById('alarmSparkles');
+      container.innerHTML = '';
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'sparkle-particle';
+        const color = SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)];
+        p.style.background = color;
+        p.style.left = (Math.random() * 100) + '%';
+        const sz = (5 + Math.floor(Math.random() * 7)) + 'px';
+        p.style.width = sz;
+        p.style.height = sz;
+        p.style.animationDuration = (7 + Math.random() * 8) + 's';
+        p.style.animationDelay = (-Math.random() * 14) + 's';
+        container.appendChild(p);
+      }
+    }
+
+    function stopSparkles() {
+      document.getElementById('alarmSparkles').innerHTML = '';
+    }
+
+    function startGlitter() {
+      var v = document.getElementById('glitterBg');
+      v.play().catch(function() {});
+    }
+
+    function stopGlitter() {
+      var v = document.getElementById('glitterBg');
+      v.pause();
+      v.currentTime = 0;
+    }
+
     function stopAlarm() {
       stopAlarmEffects();
-      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      stopSparkles();
+      stopGlitter();
+      var spaceVideo = document.getElementById('spaceManVideo');
+      spaceVideo.pause(); spaceVideo.currentTime = 0;
+      var kawaiiVideo = document.getElementById('kawaiiAlarmVideo');
+      kawaiiVideo.pause(); kawaiiVideo.currentTime = 0;
+      const overlay = document.getElementById('alarmOverlay');
+      overlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      overlay.style.background = '';
+      document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
+      document.getElementById('alarmText').textContent = 'Temps écoulé !';
       closeSnoozeSheet();
       state         = 'idle';
       timeRemaining = totalDuration;
@@ -1208,7 +1493,17 @@
 
     function doSnooze(seconds) {
       stopAlarmEffects();
-      document.getElementById('alarmOverlay').classList.remove('visible', 'flashing');
+      stopSparkles();
+      stopGlitter();
+      var spaceVideo = document.getElementById('spaceManVideo');
+      spaceVideo.pause(); spaceVideo.currentTime = 0;
+      var kawaiiVideo = document.getElementById('kawaiiAlarmVideo');
+      kawaiiVideo.pause(); kawaiiVideo.currentTime = 0;
+      const snoozeOverlay = document.getElementById('alarmOverlay');
+      snoozeOverlay.classList.remove('visible', 'flashing', 'theme-kawaii', 'theme-espace');
+      snoozeOverlay.style.background = '';
+      document.querySelector('#alarmOverlay .alarm-icon').textContent = '⏰';
+      document.getElementById('alarmText').textContent = 'Temps écoulé !';
       closeSnoozeSheet();
       totalDuration = seconds;
       timeRemaining = seconds;
@@ -1229,7 +1524,10 @@
           announcedSet.add(t);
           if (sonMode === 'voix') {
             speechSynthesis.cancel();
-            const u = new SpeechSynthesisUtterance(THRESHOLD_MSGS[t]);
+            const msgs = timerStyle === 'kawaii' ? THRESHOLD_MSGS_KAWAII
+                       : timerStyle === 'espace' ? THRESHOLD_MSGS_ESPACE
+                       : THRESHOLD_MSGS;
+            const u = new SpeechSynthesisUtterance(msgs[t]);
             u.lang = 'fr-FR';
             speechSynthesis.speak(u);
           } else if (sonMode === 'vibration') {
@@ -1293,7 +1591,6 @@
       updateDisplay();
       updatePlayBtn();
       document.getElementById('circleWrap').classList.toggle('paused', state === 'paused');
-      document.getElementById('kawaiiWrap').classList.toggle('running', state === 'running');
     }
 
     function updateDisplay() {
@@ -1413,11 +1710,39 @@
       const map = { cercle:'circleWrap', barre:'barWrap', segments:'segmentsWrap', pixels:'pixelsWrap', kawaii:'kawaiiWrap', espace:'spaceWrap' };
       Object.values(map).forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
       const el = document.getElementById(map[s]);
-      if (el) el.style.display = '';
+      if (el) el.style.display = s === 'segments' ? 'flex' : 'block';
+      const pixelsTimeRow = document.getElementById('pixelsTimeRow');
+      if (pixelsTimeRow) pixelsTimeRow.style.display = s === 'pixels' ? 'flex' : 'none';
       document.getElementById('styleIcon').textContent  = STYLE_ICONS[s];
       document.getElementById('styleLabel').textContent = STYLE_LABELS[s];
-      if (s === 'pixels') { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
-      if (s === 'espace') drawSpaceStars();
+      if (s === 'pixels')   { initPixels(); updatePixels(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0); }
+      if (s === 'segments') buildSegmentsSvg();
+
+      if (s !== 'kawaii') { stopKawaiiAnim(); stopBgRain(); }
+      else {
+        if (!kawaiiAnimFrame && kawaiiParticles.length > 0) {
+          kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+        }
+        startBgRain();
+      }
+
+      /* Fond de page */
+      const pageBg       = document.getElementById('pageBg');
+      const pageBgCanvas = document.getElementById('pageBgCanvas');
+      const pageBgNebula = document.getElementById('pageBgNebula');
+      pageBg.style.display = pageBgCanvas.style.display = pageBgNebula.style.display = 'none';
+      document.body.style.backgroundColor = '';
+
+      if (s === 'espace') {
+        pageBgCanvas.style.display = 'block';
+        pageBgNebula.style.display = 'block';
+        document.body.style.backgroundColor = 'transparent';
+        drawFullPageStars();
+        drawSpaceStars();
+      } else if (s === 'kawaii') {
+        pageBg.style.display = 'block';
+        updateKawaiiColors(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0);
+      }
     }
 
     /* ---------- RETOUR ---------- */
@@ -1480,7 +1805,8 @@
       function onMove(y) {
         if (!isDragging) return;
         const minOff = -(max - min) * ITEM_H;
-        const next = Math.max(minOff, Math.min(0, startOffset + (y - startY)));
+        const delta = startOffset + (y - startY);
+        const next = Math.max(minOff - ITEM_H, Math.min(ITEM_H, delta));
         track.style.transform = `translateY(${next}px)`;
       }
 
@@ -1502,7 +1828,8 @@
     }
 
     function snapTo(trackId, drumId, idx, min, max) {
-      idx = Math.max(0, Math.min(max - min, idx));
+      const range = max - min + 1;
+      idx = ((idx % range) + range) % range;
       const track = document.getElementById(trackId);
       track.style.transition = 'transform 0.18s ease';
       track.style.transform  = `translateY(${-idx * ITEM_H}px)`;
@@ -1540,34 +1867,27 @@
     }
 
     /* =====================================================
-       STYLE 3 — SEGMENTS
+       STYLE 3 — SEGMENTS (pilules horizontales)
     ===================================================== */
-    const N_SEGMENTS = 60;
+    const N_SEGMENTS = 20;
 
     function buildSegmentsSvg() {
-      const svg = document.getElementById('segmentsSvg');
-      svg.innerHTML = '';
-      const cx = 50, cy = 50, r = 42;
+      const container = document.getElementById('segPills');
+      if (!container) return;
+      container.innerHTML = '';
       for (let i = 0; i < N_SEGMENTS; i++) {
-        const startDeg = -90 + i * (360 / N_SEGMENTS);
-        const endDeg   = startDeg + (360 / N_SEGMENTS) - 3;
-        const toRad = d => d * Math.PI / 180;
-        const x1 = cx + r * Math.cos(toRad(startDeg)), y1 = cy + r * Math.sin(toRad(startDeg));
-        const x2 = cx + r * Math.cos(toRad(endDeg)),   y2 = cy + r * Math.sin(toRad(endDeg));
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`);
-        path.setAttribute('fill', 'none');
-        path.setAttribute('stroke-width', '7');
-        path.setAttribute('stroke-linecap', 'round');
-        svg.appendChild(path);
+        const pill = document.createElement('div');
+        pill.className = 'seg-pill';
+        container.appendChild(pill);
       }
-      updateSegments(0);
+      updateSegments(totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 0);
     }
 
     function updateSegments(progress) {
-      const segs = document.getElementById('segmentsSvg').querySelectorAll('path');
-      const active = Math.round((1 - progress) * N_SEGMENTS);
-      segs.forEach((seg, i) => seg.setAttribute('stroke', i < active ? 'var(--accent)' : 'rgba(245,228,204,0.1)'));
+      const elapsed = Math.round(progress * N_SEGMENTS);
+      document.querySelectorAll('#segPills .seg-pill').forEach((pill, i) => {
+        pill.classList.toggle('active', i < elapsed);
+      });
     }
 
     /* =====================================================
@@ -1637,7 +1957,7 @@
       rrect(ctx, 0, 0, W, H, 20); ctx.fill();
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
-          ctx.fillStyle = pixelGrid[r][c] ? `hsl(${20 + r * 3}, 85%, 68%)` : 'rgba(245,228,204,0.06)';
+          ctx.fillStyle = pixelGrid[r][c] ? '#F7B89C' : 'rgba(245,228,204,0.06)';
           rrect(ctx, c * cw + p, r * ch + p, cw - p*2, ch - p*2, 3);
           ctx.fill();
         }
@@ -1653,25 +1973,96 @@
     function initKawaii() {
       const container = document.getElementById('kawaiiStickers');
       container.innerHTML = '';
-      KAWAII_STICKERS.forEach((s, i) => {
+      kawaiiParticles.length = 0;
+      KAWAII_STICKERS.forEach(s => {
         const el = document.createElement('span');
         el.className = 'kawaii-sticker';
         el.textContent = s;
-        el.style.left = (8 + Math.random() * 72) + '%';
-        el.style.top  = (8 + Math.random() * 72) + '%';
-        el.style.animationDelay    = (i * 0.3) + 's';
-        el.style.animationDuration = (2.5 + Math.random() * 2) + 's';
         container.appendChild(el);
+        const angle = Math.random() * Math.PI * 2;
+        const dist  = Math.random() * 0.65;
+        const x = 50 + dist * 38 * Math.cos(angle);
+        const y = 50 + dist * 38 * Math.sin(angle);
+        const speed  = 0.025 + Math.random() * 0.035;
+        const vAngle = Math.random() * Math.PI * 2;
+        kawaiiParticles.push({ el, x, y, vx: speed * Math.cos(vAngle), vy: speed * Math.sin(vAngle) });
+        el.style.left = x + '%';
+        el.style.top  = y + '%';
       });
       updateKawaiiColors(0);
+      if (kawaiiAnimFrame) cancelAnimationFrame(kawaiiAnimFrame);
+      kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+    }
+
+    function animateKawaii() {
+      kawaiiParticles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        const dx   = p.x - 50;
+        const dy   = p.y - 50;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const maxD = 37;
+        if (dist > maxD) {
+          const nx  = dx / dist, ny = dy / dist;
+          const dot = p.vx * nx + p.vy * ny;
+          p.vx -= 2 * dot * nx;
+          p.vy -= 2 * dot * ny;
+          p.x = 50 + nx * (maxD - 0.5);
+          p.y = 50 + ny * (maxD - 0.5);
+        }
+        p.vx += (Math.random() - 0.5) * 0.004;
+        p.vy += (Math.random() - 0.5) * 0.004;
+        const spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        if (spd > 0.08) { p.vx *= 0.08 / spd; p.vy *= 0.08 / spd; }
+        if (spd < 0.012) { p.vx += (Math.random() - 0.5) * 0.015; p.vy += (Math.random() - 0.5) * 0.015; }
+        p.el.style.left = p.x + '%';
+        p.el.style.top  = p.y + '%';
+      });
+      kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+    }
+
+    function stopKawaiiAnim() {
+      if (kawaiiAnimFrame) { cancelAnimationFrame(kawaiiAnimFrame); kawaiiAnimFrame = null; }
+    }
+
+    const SPARKLE_COLORS = ['#FFD700','#FFF9C4','#FFE4E4','#E8D5FF','#D4F0FF','#FFFFFF','#F7B89C','#FFB6C1'];
+
+    function startBgRain() {
+      const container = document.getElementById('kawaiiBgRain');
+      container.innerHTML = '';
+      container.style.display = 'block';
+      for (let i = 0; i < 22; i++) {
+        const p = document.createElement('div');
+        p.className = 'bg-sparkle';
+        const color = SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)];
+        p.style.background = color;
+        p.style.left = (Math.random() * 100) + '%';
+        const sz = (5 + Math.floor(Math.random() * 6)) + 'px';
+        p.style.width = sz;
+        p.style.height = sz;
+        p.style.animationDuration = (8 + Math.random() * 9) + 's';
+        p.style.animationDelay = (-Math.random() * 17) + 's';
+        container.appendChild(p);
+      }
+    }
+
+    function stopBgRain() {
+      const container = document.getElementById('kawaiiBgRain');
+      container.style.display = 'none';
+      container.innerHTML = '';
     }
 
     function updateKawaiiColors(progress) {
       const hue = Math.round(progress * 300);
+      const gradient = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
       const bg  = document.getElementById('kawaiiBg');
-      if (bg) { bg.style.background = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`; bg.style.opacity = '0.55'; }
+      if (bg) { bg.style.background = gradient; bg.style.opacity = '0.55'; }
       const arc = document.getElementById('kawaiiArc');
       if (arc) arc.style.stroke = `hsl(${(hue + 180) % 360}, 90%, 65%)`;
+      if (timerStyle === 'kawaii') {
+        const pageBg = document.getElementById('pageBg');
+        if (pageBg && pageBg.style.display !== 'none') pageBg.style.background = gradient;
+      }
     }
 
     /* =====================================================
@@ -1696,7 +2087,42 @@
 
     function updateSpaceArc(progress) {
       const arc = document.getElementById('spaceArc');
-      if (arc) arc.style.stroke = `hsl(${220 + progress * 60}, 80%, 65%)`;
+      if (arc) arc.style.stroke = 'hsl(265, 85%, 72%)';
+      const spaceWrap = document.getElementById('spaceWrap');
+      if (spaceWrap) {
+        const nebula = spaceWrap.querySelector('.space-nebula');
+        if (nebula) nebula.style.transform = `rotate(${-progress * 360}deg)`;
+      }
+    }
+
+    function drawAlarmStars() {
+      const canvas = document.getElementById('alarmStarsCanvas');
+      if (!canvas) return;
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+      for (let i = 0; i < 160; i++) {
+        const x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+        const r = Math.random() * 1.8, a = 0.3 + Math.random() * 0.7;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,220,255,${a})`; ctx.fill();
+      }
+    }
+
+    function drawFullPageStars() {
+      const canvas = document.getElementById('pageBgCanvas');
+      if (!canvas) return;
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#060b1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < 180; i++) {
+        const x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+        const r = Math.random() * 1.8, a = 0.3 + Math.random() * 0.7;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,220,255,${a})`; ctx.fill();
+      }
     }
   </script>
   <script src="nora-scroll.js"></script>

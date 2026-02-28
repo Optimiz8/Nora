@@ -15,21 +15,21 @@
 /* ===== PAGE-SPECIFIC: BREATHING ===== */
 
 .main {
-  height: calc(100vh - var(--header-height));
-  padding: 14px 16px 20px;
+  height: calc(100vh - var(--header-height) - var(--footer-height));
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 20px;
   overflow-y: auto;
 }
 
 /* ---------- SECTION TITLES ---------- */
 h2 {
-  font-size: 14px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: .10em;
+  letter-spacing: .12em;
   color: var(--accent);
-  margin: 0 0 8px 2px;
+  margin: 0 0 10px 2px;
   text-align: left;
 }
 
@@ -41,7 +41,7 @@ h2 {
 }
 
 .prog-btn {
-  padding: 12px 8px;
+  padding: 14px 8px;
   border-radius: 14px;
   background: rgba(245,228,204,0.07);
   border: 1.5px solid rgba(245,228,204,0.12);
@@ -49,7 +49,7 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   cursor: pointer;
   font-family: inherit;
   font-size: 15px;
@@ -79,7 +79,7 @@ h2 {
 
 .edit-link {
   display: block;
-  margin-top: 4px;
+  margin-top: 2px;
   font-size: 10px;
   color: var(--accent);
   text-decoration: underline;
@@ -90,27 +90,27 @@ h2 {
   color: rgba(46,58,89,0.55);
 }
 
-/* ---------- TWO-COL SECTION ---------- */
-.two-col-section {
+/* ---------- ANIMATIONS + PRÉVISUALISATION ---------- */
+.mid-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 .toggle-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .toggle-btn {
-  padding: 11px 12px;
+  padding: 12px;
   border-radius: 12px;
   background: rgba(245,228,204,0.07);
   border: 1.5px solid rgba(245,228,204,0.12);
   color: rgba(245,228,204,0.6);
   font-family: inherit;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   text-align: left;
@@ -126,46 +126,46 @@ h2 {
   font-weight: 700;
 }
 
-/* ---------- PREVIEW ---------- */
-.preview-section {
+/* ---------- PRÉVISUALISATION ---------- */
+.preview-col {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
 }
 
 .preview-label {
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: .08em;
-  color: rgba(245,228,204,0.35);
-  text-align: center;
+  letter-spacing: .10em;
+  color: rgba(247,184,156,0.5);
+  margin: 0 0 10px 2px;
+  display: block;
 }
 
 .preview-container {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 88px;
+  min-height: 90px;
 }
 
 .preview-circle {
-  width: 58px;
-  height: 58px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(247,184,156,.9), rgba(247,184,156,.3));
   box-shadow: 0 0 28px rgba(247,184,156,0.35);
-  animation: previewPulse 3s ease-in-out infinite;
+  animation: previewPulse 5s ease-in-out infinite;
 }
 
 @keyframes previewPulse {
   0%, 100% { transform: scale(0.72); }
-  50% { transform: scale(1.08); }
+  50% { transform: scale(1.06); }
 }
 
 .preview-oval {
-  width: 34px;
-  height: 74px;
+  width: 42px;
+  height: 100px;
   border-radius: 9999px;
   border: 2px solid rgba(245,228,204,.2);
   background: rgba(245,228,204,.05);
@@ -181,20 +181,31 @@ h2 {
   aspect-ratio: 1;
   border-radius: 50%;
   background: linear-gradient(to top, rgba(247,184,156,.4), rgba(247,184,156,.75));
-  animation: previewFloat 3s ease-in-out infinite;
+  animation: previewFloat 5s ease-in-out infinite;
   position: absolute;
   bottom: 0;
 }
 
 @keyframes previewFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-46px); }
+  50% { transform: translateY(-56px); }
+}
+
+/* ---------- SON ---------- */
+.son-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.son-toggle-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
 /* ---------- DURATION CAROUSEL ---------- */
 .carousel-section {
   width: 100%;
-  flex-shrink: 0;
 }
 
 .carousel-wrapper {
@@ -235,7 +246,7 @@ h2 {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .item.active {
@@ -245,24 +256,38 @@ h2 {
   font-weight: 700;
 }
 
+/* ---------- FOOTER COMMENCER ---------- */
+.start-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--footer-height);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-top: 1px solid rgba(245,228,204,0.07);
+}
+
 /* ---------- START BUTTON ---------- */
-.main > button {
-  padding: 18px;
-  border-radius: 20px;
+.start-btn {
+  padding: 15px;
+  border-radius: 16px;
   border: none;
   background: linear-gradient(135deg, var(--accent) 0%, rgba(247,184,156,0.75) 100%);
   color: var(--dark);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(247,184,156,0.3);
+  box-shadow: 0 4px 16px rgba(247,184,156,0.3);
   transition: all 0.2s;
-  flex-shrink: 0;
   width: 100%;
   letter-spacing: 0.01em;
+  font-family: inherit;
 }
 
-.main > button:active {
+.start-btn:active {
   transform: translateY(2px);
   box-shadow: 0 2px 8px rgba(247,184,156,0.2);
 }
@@ -375,7 +400,10 @@ h2 {
 }
 
 /* ---------- BREATHING SCREEN ---------- */
-#breathing { display: none; }
+#breathing {
+  display: none;
+  height: calc(100vh - var(--header-height));
+}
 
 .container {
   flex: 1;
@@ -479,9 +507,9 @@ h2 {
 
 <div class="main" id="setup">
 
-  <!-- Programme -->
+  <!-- Programmes -->
   <div>
-    <h2>Programme</h2>
+    <h2>Programmes</h2>
     <div class="prog-grid">
       <button class="prog-btn active" id="progCoherence">
         <span>Cohérence<br>cardiaque</span>
@@ -499,29 +527,29 @@ h2 {
     </div>
   </div>
 
-  <!-- Animation + Son -->
-  <div class="two-col-section">
+  <!-- Animations + Prévisualisation côte à côte -->
+  <div class="mid-row">
     <div>
-      <h2>Animation</h2>
+      <h2>Animations</h2>
       <div class="toggle-group">
         <button class="toggle-btn active" id="animCircle">Cercle</button>
         <button class="toggle-btn" id="animOval">Bulle</button>
       </div>
     </div>
-    <div>
-      <h2>Son</h2>
-      <div class="toggle-group">
-        <button class="toggle-btn active" id="btnSoundOn">Avec son</button>
-        <button class="toggle-btn" id="btnSoundOff">Sans son</button>
+    <div class="preview-col">
+      <span class="preview-label">Prévisualisation</span>
+      <div class="preview-container" id="previewContainer">
+        <div class="preview-circle"></div>
       </div>
     </div>
   </div>
 
-  <!-- Preview -->
-  <div class="preview-section">
-    <div class="preview-label">Prévisualisation</div>
-    <div class="preview-container" id="previewContainer">
-      <div class="preview-circle"></div>
+  <!-- Son pleine largeur -->
+  <div class="son-section">
+    <h2>Son</h2>
+    <div class="son-toggle-row">
+      <button class="toggle-btn active" id="btnSoundOn">Avec son</button>
+      <button class="toggle-btn" id="btnSoundOff">Sans son</button>
     </div>
   </div>
 
@@ -536,8 +564,11 @@ h2 {
     </div>
   </div>
 
-  <button onclick="start()">Commencer</button>
 </div>
+
+<footer class="start-footer" id="startFooter">
+  <button class="start-btn" onclick="start()">Commencer</button>
+</footer>
 
 <div class="main" id="breathing">
   <div class="container">
@@ -831,6 +862,7 @@ let remaining, timer, startTime, isPlaying;
 function start() {
   initAudio();
   document.getElementById('setup').style.display = 'none';
+  document.getElementById('startFooter').style.display = 'none';
   document.getElementById('breathing').style.display = 'flex';
   remaining = minutes * 60;
   startTime = Date.now();
@@ -910,6 +942,7 @@ function back() {
   isPlaying = false;
   document.getElementById('breathing').style.display = 'none';
   document.getElementById('setup').style.display = 'flex';
+  document.getElementById('startFooter').style.display = 'flex';
 }
 
 document.getElementById('breathing').addEventListener('click', (e) => {

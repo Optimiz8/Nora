@@ -344,21 +344,25 @@
         /* ---------- TOAST ---------- */
         .toast {
             position: fixed;
-            bottom: 24px;
-            left: 20px;
-            right: 20px;
-            background-color: var(--accent);
-            color: var(--dark);
-            padding: 14px 16px;
-            border-radius: 12px;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 58, 89, 0.95);
+            color: var(--light);
+            padding: 13px 22px;
+            border-radius: 24px;
             text-align: center;
             font-weight: 600;
             font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 200;
-            display: none;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
         }
 
-        .toast.visible { display: block; }
+        .toast.visible { opacity: 1; }
 
         /* ---------- CARD PREVIEW ---------- */
         .card-preview-wrap {
@@ -524,6 +528,7 @@
             const isActive = !showIcons();
             localStorage.setItem('cartesShowIcons', isActive ? 'true' : 'false');
             document.getElementById('iconsToggle').classList.toggle('active', isActive);
+            renderCards();
             showToast(isActive ? 'Icônes affichées sur les cartes' : 'Icônes masquées sur les cartes');
         }
 
@@ -545,9 +550,10 @@
                 return;
             }
 
+            const iconsOn = showIcons();
             list.innerHTML = cards.map((card, index) => `
                 <div class="card-row">
-                    <div class="card-row-emoji">${card.emoji}</div>
+                    ${iconsOn ? `<div class="card-row-emoji">${card.emoji}</div>` : ''}
                     <div class="card-row-texts">
                         <div class="card-row-title">${card.text}</div>
                         ${card.sousTexte ? `<div class="card-row-sub">${card.sousTexte}</div>` : ''}
@@ -690,7 +696,11 @@
             setTimeout(() => toast.classList.remove('visible'), 2500);
         }
 
-        function goBack() { window.location.href = 'parametres.html'; }
+        function goBack() {
+            var tutorielRetour = localStorage.getItem('tutorielRetour');
+            if (tutorielRetour) { localStorage.removeItem('tutorielRetour'); window.location.href = 'tutoriel.html'; }
+            else { window.location.href = 'parametres.html'; }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             initToggle();

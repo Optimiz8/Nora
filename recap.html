@@ -481,6 +481,26 @@
 
         .questionnaire-header {
             margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .questionnaire-header-text {
+            flex: 1;
+        }
+
+        .questionnaire-close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--dark);
+            opacity: 0.5;
+            padding: 0;
+            margin-left: 12px;
+            flex-shrink: 0;
         }
 
         .questionnaire-title {
@@ -522,6 +542,15 @@
             font-family: inherit;
             font-size: 15px;
             color: var(--dark);
+        }
+
+        .duration-picker {
+            display: flex;
+            gap: 8px;
+        }
+
+        .duration-picker .form-select {
+            flex: 1;
         }
 
         .form-textarea {
@@ -933,8 +962,11 @@
     <div class="questionnaire-modal" id="questionnaireModal" onclick="closeQuestionnaireOnOutside(event)" role="dialog" aria-modal="true" aria-label="Questionnaire">
         <div class="questionnaire-content" onclick="event.stopPropagation()">
             <div class="questionnaire-header">
-                <div class="questionnaire-title">Ajouter cette crise au journal</div>
-                <div class="questionnaire-subtitle">Seule la date est obligatoire</div>
+                <div class="questionnaire-header-text">
+                    <div class="questionnaire-title">Ajouter cette crise au journal</div>
+                    <div class="questionnaire-subtitle">Seule la date est obligatoire</div>
+                </div>
+                <button class="questionnaire-close-btn" onclick="closeQuestionnaire()" aria-label="Fermer">×</button>
             </div>
 
             <div class="form-group">
@@ -943,17 +975,28 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Heure (optionnel)</label>
+                <label class="form-label">Heure de début</label>
                 <input type="time" class="form-input" id="crisisTime">
             </div>
 
             <div class="form-group">
-                <label class="form-label">Type de crise</label>
+                <label class="form-label">Origine</label>
                 <select class="form-select" id="crisisType">
                     <option value="">Non précisé</option>
                     <option value="Anticipatoire">Anticipatoire</option>
                     <option value="Réactionnelle">Réactionnelle</option>
                     <option value="Mixte">Mixte</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Type de crise</label>
+                <select class="form-select" id="crisisManifestation">
+                    <option value="">Non précisé</option>
+                    <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
+                    <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
+                    <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
+                    <option value="Inconnu">Je ne sais pas</option>
                 </select>
             </div>
 
@@ -1611,22 +1654,53 @@
             document.body.appendChild(qrModal);
         }
 
+        function formatDuration(h, m) {
+            if (h === 0 && m === 0) return '';
+            if (h === 0) return m + ' min';
+            if (m === 0) return h + 'h';
+            return h + 'h' + String(m).padStart(2, '0');
+        }
+
         function addToJournal() {
-            // Pré-remplir la date avec aujourd'hui
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('crisisDate').value = today;
-            
-            // Réinitialiser les autres champs
-            document.getElementById('crisisTime').value = '';
+            const now = new Date();
+
+            // Pré-remplir la date avec aujourd'hui (en heure locale)
+            const y = now.getFullYear();
+            const mo = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            document.getElementById('crisisDate').value = `${y}-${mo}-${d}`;
+
+            // Pré-remplir l'heure depuis le début de crise ou l'heure actuelle
+            const startTime = localStorage.getItem('crisisStartTime');
+            const startDate = startTime ? new Date(parseInt(startTime)) : now;
+            const hh = String(startDate.getHours()).padStart(2, '0');
+            const mm = String(startDate.getMinutes()).padStart(2, '0');
+            document.getElementById('crisisTime').value = `${hh}:${mm}`;
+
+            // Pré-remplir la durée depuis le timer
+            if (startTime) {
+                const durationMs = now - parseInt(startTime);
+                const totalMinutes = Math.round(durationMs / 60000);
+                let dH = Math.floor(totalMinutes / 60);
+                let dM = Math.round((totalMinutes % 60) / 5) * 5;
+                if (dM >= 60) { dH++; dM = 0; }
+                document.getElementById('crisisDurationH').value = Math.min(dH, 12);
+                document.getElementById('crisisDurationM').value = dM;
+            } else {
+                document.getElementById('crisisDurationH').value = '0';
+                document.getElementById('crisisDurationM').value = '0';
+            }
+
             document.getElementById('crisisType').value = '';
+            document.getElementById('crisisManifestation').value = '';
             document.getElementById('intensitySlider').value = '5';
             updateIntensityDisplay();
-            document.getElementById('crisisDuration').value = '';
             selectedTriggers = [];
             updateTriggersPreview();
             document.getElementById('crisisRemarks').value = '';
-            
-            // Ouvrir le questionnaire
+
+            // Intercepter le bouton retour navigateur pour fermer la modale
+            history.pushState({ questionnaireOpen: true }, '');
             document.getElementById('questionnaireModal').classList.add('open');
         }
 
@@ -1759,8 +1833,12 @@
                     besoins: besoins,
                     etats: etats,
                     typeCrise: document.getElementById('crisisType').value || '',
+                    typeManifestation: document.getElementById('crisisManifestation').value || '',
                     intensite: document.getElementById('intensitySlider').value || '',
-                    duree: document.getElementById('crisisDuration').value || '',
+                    duree: formatDuration(
+                        parseInt(document.getElementById('crisisDurationH').value) || 0,
+                        parseInt(document.getElementById('crisisDurationM').value) || 0
+                    ),
                     declencheurs: [...selectedTriggers],
                     remarques: document.getElementById('crisisRemarks').value || '',
                     energie: document.getElementById('crisisEnergie').value || '',
@@ -1915,8 +1993,7 @@
 
         function recapRegisterNow() {
             document.getElementById('crisisRegisterRecapModal').classList.remove('open');
-            // Ouvrir le questionnaire pour ajouter les détails (déclencheurs, intensité, etc.)
-            document.getElementById('questionnaireModal').classList.add('open');
+            addToJournal();
         }
 
         function recapRegisterSkip() {
@@ -1960,7 +2037,12 @@
         });
 
     </script>
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeQuestionnaire(); document.getElementById('triggersModal').classList.remove('open'); } });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeQuestionnaire(); document.getElementById('triggersModal').classList.remove('open'); } });
+    window.addEventListener('popstate', function() {
+        if (document.getElementById('questionnaireModal').classList.contains('open')) {
+            document.getElementById('questionnaireModal').classList.remove('open');
+        }
+    });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

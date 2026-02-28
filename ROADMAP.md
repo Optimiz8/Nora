@@ -51,9 +51,10 @@ Complice, respectueux de l'autonomie.
 ```
 0. Relecture et harmonisation de tous les textes   [non bloquant, en parallèle]
 1. Cartes de communication ✅                      [livré]
-2. Timer visuel anti-cécité temporelle             ← en cours
-3. Journal — statistiques simples
-4. App Shortcuts V1                                [en dernier, dépend des cartes]
+2. Timer visuel anti-cécité temporelle ✅          [livré, à tester]
+3. Tutoriel (onboarding) ✅                        [livré, à tester]
+4. Journal — statistiques simples ✅               [livré]
+5. App Shortcuts V1 ✅                             [livré, à tester]
 ```
 
 ### Détail des fonctionnalités V2
@@ -91,7 +92,7 @@ V1 : 2 raccourcis — "Démarrer une crise" + "Cartes de communication".
 ```
 1. Service Worker / offline garanti          [prérequis pour Capacitor]
 2. Onboarding / tutoriel premier lancement
-3. Mode sombre
+3. Palettes de couleurs
 4. App Shortcuts V2 (enrichis si besoin)
 5. Capacitor + stores                        [probable, pas acté]
 6. Multi-langue (anglais)                    [en dernier absolu]
@@ -106,14 +107,33 @@ Garantit le fonctionnement sans réseau, même après mise à jour.
 
 En clair : actuellement Nora charge depuis internet à chaque ouverture. Avec un Service Worker, une copie complète de l'app est stockée sur le téléphone — elle fonctionne même hors connexion et les mises à jour se téléchargent silencieusement en arrière-plan.
 
-#### 2. Onboarding / tutoriel premier lancement
-Détection de la première ouverture.
-Quelques écrans d'introduction : qu'est-ce que Nora, comment configurer son profil, comment déclencher une crise.
-Option de passer (skip) à tout moment.
-À faire avant la publication sur les stores.
+#### 2. Onboarding / tutoriel premier lancement ✅ *(livré en V2)*
+Tutoriel en 7 étapes couvrant les deux piliers (aide & communication, apaisement), configuration de la carte d'urgence et des cartes de communication.
+Accessible depuis Paramètres. Détection premier lancement à vérifier.
 
-#### 3. Mode sombre
-À faire après que toutes les pages V2 sont finalisées.
+#### 3. Palettes de couleurs
+Remplace l'idée de "mode sombre" — l'app actuelle est déjà sur un fond sombre, un mode sombre n'aurait pas de sens.
+
+**Principe** : 3 palettes prédéfinies, choisissables dans Paramètres (et présentées dès le tutoriel).
+Chaque palette redéfinit les 4 variables CSS globales : `--bg`, `--dark`, `--light`, `--accent`.
+La classe de thème est appliquée sur `<body>` via le localStorage, au chargement de chaque page.
+
+**Palettes envisagées :**
+- **Standard** (actuelle) : fond bleu-ardoise, crème, pêche — ambiance nocturne
+- **Clair neutre** : fond gris-beige clair, texte anthracite, accent gris-bleu — sobre et lisible
+- **Clair pastel** : fond lavande très clair, texte violet foncé, accent lavande — doux et apaisant
+
+**Périmètre d'application :**
+Toutes les pages sauf les visuels spéciaux du timer (`kawaii` et `espace`) qui ont leur propre univers graphique indépendant et ne doivent pas être affectés.
+
+**Travail requis avant d'implémenter :**
+- Audit de tous les fichiers HTML : repérer les `rgba(46, 58, 89, …)` / `rgba(245, 228, 204, …)` codés en dur dans les `<style>` embarqués
+- Migrer ces valeurs vers des variables CSS RGB channels (`--dark-rgb: 46, 58, 89`) pour permettre l'usage dans `rgba()`
+- Ajouter un script de chargement de thème dans `nora-scroll.js` (ou fichier dédié)
+- Ajouter le sélecteur de palette dans `parametres.html`
+- Intégrer la présentation des palettes dans le tutoriel (step de personnalisation)
+
+**Note** : les couleurs exactes des palettes "Clair neutre" et "Clair pastel" sont à définir quand les hex sont trouvés.
 
 #### 4. App Shortcuts V2
 Enrichissement si de nouvelles fonctionnalités le justifient.
