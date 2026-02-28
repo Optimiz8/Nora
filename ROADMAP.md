@@ -51,9 +51,10 @@ Complice, respectueux de l'autonomie.
 ```
 0. Relecture et harmonisation de tous les textes   [non bloquant, en parallèle]
 1. Cartes de communication ✅                      [livré]
-2. Timer visuel anti-cécité temporelle             ← en cours
-3. Journal — statistiques simples
-4. App Shortcuts V1                                [en dernier, dépend des cartes]
+2. Timer visuel anti-cécité temporelle ✅          [livré, à tester]
+3. Tutoriel (onboarding) ✅                        [livré, à tester]
+4. Journal — statistiques simples ✅               [livré]
+5. App Shortcuts V1 ✅                             [livré, à tester]
 ```
 
 ### Détail des fonctionnalités V2
@@ -106,11 +107,9 @@ Garantit le fonctionnement sans réseau, même après mise à jour.
 
 En clair : actuellement Nora charge depuis internet à chaque ouverture. Avec un Service Worker, une copie complète de l'app est stockée sur le téléphone — elle fonctionne même hors connexion et les mises à jour se téléchargent silencieusement en arrière-plan.
 
-#### 2. Onboarding / tutoriel premier lancement
-Détection de la première ouverture.
-Quelques écrans d'introduction : qu'est-ce que Nora, comment configurer son profil, comment déclencher une crise.
-Option de passer (skip) à tout moment.
-À faire avant la publication sur les stores.
+#### 2. Onboarding / tutoriel premier lancement ✅ *(livré en V2)*
+Tutoriel en 7 étapes couvrant les deux piliers (aide & communication, apaisement), configuration de la carte d'urgence et des cartes de communication.
+Accessible depuis Paramètres. Détection premier lancement à vérifier.
 
 #### 3. Palettes de couleurs
 Remplace l'idée de "mode sombre" — l'app actuelle est déjà sur un fond sombre, un mode sombre n'aurait pas de sens.
