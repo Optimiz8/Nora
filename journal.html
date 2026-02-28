@@ -151,58 +151,32 @@
             border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
-            cursor: help;
-            position: relative;
-            display: inline-block;
+            cursor: pointer;
         }
 
-        .count-badge:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .tooltip {
-            visibility: hidden;
-            opacity: 0;
-            position: absolute;
-            top: 135%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #2E3A59;
-            color: var(--light);
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 16px;
-            z-index: 1000;
-            transition: opacity 0.2s;
-            min-width: 250px;
-            max-width: 95vw;
-            white-space: normal;
-        }
-
-        .tooltip::after {
-            content: "";
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 6px solid transparent;
-            border-bottom-color: #2E3A59;
-        }
-
-        .tooltip ul {
+        /* ---------- BADGE MODAL ---------- */
+        .badge-modal-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .tooltip li {
-            padding: 2px 0;
+        .badge-modal-list li {
+            padding: 8px 0;
+            color: var(--dark);
+            border-bottom: 1px solid rgba(46, 58, 89, 0.1);
+            font-size: 16px;
         }
 
-        .tooltip li:before {
-            content: "• ";
-            margin-right: 4px;
+        .badge-modal-list li:last-child {
+            border-bottom: none;
+        }
+
+        .badge-modal-empty {
+            color: var(--dark);
+            opacity: 0.5;
+            font-style: italic;
+            margin: 0;
         }
 
         .actions-cell {
@@ -814,6 +788,16 @@
         </div>
     </div>
 
+    <div class="modal" id="badgeModal" onclick="closeModal(event, 'badgeModal')" role="dialog" aria-modal="true" aria-label="Détail">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 360px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="badgeModalTitle"></h2>
+                <button class="close-button" onclick="closeModal(null, 'badgeModal')" aria-label="Fermer">×</button>
+            </div>
+            <div id="badgeModalList"></div>
+        </div>
+    </div>
+
     <script>
         // Profils statiques par défaut + dynamiques depuis localStorage
         function getProfiles() {
@@ -933,27 +917,6 @@
             const needsCount = entry.besoins?.length || 0;
             const statesCount = entry.etats?.length || 0;
 
-            let capsTooltip = '';
-            if (capsCount > 0) {
-                const allCaps = [
-                    ...(entry.capacites?.impossible || []),
-                    ...(entry.capacites?.difficile || []),
-                    ...(entry.capacites?.possible || []),
-                    ...(entry.capacites?.incertain || [])
-                ];
-                capsTooltip = '<div class="tooltip"><ul>' + allCaps.map(c => `<li>${c}</li>`).join('') + '</ul></div>';
-            }
-
-            let needsTooltip = '';
-            if (needsCount > 0) {
-                needsTooltip = '<div class="tooltip"><ul>' + entry.besoins.map(b => `<li>${b.label || b}</li>`).join('') + '</ul></div>';
-            }
-
-            let statesTooltip = '';
-            if (statesCount > 0) {
-                statesTooltip = '<div class="tooltip"><ul>' + entry.etats.map(e => `<li>${e.label || e}</li>`).join('') + '</ul></div>';
-            }
-
             const row = document.createElement('tr');
             row.onclick = () => showDetail(index);
             
@@ -973,9 +936,9 @@
                 <td>${intensityDisplay}</td>
                 <td>${entry.duree || '-'}</td>
                 <td style="max-width: 150px;">${triggersDisplay}</td>
-                <td><span class="count-badge">${capsCount}${capsTooltip}</span></td>
-                <td><span class="count-badge">${needsCount}${needsTooltip}</span></td>
-                <td><span class="count-badge">${statesCount}${statesTooltip}</span></td>
+                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(${index}, 'caps')">${capsCount}</span></td>
+                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(${index}, 'besoins')">${needsCount}</span></td>
+                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(${index}, 'etats')">${statesCount}</span></td>
                 <td style="max-width: 200px;">${entry.remarques || '-'}</td>
                 <td class="actions-cell" style="white-space: nowrap;">
                     <button class="action-btn" onclick="event.stopPropagation(); openFormModal('edit', ${index})" title="Modifier">✏️</button>
@@ -1447,13 +1410,50 @@ ${entriesHtml}
             closeModal(null, 'exportModal');
         }
 
+        function openBadgeModal(index, type) {
+            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+            const entry = journal[index];
+            let title = '';
+            let items = [];
+            if (type === 'caps') {
+                title = 'Capacités';
+                items = [
+                    ...(entry.capacites?.impossible || []),
+                    ...(entry.capacites?.difficile || []),
+                    ...(entry.capacites?.possible || []),
+                    ...(entry.capacites?.incertain || [])
+                ];
+            } else if (type === 'besoins') {
+                title = 'Besoins';
+                items = (entry.besoins || []).map(b => b.label || b);
+            } else if (type === 'etats') {
+                title = 'États';
+                items = (entry.etats || []).map(e => e.label || e);
+            }
+            document.getElementById('badgeModalTitle').textContent = title;
+            const list = document.getElementById('badgeModalList');
+            if (items.length === 0) {
+                list.innerHTML = '<p class="badge-modal-empty">Aucun élément</p>';
+            } else {
+                list.innerHTML = '<ul class="badge-modal-list">' +
+                    items.map(item => `<li>• ${item}</li>`).join('') +
+                    '</ul>';
+            }
+            document.getElementById('badgeModal').classList.add('visible');
+        }
+
         function closeModal(event, modalId) {
             if (event && event.target !== event.currentTarget) return;
             document.getElementById(modalId).classList.remove('visible');
         }
 
         function goHome() {
-            window.location.href = 'index.html';
+            if (history.length > 1) {
+                history.back();
+            } else {
+                location.href = 'index.html';
+            }
         }
 
         loadJournal();
@@ -1463,7 +1463,7 @@ ${entriesHtml}
         <button class="footer-action" onclick="showExportOptions()">📤 Exporter</button>
     </footer>
 
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); } });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); closeModal(null, "badgeModal"); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>
