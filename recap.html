@@ -980,12 +980,23 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label">Type de crise</label>
+                <label class="form-label">Origine</label>
                 <select class="form-select" id="crisisType">
                     <option value="">Non précisé</option>
                     <option value="Anticipatoire">Anticipatoire</option>
                     <option value="Réactionnelle">Réactionnelle</option>
                     <option value="Mixte">Mixte</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Type de crise</label>
+                <select class="form-select" id="crisisManifestation">
+                    <option value="">Non précisé</option>
+                    <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
+                    <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
+                    <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
+                    <option value="Inconnu">Je ne sais pas</option>
                 </select>
             </div>
 
@@ -1693,6 +1704,7 @@
             }
 
             document.getElementById('crisisType').value = '';
+            document.getElementById('crisisManifestation').value = '';
             document.getElementById('intensitySlider').value = '5';
             updateIntensityDisplay();
             selectedTriggers = [];
@@ -1833,6 +1845,7 @@
                     besoins: besoins,
                     etats: etats,
                     typeCrise: document.getElementById('crisisType').value || '',
+                    typeManifestation: document.getElementById('crisisManifestation').value || '',
                     intensite: document.getElementById('intensitySlider').value || '',
                     duree: formatDuration(
                         parseInt(document.getElementById('crisisDurationH').value) || 0,
@@ -1966,7 +1979,7 @@
             var entry = {
                 horodatage: horodatage, profil: profil, profilNom: profilInfo.nom, profilEmoji: profilInfo.emoji,
                 capacites: capacites, besoins: besoins, etats: etats,
-                typeCrise: '', intensite: '', duree: duree, declencheurs: [], remarques: '', manual: false
+                typeCrise: '', typeManifestation: '', intensite: '', duree: duree, declencheurs: [], remarques: '', manual: false
             };
             var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
             journal.push(entry);

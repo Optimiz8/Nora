@@ -462,6 +462,138 @@
             padding: 0 0 12px;
         }
 
+        /* ---------- FILTRES AVANCÉS ---------- */
+
+        .filter-bar { padding: 0 16px 10px; }
+
+        .filter-btn {
+            background: rgba(245, 228, 204, 0.1);
+            border: 2px solid rgba(245, 228, 204, 0.15);
+            color: var(--light);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-btn.has-filters { border-color: var(--accent); color: var(--accent); }
+
+        .filter-badge {
+            background: var(--accent);
+            color: var(--dark);
+            font-size: 11px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 6px;
+        }
+
+        .filter-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+
+        .filter-overlay.visible { opacity: 1; pointer-events: all; }
+
+        .filter-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            border-radius: 20px 20px 0 0;
+            border-top: 2px solid rgba(245, 228, 204, 0.15);
+            z-index: 201;
+            padding: 12px 16px 40px;
+            max-height: 80vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        .filter-sheet.visible { transform: translateY(0); }
+
+        .filter-handle {
+            width: 36px;
+            height: 4px;
+            background: rgba(245, 228, 204, 0.2);
+            border-radius: 2px;
+            margin: 0 auto 14px;
+        }
+
+        .filter-sheet-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--light);
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .filter-section {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+            padding: 16px 0 8px;
+        }
+
+        .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .filter-chip {
+            background: rgba(245, 228, 204, 0.1);
+            border: 2px solid rgba(245, 228, 204, 0.2);
+            color: var(--light);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .filter-chip.active {
+            background: var(--light);
+            border-color: var(--light);
+            color: var(--dark);
+        }
+
+        .filter-empty { font-size: 13px; color: var(--light); opacity: 0.45; font-style: italic; }
+
+        .filter-sheet-footer { display: flex; gap: 10px; margin-top: 22px; }
+
+        .filter-reset {
+            flex: 1;
+            background: rgba(245, 228, 204, 0.1);
+            border: 2px solid rgba(245, 228, 204, 0.2);
+            color: var(--light);
+            font-size: 15px;
+            font-weight: 600;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .filter-apply {
+            flex: 2;
+            background: var(--accent);
+            border: none;
+            color: var(--dark);
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
         @media print {
             body { background: white !important; color: #111 !important; padding: 0 !important; }
             .header, .period-header, .period-bar, .date-range-panel, .export-actions { display: none !important; }
@@ -517,6 +649,35 @@
         <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
     </div>
 
+    <div class="filter-bar">
+        <button class="filter-btn" id="filterBtn" onclick="openFilterSheet()">⚙️ Filtres</button>
+    </div>
+
+    <div class="filter-overlay" id="filterOverlay" onclick="closeFilterSheet()"></div>
+    <div class="filter-sheet" id="filterSheet">
+        <div class="filter-handle"></div>
+        <div class="filter-sheet-title">Filtres avancés</div>
+        <div class="filter-section">Contexte</div>
+        <div class="filter-chips" id="filterContexteChips"></div>
+        <div class="filter-section">Origine</div>
+        <div class="filter-chips" id="filterOrigineChips">
+            <button class="filter-chip" data-group="origine" data-value="Anticipatoire" onclick="toggleChip(this)">Anticipatoire</button>
+            <button class="filter-chip" data-group="origine" data-value="Réactionnelle" onclick="toggleChip(this)">Réactionnelle</button>
+            <button class="filter-chip" data-group="origine" data-value="Mixte" onclick="toggleChip(this)">Mixte</button>
+        </div>
+        <div class="filter-section">Type de crise</div>
+        <div class="filter-chips" id="filterTypeChips">
+            <button class="filter-chip" data-group="type" data-value="Meltdown" onclick="toggleChip(this)">Meltdown</button>
+            <button class="filter-chip" data-group="type" data-value="Shutdown" onclick="toggleChip(this)">Shutdown</button>
+            <button class="filter-chip" data-group="type" data-value="Mixte" onclick="toggleChip(this)">Mixte</button>
+            <button class="filter-chip" data-group="type" data-value="Inconnu" onclick="toggleChip(this)">Je ne sais pas</button>
+        </div>
+        <div class="filter-sheet-footer">
+            <button class="filter-reset" onclick="resetFilters()">Réinitialiser</button>
+            <button class="filter-apply" onclick="applyFilters()">Appliquer</button>
+        </div>
+    </div>
+
     <div id="defTooltip"></div>
     <div id="printHeader" class="print-header"></div>
     <main class="main-content" id="mainContent"></main>
@@ -525,6 +686,8 @@
         var currentDays = 7;
         var customFrom = null;
         var customTo = null;
+        var activeFilters = { contexte: [], origine: [], type: [] };
+        var pendingFilters = { contexte: [], origine: [], type: [] };
 
         /* ---------- DONNÉES ---------- */
 
@@ -602,9 +765,12 @@
                 }
             }
 
+            entries = filterEntries(entries);
+            prevEntries = filterEntries(prevEntries);
+
             if (!entries.length) return null;
 
-            var intensities = [], durations = [], profileArr = [], typeArr = [], triggerArr = [], besoinArr = [], capImpossArr = [], capDiffArr = [], etatsArr = [];
+            var intensities = [], durations = [], profileArr = [], typeArr = [], typeManifArr = [], triggerArr = [], besoinArr = [], capImpossArr = [], capDiffArr = [], etatsArr = [];
 
             for (var k = 0; k < entries.length; k++) {
                 var e = entries[k];
@@ -612,6 +778,7 @@
                 var dv = parseDuration(e.duree); if (dv !== null) durations.push(dv);
                 profileArr.push(e.profil || 'commun');
                 if (e.typeCrise) typeArr.push(e.typeCrise);
+                if (e.typeManifestation) typeManifArr.push(e.typeManifestation);
                 var decl = e.declencheurs || [];
                 for (var d2 = 0; d2 < decl.length; d2++) { if (decl[d2]) triggerArr.push(decl[d2]); }
                 var bess = e.besoins || [];
@@ -653,6 +820,7 @@
                 profiles.push({ name: getProfileName(profileCounts[pi].name), count: profileCounts[pi].count });
             }
             var typeCounts = countFreq(typeArr);
+            var typeManifCounts = countFreq(typeManifArr);
             var triggers = countFreq(triggerArr);
             var besoins = countFreq(besoinArr);
             var capacitesImposs = countFreq(capImpossArr);
@@ -702,6 +870,7 @@
                 maxDuration: maxDuration,
                 profiles: profiles,
                 types: typeCounts,
+                typesManifestation: typeManifCounts,
                 triggers: triggers,
                 besoins: besoins,
                 capacitesImposs: capacitesImposs,
@@ -884,11 +1053,18 @@
                 ? rankItems(topContextes, maxP)
                 : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun contexte enregistré</div>';
 
-            /* Types de crise */
+            /* Origines */
             var topTypes = stats.types.slice(0, 5);
             var maxTy = topTypes.length ? topTypes[0].count : 1;
             var typesHtml = topTypes.length
                 ? rankItems(topTypes, maxTy, TYPE_DEFS)
+                : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucune origine enregistrée</div>';
+
+            /* Types de crise (Meltdown/Shutdown) */
+            var topTypesManifestation = stats.typesManifestation.slice(0, 4);
+            var maxTyM = topTypesManifestation.length ? topTypesManifestation[0].count : 1;
+            var typeManifHtml = topTypesManifestation.length
+                ? rankItems(topTypesManifestation, maxTyM)
                 : '<div style="padding:14px 16px;font-size:14px;color:var(--dark);opacity:0.45;font-style:italic">Aucun type enregistré</div>';
 
             /* Déclencheurs */
@@ -935,8 +1111,10 @@
                 '<div class="moment-grid">' + momentHtml + '</div>' +
                 '<div class="section-tag">Contextes</div>' +
                 '<div class="stat-card">' + contextesHtml + '</div>' +
-                '<div class="section-tag">Types de crise</div>' +
+                '<div class="section-tag">Origine</div>' +
                 '<div class="stat-card">' + typesHtml + '</div>' +
+                '<div class="section-tag">Type de crise</div>' +
+                '<div class="stat-card">' + typeManifHtml + '</div>' +
                 '<div class="section-tag">Déclencheurs</div>' +
                 '<div class="stat-card">' + triggersHtml + '</div>' +
                 '<div class="section-tag">Besoins</div>' +
@@ -1104,6 +1282,101 @@
                 document.getElementById('defTooltip').style.display = 'none';
             }
         });
+
+        /* ---------- FILTRES AVANCÉS ---------- */
+
+        function getContextesFromJournal() {
+            var journal = getJournal();
+            var seen = {}, result = [];
+            for (var i = 0; i < journal.length; i++) {
+                var p = journal[i].profil || 'commun';
+                if (!seen[p]) { seen[p] = true; result.push(p); }
+            }
+            return result;
+        }
+
+        function filterEntries(entries) {
+            if (!activeFilters.contexte.length && !activeFilters.origine.length && !activeFilters.type.length) return entries;
+            var result = [];
+            for (var i = 0; i < entries.length; i++) {
+                var e = entries[i];
+                var pass = true;
+                if (activeFilters.contexte.length && activeFilters.contexte.indexOf(e.profil || 'commun') === -1) pass = false;
+                if (pass && activeFilters.origine.length && activeFilters.origine.indexOf(e.typeCrise || '') === -1) pass = false;
+                if (pass && activeFilters.type.length && activeFilters.type.indexOf(e.typeManifestation || '') === -1) pass = false;
+                if (pass) result.push(e);
+            }
+            return result;
+        }
+
+        function openFilterSheet() {
+            pendingFilters = { contexte: activeFilters.contexte.slice(), origine: activeFilters.origine.slice(), type: activeFilters.type.slice() };
+            var ctxDiv = document.getElementById('filterContexteChips');
+            var contextes = getContextesFromJournal();
+            ctxDiv.innerHTML = '';
+            if (contextes.length) {
+                for (var i = 0; i < contextes.length; i++) {
+                    var id = contextes[i];
+                    var btn = document.createElement('button');
+                    btn.className = 'filter-chip' + (pendingFilters.contexte.indexOf(id) !== -1 ? ' active' : '');
+                    btn.setAttribute('data-group', 'contexte');
+                    btn.setAttribute('data-value', id);
+                    btn.textContent = getProfileName(id);
+                    btn.onclick = function() { toggleChip(this); };
+                    ctxDiv.appendChild(btn);
+                }
+            } else {
+                ctxDiv.innerHTML = '<span class="filter-empty">Aucun contexte enregistré</span>';
+            }
+            var fixed = document.querySelectorAll('#filterOrigineChips .filter-chip, #filterTypeChips .filter-chip');
+            for (var j = 0; j < fixed.length; j++) {
+                var grp = fixed[j].getAttribute('data-group');
+                var val = fixed[j].getAttribute('data-value');
+                fixed[j].classList.toggle('active', pendingFilters[grp].indexOf(val) !== -1);
+            }
+            document.getElementById('filterOverlay').classList.add('visible');
+            document.getElementById('filterSheet').classList.add('visible');
+        }
+
+        function closeFilterSheet() {
+            document.getElementById('filterOverlay').classList.remove('visible');
+            document.getElementById('filterSheet').classList.remove('visible');
+        }
+
+        function toggleChip(btn) {
+            var grp = btn.getAttribute('data-group');
+            var val = btn.getAttribute('data-value');
+            var idx = pendingFilters[grp].indexOf(val);
+            if (idx === -1) { pendingFilters[grp].push(val); btn.classList.add('active'); }
+            else { pendingFilters[grp].splice(idx, 1); btn.classList.remove('active'); }
+        }
+
+        function resetFilters() {
+            pendingFilters = { contexte: [], origine: [], type: [] };
+            activeFilters = { contexte: [], origine: [], type: [] };
+            closeFilterSheet();
+            updateFilterBtn();
+            renderCurrent();
+        }
+
+        function applyFilters() {
+            activeFilters = { contexte: pendingFilters.contexte.slice(), origine: pendingFilters.origine.slice(), type: pendingFilters.type.slice() };
+            closeFilterSheet();
+            updateFilterBtn();
+            renderCurrent();
+        }
+
+        function updateFilterBtn() {
+            var total = activeFilters.contexte.length + activeFilters.origine.length + activeFilters.type.length;
+            var btn = document.getElementById('filterBtn');
+            if (total > 0) {
+                btn.classList.add('has-filters');
+                btn.innerHTML = '⚙️ Filtres <span class="filter-badge">' + total + '</span>';
+            } else {
+                btn.classList.remove('has-filters');
+                btn.textContent = '⚙️ Filtres';
+            }
+        }
 
         function renderCurrent() {
             try { render(currentDays, customFrom, customTo); }
