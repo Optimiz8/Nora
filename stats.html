@@ -463,6 +463,69 @@
             color: var(--dark);
         }
 
+        /* ---------- BILAN ENRICHI ---------- */
+
+        .bilan-unit {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.55;
+        }
+
+        .bilan-prev-val {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.55;
+        }
+
+        .bilan-minmax {
+            padding: 4px 16px 10px;
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.55;
+        }
+
+        .bilan-minmax strong { font-weight: 700; }
+
+        /* ---------- GRILLE JOURS ---------- */
+
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: rgba(46, 58, 89, 0.08);
+            overflow: hidden;
+        }
+
+        .day-cell {
+            background: var(--light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 10px 2px;
+        }
+
+        .day-cell.top-day { background: var(--dark); }
+
+        .day-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .day-count {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .day-cell.top-day .day-name,
+        .day-cell.top-day .day-count {
+            color: var(--light);
+            opacity: 1;
+        }
+
         /* ---------- EXPORT ---------- */
 
         .export-stats-btn {
@@ -518,6 +581,254 @@
         }
 
         .last-crisis-value { font-weight: 700; }
+
+        /* ---------- FILTRES AVANCÉS ---------- */
+
+        .filter-bar { padding: 6px 16px 10px; }
+
+        .filter-btn {
+            background: rgba(245, 228, 204, 0.1);
+            border: 2px solid rgba(245, 228, 204, 0.15);
+            color: var(--light);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-btn.has-filters { border-color: var(--accent); color: var(--accent); }
+
+        .filter-badge {
+            background: var(--accent);
+            color: var(--dark);
+            font-size: 11px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 6px;
+        }
+
+        .filter-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            display: none;
+        }
+
+        .filter-overlay.visible { display: block; }
+
+        .filter-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--light);
+            border-radius: 18px 18px 0 0;
+            padding: 20px 16px 30px;
+            z-index: 201;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .filter-panel.visible { transform: translateY(0); }
+
+        .filter-panel-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 16px;
+        }
+
+        .filter-group {
+            margin-bottom: 16px;
+        }
+
+        .filter-group-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-chip {
+            background: rgba(46, 58, 89, 0.08);
+            border: 2px solid transparent;
+            color: var(--dark);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .filter-chip.selected {
+            background: var(--dark);
+            color: var(--light);
+        }
+
+        .filter-range-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-range-label {
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .filter-range-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(46, 58, 89, 0.15);
+            outline: none;
+        }
+
+        .filter-range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: var(--dark);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .filter-actions button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+        }
+
+        .filter-reset-btn {
+            background: rgba(46, 58, 89, 0.08);
+            color: var(--dark);
+        }
+
+        .filter-apply-btn {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        /* ---------- GRAPHIQUES SVG ---------- */
+
+        .chart-container {
+            background: var(--light);
+            border-radius: 14px;
+            padding: 14px;
+            overflow: hidden;
+        }
+
+        .chart-container svg {
+            width: 100%;
+            display: block;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 14px;
+            padding: 8px 0 0;
+            flex-wrap: wrap;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .chart-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .chart-bar-label {
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.6;
+            text-align: center;
+        }
+
+        /* ---------- ANALYSE APPROFONDIE ---------- */
+
+        .analysis-gate {
+            text-align: center;
+            padding: 24px 16px;
+            color: var(--light);
+            opacity: 0.5;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .cross-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        .cross-table th {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0.5;
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 2px solid rgba(46, 58, 89, 0.12);
+        }
+
+        .cross-table th:first-child { text-align: left; }
+
+        .cross-table td {
+            padding: 8px 6px;
+            text-align: center;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.06);
+        }
+
+        .cross-table td:first-child {
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .cross-table .cell-highlight {
+            font-weight: 700;
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
@@ -545,6 +856,66 @@
         <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
     </div>
 
+    <div class="filter-bar">
+        <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel()">
+            ⚙️ Filtres <span class="filter-badge" id="filterBadge" style="display:none">0</span>
+        </button>
+    </div>
+
+    <div class="filter-overlay" id="filterOverlay" onclick="closeFilterPanel()"></div>
+    <div class="filter-panel" id="filterPanel">
+        <div class="filter-panel-title">Filtres avancés</div>
+
+        <div class="filter-group">
+            <div class="filter-group-label">Contexte</div>
+            <div class="filter-chips" id="filterContexte"></div>
+        </div>
+
+        <div class="filter-group">
+            <div class="filter-group-label">Origine</div>
+            <div class="filter-chips" id="filterOrigine">
+                <button class="filter-chip" data-val="Anticipatoire" onclick="toggleFilterChip(this)">Anticipatoire</button>
+                <button class="filter-chip" data-val="Réactionnelle" onclick="toggleFilterChip(this)">Réactionnelle</button>
+                <button class="filter-chip" data-val="Mixte" onclick="toggleFilterChip(this)">Mixte</button>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <div class="filter-group-label">Type de crise</div>
+            <div class="filter-chips" id="filterType">
+                <button class="filter-chip" data-val="Meltdown" onclick="toggleFilterChip(this)">Meltdown</button>
+                <button class="filter-chip" data-val="Shutdown" onclick="toggleFilterChip(this)">Shutdown</button>
+                <button class="filter-chip" data-val="Mixte" onclick="toggleFilterChip(this)">Mixte</button>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <div class="filter-group-label">Intensité</div>
+            <div class="filter-range-row">
+                <span class="filter-range-label" id="filterIntMinLabel">1</span>
+                <input type="range" class="filter-range-slider" id="filterIntMin" min="1" max="10" value="1" oninput="document.getElementById('filterIntMinLabel').textContent=this.value">
+                <span style="color:var(--dark);opacity:0.4">à</span>
+                <input type="range" class="filter-range-slider" id="filterIntMax" min="1" max="10" value="10" oninput="document.getElementById('filterIntMaxLabel').textContent=this.value">
+                <span class="filter-range-label" id="filterIntMaxLabel">10</span>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <div class="filter-group-label">Moment de la journée</div>
+            <div class="filter-chips" id="filterMoment">
+                <button class="filter-chip" data-val="nuit" onclick="toggleFilterChip(this)">Nuit</button>
+                <button class="filter-chip" data-val="matin" onclick="toggleFilterChip(this)">Matin</button>
+                <button class="filter-chip" data-val="aprem" onclick="toggleFilterChip(this)">Après-midi</button>
+                <button class="filter-chip" data-val="soir" onclick="toggleFilterChip(this)">Soir</button>
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="filter-reset-btn" onclick="resetFilters()">Réinitialiser</button>
+            <button class="filter-apply-btn" onclick="applyFilters()">Appliquer</button>
+        </div>
+    </div>
+
     <main class="main-content" id="mainContent"></main>
 
     <script>
@@ -552,6 +923,7 @@
         var customFrom = null;
         var customTo = null;
         var viewModes = { triggers: 'detail', besoins: 'detail' };
+        var activeFilters = { contexte: [], origine: [], type: [], moment: [], intMin: 1, intMax: 10 };
 
         /* ---------- DONNÉES ---------- */
 
@@ -628,6 +1000,60 @@
 
         /* ---------- CALCUL STATS ---------- */
 
+        /* ---------- HELPERS STATS ---------- */
+
+        function avgArr(arr) {
+            if (!arr.length) return null;
+            var s = 0; for (var i = 0; i < arr.length; i++) s += arr[i];
+            return parseFloat((s / arr.length).toFixed(1));
+        }
+
+        function pct(part, total) {
+            return total > 0 ? Math.round((part / total) * 100) : 0;
+        }
+
+        function getHourSlotIndex(h) {
+            return h < 6 ? 0 : h < 12 ? 1 : h < 18 ? 2 : 3;
+        }
+
+        function extractLabel(item) {
+            return item && item.label ? item.label : item;
+        }
+
+        function hasTrigger(entry, name) {
+            var d = entry.declencheurs || [];
+            for (var i = 0; i < d.length; i++) { if (d[i] === name) return true; }
+            return false;
+        }
+
+        function computePrevStats(prevEntries) {
+            if (!prevEntries.length) return null;
+            var ints = [], durs = [];
+            for (var i = 0; i < prevEntries.length; i++) {
+                var v = parseFloat(prevEntries[i].intensite);
+                if (!isNaN(v)) ints.push(v);
+                var d = parseDuration(prevEntries[i].duree);
+                if (d !== null) durs.push(d);
+            }
+            var profileArr = [];
+            for (var j = 0; j < prevEntries.length; j++) profileArr.push(prevEntries[j].profil || 'commun');
+            var profileCounts = countFreq(profileArr);
+            var topP = profileCounts.length ? profileCounts[0] : null;
+            var topProfile = null;
+            if (topP) {
+                var pi = getProfileName(topP.name);
+                topProfile = { name: pi.name, icon: pi.icon, count: topP.count };
+            }
+            return {
+                count: prevEntries.length,
+                avgIntensity: avgArr(ints),
+                avgDuration: avgArr(durs),
+                topProfile: topProfile
+            };
+        }
+
+        /* ---------- CALCUL STATS ---------- */
+
         function computeStats(days, from, to) {
             var journal = getJournal();
             var entries = [];
@@ -653,14 +1079,24 @@
                 }
             }
 
+            var hasActiveFilters = activeFilters.contexte.length || activeFilters.origine.length ||
+                activeFilters.type.length || activeFilters.moment.length ||
+                activeFilters.intMin > 1 || activeFilters.intMax < 10;
+            if (hasActiveFilters) {
+                var filtered = [];
+                for (var fi = 0; fi < entries.length; fi++) {
+                    if (matchesFilters(entries[fi])) filtered.push(entries[fi]);
+                }
+                entries = filtered;
+            }
+
             if (!entries.length) return null;
 
-            var intensities = [];
-            var durations = [];
-            var profileArr = [];
-            var typeArr = [];
-            var triggerFreq = {};
-            var besoinArr = [];
+            var intensities = [], durations = [], energies = [], chargesMentales = [], chargesSociales = [];
+            var profileArr = [], typeArr = [], origineArr = [];
+            var triggerFreq = {}, besoinArr = [], etatArr = [];
+            var capImpossible = [], capDifficile = [];
+            var meltdownCount = 0, shutdownCount = 0, mixteTypeCount = 0;
 
             for (var k = 0; k < entries.length; k++) {
                 var e = entries[k];
@@ -668,104 +1104,286 @@
                 if (!isNaN(ints)) intensities.push(ints);
                 var dur = parseDuration(e.duree);
                 if (dur !== null) durations.push(dur);
+                var en = parseFloat(e.energie);
+                if (!isNaN(en)) energies.push(en);
+                var cm = parseFloat(e.chargeMentale);
+                if (!isNaN(cm)) chargesMentales.push(cm);
+                var cs = parseFloat(e.chargeSociale);
+                if (!isNaN(cs)) chargesSociales.push(cs);
+
                 profileArr.push(e.profil || 'commun');
-                if (e.typeCrise) typeArr.push(e.typeCrise);
+                if (e.typeCrise) {
+                    origineArr.push(e.typeCrise);
+                    if (e.typeCrise === 'Meltdown') meltdownCount++;
+                    else if (e.typeCrise === 'Shutdown') shutdownCount++;
+                    else if (e.typeCrise === 'Mixte') mixteTypeCount++;
+                }
                 var decl = e.declencheurs || [];
                 for (var d2 = 0; d2 < decl.length; d2++) {
                     if (decl[d2]) triggerFreq[decl[d2]] = (triggerFreq[decl[d2]] || 0) + 1;
                 }
                 var bess = e.besoins || [];
                 for (var b = 0; b < bess.length; b++) {
-                    var bl = bess[b] && bess[b].label ? bess[b].label : bess[b];
+                    var bl = extractLabel(bess[b]);
                     if (bl) besoinArr.push(bl);
                 }
+                var etats = e.etats || [];
+                for (var et = 0; et < etats.length; et++) {
+                    var el = extractLabel(etats[et]);
+                    if (el) etatArr.push(el);
+                }
+                var caps = e.capacites || {};
+                if (caps.impossible) for (var ci = 0; ci < caps.impossible.length; ci++) capImpossible.push(caps.impossible[ci]);
+                if (caps.difficile) for (var cd = 0; cd < caps.difficile.length; cd++) capDifficile.push(caps.difficile[cd]);
             }
 
-            var avgIntensity = null;
-            if (intensities.length) {
-                var sum = 0; for (var s = 0; s < intensities.length; s++) sum += intensities[s];
-                avgIntensity = parseFloat((sum / intensities.length).toFixed(1));
-            }
+            var avgIntensity = avgArr(intensities);
+            var minIntensity = intensities.length ? parseFloat(Math.min.apply(null, intensities).toFixed(1)) : null;
+            var maxIntensity = intensities.length ? parseFloat(Math.max.apply(null, intensities).toFixed(1)) : null;
+            var avgDuration = avgArr(durations);
+            var minDuration = durations.length ? Math.min.apply(null, durations) : null;
+            var maxDuration = durations.length ? Math.max.apply(null, durations) : null;
+            var avgEnergie = avgArr(energies);
+            var avgChargeMentale = avgArr(chargesMentales);
+            var avgChargeSociale = avgArr(chargesSociales);
 
-            var avgDuration = null, minDuration = null, maxDuration = null;
-            if (durations.length) {
-                var dsum = 0; for (var ds = 0; ds < durations.length; ds++) dsum += durations[ds];
-                avgDuration = dsum / durations.length;
-                minDuration = Math.min.apply(null, durations);
-                maxDuration = Math.max.apply(null, durations);
-            }
+            var prev = computePrevStats(prevEntries);
 
+            /* Profils / contextes */
             var profileCounts = countFreq(profileArr);
             var topProfileData = profileCounts.length ? profileCounts[0] : null;
             var topProfile = null;
             if (topProfileData) {
                 var pInfo = getProfileName(topProfileData.name);
-                topProfile = { name: pInfo.name, icon: pInfo.icon, count: topProfileData.count };
+                topProfile = { name: pInfo.name, icon: pInfo.icon, count: topProfileData.count, id: topProfileData.name };
             }
 
-            var typeCounts = countFreq(typeArr);
-            var topType = typeCounts.length ? typeCounts[0] : null;
+            /* Origines */
+            var origineCounts = countFreq(origineArr);
 
+            /* Types meltdown/shutdown */
+            var totalTyped = meltdownCount + shutdownCount + mixteTypeCount;
+            var meltdownPct = pct(meltdownCount, totalTyped);
+            var shutdownPct = pct(shutdownCount, totalTyped);
+
+            /* Intensité/durée par type */
+            var avgIntensityByType = {};
+            var avgDurationByType = {};
+            var typeNames = ['Meltdown', 'Shutdown', 'Mixte'];
+            for (var tn = 0; tn < typeNames.length; tn++) {
+                var tInts2 = [], tDurs = [];
+                for (var te2 = 0; te2 < entries.length; te2++) {
+                    if (entries[te2].typeCrise === typeNames[tn]) {
+                        var tv = parseFloat(entries[te2].intensite);
+                        if (!isNaN(tv)) tInts2.push(tv);
+                        var td3 = parseDuration(entries[te2].duree);
+                        if (td3 !== null) tDurs.push(td3);
+                    }
+                }
+                if (tInts2.length) avgIntensityByType[typeNames[tn]] = avgArr(tInts2);
+                if (tDurs.length) avgDurationByType[typeNames[tn]] = avgArr(tDurs);
+            }
+
+            /* Intensité moyenne par contexte + % type par contexte */
+            var avgIntensityByContexte = {};
+            var percentTypeByContexte = {};
+            for (var pc = 0; pc < profileCounts.length; pc++) {
+                var pName = profileCounts[pc].name;
+                var pInts = [], pMelt = 0, pShut = 0;
+                for (var pe = 0; pe < entries.length; pe++) {
+                    if ((entries[pe].profil || 'commun') === pName) {
+                        var pv = parseFloat(entries[pe].intensite);
+                        if (!isNaN(pv)) pInts.push(pv);
+                        if (entries[pe].typeCrise === 'Meltdown') pMelt++;
+                        else if (entries[pe].typeCrise === 'Shutdown') pShut++;
+                    }
+                }
+                var pTotal = pMelt + pShut;
+                var pi2 = getProfileName(pName);
+                avgIntensityByContexte[pi2.name] = avgArr(pInts);
+                percentTypeByContexte[pi2.name] = { meltdown: pct(pMelt, pTotal), shutdown: pct(pShut, pTotal) };
+            }
+
+            /* Déclencheurs enrichis : intensité + % type */
             var triggerStats = [];
             for (var tkey in triggerFreq) {
                 var tcnt = triggerFreq[tkey];
-                var tInts = [];
+                var tInts = [], tMelt = 0, tShut = 0;
                 for (var te = 0; te < entries.length; te++) {
-                    var td = entries[te].declencheurs || [];
-                    var hasT = false;
-                    for (var td2 = 0; td2 < td.length; td2++) { if (td[td2] === tkey) { hasT = true; break; } }
-                    if (hasT) {
+                    if (hasTrigger(entries[te], tkey)) {
                         var ti = parseFloat(entries[te].intensite);
                         if (!isNaN(ti)) tInts.push(ti);
+                        if (entries[te].typeCrise === 'Meltdown') tMelt++;
+                        else if (entries[te].typeCrise === 'Shutdown') tShut++;
                     }
                 }
-                var avgInt = null;
-                if (tInts.length >= 2) {
-                    var tsum = 0; for (var ts2 = 0; ts2 < tInts.length; ts2++) tsum += tInts[ts2];
-                    avgInt = parseFloat((tsum / tInts.length).toFixed(1));
-                }
-                triggerStats.push({ name: tkey, count: tcnt, avgIntensity: avgInt });
+                var tTyped = tMelt + tShut;
+                triggerStats.push({
+                    name: tkey, count: tcnt,
+                    avgIntensity: avgArr(tInts),
+                    meltdownPct: pct(tMelt, tTyped)
+                });
             }
             triggerStats.sort(function(a, b) { return b.count - a.count; });
 
+            /* Besoins enrichis : association type */
             var besoinCounts = countFreq(besoinArr);
+            var besoinByType = {};
+            for (var bi = 0; bi < besoinCounts.length; bi++) {
+                var bn = besoinCounts[bi].name;
+                var bMelt = 0, bShut = 0;
+                for (var be = 0; be < entries.length; be++) {
+                    var bList = entries[be].besoins || [];
+                    var hasBesoin = false;
+                    for (var bl2 = 0; bl2 < bList.length; bl2++) {
+                        if (extractLabel(bList[bl2]) === bn) { hasBesoin = true; break; }
+                    }
+                    if (hasBesoin) {
+                        if (entries[be].typeCrise === 'Meltdown') bMelt++;
+                        else if (entries[be].typeCrise === 'Shutdown') bShut++;
+                    }
+                }
+                besoinByType[bn] = { meltdown: bMelt, shutdown: bShut };
+            }
 
+            /* États enrichis : intensité moyenne par état */
+            var etatCounts = countFreq(etatArr);
+            var avgIntensityByEtat = {};
+            for (var ei = 0; ei < etatCounts.length; ei++) {
+                var en2 = etatCounts[ei].name;
+                var eInts = [];
+                for (var ee = 0; ee < entries.length; ee++) {
+                    var eList = entries[ee].etats || [];
+                    var hasEtat = false;
+                    for (var el2 = 0; el2 < eList.length; el2++) {
+                        if (extractLabel(eList[el2]) === en2) { hasEtat = true; break; }
+                    }
+                    if (hasEtat) {
+                        var ev = parseFloat(entries[ee].intensite);
+                        if (!isNaN(ev)) eInts.push(ev);
+                    }
+                }
+                avgIntensityByEtat[en2] = avgArr(eInts);
+            }
+
+            /* Capacités par type */
+            var capImpCounts = countFreq(capImpossible);
+            var capDifCounts = countFreq(capDifficile);
+            var capaciteByType = {};
+            var allCaps = capImpCounts.concat(capDifCounts);
+            for (var aci = 0; aci < allCaps.length; aci++) {
+                var cn = allCaps[aci].name;
+                if (capaciteByType[cn]) continue;
+                var cMelt = 0, cShut = 0;
+                for (var ce = 0; ce < entries.length; ce++) {
+                    var caps2 = entries[ce].capacites || {};
+                    var allC = (caps2.impossible || []).concat(caps2.difficile || []);
+                    var hasCap = false;
+                    for (var cc = 0; cc < allC.length; cc++) { if (allC[cc] === cn) { hasCap = true; break; } }
+                    if (hasCap) {
+                        if (entries[ce].typeCrise === 'Meltdown') cMelt++;
+                        else if (entries[ce].typeCrise === 'Shutdown') cShut++;
+                    }
+                }
+                var cTotal = cMelt + cShut;
+                capaciteByType[cn] = { meltdown: pct(cMelt, cTotal), shutdown: pct(cShut, cTotal) };
+            }
+
+            /* Moments de la journée enrichis */
+            var hourSlots = [
+                { name: 'Nuit', range: '0–6h', count: 0, intensities: [], meltdown: 0, shutdown: 0 },
+                { name: 'Matin', range: '6–12h', count: 0, intensities: [], meltdown: 0, shutdown: 0 },
+                { name: 'Après-m.', range: '12–18h', count: 0, intensities: [], meltdown: 0, shutdown: 0 },
+                { name: 'Soir', range: '18–24h', count: 0, intensities: [], meltdown: 0, shutdown: 0 }
+            ];
             var DAY_NAMES = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
             var dayFreq = [0, 0, 0, 0, 0, 0, 0];
-            for (var de = 0; de < entries.length; de++) {
-                dayFreq[new Date(entries[de].horodatage).getDay()]++;
+            for (var he = 0; he < entries.length; he++) {
+                var hd = new Date(entries[he].horodatage);
+                var hh = hd.getHours();
+                var si = getHourSlotIndex(hh);
+                hourSlots[si].count++;
+                var hv = parseFloat(entries[he].intensite);
+                if (!isNaN(hv)) hourSlots[si].intensities.push(hv);
+                if (entries[he].typeCrise === 'Meltdown') hourSlots[si].meltdown++;
+                else if (entries[he].typeCrise === 'Shutdown') hourSlots[si].shutdown++;
+                dayFreq[hd.getDay()]++;
+            }
+            for (var hs = 0; hs < hourSlots.length; hs++) {
+                hourSlots[hs].avgIntensity = avgArr(hourSlots[hs].intensities);
+                var hsTyped = hourSlots[hs].meltdown + hourSlots[hs].shutdown;
+                hourSlots[hs].meltdownPct = pct(hourSlots[hs].meltdown, hsTyped);
+                delete hourSlots[hs].intensities;
             }
             var dayOfWeek = [1, 2, 3, 4, 5, 6, 0].map(function(i) {
                 return { name: DAY_NAMES[i], count: dayFreq[i] };
             });
 
-            var hourSlots = [
-                { name: 'Nuit', range: '0–6h', count: 0 },
-                { name: 'Matin', range: '6–12h', count: 0 },
-                { name: 'Après-m.', range: '12–18h', count: 0 },
-                { name: 'Soir', range: '18–24h', count: 0 }
-            ];
-            for (var he = 0; he < entries.length; he++) {
-                var h = new Date(entries[he].horodatage).getHours();
-                if (h < 6) hourSlots[0].count++;
-                else if (h < 12) hourSlots[1].count++;
-                else if (h < 18) hourSlots[2].count++;
-                else hourSlots[3].count++;
+            /* Seuils critiques : intensité moy par tranche énergie/charge */
+            var thresholds = { energie: [{}, {}, {}], chargeMentale: [{}, {}, {}], chargeSociale: [{}, {}, {}] };
+            var thresholdFields = ['energie', 'chargeMentale', 'chargeSociale'];
+            for (var tf = 0; tf < thresholdFields.length; tf++) {
+                var field = thresholdFields[tf];
+                var buckets = [[], [], []]; // 0-3, 4-6, 7-10
+                for (var se = 0; se < entries.length; se++) {
+                    var sv = parseFloat(entries[se][field]);
+                    var si2 = parseFloat(entries[se].intensite);
+                    if (isNaN(sv) || isNaN(si2)) continue;
+                    var bIdx = sv <= 3 ? 0 : sv <= 6 ? 1 : 2;
+                    buckets[bIdx].push(si2);
+                }
+                var labels = ['0–3', '4–6', '7–10'];
+                for (var lb = 0; lb < 3; lb++) {
+                    thresholds[field][lb] = { label: labels[lb], avgIntensity: avgArr(buckets[lb]), count: buckets[lb].length };
+                }
+            }
+
+            /* Évolution temporelle (données brutes pour graphique) */
+            var timelineEntries = [];
+            for (var tl = 0; tl < entries.length; tl++) {
+                timelineEntries.push({
+                    date: entries[tl].horodatage,
+                    intensite: parseFloat(entries[tl].intensite) || null,
+                    energie: parseFloat(entries[tl].energie) || null
+                });
             }
 
             return {
                 total: entries.length,
-                prevCount: prevEntries.length,
+                entries: entries,
+                prev: prev,
                 avgIntensity: avgIntensity,
+                minIntensity: minIntensity,
+                maxIntensity: maxIntensity,
                 avgDuration: avgDuration,
                 minDuration: minDuration,
                 maxDuration: maxDuration,
+                avgEnergie: avgEnergie,
+                avgChargeMentale: avgChargeMentale,
+                avgChargeSociale: avgChargeSociale,
+                meltdownCount: meltdownCount,
+                shutdownCount: shutdownCount,
+                meltdownPct: meltdownPct,
+                shutdownPct: shutdownPct,
                 topProfile: topProfile,
-                topType: topType,
+                profileCounts: profileCounts,
+                origineCounts: origineCounts,
+                avgIntensityByType: avgIntensityByType,
+                avgDurationByType: avgDurationByType,
+                avgIntensityByContexte: avgIntensityByContexte,
+                percentTypeByContexte: percentTypeByContexte,
                 triggerStats: triggerStats,
                 besoinCounts: besoinCounts,
+                besoinByType: besoinByType,
+                etatCounts: etatCounts,
+                avgIntensityByEtat: avgIntensityByEtat,
+                capImpCounts: capImpCounts,
+                capDifCounts: capDifCounts,
+                capaciteByType: capaciteByType,
                 dayOfWeek: dayOfWeek,
-                hourSlots: hourSlots
+                hourSlots: hourSlots,
+                thresholds: thresholds,
+                timelineEntries: timelineEntries
             };
         }
 
@@ -814,9 +1432,9 @@
                 var prep = preps[stats.topProfile.name] || 'en contexte ' + stats.topProfile.name;
                 ctxParts.push('surtout <strong>' + prep + '</strong>');
             }
-            if (stats.topType) {
+            if (stats.origineCounts && stats.origineCounts.length) {
                 var adj = { 'Anticipatoire': 'anticipatoires', 'Réactionnelle': 'réactionnelles', 'Mixte': 'mixtes' };
-                var typeAdj = adj[stats.topType.name] || stats.topType.name.toLowerCase();
+                var typeAdj = adj[stats.origineCounts[0].name] || stats.origineCounts[0].name.toLowerCase();
                 ctxParts.push('majoritairement de type <strong>' + typeAdj + '</strong>');
             }
             if (ctxParts.length) {
@@ -863,21 +1481,19 @@
         /* ---------- RENDU : LIGNE DE CLASSEMENT ---------- */
 
         function rankRow(item, num, maxCount) {
-            var pct = Math.round((item.count / maxCount) * 100);
+            var barPct = Math.round((item.count / maxCount) * 100);
             var numEl = (num > 0)
                 ? '<div class="rank-number">' + num + '</div>'
                 : '<div class="rank-number secondary">·</div>';
-            var intTag = (item.avgIntensity != null)
-                ? '<span class="intensity-tag">· ' + item.avgIntensity + '/10</span>'
-                : '';
+            var meta = item.count + '×';
+            if (item.avgIntensity != null) meta += ' · ' + item.avgIntensity + '/10';
+            if (item.meltdownPct != null && item.meltdownPct > 0) meta += ' · ' + item.meltdownPct + '% melt.';
             return '<div class="rank-item">' + numEl +
                 '<div class="rank-bar-wrap">' +
-                '<div class="rank-name">' + item.name + '</div>' +
-                '<div class="rank-bar-row">' +
-                '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct + '%"></div></div>' +
-                '<div class="rank-count">' + item.count + '×</div>' +
-                intTag +
-                '</div></div></div>';
+                '<div class="rank-header"><div class="rank-name">' + item.name + '</div>' +
+                '<div class="rank-meta">' + meta + '</div></div>' +
+                '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + barPct + '%"></div></div>' +
+                '</div></div>';
         }
 
         /* ---------- RENDU : SECTION AVEC TOGGLE ---------- */
@@ -926,9 +1542,10 @@
                 }
             }
 
-            return '<div class="section">' +
+            return '<div class="section-tag">' + title + '</div>' +
+                '<div class="section">' +
                 '<div class="section-header">' +
-                '<div class="section-title">' + title + '</div>' +
+                '<div class="section-title"></div>' +
                 '<div class="view-toggle">' +
                 '<button class="view-toggle-btn ' + (!isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'rapide\')">Rapide</button>' +
                 '<button class="view-toggle-btn ' + (isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'detail\')">Détail</button>' +
@@ -949,6 +1566,347 @@
             if (arrow) arrow.textContent = isOpen ? '▴' : '▾';
         }
 
+        /* ---------- RENDU : LIGNE BILAN ---------- */
+
+        /* ---------- GRAPHIQUE : ÉVOLUTION TEMPORELLE ---------- */
+
+        function buildTimelineSVG(entries, days) {
+            if (entries.length < 2) return '';
+            var useWeeks = days < 60;
+            var buckets = {};
+
+            for (var i = 0; i < entries.length; i++) {
+                var d = new Date(entries[i].date);
+                var key;
+                if (useWeeks) {
+                    var dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000);
+                    var week = Math.floor(dayOfYear / 7);
+                    key = d.getFullYear() + '-W' + week;
+                } else {
+                    key = d.getFullYear() + '-' + (d.getMonth() + 1);
+                }
+                if (!buckets[key]) buckets[key] = { count: 0, intensities: [], label: '' };
+                buckets[key].count++;
+                if (entries[i].intensite !== null) buckets[key].intensities.push(entries[i].intensite);
+
+                if (useWeeks) {
+                    var monday = new Date(d); monday.setDate(d.getDate() - d.getDay() + 1);
+                    buckets[key].label = monday.getDate() + '/' + (monday.getMonth() + 1);
+                } else {
+                    var mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jui', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+                    buckets[key].label = mois[d.getMonth()];
+                }
+            }
+
+            var keys = Object.keys(buckets).sort();
+            var data = [];
+            for (var ki = 0; ki < keys.length; ki++) {
+                var b = buckets[keys[ki]];
+                var avg = b.intensities.length ? avgArr(b.intensities) : null;
+                data.push({ label: b.label, count: b.count, avgInt: avg });
+            }
+
+            if (data.length < 2) return '';
+
+            var W = 320, H = 150, padL = 30, padR = 10, padT = 15, padB = 25;
+            var chartW = W - padL - padR;
+            var chartH = H - padT - padB;
+            var maxCount = 0, maxInt = 10;
+            for (var di = 0; di < data.length; di++) {
+                if (data[di].count > maxCount) maxCount = data[di].count;
+            }
+            if (maxCount === 0) maxCount = 1;
+
+            var step = chartW / (data.length - 1);
+            var countLine = '', intLine = '', labels = '';
+            var countDots = '', intDots = '';
+
+            for (var pi = 0; pi < data.length; pi++) {
+                var x = padL + pi * step;
+                var yCount = padT + chartH - (data[pi].count / maxCount) * chartH;
+                if (pi === 0) countLine = 'M' + x + ',' + yCount;
+                else countLine += ' L' + x + ',' + yCount;
+                countDots += '<circle cx="' + x + '" cy="' + yCount + '" r="3" fill="#F7B89C"/>';
+
+                if (data[pi].avgInt !== null) {
+                    var yInt = padT + chartH - (data[pi].avgInt / maxInt) * chartH;
+                    if (intLine === '') intLine = 'M' + x + ',' + yInt;
+                    else intLine += ' L' + x + ',' + yInt;
+                    intDots += '<circle cx="' + x + '" cy="' + yInt + '" r="3" fill="#2E3A59"/>';
+                }
+
+                if (data.length <= 12 || pi % 2 === 0) {
+                    labels += '<text x="' + x + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10" fill="#2E3A59" opacity="0.5">' + data[pi].label + '</text>';
+                }
+            }
+
+            var yAxis = '';
+            for (var yl = 0; yl <= 4; yl++) {
+                var yy = padT + (yl / 4) * chartH;
+                var val = Math.round(maxCount * (1 - yl / 4));
+                yAxis += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '" stroke="#2E3A59" stroke-opacity="0.06"/>';
+                yAxis += '<text x="' + (padL - 4) + '" y="' + (yy + 3) + '" text-anchor="end" font-size="9" fill="#2E3A59" opacity="0.4">' + val + '</text>';
+            }
+
+            var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
+                yAxis + labels +
+                '<path d="' + countLine + '" fill="none" stroke="#F7B89C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+                countDots;
+            if (intLine) {
+                svg += '<path d="' + intLine + '" fill="none" stroke="#2E3A59" stroke-width="2" stroke-dasharray="4,3" stroke-linecap="round" stroke-linejoin="round"/>' +
+                    intDots;
+            }
+            svg += '</svg>';
+
+            return '<div class="chart-container">' + svg +
+                '<div class="chart-legend">' +
+                '<div class="chart-legend-item"><div class="chart-legend-dot" style="background:#F7B89C"></div>Crises</div>' +
+                '<div class="chart-legend-item"><div class="chart-legend-dot" style="background:#2E3A59"></div>Intensité moy.</div>' +
+                '</div></div>';
+        }
+
+        /* ---------- GRAPHIQUE : SEUILS CRITIQUES ---------- */
+
+        function buildThresholdsSVG(thresholds) {
+            var fields = [
+                { key: 'energie', label: 'Énergie avant crise' },
+                { key: 'chargeMentale', label: 'Charge mentale' },
+                { key: 'chargeSociale', label: 'Charge sociale' }
+            ];
+            var html = '';
+            var hasAny = false;
+
+            for (var f = 0; f < fields.length; f++) {
+                var buckets = thresholds[fields[f].key];
+                var anyData = false;
+                for (var b = 0; b < 3; b++) {
+                    if (buckets[b].count > 0) { anyData = true; break; }
+                }
+                if (!anyData) continue;
+                hasAny = true;
+
+                var W = 280, H = 100, padL = 5, padB = 22, padT = 10;
+                var barW = 60, gap = 30;
+                var totalBarW = 3 * barW + 2 * gap;
+                var startX = (W - totalBarW) / 2;
+                var chartH = H - padT - padB;
+                var maxVal = 10;
+
+                var bars = '';
+                var colors = ['#a8d5ba', '#f7d98e', '#f5a5a5'];
+                var labels2 = ['0–3', '4–6', '7–10'];
+
+                for (var bi = 0; bi < 3; bi++) {
+                    var x = startX + bi * (barW + gap);
+                    var val = buckets[bi].avgIntensity || 0;
+                    var barH = (val / maxVal) * chartH;
+                    var y = padT + chartH - barH;
+
+                    bars += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + barH + '" rx="4" fill="' + colors[bi] + '"/>';
+                    if (val > 0) {
+                        bars += '<text x="' + (x + barW / 2) + '" y="' + (y - 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#2E3A59">' + val + '</text>';
+                    }
+                    bars += '<text x="' + (x + barW / 2) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10" fill="#2E3A59" opacity="0.5">' + labels2[bi] + '</text>';
+                    bars += '<text x="' + (x + barW / 2) + '" y="' + (H - 14) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.35">(' + buckets[bi].count + ')</text>';
+                }
+
+                html += '<div style="margin-bottom:8px">' +
+                    '<div style="font-size:13px;font-weight:600;color:var(--dark);opacity:0.7;margin-bottom:4px;padding:0 4px">' + fields[f].label + '</div>' +
+                    '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
+                    '<line x1="' + padL + '" y1="' + (padT + chartH) + '" x2="' + (W - padL) + '" y2="' + (padT + chartH) + '" stroke="#2E3A59" stroke-opacity="0.1"/>' +
+                    bars + '</svg></div>';
+            }
+
+            if (!hasAny) return '';
+            return '<div class="chart-container">' + html + '</div>';
+        }
+
+        /* ---------- ANALYSE APPROFONDIE ---------- */
+
+        function buildAnalysis(stats) {
+            if (stats.total < 10) {
+                return '<div class="analysis-gate">Données insuffisantes pour l\'analyse avancée (minimum 10 crises)</div>';
+            }
+
+            var html = '';
+
+            /* 1. Déclencheur × Contexte */
+            if (stats.triggerStats.length && stats.profileCounts.length > 1) {
+                var topTriggers = stats.triggerStats.slice(0, 5);
+                var contextes = [];
+                for (var pc = 0; pc < stats.profileCounts.length; pc++) {
+                    contextes.push(stats.profileCounts[pc].name);
+                }
+
+                var matrix = {};
+                for (var ti = 0; ti < topTriggers.length; ti++) {
+                    var tn = topTriggers[ti].name;
+                    matrix[tn] = {};
+                    for (var ci = 0; ci < contextes.length; ci++) matrix[tn][contextes[ci]] = 0;
+                }
+                for (var ei = 0; ei < stats.entries.length; ei++) {
+                    var e = stats.entries[ei];
+                    var prof = e.profil || 'commun';
+                    var decl = e.declencheurs || [];
+                    for (var di = 0; di < decl.length; di++) {
+                        if (matrix[decl[di]] !== undefined && matrix[decl[di]][prof] !== undefined) {
+                            matrix[decl[di]][prof]++;
+                        }
+                    }
+                }
+
+                var tbl = '<table class="cross-table"><tr><th></th>';
+                for (var ch = 0; ch < contextes.length; ch++) {
+                    var cInfo = getProfileName(contextes[ch]);
+                    tbl += '<th>' + cInfo.icon + '</th>';
+                }
+                tbl += '</tr>';
+                for (var tr = 0; tr < topTriggers.length; tr++) {
+                    tbl += '<tr><td>' + topTriggers[tr].name + '</td>';
+                    var maxInRow = 0;
+                    for (var cc = 0; cc < contextes.length; cc++) {
+                        if (matrix[topTriggers[tr].name][contextes[cc]] > maxInRow) maxInRow = matrix[topTriggers[tr].name][contextes[cc]];
+                    }
+                    for (var cc2 = 0; cc2 < contextes.length; cc2++) {
+                        var val = matrix[topTriggers[tr].name][contextes[cc2]];
+                        tbl += '<td' + (val === maxInRow && val > 0 ? ' class="cell-highlight"' : '') + '>' + val + '</td>';
+                    }
+                    tbl += '</tr>';
+                }
+                tbl += '</table>';
+
+                html += '<div class="stat-card" style="padding:12px">' +
+                    '<div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:8px">Déclencheur × Contexte</div>' +
+                    tbl + '</div>';
+            }
+
+            /* 2. Déclencheur × Type de crise */
+            if (stats.triggerStats.length && (stats.meltdownCount > 0 || stats.shutdownCount > 0)) {
+                var topT = stats.triggerStats.slice(0, 5);
+                var tbl2 = '<table class="cross-table"><tr><th></th><th>% Melt.</th><th>% Shut.</th></tr>';
+                for (var t2 = 0; t2 < topT.length; t2++) {
+                    var mPct = topT[t2].meltdownPct || 0;
+                    tbl2 += '<tr><td>' + topT[t2].name + '</td>' +
+                        '<td' + (mPct > 60 ? ' class="cell-highlight"' : '') + '>' + mPct + '%</td>' +
+                        '<td' + (mPct < 40 ? ' class="cell-highlight"' : '') + '>' + (100 - mPct) + '%</td></tr>';
+                }
+                tbl2 += '</table>';
+
+                html += '<div class="stat-card" style="padding:12px;margin-top:6px">' +
+                    '<div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:8px">Déclencheur × Type de crise</div>' +
+                    tbl2 + '</div>';
+            }
+
+            /* 3. État × Intensité */
+            if (stats.etatCounts.length) {
+                var topE = stats.etatCounts.slice(0, 7);
+                var tbl3 = '<table class="cross-table"><tr><th>État</th><th>Fréq.</th><th>Int. moy.</th></tr>';
+                for (var e3 = 0; e3 < topE.length; e3++) {
+                    var eAvg = stats.avgIntensityByEtat[topE[e3].name];
+                    var isHigh = eAvg !== null && eAvg >= 7;
+                    tbl3 += '<tr><td>' + topE[e3].name + '</td>' +
+                        '<td>' + topE[e3].count + '×</td>' +
+                        '<td' + (isHigh ? ' class="cell-highlight"' : '') + '>' + (eAvg !== null ? eAvg : '—') + '</td></tr>';
+                }
+                tbl3 += '</table>';
+
+                html += '<div class="stat-card" style="padding:12px;margin-top:6px">' +
+                    '<div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:8px">État × Intensité</div>' +
+                    tbl3 + '</div>';
+            }
+
+            /* 4. Capacités × Type */
+            if (stats.capImpCounts.length && (stats.meltdownCount > 0 || stats.shutdownCount > 0)) {
+                var topCap = stats.capImpCounts.slice(0, 7);
+                var tbl4 = '<table class="cross-table"><tr><th>Capacité</th><th>% Melt.</th><th>% Shut.</th></tr>';
+                for (var c4 = 0; c4 < topCap.length; c4++) {
+                    var ct = stats.capaciteByType[topCap[c4].name];
+                    if (!ct) continue;
+                    tbl4 += '<tr><td>' + topCap[c4].name + '</td>' +
+                        '<td>' + ct.meltdown + '%</td>' +
+                        '<td>' + ct.shutdown + '%</td></tr>';
+                }
+                tbl4 += '</table>';
+
+                html += '<div class="stat-card" style="padding:12px;margin-top:6px">' +
+                    '<div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:8px">Capacités × Type de crise</div>' +
+                    tbl4 + '</div>';
+            }
+
+            /* 5. Distribution par intensité */
+            var intRanges = [
+                { label: '1–4', min: 1, max: 4 },
+                { label: '5–7', min: 5, max: 7 },
+                { label: '8–10', min: 8, max: 10 }
+            ];
+            var intDist = [];
+            for (var ir = 0; ir < intRanges.length; ir++) {
+                var cnt = 0, triggers5 = {}, contextes5 = {};
+                for (var ie = 0; ie < stats.entries.length; ie++) {
+                    var iv = parseFloat(stats.entries[ie].intensite);
+                    if (isNaN(iv) || iv < intRanges[ir].min || iv > intRanges[ir].max) continue;
+                    cnt++;
+                    var prof5 = stats.entries[ie].profil || 'commun';
+                    contextes5[prof5] = (contextes5[prof5] || 0) + 1;
+                    var decl5 = stats.entries[ie].declencheurs || [];
+                    for (var d5 = 0; d5 < decl5.length; d5++) {
+                        if (decl5[d5]) triggers5[decl5[d5]] = (triggers5[decl5[d5]] || 0) + 1;
+                    }
+                }
+                var topTrig = null, topCtx = null;
+                for (var tk in triggers5) { if (!topTrig || triggers5[tk] > topTrig.count) topTrig = { name: tk, count: triggers5[tk] }; }
+                for (var ck in contextes5) { if (!topCtx || contextes5[ck] > topCtx.count) topCtx = { name: ck, count: contextes5[ck] }; }
+                intDist.push({ label: intRanges[ir].label, count: cnt, topTrigger: topTrig, topContexte: topCtx });
+            }
+
+            if (intDist.some(function(d) { return d.count > 0; })) {
+                var tbl5 = '<table class="cross-table"><tr><th>Int.</th><th>Nb</th><th>Déclencheur</th><th>Contexte</th></tr>';
+                for (var id5 = 0; id5 < intDist.length; id5++) {
+                    var row = intDist[id5];
+                    if (row.count === 0) continue;
+                    var trigLabel = row.topTrigger ? row.topTrigger.name : '—';
+                    var ctxLabel = row.topContexte ? getProfileName(row.topContexte.name).name : '—';
+                    tbl5 += '<tr><td>' + row.label + '</td><td>' + row.count + '</td>' +
+                        '<td>' + trigLabel + '</td><td>' + ctxLabel + '</td></tr>';
+                }
+                tbl5 += '</table>';
+
+                html += '<div class="stat-card" style="padding:12px;margin-top:6px">' +
+                    '<div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:8px">Distribution par intensité</div>' +
+                    tbl5 + '</div>';
+            }
+
+            return html;
+        }
+
+        /* ---------- RENDU : LIGNE BILAN ---------- */
+
+        function bilanRow(label, value, delta, sub) {
+            return '<div class="bilan-comp-row">' +
+                '<div class="bilan-comp-label">' + label + '</div>' +
+                '<div class="bilan-comp-current">' + value + '</div>' +
+                '<div class="bilan-comp-prev">' + (delta || '') + '</div>' +
+                '</div>' +
+                (sub ? '<div class="bilan-minmax">' + sub + '</div>' : '');
+        }
+
+        function deltaText(current, prev, unit, invert) {
+            if (prev === null || current === null) return '';
+            var diff = current - prev;
+            if (diff === 0) return '= ' + prev + (unit || '');
+            var arrow = diff > 0 ? '↑' : '↓';
+            var sign = diff > 0 ? '+' : '';
+            return arrow + ' ' + sign + (typeof diff === 'number' ? parseFloat(diff.toFixed(1)) : diff) + (unit || '');
+        }
+
+        function deltaPct(current, prev) {
+            if (prev === null || current === null || prev === 0) return '';
+            var pctDiff = ((current - prev) / prev) * 100;
+            var sign = pctDiff > 0 ? '+' : '';
+            var arrow = pctDiff > 0 ? '↑' : pctDiff < 0 ? '↓' : '=';
+            return arrow + ' ' + sign + Math.round(pctDiff) + '%';
+        }
+
         /* ---------- RENDU PRINCIPAL ---------- */
 
         function render(days, from, to) {
@@ -967,22 +1925,75 @@
                 return;
             }
 
-            var intensityStr = stats.avgIntensity !== null
-                ? stats.avgIntensity + '<span style="font-size:15px;font-weight:500;opacity:0.6">/10</span>'
-                : '—';
-            var durationStr = stats.avgDuration !== null ? '~' + formatMins(stats.avgDuration) : '—';
-            var durationSub = (stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration)
-                ? 'min ' + formatMins(stats.minDuration) + ' · max ' + formatMins(stats.maxDuration)
-                : '';
-            var profileStr = stats.topProfile ? stats.topProfile.icon + ' ' + stats.topProfile.name : '—';
-            var typeStr = stats.topType ? stats.topType.name : '—';
-            var typeSub = stats.topType ? stats.topType.count + ' fois' : '';
+            var html = lastCard;
 
-            var deltaStr = '';
-            if (stats.prevCount > 0) {
-                var d = stats.total - stats.prevCount;
-                deltaStr = '<div class="metric-delta">' + (d > 0 ? '+' : '') + d + ' vs période préc.</div>';
+            /* ========== PARTIE 1 — BILAN ========== */
+            html += '<div class="section-tag">Bilan</div>';
+            html += '<div class="stat-card">';
+            html += '<div class="bilan-comp-header"><div class="bilan-comp-spacer"></div>' +
+                '<div class="bilan-comp-col-hd col-current">Actuel</div>' +
+                '<div class="bilan-comp-col-hd">Évolution</div></div>';
+
+            var prevInt = stats.prev ? stats.prev.avgIntensity : null;
+            var prevDur = stats.prev ? stats.prev.avgDuration : null;
+            var prevCount = stats.prev ? stats.prev.count : null;
+
+            html += bilanRow('Nombre de crises', '<strong>' + stats.total + '</strong>',
+                prevCount !== null ? deltaText(stats.total, prevCount, ' crises') : '');
+
+            html += bilanRow('Intensité moyenne <span class="bilan-unit">(sur 10)</span>',
+                stats.avgIntensity !== null ? '<strong>' + stats.avgIntensity + '</strong>' : '—',
+                prevInt !== null ? deltaPct(stats.avgIntensity, prevInt) + '<br><span class="bilan-prev-val">(' + prevInt + ')</span>' : '',
+                stats.minIntensity !== null && stats.maxIntensity !== null && stats.minIntensity !== stats.maxIntensity
+                    ? 'min <strong>' + stats.minIntensity + '</strong> · max <strong>' + stats.maxIntensity + '</strong>' : '');
+
+            html += bilanRow('Durée moyenne',
+                stats.avgDuration !== null ? '<strong>' + formatMins(stats.avgDuration) + '</strong>' : '—',
+                prevDur !== null ? deltaText(Math.round(stats.avgDuration), Math.round(prevDur), ' min') : '',
+                stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration
+                    ? 'min <strong>' + formatMins(stats.minDuration) + '</strong> · max <strong>' + formatMins(stats.maxDuration) + '</strong>' : '');
+
+            var totalTyped = stats.meltdownCount + stats.shutdownCount;
+            if (totalTyped > 0) {
+                html += bilanRow('Meltdown / Shutdown',
+                    '<strong>' + stats.meltdownPct + '%</strong> / <strong>' + stats.shutdownPct + '%</strong>', '');
             }
+
+            if (stats.avgEnergie !== null) {
+                html += bilanRow('Énergie avant crise <span class="bilan-unit">(sur 10)</span>',
+                    '<strong>' + stats.avgEnergie + '</strong>', '');
+            }
+            if (stats.avgChargeMentale !== null) {
+                html += bilanRow('Charge mentale <span class="bilan-unit">(sur 10)</span>',
+                    '<strong>' + stats.avgChargeMentale + '</strong>', '');
+            }
+            if (stats.avgChargeSociale !== null) {
+                html += bilanRow('Charge sociale <span class="bilan-unit">(sur 10)</span>',
+                    '<strong>' + stats.avgChargeSociale + '</strong>', '');
+            }
+
+            var prevProfile = stats.prev ? stats.prev.topProfile : null;
+            if (stats.topProfile) {
+                var ctxDelta = '';
+                if (prevProfile && prevProfile.name !== stats.topProfile.name) {
+                    ctxDelta = 'avant : ' + prevProfile.name;
+                } else if (prevProfile) {
+                    ctxDelta = '=';
+                }
+                html += bilanRow('Contexte principal',
+                    stats.topProfile.icon + ' ' + stats.topProfile.name + ' <span class="bilan-prev-val">(' + stats.topProfile.count + '×)</span>',
+                    ctxDelta);
+            }
+
+            if (stats.origineCounts.length) {
+                html += bilanRow('Type principal', '<strong>' + stats.origineCounts[0].name + '</strong>' +
+                    ' <span class="bilan-prev-val">(' + stats.origineCounts[0].count + '×)</span>', '');
+            }
+
+            html += '</div>';
+
+            /* ========== MOMENTS DE LA JOURNÉE ========== */
+            html += '<div class="section-tag">Quand</div>';
 
             var maxDayCount = 0;
             for (var di = 0; di < stats.dayOfWeek.length; di++) {
@@ -990,53 +2001,182 @@
             }
             if (maxDayCount === 0) maxDayCount = 1;
 
-            var dayGridHtml = '';
+            html += '<div class="stat-card"><div style="padding:10px 16px 4px;font-size:13px;font-weight:700;color:var(--dark);opacity:0.55;text-transform:uppercase">Jour de la semaine</div>';
+            html += '<div class="day-grid">';
             for (var dg = 0; dg < stats.dayOfWeek.length; dg++) {
                 var day = stats.dayOfWeek[dg];
                 var isTop = day.count === maxDayCount && day.count > 0;
-                dayGridHtml += '<div class="day-cell' + (isTop ? ' top-day' : '') + '">' +
+                html += '<div class="day-cell' + (isTop ? ' top-day' : '') + '">' +
                     '<div class="day-name">' + day.name + '</div>' +
                     '<div class="day-count">' + day.count + '</div></div>';
             }
+            html += '</div></div>';
 
-            var hourGridHtml = '';
-            for (var hg = 0; hg < stats.hourSlots.length; hg++) {
-                var slot = stats.hourSlots[hg];
-                hourGridHtml += '<div class="hour-cell">' +
-                    '<div class="hour-name">' + slot.name + '</div>' +
-                    '<div class="hour-range">' + slot.range + '</div>' +
-                    '<div class="hour-count">' + slot.count + '</div></div>';
+            var maxHourCount = 0;
+            for (var mh = 0; mh < stats.hourSlots.length; mh++) {
+                if (stats.hourSlots[mh].count > maxHourCount) maxHourCount = stats.hourSlots[mh].count;
             }
 
-            main.innerHTML = lastCard +
-                '<div class="narrative-card">' + buildNarrative(stats, days, from, to) + '</div>' +
-                '<div class="metrics-grid">' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">🔴</span><span class="metric-label">Nombre de crises</span></div>' +
-                '<div class="metric-value">' + stats.total + '</div>' + deltaStr + '</div>' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">⚡</span><span class="metric-label">Intensité moyenne</span></div>' +
-                '<div class="metric-value">' + intensityStr + '</div></div>' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">⏱</span><span class="metric-label">Durée moyenne</span></div>' +
-                '<div class="metric-value small">' + durationStr + '</div>' +
-                (durationSub ? '<div class="metric-sub">' + durationSub + '</div>' : '') + '</div>' +
-                '<div class="metric-card">' +
-                '<div class="metric-header"><span class="metric-icon">📍</span><span class="metric-label">Contexte principal</span></div>' +
-                '<div class="metric-value small">' + profileStr + '</div></div>' +
-                '<div class="metric-card wide">' +
-                '<div class="metric-header"><span class="metric-icon">🧠</span><span class="metric-label">Type de crise le plus fréquent</span></div>' +
-                '<div class="metric-value small">' + typeStr + '</div>' +
-                (typeSub ? '<div class="metric-sub">' + typeSub + '</div>' : '') + '</div></div>' +
-                '<div class="section">' +
-                '<div class="section-title">🕐 Quand surviennent tes crises ?</div>' +
-                '<div class="subsection-title">Jour de la semaine</div>' +
-                '<div class="day-grid">' + dayGridHtml + '</div>' +
-                '<div class="subsection-title">Moment de la journée</div>' +
-                '<div class="hour-grid">' + hourGridHtml + '</div></div>' +
-                renderToggleSection('triggers', '🎯 Déclencheurs', stats.triggerStats, viewModes.triggers) +
-                renderToggleSection('besoins', '🤲 Besoins exprimés', stats.besoinCounts, viewModes.besoins) +
-                '<button class="export-stats-btn" onclick="exportStats()">📋 Copier le résumé</button>';
+            html += '<div class="moment-grid">';
+            for (var hg = 0; hg < stats.hourSlots.length; hg++) {
+                var slot = stats.hourSlots[hg];
+                var isHighlight = slot.count === maxHourCount && slot.count > 0;
+                html += '<div class="moment-cell' + (isHighlight ? ' highlight' : '') + '">' +
+                    '<div class="moment-name">' + slot.name + '</div>' +
+                    '<div class="moment-range">' + slot.range + '</div>' +
+                    '<div class="moment-count">' + slot.count + '</div>';
+                if (slot.avgIntensity !== null) {
+                    html += '<div style="font-size:11px;opacity:0.6;margin-top:2px">' + slot.avgIntensity + '/10</div>';
+                }
+                html += '</div>';
+            }
+            html += '</div>';
+
+            /* ========== CONTEXTES ========== */
+            if (stats.profileCounts.length > 1) {
+                html += '<div class="section-tag">Contextes</div>';
+                html += '<div class="stat-card">';
+                for (var pc = 0; pc < stats.profileCounts.length; pc++) {
+                    var prof = stats.profileCounts[pc];
+                    var pInfo = getProfileName(prof.name);
+                    var pBarPct = Math.round((prof.count / stats.total) * 100);
+                    var pAvgInt = stats.avgIntensityByContexte[pInfo.name];
+                    var pType = stats.percentTypeByContexte[pInfo.name];
+                    html += '<div class="rank-item"><div class="rank-header">' +
+                        '<div class="rank-name">' + pInfo.icon + ' ' + pInfo.name + '</div>' +
+                        '<div class="rank-meta">' + prof.count + '×' +
+                        (pAvgInt !== null ? ' · ' + pAvgInt + '/10' : '') +
+                        (pType && pType.meltdown > 0 ? ' · ' + pType.meltdown + '% meltdown' : '') +
+                        '</div></div>' +
+                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pBarPct + '%"></div></div></div>';
+                }
+                html += '</div>';
+            }
+
+            /* ========== ORIGINE ========== */
+            if (stats.origineCounts.length) {
+                html += '<div class="section-tag">Origine</div>';
+                html += '<div class="stat-card">';
+                var maxOrig = stats.origineCounts[0].count;
+                for (var oi = 0; oi < stats.origineCounts.length; oi++) {
+                    var orig = stats.origineCounts[oi];
+                    var oIntArr = stats.avgIntensityByType[orig.name];
+                    var oDurArr = stats.avgDurationByType[orig.name];
+                    html += '<div class="rank-item"><div class="rank-header">' +
+                        '<div class="rank-name">' + orig.name + '</div>' +
+                        '<div class="rank-meta">' + orig.count + '×' +
+                        (oIntArr ? ' · ' + oIntArr + '/10' : '') +
+                        (oDurArr ? ' · ~' + formatMins(oDurArr) : '') +
+                        '</div></div>' +
+                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct(orig.count, maxOrig) + '%"></div></div></div>';
+                }
+                html += '</div>';
+            }
+
+            /* ========== TYPE MELTDOWN/SHUTDOWN ========== */
+            if (totalTyped > 0) {
+                html += '<div class="section-tag">Types de crise</div>';
+                html += '<div class="stat-card">';
+                var typeData = [
+                    { name: 'Meltdown', count: stats.meltdownCount },
+                    { name: 'Shutdown', count: stats.shutdownCount }
+                ];
+                for (var ti = 0; ti < typeData.length; ti++) {
+                    if (typeData[ti].count === 0) continue;
+                    var tAvgI = stats.avgIntensityByType[typeData[ti].name];
+                    var tAvgD = stats.avgDurationByType[typeData[ti].name];
+                    html += '<div class="rank-item"><div class="rank-header">' +
+                        '<div class="rank-name">' + typeData[ti].name + '</div>' +
+                        '<div class="rank-meta">' + typeData[ti].count + '× (' + pct(typeData[ti].count, totalTyped) + '%)' +
+                        (tAvgI ? ' · ' + tAvgI + '/10' : '') +
+                        (tAvgD ? ' · ~' + formatMins(tAvgD) : '') +
+                        '</div></div>' +
+                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct(typeData[ti].count, totalTyped) + '%"></div></div></div>';
+                }
+                html += '</div>';
+            }
+
+            /* ========== DÉCLENCHEURS ========== */
+            html += renderToggleSection('triggers', 'Déclencheurs', stats.triggerStats, viewModes.triggers);
+
+            /* ========== BESOINS ========== */
+            html += renderToggleSection('besoins', 'Besoins exprimés', stats.besoinCounts, viewModes.besoins);
+
+            /* ========== ÉTATS ========== */
+            if (stats.etatCounts.length) {
+                html += '<div class="section-tag">États ressentis</div>';
+                html += '<div class="stat-card">';
+                var maxEtat = stats.etatCounts[0].count;
+                var topEtats = stats.etatCounts.slice(0, 5);
+                for (var ei = 0; ei < topEtats.length; ei++) {
+                    var et = topEtats[ei];
+                    var eAvgI = stats.avgIntensityByEtat[et.name];
+                    html += '<div class="rank-item"><div class="rank-header">' +
+                        '<div class="rank-name">' + et.name + '</div>' +
+                        '<div class="rank-meta">' + et.count + '×' +
+                        (eAvgI !== null ? ' · ' + eAvgI + '/10' : '') +
+                        '</div></div>' +
+                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct(et.count, maxEtat) + '%"></div></div></div>';
+                }
+                if (stats.etatCounts.length > 5) {
+                    html += '<div class="no-data">+ ' + (stats.etatCounts.length - 5) + ' autres</div>';
+                }
+                html += '</div>';
+            }
+
+            /* ========== CAPACITÉS ========== */
+            if (stats.capImpCounts.length || stats.capDifCounts.length) {
+                html += '<div class="section-tag">Capacités impactées</div>';
+                html += '<div class="stat-card">';
+                if (stats.capImpCounts.length) {
+                    html += '<div class="cap-category">Impossible</div>';
+                    var topImp = stats.capImpCounts.slice(0, 5);
+                    for (var ci = 0; ci < topImp.length; ci++) {
+                        var cap = topImp[ci];
+                        var cType = stats.capaciteByType[cap.name];
+                        html += '<div class="rank-item"><div class="rank-header">' +
+                            '<div class="rank-name">' + cap.name + '</div>' +
+                            '<div class="rank-meta">' + cap.count + '×' +
+                            (cType ? ' · ' + cType.meltdown + '% melt.' : '') +
+                            '</div></div></div>';
+                    }
+                }
+                if (stats.capDifCounts.length) {
+                    html += '<div class="cap-category cap-sep">Souvent difficile</div>';
+                    var topDif = stats.capDifCounts.slice(0, 5);
+                    for (var cdi = 0; cdi < topDif.length; cdi++) {
+                        var capD = topDif[cdi];
+                        html += '<div class="rank-item"><div class="rank-header">' +
+                            '<div class="rank-name">' + capD.name + '</div>' +
+                            '<div class="rank-meta">' + capD.count + '×</div></div></div>';
+                    }
+                }
+                html += '</div>';
+            }
+
+            /* ========== ÉVOLUTION TEMPORELLE ========== */
+            var timelineHtml = buildTimelineSVG(stats.timelineEntries, days || 30);
+            if (timelineHtml) {
+                html += '<div class="section-tag">Évolution temporelle</div>';
+                html += timelineHtml;
+            }
+
+            /* ========== SEUILS CRITIQUES ========== */
+            var thresholdsHtml = buildThresholdsSVG(stats.thresholds);
+            if (thresholdsHtml) {
+                html += '<div class="section-tag">Seuils critiques</div>';
+                html += '<div style="font-size:12px;color:var(--light);opacity:0.5;padding:0 2px 6px">Intensité moyenne de crise selon le niveau avant la crise</div>';
+                html += thresholdsHtml;
+            }
+
+            /* ========== ANALYSE APPROFONDIE ========== */
+            html += '<div class="section-tag">Analyse approfondie</div>';
+            html += buildAnalysis(stats);
+
+            /* ========== EXPORT ========== */
+            html += '<button class="export-stats-btn" onclick="exportStats()">📋 Copier le résumé</button>';
+
+            main.innerHTML = html;
         }
 
         /* ---------- EXPORT ---------- */
@@ -1052,8 +2192,8 @@
 
             var text = '== Statistiques Nora — ' + periodLabel + ' ==\n\n';
             text += 'Crises : ' + stats.total;
-            if (stats.prevCount > 0) {
-                var d = stats.total - stats.prevCount;
+            if (stats.prev && stats.prev.count > 0) {
+                var d = stats.total - stats.prev.count;
                 text += ' (' + (d >= 0 ? '+' : '') + d + ' vs période préc.)';
             }
             text += '\n';
@@ -1066,7 +2206,11 @@
                 text += '\n';
             }
             if (stats.topProfile) text += 'Contexte principal : ' + stats.topProfile.name + '\n';
-            if (stats.topType) text += 'Type le plus fréquent : ' + stats.topType.name + ' (' + stats.topType.count + ' fois)\n';
+            if (stats.origineCounts && stats.origineCounts.length) text += 'Type le plus fréquent : ' + stats.origineCounts[0].name + ' (' + stats.origineCounts[0].count + ' fois)\n';
+            if (stats.meltdownPct > 0 || stats.shutdownPct > 0) text += 'Meltdown / Shutdown : ' + stats.meltdownPct + '% / ' + stats.shutdownPct + '%\n';
+            if (stats.avgEnergie !== null) text += 'Énergie moy. avant crise : ' + stats.avgEnergie + '/10\n';
+            if (stats.avgChargeMentale !== null) text += 'Charge mentale moy. : ' + stats.avgChargeMentale + '/10\n';
+            if (stats.avgChargeSociale !== null) text += 'Charge sociale moy. : ' + stats.avgChargeSociale + '/10\n';
             var last = sinceLastCrisis();
             if (last) text += 'Dernière crise : ' + last + '\n';
             if (stats.triggerStats.length) {
@@ -1107,6 +2251,107 @@
             URL.revokeObjectURL(url);
         }
 
+        /* ---------- FILTRES AVANCÉS ---------- */
+
+        function initFilterContextes() {
+            var journal = getJournal();
+            var profils = {};
+            for (var i = 0; i < journal.length; i++) {
+                var p = journal[i].profil || 'commun';
+                profils[p] = true;
+            }
+            var container = document.getElementById('filterContexte');
+            container.innerHTML = '';
+            for (var key in profils) {
+                var info = getProfileName(key);
+                var btn = document.createElement('button');
+                btn.className = 'filter-chip';
+                btn.setAttribute('data-val', key);
+                btn.textContent = info.icon + ' ' + info.name;
+                btn.onclick = function() { toggleFilterChip(this); };
+                container.appendChild(btn);
+            }
+        }
+
+        function toggleFilterChip(el) {
+            el.classList.toggle('selected');
+        }
+
+        function toggleFilterPanel() {
+            var overlay = document.getElementById('filterOverlay');
+            var panel = document.getElementById('filterPanel');
+            overlay.classList.add('visible');
+            setTimeout(function() { panel.classList.add('visible'); }, 10);
+        }
+
+        function closeFilterPanel() {
+            var overlay = document.getElementById('filterOverlay');
+            var panel = document.getElementById('filterPanel');
+            panel.classList.remove('visible');
+            setTimeout(function() { overlay.classList.remove('visible'); }, 300);
+        }
+
+        function getSelectedChips(containerId) {
+            var chips = document.querySelectorAll('#' + containerId + ' .filter-chip.selected');
+            var vals = [];
+            for (var i = 0; i < chips.length; i++) vals.push(chips[i].getAttribute('data-val'));
+            return vals;
+        }
+
+        function applyFilters() {
+            activeFilters.contexte = getSelectedChips('filterContexte');
+            activeFilters.origine = getSelectedChips('filterOrigine');
+            activeFilters.type = getSelectedChips('filterType');
+            activeFilters.moment = getSelectedChips('filterMoment');
+            activeFilters.intMin = parseInt(document.getElementById('filterIntMin').value, 10);
+            activeFilters.intMax = parseInt(document.getElementById('filterIntMax').value, 10);
+            updateFilterBadge();
+            closeFilterPanel();
+            renderCurrent();
+        }
+
+        function resetFilters() {
+            var chips = document.querySelectorAll('.filter-chip.selected');
+            for (var i = 0; i < chips.length; i++) chips[i].classList.remove('selected');
+            document.getElementById('filterIntMin').value = 1;
+            document.getElementById('filterIntMax').value = 10;
+            document.getElementById('filterIntMinLabel').textContent = '1';
+            document.getElementById('filterIntMaxLabel').textContent = '10';
+            activeFilters = { contexte: [], origine: [], type: [], moment: [], intMin: 1, intMax: 10 };
+            updateFilterBadge();
+            closeFilterPanel();
+            renderCurrent();
+        }
+
+        function updateFilterBadge() {
+            var count = activeFilters.contexte.length + activeFilters.origine.length +
+                activeFilters.type.length + activeFilters.moment.length +
+                (activeFilters.intMin > 1 || activeFilters.intMax < 10 ? 1 : 0);
+            var badge = document.getElementById('filterBadge');
+            var btn = document.getElementById('filterBtn');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'inline';
+                btn.classList.add('has-filters');
+            } else {
+                badge.style.display = 'none';
+                btn.classList.remove('has-filters');
+            }
+        }
+
+        function matchesFilters(entry) {
+            if (activeFilters.contexte.length && activeFilters.contexte.indexOf(entry.profil || 'commun') === -1) return false;
+            if (activeFilters.origine.length && activeFilters.origine.indexOf(entry.typeCrise) === -1) return false;
+            var int = parseFloat(entry.intensite);
+            if (!isNaN(int) && (int < activeFilters.intMin || int > activeFilters.intMax)) return false;
+            if (activeFilters.moment.length) {
+                var h = new Date(entry.horodatage).getHours();
+                var slot = h < 6 ? 'nuit' : h < 12 ? 'matin' : h < 18 ? 'aprem' : 'soir';
+                if (activeFilters.moment.indexOf(slot) === -1) return false;
+            }
+            return true;
+        }
+
         /* ---------- PÉRIODE ---------- */
 
         function selectPeriod(days) {
@@ -1134,12 +2379,14 @@
             try {
                 render(currentDays, customFrom, customTo);
             } catch (err) {
+                console.error('Stats render error:', err);
                 document.getElementById('mainContent').innerHTML =
                     '<div class="empty-state"><div class="empty-icon">⚠️</div>' +
                     '<div class="empty-text">Erreur de chargement.<br>Réessaie.</div></div>';
             }
         }
 
+        initFilterContextes();
         renderCurrent();
     </script>
     <script src="nora-scroll.js"></script>

@@ -969,6 +969,24 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label">Énergie avant la crise (1 = épuisé, 10 = en forme)</label>
+                <input type="range" class="intensity-slider" id="crisisEnergie" min="1" max="10" value="5" oninput="document.getElementById('energieDisplay').textContent=this.value+'/10'">
+                <div class="intensity-display" id="energieDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Charge mentale (1 = légère, 10 = saturée)</label>
+                <input type="range" class="intensity-slider" id="crisisChargeMentale" min="1" max="10" value="5" oninput="document.getElementById('chargeMentaleDisplay').textContent=this.value+'/10'">
+                <div class="intensity-display" id="chargeMentaleDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Charge sociale (1 = légère, 10 = saturée)</label>
+                <input type="range" class="intensity-slider" id="crisisChargeSociale" min="1" max="10" value="5" oninput="document.getElementById('chargeSocialeDisplay').textContent=this.value+'/10'">
+                <div class="intensity-display" id="chargeSocialeDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
                 <label class="form-label">Déclencheurs identifiés</label>
                 <button type="button" class="triggers-button" onclick="openTriggersModal()">
                     <span>🎯</span>
@@ -1745,7 +1763,10 @@
                     duree: document.getElementById('crisisDuration').value || '',
                     declencheurs: [...selectedTriggers],
                     remarques: document.getElementById('crisisRemarks').value || '',
-                    manual: false // Ajouté depuis le récap, pas manuellement
+                    energie: document.getElementById('crisisEnergie').value || '',
+                    chargeMentale: document.getElementById('crisisChargeMentale').value || '',
+                    chargeSociale: document.getElementById('crisisChargeSociale').value || '',
+                    manual: false
                 };
 
                 // Récupérer le journal existant
@@ -1871,7 +1892,8 @@
             var entry = {
                 horodatage: horodatage, profil: profil, profilNom: profilInfo.nom, profilEmoji: profilInfo.emoji,
                 capacites: capacites, besoins: besoins, etats: etats,
-                typeCrise: '', intensite: '', duree: duree, declencheurs: [], remarques: '', manual: false
+                typeCrise: '', intensite: '', duree: duree, declencheurs: [], remarques: '',
+                energie: '', chargeMentale: '', chargeSociale: '', manual: false
             };
             var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
             journal.push(entry);

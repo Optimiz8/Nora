@@ -695,6 +695,24 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label">Énergie avant la crise (1 = épuisé, 10 = en forme)</label>
+                <input type="range" class="intensity-slider" id="formEnergie" min="1" max="10" value="5" oninput="document.getElementById('formEnergieDisplay').textContent=this.value+'/10'">
+                <div class="intensity-display" id="formEnergieDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Charge mentale (1 = légère, 10 = saturée)</label>
+                <input type="range" class="intensity-slider" id="formChargeMentale" min="1" max="10" value="5" oninput="document.getElementById('formChargeMentaleDisplay').textContent=this.value+'/10'">
+                <div class="intensity-display" id="formChargeMentaleDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Charge sociale (1 = légère, 10 = saturée)</label>
+                <input type="range" class="intensity-slider" id="formChargeSociale" min="1" max="10" value="5" oninput="document.getElementById('formChargeSocialeDisplay').textContent=this.value+'/10'">
+                <div class="intensity-display" id="formChargeSocialeDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
                 <label class="form-label">Déclencheurs identifiés</label>
                 <button type="button" class="triggers-button" onclick="openTriggersModal()">
                     <span>🎯</span>
@@ -973,6 +991,12 @@
                 document.getElementById('formIntensity').value = '5';
                 updateFormIntensityDisplay();
                 document.getElementById('formDuration').value = '';
+                document.getElementById('formEnergie').value = '5';
+                document.getElementById('formEnergieDisplay').textContent = '5/10';
+                document.getElementById('formChargeMentale').value = '5';
+                document.getElementById('formChargeMentaleDisplay').textContent = '5/10';
+                document.getElementById('formChargeSociale').value = '5';
+                document.getElementById('formChargeSocialeDisplay').textContent = '5/10';
                 document.getElementById('formRemarks').value = '';
                 selectedTriggers = [];
                 updateTriggersPreview();
@@ -988,6 +1012,12 @@
                 document.getElementById('formIntensity').value = entry.intensite || '5';
                 updateFormIntensityDisplay();
                 document.getElementById('formDuration').value = entry.duree || '';
+                document.getElementById('formEnergie').value = entry.energie || '5';
+                document.getElementById('formEnergieDisplay').textContent = (entry.energie || '5') + '/10';
+                document.getElementById('formChargeMentale').value = entry.chargeMentale || '5';
+                document.getElementById('formChargeMentaleDisplay').textContent = (entry.chargeMentale || '5') + '/10';
+                document.getElementById('formChargeSociale').value = entry.chargeSociale || '5';
+                document.getElementById('formChargeSocialeDisplay').textContent = (entry.chargeSociale || '5') + '/10';
                 document.getElementById('formRemarks').value = entry.remarques || '';
                 selectedTriggers = Array.isArray(entry.declencheurs) ? [...entry.declencheurs] : [];
                 updateTriggersPreview();
@@ -1105,6 +1135,9 @@
                     duree: document.getElementById('formDuration').value,
                     declencheurs: [...selectedTriggers],
                     remarques: document.getElementById('formRemarks').value,
+                    energie: document.getElementById('formEnergie').value || '',
+                    chargeMentale: document.getElementById('formChargeMentale').value || '',
+                    chargeSociale: document.getElementById('formChargeSociale').value || '',
                     manual: true
                 };
                 
@@ -1124,6 +1157,9 @@
                 sorted[currentEntryIndex].duree = document.getElementById('formDuration').value;
                 sorted[currentEntryIndex].declencheurs = [...selectedTriggers];
                 sorted[currentEntryIndex].remarques = document.getElementById('formRemarks').value;
+                sorted[currentEntryIndex].energie = document.getElementById('formEnergie').value || '';
+                sorted[currentEntryIndex].chargeMentale = document.getElementById('formChargeMentale').value || '';
+                sorted[currentEntryIndex].chargeSociale = document.getElementById('formChargeSociale').value || '';
                 
                 localStorage.setItem('journalCrises', JSON.stringify(sorted));
                 closeModal(null, 'formModal');
