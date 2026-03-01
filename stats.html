@@ -427,7 +427,7 @@
         .bilan-comp-col-hd {
             width: 80px;
             text-align: center;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.06em;
@@ -446,7 +446,7 @@
 
         .bilan-comp-label {
             flex: 1;
-            font-size: 14px;
+            font-size: 16px;
             color: var(--dark);
             opacity: 0.65;
             font-weight: 500;
@@ -456,20 +456,24 @@
         .bilan-comp-current {
             width: 80px;
             text-align: center;
-            font-size: 20px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--dark);
-            padding: 12px 0;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
 
         .bilan-comp-prev {
             width: 80px;
             text-align: center;
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--dark);
             opacity: 0.45;
-            padding: 12px 0;
+            padding: 10px 0;
             line-height: 1.4;
         }
 
@@ -495,6 +499,16 @@
         }
 
         .bilan-minmax strong { font-weight: 700; }
+
+        .bilan-minmax-inline {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--dark);
+            opacity: 0.5;
+            line-height: 1.3;
+        }
+
+        .bilan-minmax-inline strong { font-weight: 700; }
 
         /* ---------- GRILLE JOURS ---------- */
 
@@ -835,6 +849,67 @@
             font-weight: 700;
             color: var(--accent);
         }
+
+        /* ---------- INSIGHTS ---------- */
+
+        .insight-card {
+            background: var(--dark);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .insight-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .insight-text {
+            font-size: 14px;
+            color: var(--light);
+            line-height: 1.5;
+        }
+
+        .insights-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* ---------- BOUTON ANALYSE ---------- */
+
+        .analyse-link-btn {
+            width: 100%;
+            background: rgba(245, 228, 204, 0.08);
+            border: 2px solid rgba(245, 228, 204, 0.2);
+            color: var(--light);
+            font-size: 16px;
+            font-weight: 700;
+            padding: 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+
+        .analyse-link-btn:active { background: rgba(245, 228, 204, 0.14); transform: scale(0.98); }
+
+        /* ---------- CAPACITÉS ---------- */
+
+        .cap-category {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--dark);
+            opacity: 0.5;
+            padding: 10px 0 4px;
+        }
+
+        .cap-sep { border-top: 1px solid rgba(46, 58, 89, 0.1); margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -941,7 +1016,10 @@
 
         function getProfileName(profileId) {
             var info = getContexteInfo(profileId);
-            return { name: info.nom, icon: info.emoji };
+            return {
+                name: (info && info.nom) ? info.nom : (profileId || 'Inconnu'),
+                icon: (info && info.emoji) ? info.emoji : '📍'
+            };
         }
 
         /* ---------- DURÉE ---------- */
@@ -1565,9 +1643,8 @@
             }
 
             return '<div class="section-tag">' + title + '</div>' +
-                '<div class="section">' +
-                '<div class="section-header">' +
-                '<div class="section-title"></div>' +
+                '<div class="stat-card" style="padding:12px 12px 6px">' +
+                '<div class="section-header" style="display:flex;justify-content:flex-end;margin-bottom:8px">' +
                 '<div class="view-toggle">' +
                 '<button class="view-toggle-btn ' + (!isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'rapide\')">Rapide</button>' +
                 '<button class="view-toggle-btn ' + (isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'detail\')">Détail</button>' +
@@ -1592,99 +1669,141 @@
 
         /* ---------- GRAPHIQUE : ÉVOLUTION TEMPORELLE ---------- */
 
-        function buildTimelineSVG(entries, days) {
-            if (entries.length < 2) return '';
-            var useWeeks = days < 60;
-            var buckets = {};
+        function buildBarChartSVG(entries, days, from, to) {
+            var MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jui','Jul','Aoû','Sep','Oct','Nov','Déc'];
+            var DAY_SHORT = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+            var bucketType, startDate, endDate;
+            var now = new Date();
+
+            if (days === 7) {
+                bucketType = 'daily';
+                endDate = new Date(now); endDate.setHours(23,59,59,999);
+                startDate = new Date(now); startDate.setDate(now.getDate() - 6); startDate.setHours(0,0,0,0);
+            } else if (days === 365) {
+                bucketType = 'monthly';
+                endDate = new Date(now); endDate.setHours(23,59,59,999);
+                startDate = new Date(now); startDate.setDate(now.getDate() - 364); startDate.setHours(0,0,0,0);
+            } else {
+                bucketType = 'weekly';
+                if (days === 0 && from && to) {
+                    startDate = new Date(from); startDate.setHours(0,0,0,0);
+                    endDate = new Date(to); endDate.setHours(23,59,59,999);
+                    var diffD = (endDate - startDate) / 86400000;
+                    if (diffD <= 14) bucketType = 'daily';
+                    else if (diffD > 200) bucketType = 'monthly';
+                } else {
+                    endDate = new Date(now); endDate.setHours(23,59,59,999);
+                    startDate = new Date(now); startDate.setDate(now.getDate() - 29); startDate.setHours(0,0,0,0);
+                }
+            }
+
+            var buckets = {}, bucketOrder = [], bucketLabels = {};
+
+            if (bucketType === 'daily') {
+                var dc = new Date(startDate);
+                while (dc <= endDate) {
+                    var dk = dc.toISOString().split('T')[0];
+                    buckets[dk] = { count: 0, intensities: [] };
+                    bucketOrder.push(dk);
+                    bucketLabels[dk] = DAY_SHORT[dc.getDay()] + ' ' + dc.getDate();
+                    dc.setDate(dc.getDate() + 1);
+                }
+            } else if (bucketType === 'weekly') {
+                var ws = new Date(startDate), wi = 0;
+                while (ws <= endDate) {
+                    var wk = 'w' + wi;
+                    buckets[wk] = { count: 0, intensities: [], start: new Date(ws) };
+                    bucketOrder.push(wk);
+                    bucketLabels[wk] = ws.getDate() + '/' + (ws.getMonth() + 1);
+                    ws.setDate(ws.getDate() + 7);
+                    wi++;
+                }
+            } else {
+                var ms = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+                var me = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+                var mc = new Date(ms);
+                while (mc <= me) {
+                    var mk = mc.getFullYear() + '-' + mc.getMonth();
+                    buckets[mk] = { count: 0, intensities: [] };
+                    bucketOrder.push(mk);
+                    bucketLabels[mk] = MONTHS[mc.getMonth()];
+                    mc.setMonth(mc.getMonth() + 1);
+                }
+            }
 
             for (var i = 0; i < entries.length; i++) {
-                var d = new Date(entries[i].date);
-                var key;
-                if (useWeeks) {
-                    var dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000);
-                    var week = Math.floor(dayOfYear / 7);
-                    key = d.getFullYear() + '-W' + week;
+                var ed = new Date(entries[i].date);
+                var bk = null;
+                if (bucketType === 'daily') {
+                    bk = ed.toISOString().split('T')[0];
+                } else if (bucketType === 'weekly') {
+                    for (var bi = 0; bi < bucketOrder.length; bi++) {
+                        var bs = buckets[bucketOrder[bi]].start;
+                        var be = new Date(bs); be.setDate(bs.getDate() + 6);
+                        if (ed >= bs && ed <= be) { bk = bucketOrder[bi]; break; }
+                    }
                 } else {
-                    key = d.getFullYear() + '-' + (d.getMonth() + 1);
+                    bk = ed.getFullYear() + '-' + ed.getMonth();
                 }
-                if (!buckets[key]) buckets[key] = { count: 0, intensities: [], label: '' };
-                buckets[key].count++;
-                if (entries[i].intensite !== null) buckets[key].intensities.push(entries[i].intensite);
-
-                if (useWeeks) {
-                    var monday = new Date(d); monday.setDate(d.getDate() - d.getDay() + 1);
-                    buckets[key].label = monday.getDate() + '/' + (monday.getMonth() + 1);
-                } else {
-                    var mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jui', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
-                    buckets[key].label = mois[d.getMonth()];
+                if (bk && buckets[bk]) {
+                    buckets[bk].count++;
+                    if (entries[i].intensite !== null) buckets[bk].intensities.push(entries[i].intensite);
                 }
             }
 
-            var keys = Object.keys(buckets).sort();
-            var data = [];
-            for (var ki = 0; ki < keys.length; ki++) {
-                var b = buckets[keys[ki]];
-                var avg = b.intensities.length ? avgArr(b.intensities) : null;
-                data.push({ label: b.label, count: b.count, avgInt: avg });
+            var maxCount = 0;
+            for (var bi2 = 0; bi2 < bucketOrder.length; bi2++) {
+                if (buckets[bucketOrder[bi2]].count > maxCount) maxCount = buckets[bucketOrder[bi2]].count;
+            }
+            if (!bucketOrder.length || maxCount === 0) {
+                return '<div class="chart-container" style="display:flex;align-items:center;justify-content:center;min-height:80px">' +
+                    '<div style="text-align:center;opacity:0.4;color:var(--dark);font-size:14px">Aucune crise sur cette période</div></div>';
             }
 
-            if (data.length < 2) return '';
-
-            var W = 320, H = 150, padL = 30, padR = 10, padT = 15, padB = 25;
+            var n = bucketOrder.length;
+            var W = 320, H = 150, padL = 22, padR = 6, padT = 22, padB = 28;
             var chartW = W - padL - padR;
             var chartH = H - padT - padB;
-            var maxCount = 0, maxInt = 10;
-            for (var di = 0; di < data.length; di++) {
-                if (data[di].count > maxCount) maxCount = data[di].count;
-            }
-            if (maxCount === 0) maxCount = 1;
+            var spacing = chartW / n;
+            var barW = Math.max(3, Math.min(18, spacing - 2));
 
-            var step = chartW / (data.length - 1);
-            var countLine = '', intLine = '', labels = '';
-            var countDots = '', intDots = '';
+            var barsHtml = '', labelsHtml = '', yAxisHtml = '';
 
-            for (var pi = 0; pi < data.length; pi++) {
-                var x = padL + pi * step;
-                var yCount = padT + chartH - (data[pi].count / maxCount) * chartH;
-                if (pi === 0) countLine = 'M' + x + ',' + yCount;
-                else countLine += ' L' + x + ',' + yCount;
-                countDots += '<circle cx="' + x + '" cy="' + yCount + '" r="3" fill="#F7B89C"/>';
-
-                if (data[pi].avgInt !== null) {
-                    var yInt = padT + chartH - (data[pi].avgInt / maxInt) * chartH;
-                    if (intLine === '') intLine = 'M' + x + ',' + yInt;
-                    else intLine += ' L' + x + ',' + yInt;
-                    intDots += '<circle cx="' + x + '" cy="' + yInt + '" r="3" fill="#2E3A59"/>';
-                }
-
-                if (data.length <= 12 || pi % 2 === 0) {
-                    labels += '<text x="' + x + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10" fill="#2E3A59" opacity="0.5">' + data[pi].label + '</text>';
-                }
+            for (var yl = 0; yl <= 3; yl++) {
+                var yy = padT + (yl / 3) * chartH;
+                var yv = Math.round(maxCount * (1 - yl / 3));
+                yAxisHtml += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '" stroke="#2E3A59" stroke-opacity="0.07"/>';
+                if (yv > 0) yAxisHtml += '<text x="' + (padL - 3) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="9" fill="#2E3A59" opacity="0.4">' + yv + '</text>';
             }
 
-            var yAxis = '';
-            for (var yl = 0; yl <= 4; yl++) {
-                var yy = padT + (yl / 4) * chartH;
-                var val = Math.round(maxCount * (1 - yl / 4));
-                yAxis += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '" stroke="#2E3A59" stroke-opacity="0.06"/>';
-                yAxis += '<text x="' + (padL - 4) + '" y="' + (yy + 3) + '" text-anchor="end" font-size="9" fill="#2E3A59" opacity="0.4">' + val + '</text>';
+            var showEvery = n > 20 ? 4 : n > 10 ? 2 : 1;
+            for (var bi3 = 0; bi3 < bucketOrder.length; bi3++) {
+                var bKey = bucketOrder[bi3];
+                var bd = buckets[bKey];
+                var cx = padL + bi3 * spacing + spacing / 2;
+                var bh = maxCount > 0 ? (bd.count / maxCount) * chartH : 0;
+                var by = padT + chartH - bh;
+                var ai = bd.intensities.length ? avgArr(bd.intensities) : null;
+
+                if (bd.count > 0) {
+                    barsHtml += '<rect x="' + (cx - barW / 2) + '" y="' + by + '" width="' + barW + '" height="' + bh + '" rx="2" fill="#F7B89C"/>';
+                    barsHtml += '<text x="' + cx + '" y="' + (by - 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#F5E4CC">' + bd.count + '</text>';
+                    if (ai !== null && bh > 16) {
+                        barsHtml += '<text x="' + cx + '" y="' + (by + bh / 2 + 4) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.7">' + ai + '</text>';
+                    }
+                }
+
+                if (bi3 % showEvery === 0) {
+                    labelsHtml += '<text x="' + cx + '" y="' + (H - 3) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.45">' + bucketLabels[bKey] + '</text>';
+                }
             }
 
             var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
-                yAxis + labels +
-                '<path d="' + countLine + '" fill="none" stroke="#F7B89C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-                countDots;
-            if (intLine) {
-                svg += '<path d="' + intLine + '" fill="none" stroke="#2E3A59" stroke-width="2" stroke-dasharray="4,3" stroke-linecap="round" stroke-linejoin="round"/>' +
-                    intDots;
-            }
-            svg += '</svg>';
+                yAxisHtml + barsHtml + labelsHtml + '</svg>';
 
             return '<div class="chart-container">' + svg +
-                '<div class="chart-legend">' +
-                '<div class="chart-legend-item"><div class="chart-legend-dot" style="background:#F7B89C"></div>Crises</div>' +
-                '<div class="chart-legend-item"><div class="chart-legend-dot" style="background:#2E3A59"></div>Intensité moy.</div>' +
-                '</div></div>';
+                '<div style="font-size:11px;color:var(--dark);opacity:0.4;text-align:center;padding-top:4px">' +
+                'Nombre de crises · intensité moy. à l\'intérieur</div></div>';
         }
 
         /* ---------- GRAPHIQUE : SEUILS CRITIQUES ---------- */
@@ -1907,10 +2026,11 @@
         function bilanRow(label, value, delta, sub) {
             return '<div class="bilan-comp-row">' +
                 '<div class="bilan-comp-label">' + label + '</div>' +
-                '<div class="bilan-comp-current">' + value + '</div>' +
-                '<div class="bilan-comp-prev">' + (delta || '') + '</div>' +
+                '<div class="bilan-comp-current">' + value +
+                (sub ? '<div class="bilan-minmax-inline">' + sub + '</div>' : '') +
                 '</div>' +
-                (sub ? '<div class="bilan-minmax">' + sub + '</div>' : '');
+                '<div class="bilan-comp-prev">' + (delta || '') + '</div>' +
+                '</div>';
         }
 
         function deltaText(current, prev, unit, invert) {
@@ -2013,90 +2133,51 @@
                     ' <span class="bilan-prev-val">(' + stats.origineCounts[0].count + '×)</span>', '');
             }
 
+            /* Jour dominant — affiché dans le bilan si période ≥30j et ≥3 crises */
+            var isLongPeriod = days >= 30 || (days === 0 && customFrom && customTo &&
+                (new Date(customTo) - new Date(customFrom)) / 86400000 >= 30);
+            if (isLongPeriod && stats.total >= 3 && stats.dayOfWeek.length) {
+                var maxDC = 0;
+                for (var ddi = 0; ddi < stats.dayOfWeek.length; ddi++) {
+                    if (stats.dayOfWeek[ddi].count > maxDC) maxDC = stats.dayOfWeek[ddi].count;
+                }
+                if (maxDC > 0) {
+                    var topDays = [];
+                    for (var ddi2 = 0; ddi2 < stats.dayOfWeek.length; ddi2++) {
+                        if (stats.dayOfWeek[ddi2].count === maxDC) topDays.push(stats.dayOfWeek[ddi2].name);
+                    }
+                    if (topDays.length === 1) {
+                        html += bilanRow('Jour le plus fréquent', '<strong>' + topDays[0] + '</strong>', '');
+                    } else if (topDays.length === 2) {
+                        html += bilanRow('Jour le plus fréquent',
+                            '<strong>' + topDays[0] + '</strong> / <strong>' + topDays[1] + '</strong>',
+                            '<span style="font-size:11px">ex aequo</span>');
+                    }
+                }
+            }
+
             html += '</div>';
 
-            /* ========== MOMENTS DE LA JOURNÉE ========== */
-            html += '<div class="section-tag">Quand</div>';
-
-            var maxDayCount = 0;
-            for (var di = 0; di < stats.dayOfWeek.length; di++) {
-                if (stats.dayOfWeek[di].count > maxDayCount) maxDayCount = stats.dayOfWeek[di].count;
-            }
-            if (maxDayCount === 0) maxDayCount = 1;
-
-            var maxMoment = 0;
-            for (var mi = 0; mi < stats.hourSlots.length; mi++) {
-                if (stats.hourSlots[mi].count > maxMoment) maxMoment = stats.hourSlots[mi].count;
-            }
-
-            html += '<div class="stat-card"><div style="padding:10px 16px 4px;font-size:13px;font-weight:700;color:var(--dark);opacity:0.55;text-transform:uppercase">Jour de la semaine</div>';
-            html += '<div class="day-grid">';
-            for (var dg = 0; dg < stats.dayOfWeek.length; dg++) {
-                var day = stats.dayOfWeek[dg];
-                var isTop = day.count === maxDayCount && day.count > 0;
-                html += '<div class="day-cell' + (isTop ? ' top-day' : '') + '">' +
-                    '<div class="day-name">' + day.name + '</div>' +
-                    '<div class="day-count">' + day.count + '</div></div>';
-            }
-            html += '</div></div>';
-
-            var maxHourCount = 0;
-            for (var mh = 0; mh < stats.hourSlots.length; mh++) {
-                if (stats.hourSlots[mh].count > maxHourCount) maxHourCount = stats.hourSlots[mh].count;
-            }
-
-            html += '<div class="moment-grid">';
-            for (var hg = 0; hg < stats.hourSlots.length; hg++) {
-                var slot = stats.hourSlots[hg];
-                var isHighlight = slot.count === maxHourCount && slot.count > 0;
-                html += '<div class="moment-cell' + (isHighlight ? ' highlight' : '') + '">' +
-                    '<div class="moment-name">' + slot.name + '</div>' +
-                    '<div class="moment-range">' + slot.range + '</div>' +
-                    '<div class="moment-count">' + slot.count + '</div>';
-                if (slot.avgIntensity !== null) {
-                    html += '<div style="font-size:11px;opacity:0.6;margin-top:2px">' + slot.avgIntensity + '/10</div>';
-                }
-                html += '</div>';
-            }
-            html += '</div>';
-
-            /* ========== CONTEXTES ========== */
-            if (stats.profileCounts.length > 1) {
-                html += '<div class="section-tag">Contextes</div>';
-                html += '<div class="stat-card">';
-                for (var pc = 0; pc < stats.profileCounts.length; pc++) {
-                    var prof = stats.profileCounts[pc];
-                    var pInfo = getProfileName(prof.name);
-                    var pBarPct = Math.round((prof.count / stats.total) * 100);
-                    var pAvgInt = stats.avgIntensityByContexte[pInfo.name];
-                    var pType = stats.percentTypeByContexte[pInfo.name];
-                    html += '<div class="rank-item"><div class="rank-header">' +
-                        '<div class="rank-name">' + pInfo.icon + ' ' + pInfo.name + '</div>' +
-                        '<div class="rank-meta">' + prof.count + '×' +
-                        (pAvgInt !== null ? ' · ' + pAvgInt + '/10' : '') +
-                        (pType && pType.meltdown > 0 ? ' · ' + pType.meltdown + '% meltdown' : '') +
-                        '</div></div>' +
-                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pBarPct + '%"></div></div></div>';
-                }
-                html += '</div>';
+            /* ========== GRAPHIQUE EN BARRES ========== */
+            var barChartHtml = buildBarChartSVG(stats.timelineEntries, days, from, to);
+            if (barChartHtml) {
+                html += '<div class="section-tag">Évolution</div>';
+                html += barChartHtml;
             }
 
             /* ========== ORIGINE ========== */
             if (stats.origineCounts.length) {
                 html += '<div class="section-tag">Origine</div>';
-                html += '<div class="stat-card">';
+                html += '<div class="stat-card" style="padding:12px">';
                 var maxOrig = stats.origineCounts[0].count;
                 for (var oi = 0; oi < stats.origineCounts.length; oi++) {
                     var orig = stats.origineCounts[oi];
                     var oIntArr = stats.avgIntensityByType[orig.name];
                     var oDurArr = stats.avgDurationByType[orig.name];
-                    html += '<div class="rank-item"><div class="rank-header">' +
-                        '<div class="rank-name">' + orig.name + '</div>' +
-                        '<div class="rank-meta">' + orig.count + '×' +
-                        (oIntArr ? ' · ' + oIntArr + '/10' : '') +
-                        (oDurArr ? ' · ~' + formatMins(oDurArr) : '') +
-                        '</div></div>' +
-                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct(orig.count, maxOrig) + '%"></div></div></div>';
+                    var oMeta = orig.count + '×';
+                    if (oIntArr) oMeta += ' · ' + oIntArr + '/10';
+                    if (oDurArr) oMeta += ' · ~' + formatMins(oDurArr);
+                    html += rankRow({ name: orig.name, count: orig.count, avgIntensity: null, meltdownPct: null }, oi + 1, maxOrig);
                 }
                 html += '</div>';
             }
@@ -2104,22 +2185,22 @@
             /* ========== TYPE MELTDOWN/SHUTDOWN ========== */
             if (totalTyped > 0) {
                 html += '<div class="section-tag">Types de crise</div>';
-                html += '<div class="stat-card">';
+                html += '<div class="stat-card" style="padding:12px">';
                 var typeData = [
                     { name: 'Meltdown', count: stats.meltdownCount },
                     { name: 'Shutdown', count: stats.shutdownCount }
                 ];
+                var maxType = Math.max(stats.meltdownCount, stats.shutdownCount);
                 for (var ti = 0; ti < typeData.length; ti++) {
                     if (typeData[ti].count === 0) continue;
                     var tAvgI = stats.avgIntensityByType[typeData[ti].name];
                     var tAvgD = stats.avgDurationByType[typeData[ti].name];
-                    html += '<div class="rank-item"><div class="rank-header">' +
-                        '<div class="rank-name">' + typeData[ti].name + '</div>' +
-                        '<div class="rank-meta">' + typeData[ti].count + '× (' + pct(typeData[ti].count, totalTyped) + '%)' +
-                        (tAvgI ? ' · ' + tAvgI + '/10' : '') +
-                        (tAvgD ? ' · ~' + formatMins(tAvgD) : '') +
-                        '</div></div>' +
-                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct(typeData[ti].count, totalTyped) + '%"></div></div></div>';
+                    html += rankRow({
+                        name: typeData[ti].name,
+                        count: typeData[ti].count,
+                        avgIntensity: tAvgI || null,
+                        meltdownPct: null
+                    }, 0, maxType);
                 }
                 html += '</div>';
             }
@@ -2182,27 +2263,24 @@
                 html += '</div>';
             }
 
-            /* ========== ÉVOLUTION TEMPORELLE ========== */
-            var timelineHtml = buildTimelineSVG(stats.timelineEntries, days || 30);
-            if (timelineHtml) {
-                html += '<div class="section-tag">Évolution temporelle</div>';
-                html += timelineHtml;
+            /* ========== INSIGHTS ========== */
+            var insightsHtml = buildInsights(stats, days, from, to);
+            if (insightsHtml) {
+                html += '<div class="section-tag">À retenir</div>';
+                html += insightsHtml;
             }
 
-            /* ========== SEUILS CRITIQUES ========== */
-            var thresholdsHtml = buildThresholdsSVG(stats.thresholds);
-            if (thresholdsHtml) {
-                html += '<div class="section-tag">Seuils critiques</div>';
-                html += '<div style="font-size:12px;color:var(--light);opacity:0.5;padding:0 2px 6px">Intensité moyenne de crise selon le niveau avant la crise</div>';
-                html += thresholdsHtml;
+            /* ========== LIEN ANALYSE APPROFONDIE ========== */
+            if (stats.total >= 3) {
+                html += '<button class="analyse-link-btn" onclick="goToAnalyse()">Analyse approfondie →</button>';
             }
-
-            /* ========== ANALYSE APPROFONDIE ========== */
-            html += '<div class="section-tag">Analyse approfondie</div>';
-            html += buildAnalysis(stats);
 
             /* ========== EXPORT ========== */
-            html += '<button class="export-stats-btn" onclick="exportStats()">📋 Copier le résumé</button>';
+            html += '<div style="display:flex;gap:8px;margin-top:4px">' +
+                '<button class="export-stats-btn" style="flex:1" onclick="exportStats()">📋 Copier</button>' +
+                '<button class="export-stats-btn" style="flex:1" onclick="shareStats()">↑ Partager</button>' +
+                '<button class="export-stats-btn" style="flex:1" onclick="exportPDF()">🖨️ PDF</button>' +
+                '</div>';
 
             main.innerHTML = html;
         }
@@ -2326,7 +2404,7 @@
             var overlay = document.getElementById('filterOverlay');
             var panel = document.getElementById('filterPanel');
             panel.classList.remove('visible');
-            setTimeout(function() { overlay.classList.remove('visible'); }, 300);
+            overlay.classList.remove('visible');
         }
 
         function getSelectedChips(containerId) {
@@ -2413,9 +2491,106 @@
             renderCurrent();
         }
 
-        /* ---------- (ancien tooltip définition supprimé — éléments DOM manquants) ---------- */
+        /* ---------- INSIGHTS ---------- */
 
-        /* ---------- (ancien code filtres supprimé — remplacé par le système actif ci-dessus) ---------- */
+        function buildInsights(stats, days, from, to) {
+            var insights = [];
+
+            /* Règle G — Variation vs période précédente */
+            if (stats.prev && stats.prev.count >= 3 && stats.total >= 3) {
+                var pctVar = Math.round(((stats.total - stats.prev.count) / stats.prev.count) * 100);
+                if (Math.abs(pctVar) >= 20) {
+                    var dir = pctVar > 0 ? 'augmenté' : 'diminué';
+                    insights.push({ priority: 1, icon: pctVar > 0 ? '↑' : '↓',
+                        text: 'Le nombre de crises a <strong>' + dir + ' de ' + Math.abs(pctVar) + '%</strong> par rapport à la période précédente.' });
+                }
+            }
+
+            /* Règle F — Énergie basse → crises plus intenses */
+            if (stats.thresholds && stats.thresholds.energie) {
+                var enLow = stats.thresholds.energie[0];
+                if (enLow.count >= 2 && enLow.avgIntensity !== null && stats.avgIntensity !== null &&
+                    enLow.avgIntensity >= stats.avgIntensity + 1) {
+                    insights.push({ priority: 1, icon: '⚡',
+                        text: 'Les crises tendent à être <strong>plus intenses lorsque l\'énergie est basse</strong> (≤3/10).' });
+                }
+            }
+
+            /* Règle D/E — Type dominant */
+            var totalTyped = stats.meltdownCount + stats.shutdownCount;
+            if (totalTyped >= 3) {
+                if (stats.meltdownPct >= 65) {
+                    insights.push({ priority: 1, icon: '🔴',
+                        text: '<strong>' + stats.meltdownPct + '%</strong> des crises sont des meltdowns sur cette période.' });
+                } else if (stats.shutdownPct >= 65) {
+                    insights.push({ priority: 1, icon: '🔵',
+                        text: '<strong>' + stats.shutdownPct + '%</strong> des crises sont des shutdowns sur cette période.' });
+                }
+            }
+
+            /* Règle C — Contexte dominant */
+            if (stats.total >= 3 && stats.topProfile && stats.profileCounts.length > 1) {
+                var ctxPct = Math.round((stats.topProfile.count / stats.total) * 100);
+                if (ctxPct >= 40) {
+                    insights.push({ priority: 2, icon: '📍',
+                        text: '<strong>' + ctxPct + '%</strong> des crises surviennent dans le contexte <strong>' +
+                            stats.topProfile.icon + ' ' + stats.topProfile.name + '</strong>.' });
+                }
+            }
+
+            /* Règle B — Moment dominant */
+            if (stats.total >= 3 && stats.hourSlots) {
+                var maxSlot = null;
+                for (var hi = 0; hi < stats.hourSlots.length; hi++) {
+                    if (!maxSlot || stats.hourSlots[hi].count > maxSlot.count) maxSlot = stats.hourSlots[hi];
+                }
+                if (maxSlot && maxSlot.count > 0) {
+                    var slotPct = Math.round((maxSlot.count / stats.total) * 100);
+                    if (slotPct >= 45) {
+                        insights.push({ priority: 2, icon: '🕐',
+                            text: '<strong>' + slotPct + '%</strong> des crises se produisent <strong>' +
+                                (maxSlot.name === 'Matin' ? 'le matin' : maxSlot.name === 'Après-m.' ? 'l\'après-midi' :
+                                 maxSlot.name === 'Soir' ? 'le soir' : 'la nuit') + '</strong>.' });
+                    }
+                }
+            }
+
+            /* Règle A — Déclencheur dominant */
+            if (stats.triggerStats.length > 0 && stats.total >= 3) {
+                var topT = stats.triggerStats[0];
+                var tPct = Math.round((topT.count / stats.total) * 100);
+                if (tPct >= 30 && topT.count >= 3) {
+                    insights.push({ priority: 2, icon: '🎯',
+                        text: 'Le déclencheur le plus fréquent est <strong>' + topT.name +
+                            '</strong> (' + topT.count + ' fois, ' + tPct + '% des crises).' });
+                }
+            }
+
+            if (!insights.length) return '';
+
+            insights.sort(function(a, b) { return a.priority - b.priority; });
+            var topInsights = insights.slice(0, 5);
+
+            var html = '<div class="insights-list">';
+            for (var i = 0; i < topInsights.length; i++) {
+                html += '<div class="insight-card">' +
+                    '<div class="insight-icon">' + topInsights[i].icon + '</div>' +
+                    '<div class="insight-text">' + topInsights[i].text + '</div>' +
+                    '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        /* ---------- NAVIGATION VERS ANALYSE ---------- */
+
+        function goToAnalyse() {
+            localStorage.setItem('statsNavDays', currentDays);
+            localStorage.setItem('statsNavFrom', customFrom || '');
+            localStorage.setItem('statsNavTo', customTo || '');
+            localStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
+            window.location.href = 'stats-approfondie.html';
+        }
 
         function renderCurrent() {
             try {
