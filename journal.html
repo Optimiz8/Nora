@@ -309,6 +309,64 @@
             margin-bottom: 16px;
         }
 
+        .form-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.15);
+        }
+        .form-section-title:first-child { margin-top: 4px; }
+
+        .trigger-intensity-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+        }
+        .trigger-intensity-row .trigger-name-label {
+            flex: 1;
+            font-size: 13px;
+            color: var(--dark);
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .trigger-intensity-row input[type="range"] {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(46, 58, 89, 0.2);
+            border-radius: 2px;
+            outline: none;
+        }
+        .trigger-intensity-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--dark);
+            cursor: pointer;
+        }
+        .trigger-intensity-row input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--dark);
+            border: none;
+            cursor: pointer;
+        }
+        .trigger-intensity-val {
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.7;
+            min-width: 28px;
+            text-align: right;
+        }
+
         .form-label {
             font-size: 16px;
             font-weight: 600;
@@ -615,118 +673,9 @@
             color: var(--dark);
         }
 
-        .precrisis-bar-wrap {
-            flex: 1;
-            height: 5px;
-            background: rgba(46, 58, 89, 0.12);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .precrisis-bar {
-            height: 100%;
-            border-radius: 3px;
-        }
-
         .precrisis-num {
             font-size: 12px;
             font-weight: 600;
-            min-width: 24px;
-            text-align: right;
-        }
-
-        /* ---------- PRÉ-CRISE dans vue détail ---------- */
-        .precrisis-detail-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .precrisis-detail-icon {
-            font-size: 18px;
-            width: 24px;
-            flex-shrink: 0;
-        }
-
-        .precrisis-detail-info {
-            flex: 1;
-        }
-
-        .precrisis-detail-label {
-            font-size: 14px;
-            color: var(--dark);
-            opacity: 0.7;
-            margin-bottom: 3px;
-        }
-
-        .precrisis-detail-bar-wrap {
-            height: 8px;
-            background: rgba(46, 58, 89, 0.12);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .precrisis-detail-bar {
-            height: 100%;
-            border-radius: 4px;
-        }
-
-        .precrisis-detail-val {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--dark);
-            min-width: 36px;
-            text-align: right;
-        }
-
-        /* ---------- PRÉ-CRISE dans formulaire ---------- */
-        .precrisis-form-group {
-            margin-bottom: 16px;
-        }
-
-        .precrisis-form-slider {
-            width: 100%;
-            margin-top: 8px;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 8px;
-            border-radius: 4px;
-            background: #384657;
-            outline: none;
-        }
-
-        .precrisis-form-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            background: #F7B89C;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-
-        .precrisis-form-slider::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            background: #F7B89C;
-            cursor: pointer;
-            border-radius: 50%;
-            border: none;
-        }
-
-        .precrisis-form-display {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--dark);
-            margin: 6px 0 2px;
-        }
-
-        .precrisis-form-hint {
-            font-size: 12px;
-            color: var(--dark);
-            opacity: 0.5;
-            text-align: center;
         }
 
         @media (max-width: 600px) {
@@ -806,50 +755,10 @@
                 <button class="close-button" onclick="closeModal(null, 'formModal')" aria-label="Fermer">×</button>
             </div>
             
-            <div class="form-group" id="dateGroup">
-                <label class="form-label">Date <span class="form-required">*</span></label>
-                <input type="date" class="form-input" id="formDate" required>
-            </div>
+            <div class="form-section-title">🔋 Avant la crise</div>
 
             <div class="form-group">
-                <label class="form-label">Heure (optionnel)</label>
-                <input type="time" class="form-input" id="formTime">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Origine</label>
-                <select class="form-select" id="formType">
-                    <option value="">Non précisé</option>
-                    <option value="Anticipatoire">Anticipatoire</option>
-                    <option value="Réactionnelle">Réactionnelle</option>
-                    <option value="Mixte">Mixte</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Type de crise</label>
-                <select class="form-select" id="formTypeManifestation">
-                    <option value="">Non précisé</option>
-                    <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
-                    <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
-                    <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
-                    <option value="Inconnu">Je ne sais pas</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
-                <input type="range" class="intensity-slider" id="formIntensity" min="1" max="10" value="5" oninput="updateFormIntensityDisplay()">
-                <div class="intensity-display" id="formIntensityDisplay">5/10</div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Durée estimée</label>
-                <input type="text" class="form-input" id="formDuration" placeholder="Ex: 30 min, 1h30...">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Énergie avant la crise (1 = épuisé, 10 = en forme)</label>
+                <label class="form-label">Énergie (1 = épuisé, 10 = en forme)</label>
                 <input type="range" class="intensity-slider" id="formEnergie" min="1" max="10" value="5" oninput="document.getElementById('formEnergieDisplay').textContent=this.value+'/10'">
                 <div class="intensity-display" id="formEnergieDisplay">5/10</div>
             </div>
@@ -875,31 +784,49 @@
                 <div class="triggers-preview" id="triggersPreview">Aucun déclencheur sélectionné</div>
             </div>
 
+            <div class="form-section-title">⚡ La crise</div>
+
+            <div class="form-group" id="dateGroup">
+                <label class="form-label">Date <span class="form-required">*</span></label>
+                <input type="date" class="form-input" id="formDate" required>
+            </div>
+
             <div class="form-group">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                    <input type="checkbox" id="formPrecrisisEnabled" style="width:18px;height:18px;accent-color:#2E3A59;cursor:pointer;" onchange="togglePrecrisisForm()">
-                    <label for="formPrecrisisEnabled" class="form-label" style="margin:0;cursor:pointer;">Renseigner l'état avant la crise</label>
-                </div>
+                <label class="form-label">Heure (optionnel)</label>
+                <input type="time" class="form-input" id="formTime">
+            </div>
 
-                <div id="precrisisFormFields" style="display:none;">
-                    <div class="precrisis-form-group">
-                        <label class="form-label" style="font-size:14px; font-weight:500;">⚡ Énergie <span style="font-weight:400; opacity:0.6;">(0 = épuisé · 100 = plein d'énergie)</span></label>
-                        <input type="range" class="precrisis-form-slider" id="formEnergie" min="0" max="100" value="50" oninput="updateFormPrecrisis('Energie')">
-                        <div class="precrisis-form-display" id="formEnergieDisplay">50 — Modérée</div>
-                    </div>
+            <div class="form-group">
+                <label class="form-label">Origine</label>
+                <select class="form-select" id="formType">
+                    <option value="">Non précisé</option>
+                    <option value="Anticipatoire">Anticipatoire</option>
+                    <option value="Réactionnelle">Réactionnelle</option>
+                    <option value="Mixte">Mixte</option>
+                    <option value="Indéterminé">Indéterminé</option>
+                </select>
+            </div>
 
-                    <div class="precrisis-form-group">
-                        <label class="form-label" style="font-size:14px; font-weight:500;">🧠 Charge mentale <span style="font-weight:400; opacity:0.6;">(0 = légère · 100 = saturé)</span></label>
-                        <input type="range" class="precrisis-form-slider" id="formMentale" min="0" max="100" value="50" oninput="updateFormPrecrisis('Mentale')">
-                        <div class="precrisis-form-display" id="formMentaleDisplay">50 — Modérée</div>
-                    </div>
+            <div class="form-group">
+                <label class="form-label">Type de crise</label>
+                <select class="form-select" id="formTypeManifestation">
+                    <option value="">Non précisé</option>
+                    <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
+                    <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
+                    <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
+                    <option value="Indéterminé">Indéterminé</option>
+                </select>
+            </div>
 
-                    <div class="precrisis-form-group">
-                        <label class="form-label" style="font-size:14px; font-weight:500;">👥 Charge sociale <span style="font-weight:400; opacity:0.6;">(0 = légère · 100 = saturée)</span></label>
-                        <input type="range" class="precrisis-form-slider" id="formSociale" min="0" max="100" value="50" oninput="updateFormPrecrisis('Sociale')">
-                        <div class="precrisis-form-display" id="formSocialeDisplay">50 — Modérée</div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
+                <input type="range" class="intensity-slider" id="formIntensity" min="1" max="10" value="5" oninput="updateFormIntensityDisplay()">
+                <div class="intensity-display" id="formIntensityDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Durée estimée</label>
+                <input type="text" class="form-input" id="formDuration" placeholder="Ex: 30 min, 1h30...">
             </div>
 
             <div class="form-group">
@@ -1025,33 +952,32 @@
             ]
         };
 
-        function precrisisColor(val, isEnergie) {
-            // Énergie : haut = bon (vert) ; Charges : haut = mauvais (rouge)
-            var ratio = isEnergie ? val / 100 : 1 - val / 100;
-            if (ratio >= 0.67) return '#4caf80';
-            if (ratio >= 0.34) return '#f5a623';
-            return '#e05c5c';
-        }
-
-        function precrisisLabel(val) {
-            if (val <= 33) return 'Faible';
-            if (val <= 66) return 'Modérée';
-            return 'Élevée';
-        }
-
         let currentEntryIndex = null;
         let formMode = 'create';
         let selectedTriggers = [];
+        let triggerIntensities = {};
 
-        function togglePrecrisisForm() {
-            var enabled = document.getElementById('formPrecrisisEnabled').checked;
-            document.getElementById('precrisisFormFields').style.display = enabled ? 'block' : 'none';
+        function normalizeEnergie(entry) {
+            if (entry.energie) return parseInt(entry.energie);
+            if (entry.precrisis && entry.precrisis.energie !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.energie / 10)));
+            return null;
         }
-
-        function updateFormPrecrisis(key) {
-            var val = parseInt(document.getElementById('form' + key).value);
-            var label = val <= 33 ? 'Faible' : val <= 66 ? 'Modérée' : 'Élevée';
-            document.getElementById('form' + key + 'Display').textContent = val + ' — ' + label;
+        function normalizeChargeMentale(entry) {
+            if (entry.chargeMentale) return parseInt(entry.chargeMentale);
+            if (entry.precrisis && entry.precrisis.chargeMentale !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.chargeMentale / 10)));
+            return null;
+        }
+        function normalizeChargeSociale(entry) {
+            if (entry.chargeSociale) return parseInt(entry.chargeSociale);
+            if (entry.precrisis && entry.precrisis.chargeSociale !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.chargeSociale / 10)));
+            return null;
+        }
+        function normalizeDeclencheurs(arr) {
+            if (!Array.isArray(arr)) return [];
+            return arr.map(function(d) {
+                if (typeof d === 'string') return { nom: d, intensite: null };
+                return d;
+            });
         }
 
         function loadJournal() {
@@ -1078,12 +1004,6 @@
             });
         }
 
-        function formatDuration(h, m) {
-            if (h === 0 && m === 0) return '';
-            if (h === 0) return m + ' min';
-            if (m === 0) return h + 'h';
-            return h + 'h' + String(m).padStart(2, '0');
-        }
 
         function parseDurationString(str) {
             if (!str) return { h: 0, m: 0 };
@@ -1126,30 +1046,21 @@
                 intensityDisplay = `${entry.intensite}/10`;
             }
 
-            const triggersDisplay = entry.declencheurs && entry.declencheurs.length > 0 
-                ? entry.declencheurs.join(', ') 
+            const decl = normalizeDeclencheurs(entry.declencheurs);
+            const triggersDisplay = decl.length > 0
+                ? decl.map(function(d) { return d.nom; }).join(', ')
                 : '-';
-            
+
+            var ener = normalizeEnergie(entry);
+            var chM = normalizeChargeMentale(entry);
+            var chS = normalizeChargeSociale(entry);
             let precrisisCell = '<td>-</td>';
-            if (entry.precrisis) {
-                const pc = entry.precrisis;
+            if (ener !== null || chM !== null || chS !== null) {
                 precrisisCell = `<td>
                     <div class="precrisis-cell">
-                        <div class="precrisis-row">
-                            <span>⚡</span>
-                            <div class="precrisis-bar-wrap"><div class="precrisis-bar" style="width:${pc.energie}%;background:${precrisisColor(pc.energie, true)}"></div></div>
-                            <span class="precrisis-num" style="color:${precrisisColor(pc.energie, true)}">${pc.energie}</span>
-                        </div>
-                        <div class="precrisis-row">
-                            <span>🧠</span>
-                            <div class="precrisis-bar-wrap"><div class="precrisis-bar" style="width:${pc.chargeMentale}%;background:${precrisisColor(pc.chargeMentale, false)}"></div></div>
-                            <span class="precrisis-num" style="color:${precrisisColor(pc.chargeMentale, false)}">${pc.chargeMentale}</span>
-                        </div>
-                        <div class="precrisis-row">
-                            <span>👥</span>
-                            <div class="precrisis-bar-wrap"><div class="precrisis-bar" style="width:${pc.chargeSociale}%;background:${precrisisColor(pc.chargeSociale, false)}"></div></div>
-                            <span class="precrisis-num" style="color:${precrisisColor(pc.chargeSociale, false)}">${pc.chargeSociale}</span>
-                        </div>
+                        ${ener !== null ? `<div class="precrisis-row"><span>⚡</span><span class="precrisis-num">${ener}/10</span></div>` : ''}
+                        ${chM !== null ? `<div class="precrisis-row"><span>🧠</span><span class="precrisis-num">${chM}/10</span></div>` : ''}
+                        ${chS !== null ? `<div class="precrisis-row"><span>👥</span><span class="precrisis-num">${chS}/10</span></div>` : ''}
                     </div>
                 </td>`;
             }
@@ -1181,73 +1092,85 @@
             const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
             journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
             const entry = journal[index];
-            
+
             const date = new Date(entry.horodatage);
             const dateStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
             const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-            
+
             const profile = PROFILES[entry.profil] || { icon: entry.profilEmoji || '📍', name: entry.profilNom || '?' };
-            
-            let intensityText = '-';
-            if (entry.intensite !== undefined && entry.intensite !== '') {
-                intensityText = `${entry.intensite}/10`;
+
+            // État avant la crise (unifié 1-10)
+            var ener = normalizeEnergie(entry);
+            var cm = normalizeChargeMentale(entry);
+            var cs = normalizeChargeSociale(entry);
+            var hasPrecrisis = ener !== null || cm !== null || cs !== null;
+
+            let html = '';
+
+            if (hasPrecrisis) {
+                html += `<div class="modal-section"><div class="modal-section-title">🔋 Avant la crise</div>`;
+                if (ener !== null) html += `<div class="modal-text"><strong>Énergie :</strong> ${ener}/10</div>`;
+                if (cm !== null) html += `<div class="modal-text"><strong>Charge mentale :</strong> ${cm}/10</div>`;
+                if (cs !== null) html += `<div class="modal-text"><strong>Charge sociale :</strong> ${cs}/10</div>`;
+                html += `</div>`;
             }
-            
-            let html = `
-                <div class="modal-section">
-                    <div class="modal-section-title">📅 Informations générales</div>
-                    <div class="modal-text"><strong>Date :</strong> ${dateStr} à ${timeStr}</div>
-                    <div class="modal-text"><strong>Contexte :</strong> ${profile.name}</div>
-                    ${entry.typeCrise ? `<div class="modal-text"><strong>Origine :</strong> ${entry.typeCrise}</div>` : ''}
-                    ${entry.typeManifestation ? `<div class="modal-text"><strong>Type de crise :</strong> ${entry.typeManifestation}</div>` : ''}
-                    ${entry.intensite !== undefined && entry.intensite !== '' ? `<div class="modal-text"><strong>Intensité :</strong> ${intensityText}</div>` : ''}
-                    ${entry.duree ? `<div class="modal-text"><strong>Durée :</strong> ${entry.duree}</div>` : ''}
-                </div>
-            `;
-            
-            if (entry.declencheurs && entry.declencheurs.length > 0) {
-                html += `
-                    <div class="modal-section">
-                        <div class="modal-section-title">🎯 Déclencheurs identifiés</div>
-                        <div class="modal-text">${entry.declencheurs.join(', ')}</div>
-                    </div>
-                `;
-            }
-            
-            if (entry.precrisis) {
-                const pc = entry.precrisis;
-                const rows = [
-                    { icon: '⚡', label: 'Énergie', val: pc.energie, isEnergie: true },
-                    { icon: '🧠', label: 'Charge mentale', val: pc.chargeMentale, isEnergie: false },
-                    { icon: '👥', label: 'Charge sociale', val: pc.chargeSociale, isEnergie: false }
-                ];
-                html += `<div class="modal-section"><div class="modal-section-title">🔋 État avant la crise</div>`;
-                rows.forEach(r => {
-                    if (r.val !== undefined && r.val !== null) {
-                        const color = precrisisColor(r.val, r.isEnergie);
-                        html += `
-                            <div class="precrisis-detail-row">
-                                <div class="precrisis-detail-icon">${r.icon}</div>
-                                <div class="precrisis-detail-info">
-                                    <div class="precrisis-detail-label">${r.label} — ${precrisisLabel(r.val)}</div>
-                                    <div class="precrisis-detail-bar-wrap">
-                                        <div class="precrisis-detail-bar" style="width:${r.val}%;background:${color}"></div>
-                                    </div>
-                                </div>
-                                <div class="precrisis-detail-val" style="color:${color}">${r.val}/100</div>
-                            </div>`;
-                    }
+
+            // Déclencheurs avec intensité
+            var decl = normalizeDeclencheurs(entry.declencheurs);
+            if (decl.length > 0) {
+                html += `<div class="modal-section"><div class="modal-section-title">🎯 Déclencheurs</div>`;
+                decl.forEach(function(d) {
+                    var intLabel = d.intensite !== null && d.intensite !== undefined ? ` — ${d.intensite}/10` : '';
+                    html += `<div class="modal-text">• ${d.nom}${intLabel}</div>`;
                 });
                 html += `</div>`;
             }
 
+            // La crise
+            html += `
+                <div class="modal-section">
+                    <div class="modal-section-title">⚡ La crise</div>
+                    <div class="modal-text"><strong>Date :</strong> ${dateStr} à ${timeStr}</div>
+                    <div class="modal-text"><strong>Contexte :</strong> ${profile.icon} ${profile.name}</div>
+                    ${entry.typeCrise ? `<div class="modal-text"><strong>Origine :</strong> ${entry.typeCrise}</div>` : ''}
+                    ${entry.typeManifestation ? `<div class="modal-text"><strong>Type :</strong> ${entry.typeManifestation}</div>` : ''}
+                    ${entry.intensite !== undefined && entry.intensite !== '' ? `<div class="modal-text"><strong>Intensité :</strong> ${entry.intensite}/10</div>` : ''}
+                    ${entry.duree ? `<div class="modal-text"><strong>Durée :</strong> ${entry.duree}</div>` : ''}
+                </div>
+            `;
+
+            // Besoins
+            if (entry.besoins && entry.besoins.length > 0) {
+                var besoinsLabels = entry.besoins.map(function(b) { return b.label || b; });
+                html += `<div class="modal-section"><div class="modal-section-title">🤲 Besoins</div>`;
+                html += `<div class="modal-text">${besoinsLabels.join(', ')}</div></div>`;
+            }
+
+            // États
+            if (entry.etats && entry.etats.length > 0) {
+                var etatsLabels = entry.etats.map(function(e) { return e.label || e; });
+                html += `<div class="modal-section"><div class="modal-section-title">💭 États</div>`;
+                html += `<div class="modal-text">${etatsLabels.join(', ')}</div></div>`;
+            }
+
+            // Capacités
+            if (entry.capacites) {
+                var capLines = [];
+                if (entry.capacites.impossible && entry.capacites.impossible.length) capLines.push('<strong>Impossible :</strong> ' + entry.capacites.impossible.join(', '));
+                if (entry.capacites.difficile && entry.capacites.difficile.length) capLines.push('<strong>Difficile :</strong> ' + entry.capacites.difficile.join(', '));
+                if (entry.capacites.possible && entry.capacites.possible.length) capLines.push('<strong>Possible :</strong> ' + entry.capacites.possible.join(', '));
+                if (entry.capacites.incertain && entry.capacites.incertain.length) capLines.push('<strong>Incertain :</strong> ' + entry.capacites.incertain.join(', '));
+                if (capLines.length > 0) {
+                    html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div>`;
+                    capLines.forEach(function(l) { html += `<div class="modal-text">${l}</div>`; });
+                    html += `</div>`;
+                }
+            }
+
+            // Remarques
             if (entry.remarques) {
-                html += `
-                    <div class="modal-section">
-                        <div class="modal-section-title">📝 Remarques</div>
-                        <div class="modal-text">${entry.remarques}</div>
-                    </div>
-                `;
+                html += `<div class="modal-section"><div class="modal-section-title">📝 Remarques</div>`;
+                html += `<div class="modal-text">${entry.remarques}</div></div>`;
             }
 
             document.getElementById('detailContent').innerHTML = html;
@@ -1257,14 +1180,14 @@
         function openFormModal(mode, index = null) {
             formMode = mode;
             currentEntryIndex = index;
-            
+
             const modalTitle = document.getElementById('formModalTitle');
             const dateGroup = document.getElementById('dateGroup');
-            
+
             if (mode === 'create') {
                 modalTitle.textContent = 'Ajouter une crise manuellement';
                 dateGroup.style.display = 'block';
-                
+
                 const now = new Date();
                 const ty = now.getFullYear();
                 const tm = String(now.getMonth() + 1).padStart(2, '0');
@@ -1284,13 +1207,8 @@
                 document.getElementById('formChargeSocialeDisplay').textContent = '5/10';
                 document.getElementById('formRemarks').value = '';
                 selectedTriggers = [];
+                triggerIntensities = {};
                 updateTriggersPreview();
-                document.getElementById('formPrecrisisEnabled').checked = false;
-                document.getElementById('precrisisFormFields').style.display = 'none';
-                ['Energie', 'Mentale', 'Sociale'].forEach(function(k) {
-                    document.getElementById('form' + k).value = 50;
-                    updateFormPrecrisis(k);
-                });
             } else {
                 modalTitle.textContent = 'Modifier la crise';
                 dateGroup.style.display = 'block';
@@ -1299,7 +1217,6 @@
                 journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
                 const entry = journal[index];
 
-                // Pré-remplir date et heure depuis l'horodatage
                 const d = new Date(entry.horodatage);
                 const yr = d.getFullYear();
                 const mo = String(d.getMonth() + 1).padStart(2, '0');
@@ -1314,32 +1231,29 @@
                 document.getElementById('formIntensity').value = entry.intensite || '5';
                 updateFormIntensityDisplay();
                 document.getElementById('formDuration').value = entry.duree || '';
-                document.getElementById('formEnergie').value = entry.energie || '5';
-                document.getElementById('formEnergieDisplay').textContent = (entry.energie || '5') + '/10';
-                document.getElementById('formChargeMentale').value = entry.chargeMentale || '5';
-                document.getElementById('formChargeMentaleDisplay').textContent = (entry.chargeMentale || '5') + '/10';
-                document.getElementById('formChargeSociale').value = entry.chargeSociale || '5';
-                document.getElementById('formChargeSocialeDisplay').textContent = (entry.chargeSociale || '5') + '/10';
+
+                var ener = normalizeEnergie(entry);
+                var cm = normalizeChargeMentale(entry);
+                var cs = normalizeChargeSociale(entry);
+                document.getElementById('formEnergie').value = ener || '5';
+                document.getElementById('formEnergieDisplay').textContent = (ener || '5') + '/10';
+                document.getElementById('formChargeMentale').value = cm || '5';
+                document.getElementById('formChargeMentaleDisplay').textContent = (cm || '5') + '/10';
+                document.getElementById('formChargeSociale').value = cs || '5';
+                document.getElementById('formChargeSocialeDisplay').textContent = (cs || '5') + '/10';
                 document.getElementById('formRemarks').value = entry.remarques || '';
-                selectedTriggers = Array.isArray(entry.declencheurs) ? [...entry.declencheurs] : [];
+
+                var decl = normalizeDeclencheurs(entry.declencheurs);
+                selectedTriggers = decl.map(function(d) { return d.nom; });
+                triggerIntensities = {};
+                decl.forEach(function(d) {
+                    if (d.intensite !== null && d.intensite !== undefined) {
+                        triggerIntensities[d.nom] = d.intensite;
+                    }
+                });
                 updateTriggersPreview();
-                const pc = entry.precrisis;
-                if (pc) {
-                    document.getElementById('formPrecrisisEnabled').checked = true;
-                    document.getElementById('precrisisFormFields').style.display = 'block';
-                    document.getElementById('formEnergie').value = pc.energie !== undefined ? pc.energie : 50;
-                    document.getElementById('formMentale').value = pc.chargeMentale !== undefined ? pc.chargeMentale : 50;
-                    document.getElementById('formSociale').value = pc.chargeSociale !== undefined ? pc.chargeSociale : 50;
-                } else {
-                    document.getElementById('formPrecrisisEnabled').checked = false;
-                    document.getElementById('precrisisFormFields').style.display = 'none';
-                    ['Energie', 'Mentale', 'Sociale'].forEach(function(k) {
-                        document.getElementById('form' + k).value = 50;
-                    });
-                }
-                ['Energie', 'Mentale', 'Sociale'].forEach(updateFormPrecrisis);
             }
-            
+
             document.getElementById('formModal').classList.add('visible');
         }
 
@@ -1404,8 +1318,20 @@
             if (selectedTriggers.length === 0) {
                 preview.textContent = 'Aucun déclencheur sélectionné';
             } else {
-                preview.innerHTML = selectedTriggers.map(t => `• ${t}`).join('<br>');
+                preview.innerHTML = selectedTriggers.map(t => {
+                    const val = triggerIntensities[t] || 5;
+                    return `<div class="trigger-intensity-row">
+                        <span class="trigger-name-label">• ${t}</span>
+                        <input type="range" min="1" max="10" value="${val}" oninput="setTriggerIntensity('${t.replace(/'/g, "\\'")}', this.value, this)">
+                        <span class="trigger-intensity-val">${val}/10</span>
+                    </div>`;
+                }).join('');
             }
+        }
+
+        function setTriggerIntensity(name, val, input) {
+            triggerIntensities[name] = parseInt(val);
+            input.nextElementSibling.textContent = val + '/10';
         }
 
         function saveForm() {
@@ -1441,13 +1367,6 @@
                     return;
                 }
                 
-                const precrisisEnabled = document.getElementById('formPrecrisisEnabled').checked;
-                const precrisisData = precrisisEnabled ? {
-                    energie: parseInt(document.getElementById('formEnergie').value),
-                    chargeMentale: parseInt(document.getElementById('formMentale').value),
-                    chargeSociale: parseInt(document.getElementById('formSociale').value)
-                } : null;
-
                 const entry = {
                     horodatage: horodatage,
                     profil: localStorage.getItem('currentProfil') || 'maison',
@@ -1457,30 +1376,26 @@
                     typeCrise: document.getElementById('formType').value,
                     typeManifestation: document.getElementById('formTypeManifestation').value,
                     intensite: document.getElementById('formIntensity').value,
-                    duree: formatDuration(
-                        parseInt(document.getElementById('formDurationH').value) || 0,
-                        parseInt(document.getElementById('formDurationM').value) || 0
-                    ),
-                    declencheurs: [...selectedTriggers],
+                    duree: document.getElementById('formDuration').value || '',
+                    declencheurs: selectedTriggers.map(function(t) { return { nom: t, intensite: triggerIntensities[t] || null }; }),
                     remarques: document.getElementById('formRemarks').value,
                     energie: document.getElementById('formEnergie').value || '',
                     chargeMentale: document.getElementById('formChargeMentale').value || '',
                     chargeSociale: document.getElementById('formChargeSociale').value || '',
                     manual: true
                 };
-                
+
                 const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
                 journal.push(entry);
                 localStorage.setItem('journalCrises', JSON.stringify(journal));
-                
+
                 closeModal(null, 'formModal');
                 loadJournal();
                 alert('Crise ajoutée !');
             } else {
                 const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
                 const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
-                
-                // Mettre à jour l'horodatage si la date/heure a été modifiée
+
                 const editDate = document.getElementById('formDate').value;
                 const editTime = document.getElementById('formTime').value;
                 if (editDate) {
@@ -1499,16 +1414,14 @@
                 sorted[currentEntryIndex].typeCrise = document.getElementById('formType').value;
                 sorted[currentEntryIndex].typeManifestation = document.getElementById('formTypeManifestation').value;
                 sorted[currentEntryIndex].intensite = document.getElementById('formIntensity').value;
-                sorted[currentEntryIndex].duree = formatDuration(
-                    parseInt(document.getElementById('formDurationH').value) || 0,
-                    parseInt(document.getElementById('formDurationM').value) || 0
-                );
-                sorted[currentEntryIndex].declencheurs = [...selectedTriggers];
+                sorted[currentEntryIndex].duree = document.getElementById('formDuration').value || '';
+                sorted[currentEntryIndex].declencheurs = selectedTriggers.map(function(t) { return { nom: t, intensite: triggerIntensities[t] || null }; });
                 sorted[currentEntryIndex].remarques = document.getElementById('formRemarks').value;
                 sorted[currentEntryIndex].energie = document.getElementById('formEnergie').value || '';
                 sorted[currentEntryIndex].chargeMentale = document.getElementById('formChargeMentale').value || '';
                 sorted[currentEntryIndex].chargeSociale = document.getElementById('formChargeSociale').value || '';
-                
+                delete sorted[currentEntryIndex].precrisis;
+
                 localStorage.setItem('journalCrises', JSON.stringify(sorted));
                 closeModal(null, 'formModal');
                 loadJournal();
@@ -1589,7 +1502,8 @@
                 if (hasIntensity) lines.push(`<strong>Intensité :</strong> ${entry.intensite}/10`);
                 if (entry.duree) lines.push(`<strong>Durée :</strong> ${entry.duree}`);
                 if (entry.declencheurs && entry.declencheurs.length > 0) {
-                    lines.push(`<strong>Déclencheurs :</strong> ${entry.declencheurs.join(', ')}`);
+                    var dNames = normalizeDeclencheurs(entry.declencheurs).map(function(d) { return d.nom; });
+                    lines.push(`<strong>Déclencheurs :</strong> ${dNames.join(', ')}`);
                 }
                 if (entry.etats && entry.etats.length > 0) {
                     lines.push(`<strong>États :</strong> ${entry.etats.map(e => e.label || e).join(', ')}`);
@@ -1682,7 +1596,8 @@ ${entriesHtml}
                     text += '  ' + line + '\n';
                 }
                 if (entry.declencheurs && entry.declencheurs.length > 0) {
-                    text += '  Déclencheurs : ' + entry.declencheurs.join(', ') + '\n';
+                    var dNom = normalizeDeclencheurs(entry.declencheurs).map(function(d) { return d.nom; });
+                    text += '  Déclencheurs : ' + dNom.join(', ') + '\n';
                 }
                 if (entry.remarques) text += '  Remarques : ' + entry.remarques + '\n';
                 text += '\n';
