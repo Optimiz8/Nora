@@ -1838,7 +1838,8 @@
                 preview.textContent = 'Aucun déclencheur sélectionné';
             } else {
                 preview.innerHTML = selectedTriggers.map(t => {
-                    const val = triggerIntensities[t] || 5;
+                    if (!triggerIntensities[t]) triggerIntensities[t] = 5;
+                    const val = triggerIntensities[t];
                     return `<div class="trigger-intensity-row">
                         <span class="trigger-name-label">• ${t}</span>
                         <input type="range" min="1" max="10" value="${val}" oninput="setTriggerIntensity('${t.replace(/'/g, "\\'")}', this.value, this)">
@@ -1855,6 +1856,9 @@
 
         function closeQuestionnaire() {
             document.getElementById('questionnaireModal').classList.remove('open');
+            if (history.state && history.state.questionnaireOpen) {
+                history.back();
+            }
         }
 
         function closeQuestionnaireOnOutside(event) {
@@ -2051,11 +2055,11 @@
             var entry = {
                 horodatage: horodatage, profil: profil, profilNom: profilInfo.nom, profilEmoji: profilInfo.emoji,
                 capacites: capacites, besoins: besoins, etats: etats,
-                typeCrise: '', intensite: '', duree: duree, declencheurs: [], remarques: '',
+                typeCrise: '', typeManifestation: '', intensite: '', duree: duree, declencheurs: [], remarques: '',
                 energie: '', chargeMentale: '', chargeSociale: '', manual: false
             };
             var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            journal.push(entry);
+            journal.unshift(entry);
             localStorage.setItem('journalCrises', JSON.stringify(journal));
         }
 
@@ -2101,6 +2105,9 @@
             localStorage.removeItem('crisisStartTime');
             localStorage.removeItem('lastCrisisCheck');
             localStorage.removeItem('criseATraiter');
+            localStorage.removeItem('currentCapacites');
+            localStorage.removeItem('currentBesoins');
+            localStorage.removeItem('currentEtats');
             if (crisisDurationInterval) clearInterval(crisisDurationInterval);
             document.getElementById('crisisStatusSection').style.display = 'none';
         }

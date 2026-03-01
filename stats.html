@@ -378,44 +378,6 @@
 
         /* ---------- JOURS / HEURES ---------- */
 
-        .day-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 12px;
-        }
-
-        .day-cell {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            padding: 6px 2px;
-            border-radius: 8px;
-            background: rgba(46, 58, 89, 0.06);
-        }
-
-        .day-cell.top-day { background: var(--dark); }
-
-        .day-name {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--dark);
-            opacity: 0.55;
-        }
-
-        .day-count {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .day-cell.top-day .day-name,
-        .day-cell.top-day .day-count {
-            color: var(--light);
-            opacity: 1;
-        }
-
         .hour-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -615,20 +577,6 @@
             opacity: 0.4;
             font-style: italic;
             padding: 2px 0 8px;
-        }
-
-        .last-crisis-card {
-            background: var(--light);
-            border-radius: 14px;
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 14px;
-            border-radius: 12px;
-            cursor: pointer;
         }
 
         .filter-apply {
@@ -976,6 +924,7 @@
 
     <main class="main-content" id="mainContent"></main>
 
+    <script src="nora-data.js"></script>
     <script>
         var currentDays = 7;
         var customFrom = null;
@@ -991,8 +940,8 @@
         }
 
         function getProfileName(profileId) {
-            var names = { commun: 'Profil commun', maison: 'Maison', exterieur: 'Extérieur', travail: 'Travail', secours: 'Secours' };
-            return names[profileId] || profileId || '—';
+            var info = getContexteInfo(profileId);
+            return { name: info.nom, icon: info.emoji };
         }
 
         /* ---------- DURÉE ---------- */
@@ -1167,9 +1116,11 @@
                 profileArr.push(e.profil || 'commun');
                 if (e.typeCrise) {
                     origineArr.push(e.typeCrise);
-                    if (e.typeCrise === 'Meltdown') meltdownCount++;
-                    else if (e.typeCrise === 'Shutdown') shutdownCount++;
-                    else if (e.typeCrise === 'Mixte') mixteTypeCount++;
+                }
+                if (e.typeManifestation) {
+                    if (e.typeManifestation === 'Meltdown') meltdownCount++;
+                    else if (e.typeManifestation === 'Shutdown') shutdownCount++;
+                    else if (e.typeManifestation === 'Mixte') mixteTypeCount++;
                 }
                 var decl = normDeclencheurs(e.declencheurs);
                 for (var d2 = 0; d2 < decl.length; d2++) {
@@ -1247,8 +1198,8 @@
                     if ((entries[pe].profil || 'commun') === pName) {
                         var pv = parseFloat(entries[pe].intensite);
                         if (!isNaN(pv)) pInts.push(pv);
-                        if (entries[pe].typeCrise === 'Meltdown') pMelt++;
-                        else if (entries[pe].typeCrise === 'Shutdown') pShut++;
+                        if (entries[pe].typeManifestation === 'Meltdown') pMelt++;
+                        else if (entries[pe].typeManifestation === 'Shutdown') pShut++;
                     }
                 }
                 var pTotal = pMelt + pShut;
@@ -1266,8 +1217,8 @@
                     if (hasTrigger(entries[te], tkey)) {
                         var ti = parseFloat(entries[te].intensite);
                         if (!isNaN(ti)) tInts.push(ti);
-                        if (entries[te].typeCrise === 'Meltdown') tMelt++;
-                        else if (entries[te].typeCrise === 'Shutdown') tShut++;
+                        if (entries[te].typeManifestation === 'Meltdown') tMelt++;
+                        else if (entries[te].typeManifestation === 'Shutdown') tShut++;
                     }
                 }
                 var tTyped = tMelt + tShut;
@@ -1292,8 +1243,8 @@
                         if (extractLabel(bList[bl2]) === bn) { hasBesoin = true; break; }
                     }
                     if (hasBesoin) {
-                        if (entries[be].typeCrise === 'Meltdown') bMelt++;
-                        else if (entries[be].typeCrise === 'Shutdown') bShut++;
+                        if (entries[be].typeManifestation === 'Meltdown') bMelt++;
+                        else if (entries[be].typeManifestation === 'Shutdown') bShut++;
                     }
                 }
                 besoinByType[bn] = { meltdown: bMelt, shutdown: bShut };
@@ -1334,8 +1285,8 @@
                     var hasCap = false;
                     for (var cc = 0; cc < allC.length; cc++) { if (allC[cc] === cn) { hasCap = true; break; } }
                     if (hasCap) {
-                        if (entries[ce].typeCrise === 'Meltdown') cMelt++;
-                        else if (entries[ce].typeCrise === 'Shutdown') cShut++;
+                        if (entries[ce].typeManifestation === 'Meltdown') cMelt++;
+                        else if (entries[ce].typeManifestation === 'Shutdown') cShut++;
                     }
                 }
                 var cTotal = cMelt + cShut;
@@ -1358,8 +1309,8 @@
                 hourSlots[si].count++;
                 var hv = parseFloat(entries[he].intensite);
                 if (!isNaN(hv)) hourSlots[si].intensities.push(hv);
-                if (entries[he].typeCrise === 'Meltdown') hourSlots[si].meltdown++;
-                else if (entries[he].typeCrise === 'Shutdown') hourSlots[si].shutdown++;
+                if (entries[he].typeManifestation === 'Meltdown') hourSlots[si].meltdown++;
+                else if (entries[he].typeManifestation === 'Shutdown') hourSlots[si].shutdown++;
                 dayFreq[hd.getDay()]++;
             }
             for (var hs = 0; hs < hourSlots.length; hs++) {
@@ -1424,8 +1375,6 @@
                 entries: entries,
                 prev: prev,
                 avgIntensity: avgIntensity,
-                minIntensity: minIntensity,
-                maxIntensity: maxIntensity,
                 minIntensity: minIntensity,
                 maxIntensity: maxIntensity,
                 avgDuration: avgDuration,
@@ -2060,7 +2009,7 @@
             }
 
             if (stats.origineCounts.length) {
-                html += bilanRow('Type principal', '<strong>' + stats.origineCounts[0].name + '</strong>' +
+                html += bilanRow('Origine principale', '<strong>' + stats.origineCounts[0].name + '</strong>' +
                     ' <span class="bilan-prev-val">(' + stats.origineCounts[0].count + '×)</span>', '');
             }
 
@@ -2330,30 +2279,6 @@
             } else { downloadText(text); }
         }
 
-        function shareStats() {
-            var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée à partager sur cette période.'); return; }
-            var text = buildSummaryText(stats);
-            if (navigator.share) {
-                navigator.share({ title: 'Statistiques Nora — ' + getPeriodLabel(), text: text })
-                    .catch(function() {});
-            } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(function() { alert('Résumé copié dans le presse-papier.'); });
-            } else { downloadText(text); }
-        }
-
-        function exportPDF() {
-            var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
-            var prenom = localStorage.getItem('userPrenom') || '';
-            var nom = localStorage.getItem('userNom') || '';
-            var nomComplet = [prenom, nom].filter(Boolean).join(' ');
-            var titre = 'Statistiques Nora' + (nomComplet ? ' — ' + nomComplet : '');
-            titre += ' — ' + getPeriodLabel() + ' — ' + new Date().toLocaleDateString('fr-FR');
-            document.getElementById('printHeader').textContent = titre;
-            window.print();
-        }
-
         function downloadText(text) {
             var blob = new Blob([text], { type: 'text/plain' });
             var url = URL.createObjectURL(blob);
@@ -2454,7 +2379,8 @@
 
         function matchesFilters(entry) {
             if (activeFilters.contexte.length && activeFilters.contexte.indexOf(entry.profil || 'commun') === -1) return false;
-            if (activeFilters.origine.length && activeFilters.origine.indexOf(entry.typeCrise) === -1) return false;
+            if (activeFilters.origine.length && activeFilters.origine.indexOf(entry.typeCrise || '') === -1) return false;
+            if (activeFilters.type.length && activeFilters.type.indexOf(entry.typeManifestation || '') === -1) return false;
             var int = parseFloat(entry.intensite);
             if (!isNaN(int) && (int < activeFilters.intMin || int > activeFilters.intMax)) return false;
             if (activeFilters.moment.length) {
@@ -2487,131 +2413,9 @@
             renderCurrent();
         }
 
-        /* ---------- TOOLTIP DÉFINITION ---------- */
+        /* ---------- (ancien tooltip définition supprimé — éléments DOM manquants) ---------- */
 
-        var _defTimer = null;
-
-        function showDefTooltip(event, name, itemEl) {
-            var def = TYPE_DEFS[name] || TRIGGER_DEFS[name];
-            if (!def) return;
-            var tooltip = document.getElementById('defTooltip');
-            tooltip.innerHTML = '<strong>' + name + '</strong><br>' + def;
-            tooltip.style.display = 'block';
-            var rect = itemEl.getBoundingClientRect();
-            var left = rect.left + 8;
-            var top = rect.bottom + 6;
-            if (left + 244 > window.innerWidth - 6) left = window.innerWidth - 250;
-            if (left < 6) left = 6;
-            if (top + tooltip.offsetHeight > window.innerHeight - 6) top = rect.top - tooltip.offsetHeight - 6;
-            tooltip.style.left = left + 'px';
-            tooltip.style.top = top + 'px';
-            clearTimeout(_defTimer);
-            _defTimer = setTimeout(function() { tooltip.style.display = 'none'; }, 5000);
-        }
-
-        document.addEventListener('click', function(e) {
-            var item = e.target.closest('.rank-item.has-def');
-            if (item) {
-                showDefTooltip(e, item.getAttribute('data-def'), item);
-            } else if (!e.target.closest('#defTooltip')) {
-                document.getElementById('defTooltip').style.display = 'none';
-            }
-        });
-
-        /* ---------- FILTRES AVANCÉS ---------- */
-
-        function getContextesFromJournal() {
-            var journal = getJournal();
-            var seen = {}, result = [];
-            for (var i = 0; i < journal.length; i++) {
-                var p = journal[i].profil || 'commun';
-                if (!seen[p]) { seen[p] = true; result.push(p); }
-            }
-            return result;
-        }
-
-        function filterEntries(entries) {
-            if (!activeFilters.contexte.length && !activeFilters.origine.length && !activeFilters.type.length) return entries;
-            var result = [];
-            for (var i = 0; i < entries.length; i++) {
-                var e = entries[i];
-                var pass = true;
-                if (activeFilters.contexte.length && activeFilters.contexte.indexOf(e.profil || 'commun') === -1) pass = false;
-                if (pass && activeFilters.origine.length && activeFilters.origine.indexOf(e.typeCrise || '') === -1) pass = false;
-                if (pass && activeFilters.type.length && activeFilters.type.indexOf(e.typeManifestation || '') === -1) pass = false;
-                if (pass) result.push(e);
-            }
-            return result;
-        }
-
-        function openFilterSheet() {
-            pendingFilters = { contexte: activeFilters.contexte.slice(), origine: activeFilters.origine.slice(), type: activeFilters.type.slice() };
-            var ctxDiv = document.getElementById('filterContexteChips');
-            var contextes = getContextesFromJournal();
-            ctxDiv.innerHTML = '';
-            if (contextes.length) {
-                for (var i = 0; i < contextes.length; i++) {
-                    var id = contextes[i];
-                    var btn = document.createElement('button');
-                    btn.className = 'filter-chip' + (pendingFilters.contexte.indexOf(id) !== -1 ? ' active' : '');
-                    btn.setAttribute('data-group', 'contexte');
-                    btn.setAttribute('data-value', id);
-                    btn.textContent = getProfileName(id);
-                    btn.onclick = function() { toggleChip(this); };
-                    ctxDiv.appendChild(btn);
-                }
-            } else {
-                ctxDiv.innerHTML = '<span class="filter-empty">Aucun contexte enregistré</span>';
-            }
-            var fixed = document.querySelectorAll('#filterOrigineChips .filter-chip, #filterTypeChips .filter-chip');
-            for (var j = 0; j < fixed.length; j++) {
-                var grp = fixed[j].getAttribute('data-group');
-                var val = fixed[j].getAttribute('data-value');
-                fixed[j].classList.toggle('active', pendingFilters[grp].indexOf(val) !== -1);
-            }
-            document.getElementById('filterOverlay').classList.add('visible');
-            document.getElementById('filterSheet').classList.add('visible');
-        }
-
-        function closeFilterSheet() {
-            document.getElementById('filterOverlay').classList.remove('visible');
-            document.getElementById('filterSheet').classList.remove('visible');
-        }
-
-        function toggleChip(btn) {
-            var grp = btn.getAttribute('data-group');
-            var val = btn.getAttribute('data-value');
-            var idx = pendingFilters[grp].indexOf(val);
-            if (idx === -1) { pendingFilters[grp].push(val); btn.classList.add('active'); }
-            else { pendingFilters[grp].splice(idx, 1); btn.classList.remove('active'); }
-        }
-
-        function resetFilters() {
-            pendingFilters = { contexte: [], origine: [], type: [] };
-            activeFilters = { contexte: [], origine: [], type: [] };
-            closeFilterSheet();
-            updateFilterBtn();
-            renderCurrent();
-        }
-
-        function applyFilters() {
-            activeFilters = { contexte: pendingFilters.contexte.slice(), origine: pendingFilters.origine.slice(), type: pendingFilters.type.slice() };
-            closeFilterSheet();
-            updateFilterBtn();
-            renderCurrent();
-        }
-
-        function updateFilterBtn() {
-            var total = activeFilters.contexte.length + activeFilters.origine.length + activeFilters.type.length;
-            var btn = document.getElementById('filterBtn');
-            if (total > 0) {
-                btn.classList.add('has-filters');
-                btn.innerHTML = '⚙️ Filtres <span class="filter-badge">' + total + '</span>';
-            } else {
-                btn.classList.remove('has-filters');
-                btn.textContent = '⚙️ Filtres';
-            }
-        }
+        /* ---------- (ancien code filtres supprimé — remplacé par le système actif ci-dessus) ---------- */
 
         function renderCurrent() {
             try {
