@@ -486,23 +486,23 @@
 
             <div class="precrisis-group">
                 <div class="precrisis-label">⚡ Énergie</div>
-                <div class="precrisis-desc">0 = épuisé(e) &nbsp;·&nbsp; 100 = plein(e) d'énergie</div>
-                <input type="range" class="precrisis-slider" id="sliderEnergie" min="0" max="100" value="50" oninput="updatePrecrisisValue('Energie')">
-                <div class="precrisis-value" id="valEnergie">50 — Modérée</div>
+                <div class="precrisis-desc">1 = épuisé(e) &nbsp;·&nbsp; 10 = plein(e) d'énergie</div>
+                <input type="range" class="precrisis-slider" id="sliderEnergie" min="1" max="10" value="5" oninput="updatePrecrisisValue('Energie')">
+                <div class="precrisis-value" id="valEnergie">5/10</div>
             </div>
 
             <div class="precrisis-group">
                 <div class="precrisis-label">🧠 Charge mentale</div>
-                <div class="precrisis-desc">0 = légère &nbsp;·&nbsp; 100 = saturé(e)</div>
-                <input type="range" class="precrisis-slider" id="sliderMentale" min="0" max="100" value="50" oninput="updatePrecrisisValue('Mentale')">
-                <div class="precrisis-value" id="valMentale">50 — Modérée</div>
+                <div class="precrisis-desc">1 = légère &nbsp;·&nbsp; 10 = saturé(e)</div>
+                <input type="range" class="precrisis-slider" id="sliderMentale" min="1" max="10" value="5" oninput="updatePrecrisisValue('Mentale')">
+                <div class="precrisis-value" id="valMentale">5/10</div>
             </div>
 
             <div class="precrisis-group" style="margin-bottom:24px;">
                 <div class="precrisis-label">👥 Charge sociale</div>
-                <div class="precrisis-desc">0 = légère &nbsp;·&nbsp; 100 = saturé(e)</div>
-                <input type="range" class="precrisis-slider" id="sliderSociale" min="0" max="100" value="50" oninput="updatePrecrisisValue('Sociale')">
-                <div class="precrisis-value" id="valSociale">50 — Modérée</div>
+                <div class="precrisis-desc">1 = légère &nbsp;·&nbsp; 10 = saturé(e)</div>
+                <input type="range" class="precrisis-slider" id="sliderSociale" min="1" max="10" value="5" oninput="updatePrecrisisValue('Sociale')">
+                <div class="precrisis-value" id="valSociale">5/10</div>
             </div>
 
             <div class="crisis-modal-actions">
@@ -635,21 +635,15 @@
         showCrisisToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
     }
 
-    function getPrecrisisLabel(val) {
-        if (val <= 33) return 'Faible';
-        if (val <= 66) return 'Modérée';
-        return 'Élevée';
-    }
-
     function updatePrecrisisValue(key) {
         var val = parseInt(document.getElementById('slider' + key).value);
-        document.getElementById('val' + key).textContent = val + ' — ' + getPrecrisisLabel(val);
+        document.getElementById('val' + key).textContent = val + '/10';
     }
 
     function saveWithPrecrisis() {
-        var energie = parseInt(document.getElementById('sliderEnergie').value);
-        var mentale = parseInt(document.getElementById('sliderMentale').value);
-        var sociale = parseInt(document.getElementById('sliderSociale').value);
+        var energie = document.getElementById('sliderEnergie').value;
+        var mentale = document.getElementById('sliderMentale').value;
+        var sociale = document.getElementById('sliderSociale').value;
         document.getElementById('precrisisModal').classList.remove('visible');
         createJournalEntry({ energie: energie, chargeMentale: mentale, chargeSociale: sociale });
         cleanupCrisisData();
@@ -700,16 +694,19 @@
             besoins: besoins,
             etats: etats,
             typeCrise: '',
+            typeManifestation: '',
             intensite: '',
             duree: duree,
             declencheurs: [],
             remarques: '',
-            manual: false,
-            precrisis: precrisisData || null
+            energie: precrisisData ? String(precrisisData.energie) : '',
+            chargeMentale: precrisisData ? String(precrisisData.chargeMentale) : '',
+            chargeSociale: precrisisData ? String(precrisisData.chargeSociale) : '',
+            manual: false
         };
 
         const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
-        journal.push(entry);
+        journal.unshift(entry);
         localStorage.setItem('journalCrises', JSON.stringify(journal));
     }
 

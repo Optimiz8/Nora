@@ -154,24 +154,6 @@
             cursor: pointer;
         }
 
-        /* ---------- BADGE MODAL ---------- */
-        .badge-modal-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .badge-modal-list li {
-            padding: 8px 0;
-            color: var(--dark);
-            border-bottom: 1px solid rgba(46, 58, 89, 0.1);
-            font-size: 16px;
-        }
-
-        .badge-modal-list li:last-child {
-            border-bottom: none;
-        }
-
         /* ---------- BADGE TOOLTIP ---------- */
         #badgeTooltip {
             position: fixed;
@@ -186,13 +168,6 @@
             z-index: 500;
             display: none;
             border: 1px solid rgba(245,228,204,0.15);
-        }
-
-        .badge-modal-empty {
-            color: var(--dark);
-            opacity: 0.5;
-            font-style: italic;
-            margin: 0;
         }
 
         .actions-cell {
@@ -319,6 +294,40 @@
         }
         .form-section-title:first-child { margin-top: 4px; }
 
+        /* ---------- FORM BLOCKS ---------- */
+        .form-block {
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .form-block-avant {
+            background: rgba(46, 58, 89, 0.07);
+        }
+        .form-block-crise {
+            background: rgba(247, 184, 156, 0.1);
+        }
+        .form-block-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(46, 58, 89, 0.15);
+        }
+        .form-block .form-group:last-child { margin-bottom: 0; }
+
+        /* ---------- SLIDER NULL STATE ---------- */
+        .intensity-slider.null-state::-webkit-slider-thumb {
+            background: rgba(46, 58, 89, 0.25);
+        }
+        .intensity-slider.null-state::-moz-range-thumb {
+            background: rgba(46, 58, 89, 0.25);
+        }
+        .intensity-display.null-state {
+            opacity: 0.4;
+            font-style: italic;
+        }
+
         .trigger-intensity-row {
             display: flex;
             align-items: center;
@@ -399,15 +408,6 @@
         .form-input:focus, .form-textarea:focus, .form-select:focus {
             outline: none;
             border-color: var(--accent);
-        }
-
-        .duration-picker {
-            display: flex;
-            gap: 8px;
-        }
-
-        .duration-picker .form-select {
-            flex: 1;
         }
 
         .intensity-slider {
@@ -755,83 +755,87 @@
                 <button class="close-button" onclick="closeModal(null, 'formModal')" aria-label="Fermer">×</button>
             </div>
             
-            <div class="form-section-title">🔋 Avant la crise</div>
+            <div class="form-block form-block-avant">
+                <div class="form-block-title">Avant la crise</div>
 
-            <div class="form-group">
-                <label class="form-label">Énergie (1 = épuisé, 10 = en forme)</label>
-                <input type="range" class="intensity-slider" id="formEnergie" min="1" max="10" value="5" oninput="document.getElementById('formEnergieDisplay').textContent=this.value+'/10'">
-                <div class="intensity-display" id="formEnergieDisplay">5/10</div>
+                <div class="form-group">
+                    <label class="form-label">Énergie (1 = épuisé, 10 = en forme)</label>
+                    <input type="range" class="intensity-slider null-state" id="formEnergie" min="1" max="10" value="5" oninput="activateSlider('energie')">
+                    <div class="intensity-display null-state" id="formEnergieDisplay">— /10</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Charge mentale (1 = légère, 10 = saturée)</label>
+                    <input type="range" class="intensity-slider null-state" id="formChargeMentale" min="1" max="10" value="5" oninput="activateSlider('chargeMentale')">
+                    <div class="intensity-display null-state" id="formChargeMentaleDisplay">— /10</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Charge sociale (1 = légère, 10 = saturée)</label>
+                    <input type="range" class="intensity-slider null-state" id="formChargeSociale" min="1" max="10" value="5" oninput="activateSlider('chargeSociale')">
+                    <div class="intensity-display null-state" id="formChargeSocialeDisplay">— /10</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Déclencheurs identifiés</label>
+                    <button type="button" class="triggers-button" onclick="openTriggersModal()">
+                        <span>🎯</span>
+                        <span>Sélectionner les déclencheurs</span>
+                    </button>
+                    <div class="triggers-preview" id="triggersPreview">Aucun déclencheur sélectionné</div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Charge mentale (1 = légère, 10 = saturée)</label>
-                <input type="range" class="intensity-slider" id="formChargeMentale" min="1" max="10" value="5" oninput="document.getElementById('formChargeMentaleDisplay').textContent=this.value+'/10'">
-                <div class="intensity-display" id="formChargeMentaleDisplay">5/10</div>
-            </div>
+            <div class="form-block form-block-crise">
+                <div class="form-block-title">La crise</div>
 
-            <div class="form-group">
-                <label class="form-label">Charge sociale (1 = légère, 10 = saturée)</label>
-                <input type="range" class="intensity-slider" id="formChargeSociale" min="1" max="10" value="5" oninput="document.getElementById('formChargeSocialeDisplay').textContent=this.value+'/10'">
-                <div class="intensity-display" id="formChargeSocialeDisplay">5/10</div>
-            </div>
+                <div class="form-group" id="dateGroup">
+                    <label class="form-label">Date <span class="form-required">*</span></label>
+                    <input type="date" class="form-input" id="formDate" required>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Déclencheurs identifiés</label>
-                <button type="button" class="triggers-button" onclick="openTriggersModal()">
-                    <span>🎯</span>
-                    <span>Sélectionner les déclencheurs</span>
-                </button>
-                <div class="triggers-preview" id="triggersPreview">Aucun déclencheur sélectionné</div>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Heure (optionnel)</label>
+                    <input type="time" class="form-input" id="formTime">
+                </div>
 
-            <div class="form-section-title">⚡ La crise</div>
+                <div class="form-group">
+                    <label class="form-label">Origine</label>
+                    <select class="form-select" id="formType">
+                        <option value="">Non précisé</option>
+                        <option value="Anticipatoire">Anticipatoire</option>
+                        <option value="Réactionnelle">Réactionnelle</option>
+                        <option value="Mixte">Mixte</option>
+                        <option value="Indéterminé">Indéterminé</option>
+                    </select>
+                </div>
 
-            <div class="form-group" id="dateGroup">
-                <label class="form-label">Date <span class="form-required">*</span></label>
-                <input type="date" class="form-input" id="formDate" required>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Type de crise</label>
+                    <select class="form-select" id="formTypeManifestation">
+                        <option value="">Non précisé</option>
+                        <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
+                        <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
+                        <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
+                        <option value="Indéterminé">Indéterminé</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Heure (optionnel)</label>
-                <input type="time" class="form-input" id="formTime">
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
+                    <input type="range" class="intensity-slider" id="formIntensity" min="1" max="10" value="5" oninput="updateFormIntensityDisplay()">
+                    <div class="intensity-display" id="formIntensityDisplay">5/10</div>
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Origine</label>
-                <select class="form-select" id="formType">
-                    <option value="">Non précisé</option>
-                    <option value="Anticipatoire">Anticipatoire</option>
-                    <option value="Réactionnelle">Réactionnelle</option>
-                    <option value="Mixte">Mixte</option>
-                    <option value="Indéterminé">Indéterminé</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Durée estimée</label>
+                    <input type="text" class="form-input" id="formDuration" placeholder="Ex: 30 min, 1h30...">
+                </div>
 
-            <div class="form-group">
-                <label class="form-label">Type de crise</label>
-                <select class="form-select" id="formTypeManifestation">
-                    <option value="">Non précisé</option>
-                    <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
-                    <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
-                    <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
-                    <option value="Indéterminé">Indéterminé</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
-                <input type="range" class="intensity-slider" id="formIntensity" min="1" max="10" value="5" oninput="updateFormIntensityDisplay()">
-                <div class="intensity-display" id="formIntensityDisplay">5/10</div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Durée estimée</label>
-                <input type="text" class="form-input" id="formDuration" placeholder="Ex: 30 min, 1h30...">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Remarques (optionnel)</label>
-                <textarea class="form-textarea" id="formRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
+                <div class="form-group">
+                    <label class="form-label">Remarques (optionnel)</label>
+                    <textarea class="form-textarea" id="formRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
+                </div>
             </div>
 
             <div class="modal-actions">
@@ -889,17 +893,21 @@
         </div>
     </div>
 
-    <div id="badgeTooltip"></div>
-
-    <div class="modal" id="badgeModal" onclick="closeModal(event, 'badgeModal')" role="dialog" aria-modal="true" aria-label="Détail">
-        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 360px;">
+    <div class="modal" id="deleteModal" onclick="closeModal(event, 'deleteModal')" role="dialog" aria-modal="true" aria-label="Confirmer la suppression">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width:320px">
             <div class="modal-header">
-                <h2 class="modal-title" id="badgeModalTitle"></h2>
-                <button class="close-button" onclick="closeModal(null, 'badgeModal')" aria-label="Fermer">×</button>
+                <h2 class="modal-title">Supprimer cette crise ?</h2>
+                <button class="close-button" onclick="closeModal(null, 'deleteModal')" aria-label="Fermer">×</button>
             </div>
-            <div id="badgeModalList"></div>
+            <p class="modal-text" style="margin-bottom:4px">Cette action est irréversible.</p>
+            <div class="modal-actions">
+                <button class="modal-button secondary" onclick="closeModal(null, 'deleteModal')">Annuler</button>
+                <button class="modal-button danger" onclick="confirmDeleteModal()">🗑️ Supprimer</button>
+            </div>
         </div>
     </div>
+
+    <div id="badgeTooltip"></div>
 
     <script>
         // Profils statiques par défaut + dynamiques depuis localStorage
@@ -956,6 +964,41 @@
         let formMode = 'create';
         let selectedTriggers = [];
         let triggerIntensities = {};
+        let deleteTargetIndex = null;
+        let deleteFromDetail = false;
+        let sliderTouched = { energie: false, chargeMentale: false, chargeSociale: false };
+
+        const SLIDER_IDS = {
+            energie: { slider: 'formEnergie', display: 'formEnergieDisplay' },
+            chargeMentale: { slider: 'formChargeMentale', display: 'formChargeMentaleDisplay' },
+            chargeSociale: { slider: 'formChargeSociale', display: 'formChargeSocialeDisplay' }
+        };
+
+        function activateSlider(field) {
+            if (!sliderTouched[field]) {
+                sliderTouched[field] = true;
+                document.getElementById(SLIDER_IDS[field].slider).classList.remove('null-state');
+                document.getElementById(SLIDER_IDS[field].display).classList.remove('null-state');
+            }
+            const val = document.getElementById(SLIDER_IDS[field].slider).value;
+            document.getElementById(SLIDER_IDS[field].display).textContent = val + '/10';
+        }
+
+        function resetSlider(field) {
+            sliderTouched[field] = false;
+            document.getElementById(SLIDER_IDS[field].slider).value = '5';
+            document.getElementById(SLIDER_IDS[field].slider).classList.add('null-state');
+            document.getElementById(SLIDER_IDS[field].display).textContent = '— /10';
+            document.getElementById(SLIDER_IDS[field].display).classList.add('null-state');
+        }
+
+        function setSliderValue(field, val) {
+            sliderTouched[field] = true;
+            document.getElementById(SLIDER_IDS[field].slider).value = val;
+            document.getElementById(SLIDER_IDS[field].slider).classList.remove('null-state');
+            document.getElementById(SLIDER_IDS[field].display).textContent = val + '/10';
+            document.getElementById(SLIDER_IDS[field].display).classList.remove('null-state');
+        }
 
         function normalizeEnergie(entry) {
             if (entry.energie) return parseInt(entry.energie);
@@ -1004,25 +1047,6 @@
             });
         }
 
-
-        function parseDurationString(str) {
-            if (!str) return { h: 0, m: 0 };
-            str = str.trim();
-            var hMatch = str.match(/^(\d+)h(\d+)?$/);
-            if (hMatch) {
-                return { h: parseInt(hMatch[1]), m: hMatch[2] ? parseInt(hMatch[2]) : 0 };
-            }
-            var minMatch = str.match(/^(\d+)\s*min/);
-            if (minMatch) {
-                var total = parseInt(minMatch[1]);
-                return { h: Math.floor(total / 60), m: total % 60 };
-            }
-            return { h: 0, m: 0 };
-        }
-
-        function snapToFive(m) {
-            return Math.min(55, Math.round(m / 5) * 5);
-        }
 
         function createTableRow(entry, index) {
             const date = new Date(entry.horodatage);
@@ -1199,12 +1223,9 @@
                 document.getElementById('formIntensity').value = '5';
                 updateFormIntensityDisplay();
                 document.getElementById('formDuration').value = '';
-                document.getElementById('formEnergie').value = '5';
-                document.getElementById('formEnergieDisplay').textContent = '5/10';
-                document.getElementById('formChargeMentale').value = '5';
-                document.getElementById('formChargeMentaleDisplay').textContent = '5/10';
-                document.getElementById('formChargeSociale').value = '5';
-                document.getElementById('formChargeSocialeDisplay').textContent = '5/10';
+                resetSlider('energie');
+                resetSlider('chargeMentale');
+                resetSlider('chargeSociale');
                 document.getElementById('formRemarks').value = '';
                 selectedTriggers = [];
                 triggerIntensities = {};
@@ -1235,12 +1256,9 @@
                 var ener = normalizeEnergie(entry);
                 var cm = normalizeChargeMentale(entry);
                 var cs = normalizeChargeSociale(entry);
-                document.getElementById('formEnergie').value = ener || '5';
-                document.getElementById('formEnergieDisplay').textContent = (ener || '5') + '/10';
-                document.getElementById('formChargeMentale').value = cm || '5';
-                document.getElementById('formChargeMentaleDisplay').textContent = (cm || '5') + '/10';
-                document.getElementById('formChargeSociale').value = cs || '5';
-                document.getElementById('formChargeSocialeDisplay').textContent = (cs || '5') + '/10';
+                if (ener !== null) setSliderValue('energie', ener); else resetSlider('energie');
+                if (cm !== null) setSliderValue('chargeMentale', cm); else resetSlider('chargeMentale');
+                if (cs !== null) setSliderValue('chargeSociale', cs); else resetSlider('chargeSociale');
                 document.getElementById('formRemarks').value = entry.remarques || '';
 
                 var decl = normalizeDeclencheurs(entry.declencheurs);
@@ -1319,7 +1337,8 @@
                 preview.textContent = 'Aucun déclencheur sélectionné';
             } else {
                 preview.innerHTML = selectedTriggers.map(t => {
-                    const val = triggerIntensities[t] || 5;
+                    if (!triggerIntensities[t]) triggerIntensities[t] = 5;
+                    const val = triggerIntensities[t];
                     return `<div class="trigger-intensity-row">
                         <span class="trigger-name-label">• ${t}</span>
                         <input type="range" min="1" max="10" value="${val}" oninput="setTriggerIntensity('${t.replace(/'/g, "\\'")}', this.value, this)">
@@ -1379,9 +1398,9 @@
                     duree: document.getElementById('formDuration').value || '',
                     declencheurs: selectedTriggers.map(function(t) { return { nom: t, intensite: triggerIntensities[t] || null }; }),
                     remarques: document.getElementById('formRemarks').value,
-                    energie: document.getElementById('formEnergie').value || '',
-                    chargeMentale: document.getElementById('formChargeMentale').value || '',
-                    chargeSociale: document.getElementById('formChargeSociale').value || '',
+                    energie: sliderTouched.energie ? document.getElementById('formEnergie').value : '',
+                    chargeMentale: sliderTouched.chargeMentale ? document.getElementById('formChargeMentale').value : '',
+                    chargeSociale: sliderTouched.chargeSociale ? document.getElementById('formChargeSociale').value : '',
                     manual: true
                 };
 
@@ -1417,9 +1436,9 @@
                 sorted[currentEntryIndex].duree = document.getElementById('formDuration').value || '';
                 sorted[currentEntryIndex].declencheurs = selectedTriggers.map(function(t) { return { nom: t, intensite: triggerIntensities[t] || null }; });
                 sorted[currentEntryIndex].remarques = document.getElementById('formRemarks').value;
-                sorted[currentEntryIndex].energie = document.getElementById('formEnergie').value || '';
-                sorted[currentEntryIndex].chargeMentale = document.getElementById('formChargeMentale').value || '';
-                sorted[currentEntryIndex].chargeSociale = document.getElementById('formChargeSociale').value || '';
+                sorted[currentEntryIndex].energie = sliderTouched.energie ? document.getElementById('formEnergie').value : '';
+                sorted[currentEntryIndex].chargeMentale = sliderTouched.chargeMentale ? document.getElementById('formChargeMentale').value : '';
+                sorted[currentEntryIndex].chargeSociale = sliderTouched.chargeSociale ? document.getElementById('formChargeSociale').value : '';
                 delete sorted[currentEntryIndex].precrisis;
 
                 localStorage.setItem('journalCrises', JSON.stringify(sorted));
@@ -1435,15 +1454,27 @@
         }
 
         function confirmDelete() {
-            if (confirm('Supprimer cette entrée définitivement ?')) {
-                deleteEntry(currentEntryIndex);
-                closeModal(null, 'detailModal');
-            }
+            openDeleteModal(currentEntryIndex, true);
         }
 
         function deleteEntry(index) {
-            if (!confirm('Supprimer cette entrée définitivement ?')) return;
-            
+            openDeleteModal(index, false);
+        }
+
+        function openDeleteModal(index, fromDetail) {
+            deleteTargetIndex = index;
+            deleteFromDetail = !!fromDetail;
+            document.getElementById('deleteModal').classList.add('visible');
+        }
+
+        function confirmDeleteModal() {
+            closeModal(null, 'deleteModal');
+            if (deleteFromDetail) closeModal(null, 'detailModal');
+            doDeleteEntry(deleteTargetIndex);
+            deleteTargetIndex = null;
+        }
+
+        function doDeleteEntry(index) {
             const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
             const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
             sorted.splice(index, 1);
@@ -1497,13 +1528,25 @@
                 const profile = PROFILES[entry.profil] || { icon: '📍', name: entry.profil || '—' };
 
                 const lines = [];
-                if (entry.typeCrise) lines.push(`<strong>Type :</strong> ${entry.typeCrise}`);
+                var ener = normalizeEnergie(entry);
+                var chM = normalizeChargeMentale(entry);
+                var chS = normalizeChargeSociale(entry);
+                if (ener !== null || chM !== null || chS !== null) {
+                    var avantParts = [];
+                    if (ener !== null) avantParts.push(`Énergie ${ener}/10`);
+                    if (chM !== null) avantParts.push(`Charge mentale ${chM}/10`);
+                    if (chS !== null) avantParts.push(`Charge sociale ${chS}/10`);
+                    lines.push(`<strong>Avant la crise :</strong> ${avantParts.join(' · ')}`);
+                }
+                if (entry.typeCrise) lines.push(`<strong>Origine :</strong> ${entry.typeCrise}`);
+                if (entry.typeManifestation) lines.push(`<strong>Type :</strong> ${entry.typeManifestation}`);
                 const hasIntensity = entry.intensite !== undefined && entry.intensite !== '';
                 if (hasIntensity) lines.push(`<strong>Intensité :</strong> ${entry.intensite}/10`);
                 if (entry.duree) lines.push(`<strong>Durée :</strong> ${entry.duree}`);
                 if (entry.declencheurs && entry.declencheurs.length > 0) {
-                    var dNames = normalizeDeclencheurs(entry.declencheurs).map(function(d) { return d.nom; });
-                    lines.push(`<strong>Déclencheurs :</strong> ${dNames.join(', ')}`);
+                    var decl = normalizeDeclencheurs(entry.declencheurs);
+                    var dParts = decl.map(function(d) { return d.intensite ? d.nom + ' (' + d.intensite + '/10)' : d.nom; });
+                    lines.push(`<strong>Déclencheurs :</strong> ${dParts.join(', ')}`);
                 }
                 if (entry.etats && entry.etats.length > 0) {
                     lines.push(`<strong>États :</strong> ${entry.etats.map(e => e.label || e).join(', ')}`);
@@ -1515,6 +1558,7 @@
                     const caps = [];
                     if (entry.capacites.impossible && entry.capacites.impossible.length) caps.push(`impossible : ${entry.capacites.impossible.join(', ')}`);
                     if (entry.capacites.difficile && entry.capacites.difficile.length) caps.push(`difficile : ${entry.capacites.difficile.join(', ')}`);
+                    if (entry.capacites.incertain && entry.capacites.incertain.length) caps.push(`incertain : ${entry.capacites.incertain.join(', ')}`);
                     if (entry.capacites.possible && entry.capacites.possible.length) caps.push(`possible : ${entry.capacites.possible.join(', ')}`);
                     if (caps.length) lines.push(`<strong>Capacités :</strong> ${caps.join(' · ')}`);
                 }
@@ -1586,7 +1630,8 @@ ${entriesHtml}
                 const profile = PROFILES[entry.profil] || { name: entry.profil || '—' };
 
                 text += dateStr + ' à ' + timeStr + ' — ' + profile.name + '\n';
-                if (entry.typeCrise) text += '  Type : ' + entry.typeCrise + '\n';
+                if (entry.typeCrise) text += '  Origine : ' + entry.typeCrise + '\n';
+                if (entry.typeManifestation) text += '  Type : ' + entry.typeManifestation + '\n';
                 const hasIntensity = entry.intensite !== undefined && entry.intensite !== '';
                 const hasDuree = !!entry.duree;
                 if (hasIntensity || hasDuree) {
@@ -1596,7 +1641,7 @@ ${entriesHtml}
                     text += '  ' + line + '\n';
                 }
                 if (entry.declencheurs && entry.declencheurs.length > 0) {
-                    var dNom = normalizeDeclencheurs(entry.declencheurs).map(function(d) { return d.nom; });
+                    var dNom = normalizeDeclencheurs(entry.declencheurs).map(function(d) { return d.intensite ? d.nom + ' (' + d.intensite + '/10)' : d.nom; });
                     text += '  Déclencheurs : ' + dNom.join(', ') + '\n';
                 }
                 if (entry.remarques) text += '  Remarques : ' + entry.remarques + '\n';
@@ -1690,7 +1735,7 @@ ${entriesHtml}
         <button class="footer-action" onclick="showExportOptions()">📤 Exporter</button>
     </footer>
 
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); closeModal(null, "badgeModal"); } });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

@@ -568,7 +568,7 @@
             });
 
             const data = {
-                version: '2.0',
+                version: '2.1',
                 dateExport: new Date().toISOString(),
                 prenom: localStorage.getItem('userPrenom') || '',
                 nom: localStorage.getItem('userNom') || '',
@@ -595,7 +595,9 @@
                     configs: contextesConfigs
                 },
                 journalCrises: JSON.parse(localStorage.getItem('journalCrises') || '[]'),
-                autoRegisterCrise: localStorage.getItem('autoRegisterCrise') || 'false'
+                autoRegisterCrise: localStorage.getItem('autoRegisterCrise') || 'false',
+                cartesCommunication: JSON.parse(localStorage.getItem('cartesCommunication') || '[]'),
+                cartesShowIcons: localStorage.getItem('cartesShowIcons') || 'true'
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -626,10 +628,6 @@
 
                         if (!data.version) {
                             alert('❌ Fichier invalide');
-                            return;
-                        }
-
-                        if (!confirm('⚠️ L\'import va remplacer toutes tes données actuelles.\n\nContinuer ?')) {
                             return;
                         }
 
@@ -681,6 +679,13 @@
 
                         if (data.autoRegisterCrise) {
                             localStorage.setItem('autoRegisterCrise', data.autoRegisterCrise);
+                        }
+
+                        if (data.cartesCommunication) {
+                            localStorage.setItem('cartesCommunication', JSON.stringify(data.cartesCommunication));
+                        }
+                        if (data.cartesShowIcons) {
+                            localStorage.setItem('cartesShowIcons', data.cartesShowIcons);
                         }
 
                         // Garantir que les 4 contextes par défaut existent
