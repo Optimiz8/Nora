@@ -520,6 +520,16 @@
             margin-bottom: 16px;
         }
 
+        .form-section-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.15);
+        }
+        .form-section-title:first-child { margin-top: 4px; }
+
         .form-label {
             display: block;
             font-size: 16px;
@@ -659,6 +669,54 @@
             font-size: 15px;
             color: var(--dark);
             min-height: 30px;
+        }
+
+        .trigger-intensity-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+        }
+        .trigger-intensity-row .trigger-name-label {
+            flex: 1;
+            font-size: 13px;
+            color: var(--dark);
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .trigger-intensity-row input[type="range"] {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(46, 58, 89, 0.2);
+            border-radius: 2px;
+            outline: none;
+        }
+        .trigger-intensity-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--dark);
+            cursor: pointer;
+        }
+        .trigger-intensity-row input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--dark);
+            border: none;
+            cursor: pointer;
+        }
+        .trigger-intensity-val {
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.7;
+            min-width: 28px;
+            text-align: right;
         }
 
         .triggers-modal {
@@ -969,50 +1027,10 @@
                 <button class="questionnaire-close-btn" onclick="closeQuestionnaire()" aria-label="Fermer">×</button>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Date <span class="form-required">*</span></label>
-                <input type="date" class="form-input" id="crisisDate" required>
-            </div>
+            <div class="form-section-title">🔋 Avant la crise</div>
 
             <div class="form-group">
-                <label class="form-label">Heure de début</label>
-                <input type="time" class="form-input" id="crisisTime">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Origine</label>
-                <select class="form-select" id="crisisType">
-                    <option value="">Non précisé</option>
-                    <option value="Anticipatoire">Anticipatoire</option>
-                    <option value="Réactionnelle">Réactionnelle</option>
-                    <option value="Mixte">Mixte</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Type de crise</label>
-                <select class="form-select" id="crisisManifestation">
-                    <option value="">Non précisé</option>
-                    <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
-                    <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
-                    <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
-                    <option value="Inconnu">Je ne sais pas</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
-                <input type="range" class="intensity-slider" id="intensitySlider" min="1" max="10" value="5" oninput="updateIntensityDisplay()">
-                <div class="intensity-display" id="intensityDisplay">5/10</div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Durée estimée</label>
-                <input type="text" class="form-input" id="crisisDuration" placeholder="Ex: 30 min, 1h30...">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Énergie avant la crise (1 = épuisé, 10 = en forme)</label>
+                <label class="form-label">Énergie (1 = épuisé, 10 = en forme)</label>
                 <input type="range" class="intensity-slider" id="crisisEnergie" min="1" max="10" value="5" oninput="document.getElementById('energieDisplay').textContent=this.value+'/10'">
                 <div class="intensity-display" id="energieDisplay">5/10</div>
             </div>
@@ -1036,6 +1054,51 @@
                     <span>Sélectionner les déclencheurs</span>
                 </button>
                 <div class="triggers-preview" id="triggersPreview">Aucun déclencheur sélectionné</div>
+            </div>
+
+            <div class="form-section-title">⚡ La crise</div>
+
+            <div class="form-group">
+                <label class="form-label">Date <span class="form-required">*</span></label>
+                <input type="date" class="form-input" id="crisisDate" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Heure de début</label>
+                <input type="time" class="form-input" id="crisisTime">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Origine</label>
+                <select class="form-select" id="crisisType">
+                    <option value="">Non précisé</option>
+                    <option value="Anticipatoire">Anticipatoire</option>
+                    <option value="Réactionnelle">Réactionnelle</option>
+                    <option value="Mixte">Mixte</option>
+                    <option value="Indéterminé">Indéterminé</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Type de crise</label>
+                <select class="form-select" id="crisisManifestation">
+                    <option value="">Non précisé</option>
+                    <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
+                    <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
+                    <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
+                    <option value="Indéterminé">Indéterminé</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Intensité (1 = légère, 10 = très intense)</label>
+                <input type="range" class="intensity-slider" id="intensitySlider" min="1" max="10" value="5" oninput="updateIntensityDisplay()">
+                <div class="intensity-display" id="intensityDisplay">5/10</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Durée estimée</label>
+                <input type="text" class="form-input" id="crisisDuration" placeholder="Ex: 30 min, 1h30...">
             </div>
 
             <div class="form-group">
@@ -1157,6 +1220,7 @@
         };
 
         let selectedTriggers = [];
+        let triggerIntensities = {};
 
         function toggleSection(button) {
             const content = button.nextElementSibling;
@@ -1684,18 +1748,26 @@
                 let dH = Math.floor(totalMinutes / 60);
                 let dM = Math.round((totalMinutes % 60) / 5) * 5;
                 if (dM >= 60) { dH++; dM = 0; }
-                document.getElementById('crisisDurationH').value = Math.min(dH, 12);
-                document.getElementById('crisisDurationM').value = dM;
+                dH = Math.min(dH, 12);
+                if (dH > 0 && dM > 0) document.getElementById('crisisDuration').value = dH + 'h' + (dM < 10 ? '0' : '') + dM;
+                else if (dH > 0) document.getElementById('crisisDuration').value = dH + 'h';
+                else document.getElementById('crisisDuration').value = dM + ' min';
             } else {
-                document.getElementById('crisisDurationH').value = '0';
-                document.getElementById('crisisDurationM').value = '0';
+                document.getElementById('crisisDuration').value = '';
             }
 
+            document.getElementById('crisisEnergie').value = '5';
+            document.getElementById('energieDisplay').textContent = '5/10';
+            document.getElementById('crisisChargeMentale').value = '5';
+            document.getElementById('chargeMentaleDisplay').textContent = '5/10';
+            document.getElementById('crisisChargeSociale').value = '5';
+            document.getElementById('chargeSocialeDisplay').textContent = '5/10';
             document.getElementById('crisisType').value = '';
             document.getElementById('crisisManifestation').value = '';
             document.getElementById('intensitySlider').value = '5';
             updateIntensityDisplay();
             selectedTriggers = [];
+            triggerIntensities = {};
             updateTriggersPreview();
             document.getElementById('crisisRemarks').value = '';
 
@@ -1765,8 +1837,20 @@
             if (selectedTriggers.length === 0) {
                 preview.textContent = 'Aucun déclencheur sélectionné';
             } else {
-                preview.innerHTML = selectedTriggers.map(t => `• ${t}`).join('<br>');
+                preview.innerHTML = selectedTriggers.map(t => {
+                    const val = triggerIntensities[t] || 5;
+                    return `<div class="trigger-intensity-row">
+                        <span class="trigger-name-label">• ${t}</span>
+                        <input type="range" min="1" max="10" value="${val}" oninput="setTriggerIntensity('${t.replace(/'/g, "\\'")}', this.value, this)">
+                        <span class="trigger-intensity-val">${val}/10</span>
+                    </div>`;
+                }).join('');
             }
+        }
+
+        function setTriggerIntensity(name, val, input) {
+            triggerIntensities[name] = parseInt(val);
+            input.nextElementSibling.textContent = val + '/10';
         }
 
         function closeQuestionnaire() {
@@ -1835,11 +1919,8 @@
                     typeCrise: document.getElementById('crisisType').value || '',
                     typeManifestation: document.getElementById('crisisManifestation').value || '',
                     intensite: document.getElementById('intensitySlider').value || '',
-                    duree: formatDuration(
-                        parseInt(document.getElementById('crisisDurationH').value) || 0,
-                        parseInt(document.getElementById('crisisDurationM').value) || 0
-                    ),
-                    declencheurs: [...selectedTriggers],
+                    duree: document.getElementById('crisisDuration').value || '',
+                    declencheurs: selectedTriggers.map(t => ({ nom: t, intensite: triggerIntensities[t] || null })),
                     remarques: document.getElementById('crisisRemarks').value || '',
                     energie: document.getElementById('crisisEnergie').value || '',
                     chargeMentale: document.getElementById('crisisChargeMentale').value || '',

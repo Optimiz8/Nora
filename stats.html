@@ -284,10 +284,23 @@
             gap: 3px;
         }
 
+        .rank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+
         .rank-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--dark);
+        }
+
+        .rank-meta {
+            font-size: 13px;
+            color: var(--dark);
+            opacity: 0.5;
         }
 
         .rank-bar-row {
@@ -437,6 +450,65 @@
             font-size: 20px;
             font-weight: 700;
             color: var(--dark);
+        }
+
+        /* ---------- BILAN COMPARAISON ---------- */
+
+        .bilan-comp-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px 6px;
+        }
+
+        .bilan-comp-spacer { flex: 1; }
+
+        .bilan-comp-col-hd {
+            width: 80px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--dark);
+            opacity: 0.45;
+        }
+
+        .bilan-comp-col-hd.col-current { opacity: 0.9; }
+
+        .bilan-comp-row {
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            border-top: 1px solid rgba(46, 58, 89, 0.08);
+        }
+
+        .bilan-comp-label {
+            flex: 1;
+            font-size: 14px;
+            color: var(--dark);
+            opacity: 0.65;
+            font-weight: 500;
+            padding: 12px 8px 12px 0;
+        }
+
+        .bilan-comp-current {
+            width: 80px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            padding: 12px 0;
+        }
+
+        .bilan-comp-prev {
+            width: 80px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.45;
+            padding: 12px 0;
+            line-height: 1.4;
         }
 
         /* ---------- BILAN ENRICHI ---------- */
@@ -983,9 +1055,28 @@
             return item && item.label ? item.label : item;
         }
 
+        function normDeclencheurs(arr) {
+            if (!Array.isArray(arr)) return [];
+            return arr.map(function(d) { return typeof d === 'string' ? { nom: d, intensite: null } : d; });
+        }
+        function normEnergie(entry) {
+            if (entry.energie) return parseFloat(entry.energie);
+            if (entry.precrisis && entry.precrisis.energie !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.energie / 10)));
+            return NaN;
+        }
+        function normChargeMentale(entry) {
+            if (entry.chargeMentale) return parseFloat(entry.chargeMentale);
+            if (entry.precrisis && entry.precrisis.chargeMentale !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.chargeMentale / 10)));
+            return NaN;
+        }
+        function normChargeSociale(entry) {
+            if (entry.chargeSociale) return parseFloat(entry.chargeSociale);
+            if (entry.precrisis && entry.precrisis.chargeSociale !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.chargeSociale / 10)));
+            return NaN;
+        }
         function hasTrigger(entry, name) {
-            var d = entry.declencheurs || [];
-            for (var i = 0; i < d.length; i++) { if (d[i] === name) return true; }
+            var d = normDeclencheurs(entry.declencheurs);
+            for (var i = 0; i < d.length; i++) { if (d[i].nom === name) return true; }
             return false;
         }
 
@@ -1066,11 +1157,11 @@
                 if (!isNaN(ints)) intensities.push(ints);
                 var dur = parseDuration(e.duree);
                 if (dur !== null) durations.push(dur);
-                var en = parseFloat(e.energie);
+                var en = normEnergie(e);
                 if (!isNaN(en)) energies.push(en);
-                var cm = parseFloat(e.chargeMentale);
+                var cm = normChargeMentale(e);
                 if (!isNaN(cm)) chargesMentales.push(cm);
-                var cs = parseFloat(e.chargeSociale);
+                var cs = normChargeSociale(e);
                 if (!isNaN(cs)) chargesSociales.push(cs);
 
                 profileArr.push(e.profil || 'commun');
@@ -1080,8 +1171,10 @@
                     else if (e.typeCrise === 'Shutdown') shutdownCount++;
                     else if (e.typeCrise === 'Mixte') mixteTypeCount++;
                 }
-                var decl = e.declencheurs || [];
-                for (var d2 = 0; d2 < decl.length; d2++) { if (decl[d2]) triggerArr.push(decl[d2]); }
+                var decl = normDeclencheurs(e.declencheurs);
+                for (var d2 = 0; d2 < decl.length; d2++) {
+                    if (decl[d2].nom) triggerFreq[decl[d2].nom] = (triggerFreq[decl[d2].nom] || 0) + 1;
+                }
                 var bess = e.besoins || [];
                 for (var b = 0; b < bess.length; b++) {
                     var bl = extractLabel(bess[b]);
@@ -1282,11 +1375,12 @@
             /* Seuils critiques : intensité moy par tranche énergie/charge */
             var thresholds = { energie: [{}, {}, {}], chargeMentale: [{}, {}, {}], chargeSociale: [{}, {}, {}] };
             var thresholdFields = ['energie', 'chargeMentale', 'chargeSociale'];
+            var normFns = { energie: normEnergie, chargeMentale: normChargeMentale, chargeSociale: normChargeSociale };
             for (var tf = 0; tf < thresholdFields.length; tf++) {
                 var field = thresholdFields[tf];
                 var buckets = [[], [], []]; // 0-3, 4-6, 7-10
                 for (var se = 0; se < entries.length; se++) {
-                    var sv = parseFloat(entries[se][field]);
+                    var sv = normFns[field](entries[se]);
                     var si2 = parseFloat(entries[se].intensite);
                     if (isNaN(sv) || isNaN(si2)) continue;
                     var bIdx = sv <= 3 ? 0 : sv <= 6 ? 1 : 2;
@@ -1301,10 +1395,11 @@
             /* Évolution temporelle (données brutes pour graphique) */
             var timelineEntries = [];
             for (var tl = 0; tl < entries.length; tl++) {
+                var tlEn = normEnergie(entries[tl]);
                 timelineEntries.push({
                     date: entries[tl].horodatage,
                     intensite: parseFloat(entries[tl].intensite) || null,
-                    energie: parseFloat(entries[tl].energie) || null
+                    energie: isNaN(tlEn) ? null : tlEn
                 });
             }
 
@@ -1725,10 +1820,11 @@
                 for (var ei = 0; ei < stats.entries.length; ei++) {
                     var e = stats.entries[ei];
                     var prof = e.profil || 'commun';
-                    var decl = e.declencheurs || [];
+                    var decl = normDeclencheurs(e.declencheurs);
                     for (var di = 0; di < decl.length; di++) {
-                        if (matrix[decl[di]] !== undefined && matrix[decl[di]][prof] !== undefined) {
-                            matrix[decl[di]][prof]++;
+                        var dn = decl[di].nom;
+                        if (matrix[dn] !== undefined && matrix[dn][prof] !== undefined) {
+                            matrix[dn][prof]++;
                         }
                     }
                 }
@@ -1826,9 +1922,9 @@
                     cnt++;
                     var prof5 = stats.entries[ie].profil || 'commun';
                     contextes5[prof5] = (contextes5[prof5] || 0) + 1;
-                    var decl5 = stats.entries[ie].declencheurs || [];
+                    var decl5 = normDeclencheurs(stats.entries[ie].declencheurs);
                     for (var d5 = 0; d5 < decl5.length; d5++) {
-                        if (decl5[d5]) triggers5[decl5[d5]] = (triggers5[decl5[d5]] || 0) + 1;
+                        if (decl5[d5].nom) triggers5[decl5[d5].nom] = (triggers5[decl5[d5].nom] || 0) + 1;
                     }
                 }
                 var topTrig = null, topCtx = null;
@@ -1903,7 +1999,7 @@
                 return;
             }
 
-            var html = lastCard;
+            var html = lastRow;
 
             /* ========== PARTIE 1 — BILAN ========== */
             html += '<div class="section-tag">Bilan</div>';
@@ -1973,12 +2069,16 @@
             /* ========== MOMENTS DE LA JOURNÉE ========== */
             html += '<div class="section-tag">Quand</div>';
 
-            /* Moments */
+            var maxDayCount = 0;
+            for (var di = 0; di < stats.dayOfWeek.length; di++) {
+                if (stats.dayOfWeek[di].count > maxDayCount) maxDayCount = stats.dayOfWeek[di].count;
+            }
+            if (maxDayCount === 0) maxDayCount = 1;
+
             var maxMoment = 0;
             for (var mi = 0; mi < stats.hourSlots.length; mi++) {
                 if (stats.hourSlots[mi].count > maxMoment) maxMoment = stats.hourSlots[mi].count;
             }
-            if (maxDayCount === 0) maxDayCount = 1;
 
             html += '<div class="stat-card"><div style="padding:10px 16px 4px;font-size:13px;font-weight:700;color:var(--dark);opacity:0.55;text-transform:uppercase">Jour de la semaine</div>';
             html += '<div class="day-grid">';
@@ -2190,29 +2290,29 @@
             if (stats.avgChargeSociale !== null) text += 'Charge sociale moy. : ' + stats.avgChargeSociale + '/10\n';
             var last = sinceLastCrisis();
             if (last) text += 'Dernière crise : ' + last + '\n';
-            if (stats.triggers.length) {
+            if (stats.triggerStats.length) {
                 text += '\nDéclencheurs :\n';
-                var top5t = stats.triggers.slice(0, 5);
+                var top5t = stats.triggerStats.slice(0, 5);
                 for (var ti = 0; ti < top5t.length; ti++) text += '  ' + (ti + 1) + '. ' + top5t[ti].name + ' (' + top5t[ti].count + ' fois)\n';
             }
-            if (stats.besoins.length) {
+            if (stats.besoinCounts.length) {
                 text += '\nBesoins :\n';
-                var top5b = stats.besoins.slice(0, 5);
+                var top5b = stats.besoinCounts.slice(0, 5);
                 for (var bi = 0; bi < top5b.length; bi++) text += '  ' + (bi + 1) + '. ' + top5b[bi].name + ' (' + top5b[bi].count + ' fois)\n';
             }
-            if (stats.etats.length) {
+            if (stats.etatCounts.length) {
                 text += '\nÉtats :\n';
-                var top5e = stats.etats.slice(0, 5);
+                var top5e = stats.etatCounts.slice(0, 5);
                 for (var ei = 0; ei < top5e.length; ei++) text += '  ' + (ei + 1) + '. ' + top5e[ei].name + ' (' + top5e[ei].count + ' fois)\n';
             }
-            if (stats.capacitesImposs.length) {
+            if (stats.capImpCounts.length) {
                 text += '\nImpossible :\n';
-                var top5i = stats.capacitesImposs.slice(0, 5);
+                var top5i = stats.capImpCounts.slice(0, 5);
                 for (var ii = 0; ii < top5i.length; ii++) text += '  ' + (ii + 1) + '. ' + top5i[ii].name + ' (' + top5i[ii].count + ' fois)\n';
             }
-            if (stats.capacitesDiff.length) {
+            if (stats.capDifCounts.length) {
                 text += '\nSouvent difficile :\n';
-                var top5d = stats.capacitesDiff.slice(0, 5);
+                var top5d = stats.capDifCounts.slice(0, 5);
                 for (var di2 = 0; di2 < top5d.length; di2++) text += '  ' + (di2 + 1) + '. ' + top5d[di2].name + ' (' + top5d[di2].count + ' fois)\n';
             }
             text += '\nExport du ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
