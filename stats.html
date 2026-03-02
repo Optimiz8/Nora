@@ -581,6 +581,43 @@
             background: rgba(245, 228, 204, 0.14);
             transform: scale(0.98);
         }
+        .export-stats-btn.icon-btn { width: auto; flex: 1; }
+
+        /* ---------- MODALE EXPORT ---------- */
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+
+        .export-modal {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--dark); border-radius: 20px 20px 0 0;
+            padding: 20px 16px 32px; z-index: 201;
+            display: flex; flex-direction: column; gap: 10px;
+            transform: translateY(100%); transition: transform 0.25s ease;
+        }
+        .export-modal.visible { transform: translateY(0); }
+
+        .export-modal-title {
+            font-size: 16px; font-weight: 700; color: var(--light);
+            text-align: center; margin-bottom: 4px;
+        }
+        .export-option-btn {
+            background: rgba(245,228,204,0.1); border: 1px solid rgba(245,228,204,0.15);
+            color: var(--light); font-size: 15px; font-weight: 600;
+            padding: 14px; border-radius: 12px; cursor: pointer; text-align: left;
+        }
+        .export-option-btn.primary {
+            background: var(--accent); border-color: var(--accent); color: var(--dark);
+        }
+        .export-option-btn:active { transform: scale(0.98); }
+        .export-cancel-btn {
+            background: none; border: none; color: rgba(245,228,204,0.5);
+            font-size: 15px; font-weight: 600; padding: 10px; cursor: pointer;
+            text-align: center;
+        }
 
         /* ---------- ÉTAT VIDE ---------- */
 
@@ -1075,7 +1112,18 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn" style="flex:1" onclick="shareStats()">↑ Partager</button>
+        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">↑ Partager</button>
+        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">⬇ Exporter</button>
+    </div>
+
+    <!-- Modale export/partage -->
+    <div class="modal-overlay" id="exportModalOverlay" onclick="closeExportModal()"></div>
+    <div class="export-modal" id="exportModal">
+        <div class="export-modal-title" id="exportModalTitle">Partager</div>
+        <button class="export-option-btn" onclick="doShareExport('overview')">Vue d'ensemble</button>
+        <button class="export-option-btn" onclick="doShareExport('analysis')">Analyse approfondie</button>
+        <button class="export-option-btn primary" onclick="doShareExport('both')">Les deux</button>
+        <button class="export-cancel-btn" onclick="closeExportModal()">Annuler</button>
     </div>
 
     <script src="nora-data.js"></script>
@@ -2382,17 +2430,6 @@
             return text;
         }
 
-        function exportStats() {
-            var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée à exporter sur cette période.'); return; }
-            var text = buildSummaryText(stats);
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text)
-                    .then(function() { alert('Résumé copié !'); })
-                    .catch(function() { downloadText(text); });
-            } else { downloadText(text); }
-        }
-
         function downloadText(text) {
             var blob = new Blob([text], { type: 'text/plain' });
             var url = URL.createObjectURL(blob);
@@ -2403,19 +2440,80 @@
             URL.revokeObjectURL(url);
         }
 
-        function shareStats() {
+        function buildAnalysisText(stats) {
+            var text = '== Analyse approfondie Nora — ' + getPeriodLabel() + ' ==\n\n';
+            text += 'Crises : ' + stats.total + '\n';
+            if (stats.avgIntensity !== null) text += 'Intensité moyenne : ' + stats.avgIntensity + '/10\n';
+            if (stats.meltdownPct > 0 || stats.shutdownPct > 0) text += 'Meltdown / Shutdown : ' + stats.meltdownPct + '% / ' + stats.shutdownPct + '%\n';
+            if (stats.avgEnergie !== null) text += 'Énergie moy. avant crise : ' + stats.avgEnergie + '/10\n';
+            if (stats.avgChargeMentale !== null) text += 'Charge mentale moy. : ' + stats.avgChargeMentale + '/10\n';
+            if (stats.avgChargeSociale !== null) text += 'Charge sociale moy. : ' + stats.avgChargeSociale + '/10\n';
+            if (stats.profileCounts && stats.profileCounts.length > 1) {
+                text += '\nContextes :\n';
+                for (var pc = 0; pc < stats.profileCounts.length; pc++) {
+                    var pn = getProfileName(stats.profileCounts[pc].name);
+                    text += '  ' + pn.icon + ' ' + pn.name + ' : ' + stats.profileCounts[pc].count + ' crises\n';
+                }
+            }
+            if (stats.triggerStats.length) {
+                text += '\nDéclencheurs :\n';
+                for (var ti = 0; ti < Math.min(stats.triggerStats.length, 8); ti++) {
+                    var tr = stats.triggerStats[ti];
+                    text += '  ' + (ti + 1) + '. ' + tr.name + ' (' + tr.count + '×';
+                    if (tr.avgIntensity != null) text += ' · ' + tr.avgIntensity + '/10';
+                    text += ')\n';
+                }
+            }
+            if (stats.etatCounts.length) {
+                text += '\nÉtats :\n';
+                for (var ei = 0; ei < Math.min(stats.etatCounts.length, 7); ei++) {
+                    var et = stats.etatCounts[ei];
+                    text += '  ' + (ei + 1) + '. ' + et.name + ' (' + et.count + '×)\n';
+                }
+            }
+            if (stats.capImpCounts.length) {
+                text += '\nCapacités impossibles :\n';
+                for (var ci = 0; ci < Math.min(stats.capImpCounts.length, 5); ci++) text += '  ' + stats.capImpCounts[ci].name + ' (' + stats.capImpCounts[ci].count + '×)\n';
+            }
+            if (stats.capDifCounts.length) {
+                text += '\nSouvent difficile :\n';
+                for (var cdi = 0; cdi < Math.min(stats.capDifCounts.length, 5); cdi++) text += '  ' + stats.capDifCounts[cdi].name + ' (' + stats.capDifCounts[cdi].count + '×)\n';
+            }
+            text += '\nExport du ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
+            return text;
+        }
+
+        var _exportMode = 'share';
+
+        function openShareExportModal(mode) {
+            _exportMode = mode;
+            document.getElementById('exportModalTitle').textContent = mode === 'share' ? 'Partager' : 'Exporter';
+            document.getElementById('exportModalOverlay').classList.add('visible');
+            document.getElementById('exportModal').classList.add('visible');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModalOverlay').classList.remove('visible');
+            document.getElementById('exportModal').classList.remove('visible');
+        }
+
+        function doShareExport(which) {
+            closeExportModal();
             var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée à partager sur cette période.'); return; }
-            var text = buildSummaryText(stats);
-            if (navigator.share) {
-                navigator.share({ title: 'Statistiques Nora', text: text })
-                    .catch(function() {});
-            } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text)
-                    .then(function() { alert('Résumé copié !'); })
-                    .catch(function() { downloadText(text); });
+            if (!stats) { alert('Aucune donnée sur cette période.'); return; }
+            var text = which === 'overview' ? buildSummaryText(stats)
+                     : which === 'analysis' ? buildAnalysisText(stats)
+                     : buildSummaryText(stats) + '\n\n---\n\n' + buildAnalysisText(stats);
+            if (_exportMode === 'share') {
+                if (navigator.share) {
+                    navigator.share({ title: 'Statistiques Nora', text: text }).catch(function() {});
+                } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(function() { alert('Résumé copié !'); }).catch(function() { downloadText(text); });
+                } else { downloadText(text); }
             } else {
-                downloadText(text);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(function() { alert('Données copiées !'); }).catch(function() { downloadText(text); });
+                } else { downloadText(text); }
             }
         }
 

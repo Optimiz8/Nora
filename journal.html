@@ -9,6 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <link rel="stylesheet" href="nora-common.css">
+    <script src="nora-data.js"></script>
     <title>Nora – Journal de crises</title>
     <style>
         body {
@@ -417,8 +418,12 @@
             background: rgba(245,228,204,0.05);
             color: var(--light);
         }
-        #formModal .trigger-name-label { color: var(--light); font-size: 15px; }
+        #formModal .trigger-name-label { color: var(--light); }
         #formModal .trigger-intensity-val { color: var(--light); }
+        #formModal .trigger-intensity-row { border-bottom-color: rgba(245,228,204,0.1); }
+        #formModal .trigger-intensity-row input[type="range"] { background: rgba(245,228,204,0.2); }
+        #formModal .trigger-intensity-row input[type="range"]::-webkit-slider-thumb { background: var(--accent); }
+        #formModal .trigger-intensity-row input[type="range"]::-moz-range-thumb { background: var(--accent); }
         #formModal .modal-actions {
             position: sticky;
             bottom: 0;
@@ -548,49 +553,48 @@
 
         .trigger-intensity-row {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 8px;
-            padding: 6px 0;
+            gap: 6px 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(46,58,89,0.08);
         }
         .trigger-intensity-row .trigger-name-label {
-            flex: 1;
-            font-size: 13px;
+            flex: 0 0 100%;
+            font-size: 15px;
+            font-weight: 500;
             color: var(--dark);
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
         .trigger-intensity-row input[type="range"] {
-            width: 80px;
-            height: 4px;
+            flex: 1;
+            height: 6px;
             -webkit-appearance: none;
             appearance: none;
             background: rgba(46, 58, 89, 0.2);
-            border-radius: 2px;
+            border-radius: 3px;
             outline: none;
         }
         .trigger-intensity-row input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: var(--dark);
             cursor: pointer;
         }
         .trigger-intensity-row input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             background: var(--dark);
             border: none;
             cursor: pointer;
         }
         .trigger-intensity-val {
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: 600;
             color: var(--dark);
-            opacity: 0.7;
-            min-width: 28px;
+            min-width: 42px;
             text-align: right;
         }
 
@@ -831,6 +835,21 @@
             color: var(--dark);
             opacity: 0.8;
             font-size: 15px;
+        }
+
+        .trigger-custom-container {
+            padding: 4px 8px 8px 36px;
+        }
+
+        .trigger-custom-input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid rgba(46,58,89,0.3);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--dark);
+            background: rgba(46,58,89,0.05);
+            box-sizing: border-box;
         }
 
         .export-options {
@@ -1096,7 +1115,7 @@
                 <h2 class="modal-title">Sélectionner les déclencheurs</h2>
                 <button class="close-button" onclick="closeModal(null, 'triggersModal')" aria-label="Fermer">×</button>
             </div>
-            <p class="triggers-info">💡 Tu peux sélectionner plusieurs déclencheurs</p>
+            <p class="triggers-info">Une crise peut avoir plusieurs déclencheurs.<br>Prends quelques secondes pour repenser à ce qui s'est accumulé.</p>
 
             <div id="triggersContent"></div>
 
@@ -1175,35 +1194,7 @@
         }
         const PROFILES = getProfiles();
 
-        const TRIGGERS = {
-            "Hypersensibilité et Surcharges Sensorielles": [
-                { name: "Auditif", desc: "Présence de bruits latents (bourdonnements, bruits de fond subtils) ou survenue de bruits soudains" },
-                { name: "Visuel", desc: "Variations brusques de luminosité ou exposition à des lumières trop fortes" },
-                { name: "Olfactif", desc: "Perception d'odeurs dérangeantes" },
-                { name: "Tactile", desc: "Contact physique (quelqu'un qui nous touche) ou confrontation à certaines textures alimentaires" },
-                { name: "Proprioceptive", desc: "Difficultés à se représenter dans l'espace ou ressenti d'un inconfort spatio-temporel" },
-                { name: "Surcharge émotionnelle", desc: "Accumulation d'émotions intenses" }
-            ],
-            "Prévisibilité et Contrôle de l'Environnement": [
-                { name: "Instabilité", desc: "Arrivée d'un changement, d'un imprévu ou d'une interaction imprévisible" },
-                { name: "Zone Secure", desc: "Modification de la zone secure ou obligation de s'en éloigner" },
-                { name: "Perturbation de l'organisation ou des routines personnelles", desc: "Rupture de structure habituelle" },
-                { name: "Non-respect des règles", desc: "Cadre : non respecté, règle enfreinte" },
-                { name: "Injustice", desc: "Confrontation à une situation ou un vécu injuste / non éthique" },
-                { name: "Intrusion", desc: "dans la zone secure / ton espace personnel" }
-            ],
-            "Contacts sociaux": [
-                { name: "Situations sociales", desc: "Participation à des occasions sociales ou à des conversations superficielles (small talk)" },
-                { name: "Traitement social", desc: "Difficulté à lire les visages ou problèmes de compréhension dans les échanges. difficulté d'expression ou de compréhension ou de traduction des sous-entendus ou des messages de l'autre)" },
-                { name: "Barrière de communication", desc: "Difficulté à s'exprimer ou à traduire la pensée de l'autre" }
-            ],
-            "Fonctions Exécutives": [
-                { name: "Gestion du temps", desc: "Difficulté de planification et de projection (dans le temps ou dans des scénarios abstraits)" },
-                { name: "Surcharge cognitive", desc: "Trop d'informations ou de tâches à traiter simultanément ou non" },
-                { name: "Pression de résultat", desc: "Exigence de précision, de perfection et de performance" },
-                { name: "Besoin impérieux de corriger les erreurs", desc: "Réaction cognitive : face à une erreur avec un besoin presque incontrôlable de corriger cette erreur. Peut parfois entraîner des ruminations" }
-            ]
-        };
+        /* TRIGGER_CATEGORIES défini dans nora-data.js */
 
         let currentEntryIndex = null;
         let formMode = 'create';
@@ -1578,41 +1569,58 @@
         function openTriggersModal() {
             const content = document.getElementById('triggersContent');
             let html = '';
-            
-            Object.keys(TRIGGERS).forEach(category => {
+
+            TRIGGER_CATEGORIES.forEach(cat => {
                 html += `<div class="trigger-category">`;
-                html += `<div class="trigger-category-title">${category}</div>`;
-                
-                TRIGGERS[category].forEach((trigger, idx) => {
-                    const isChecked = selectedTriggers.includes(trigger.name);
-                    const uniqueId = 'trigger_' + category.replace(/[^a-z0-9]/gi, '_') + '_' + idx;
+                html += `<div class="trigger-category-title">${cat.label}</div>`;
+
+                cat.items.forEach((trigger, idx) => {
+                    const storedName = cat.key + ' \u2014 ' + trigger.name;
+                    const isChecked = trigger.custom
+                        ? selectedTriggers.some(t => t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9')
+                        : selectedTriggers.includes(storedName);
+                    const uniqueId = 'trigger_' + cat.key + '_' + idx;
+                    const descHtml = trigger.desc ? ` <span class="trigger-description">${trigger.desc}</span>` : '';
+
                     html += `
                         <div class="trigger-item">
-                            <input type="checkbox" 
-                                   class="trigger-checkbox" 
-                                   ${isChecked ? 'checked' : ''} 
-                                   id="${uniqueId}" 
-                                   data-trigger-name="${trigger.name.replace(/"/g, '&quot;')}"
+                            <input type="checkbox"
+                                   class="trigger-checkbox"
+                                   ${isChecked ? 'checked' : ''}
+                                   id="${uniqueId}"
+                                   data-trigger-name="${storedName.replace(/"/g, '&quot;')}"
+                                   ${trigger.custom ? 'data-custom="true"' : ''}
                                    onchange="handleTriggerChange(this)">
                             <label class="trigger-label" for="${uniqueId}">
-                                <span class="trigger-name">${trigger.name}</span> : 
-                                <span class="trigger-description">${trigger.desc}</span>
+                                <span class="trigger-name">${trigger.name}</span>${descHtml}
                             </label>
-                        </div>
-                    `;
+                        </div>`;
+
+                    if (trigger.custom) {
+                        const existing = selectedTriggers.find(t => t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9');
+                        const customValue = existing ? existing.replace('Divers \u2014 ', '') : '';
+                        html += `<div class="trigger-custom-container" id="customTriggerContainer" style="${isChecked ? '' : 'display:none'}">
+                            <input type="text" id="customTriggerInput" class="trigger-custom-input" placeholder="D\u00e9cris le d\u00e9clencheur\u2026" value="${customValue.replace(/"/g, '&quot;')}">
+                        </div>`;
+                    }
                 });
-                
+
                 html += `</div>`;
             });
-            
+
             content.innerHTML = html;
             history.pushState({ noraModal: true }, '');
             document.getElementById('triggersModal').classList.add('visible');
         }
 
         function handleTriggerChange(checkbox) {
+            if (checkbox.getAttribute('data-custom') === 'true') {
+                const container = document.getElementById('customTriggerContainer');
+                container.style.display = checkbox.checked ? 'block' : 'none';
+                return;
+            }
+
             const triggerName = checkbox.getAttribute('data-trigger-name');
-            
             if (checkbox.checked) {
                 if (!selectedTriggers.includes(triggerName)) {
                     selectedTriggers.push(triggerName);
@@ -1623,6 +1631,16 @@
         }
 
         function validateTriggers() {
+            const customCheckbox = document.querySelector('[data-custom="true"]');
+            if (customCheckbox) {
+                selectedTriggers = selectedTriggers.filter(t => !(t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'));
+                if (customCheckbox.checked) {
+                    const customInput = document.getElementById('customTriggerInput');
+                    if (customInput && customInput.value.trim()) {
+                        selectedTriggers.push('Divers \u2014 ' + customInput.value.trim());
+                    }
+                }
+            }
             updateTriggersPreview();
             closeModal(null, 'triggersModal');
         }

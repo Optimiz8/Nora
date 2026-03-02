@@ -238,3 +238,71 @@ function getPrevPage(currentPage, config) {
     if (idx <= 0) return 'index.html';
     return pages[idx - 1];
 }
+
+/* ---------- DÉCLENCHEURS ---------- */
+const TRIGGER_CATEGORIES = [
+    {
+        key: "Sensoriel",
+        label: "Déclencheurs sensoriels",
+        items: [
+            { name: "Auditif", desc: "Bruit soudain, répétitif ou de fond" },
+            { name: "Visuel", desc: "Lumière vive, néon, clignotement, motifs, foule en mouvement…" },
+            { name: "Tactile", desc: "Contact physique non désiré, étiquette ou matière de vêtement, variation de température…" },
+            { name: "Olfactif", desc: "Parfum fort, odeur alimentaire, produit ménager, odeur persistante…" },
+            { name: "Goût", desc: "Texture, mélange alimentaire, saveur intense…" }
+        ]
+    },
+    {
+        key: "Social",
+        label: "Interactions sociales",
+        items: [
+            { name: "Conversation superficielle", desc: "Échange informel forcé, discussion banale prolongée…" },
+            { name: "Interaction sociale imposée", desc: "Obligation de participer, prise de parole forcée, présentation publique, réunion…" },
+            { name: "Conflit relationnel", desc: "Dispute, tension familiale, désaccord marqué, reproche direct…" },
+            { name: "Difficulté de compréhension sociale", desc: "Sous-entendus, ironie, sarcasme, règle implicite, message indirect…" },
+            { name: "Difficulté d'expression", desc: "Blocage verbal, incapacité à formuler une demande, sentiment de ne pas être compris…" }
+        ]
+    },
+    {
+        key: "Changement",
+        label: "Changement d'habitude / d'environnement",
+        items: [
+            { name: "Imprévu", desc: "Événement non anticipé, information soudaine, changement non préparé…" },
+            { name: "Modification / annulation de plan", desc: "" },
+            { name: "Transition", desc: "Passage rapide d'une activité à une autre, interruption soudaine, fin brutale d'un moment sécurisant…" },
+            { name: "Rupture de routine", desc: "Impossibilité ou modification d'un rituel, changement d'ordre habituel…" },
+            { name: "Règle modifiée", desc: "Consigne changée, cadre ajusté sans prévenir, nouvelle exigence introduite…" }
+        ]
+    },
+    {
+        key: "Cadre",
+        label: "Cadre, règles et contrôle",
+        items: [
+            { name: "Non-respect d'une règle établie", desc: "" },
+            { name: "Injustice", desc: "Subie ou constatée" },
+            { name: "Incohérence logique", desc: "Contradiction, raisonnement illogique, règle incohérente…" },
+            { name: "Limite personnelle non respectée", desc: "Insistance malgré un refus, non-respect d'un besoin exprimé, pression…" },
+            { name: "Intrusion dans l'espace sécurisant", desc: "Entrée non prévue dans un espace personnel, modification d'un lieu refuge, présence imposée…" },
+            { name: "Décision imposée", desc: "Choix retiré, absence de négociation possible, obligation stricte / arbitraire…" }
+        ]
+    },
+    {
+        key: "Cognitif",
+        label: "Surcharge cognitive",
+        items: [
+            { name: "Trop d'informations simultanées", desc: "Conversations multiples, instructions complexes, multitâche, accumulation de demandes…" },
+            { name: "Instructions floues ou ambiguës", desc: "Consigne imprécise, manque de clarté, double sens, sous-entendus…" },
+            { name: "Démarches administratives", desc: "Démarches complexes, formulaires, procédures…" },
+            { name: "Pression de résultat", desc: "Exigence de perfection, crainte de se tromper…" },
+            { name: "Appel téléphonique", desc: "Appel imprévu, obligation d'appeler…" }
+        ]
+    },
+    {
+        key: "Divers",
+        label: "Autre / Divers",
+        items: [
+            { name: "Autre déclencheur", desc: "", custom: true },
+            { name: "Déclencheur flou ou non identifié", desc: "Impression de déclenchement sans cause claire, ressenti diffus, difficulté à identifier l'élément précis" }
+        ]
+    }
+];

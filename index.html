@@ -325,8 +325,10 @@
             margin: 0;
             max-width: 100%;
             width: 100%;
-            padding: 0 0 20px 0;
+            padding: 0;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         #precrisisModal .modal-title {
             display: none;
@@ -460,11 +462,165 @@
             padding: 12px 16px;
             display: flex;
             gap: 12px;
-            margin-top: 14px;
+            margin-top: auto;
         }
         .pcm-btn { flex: 1; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
         .pcm-btn.primary { background: var(--accent); color: var(--dark); }
         .pcm-btn.secondary { background: rgba(245,228,204,0.1); color: var(--light); }
+
+        /* ---------- TRIGGER INTENSITY ROWS (shared with pcmTriggersPreview) ---------- */
+        .trigger-intensity-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(245,228,204,0.1);
+        }
+        .trigger-intensity-row .trigger-name-label {
+            flex: 0 0 100%;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--light);
+        }
+        .trigger-intensity-row input[type="range"] {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(245,228,204,0.2);
+            border-radius: 3px;
+            outline: none;
+        }
+        .trigger-intensity-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+        }
+        .trigger-intensity-row input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            cursor: pointer;
+        }
+        .trigger-intensity-val {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            min-width: 42px;
+            text-align: right;
+        }
+
+        /* ---------- TRIGGER CHECKBOXES dans pcmTriggersModal ---------- */
+        .trigger-category { margin-bottom: 20px; }
+        .trigger-category-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+        }
+        .trigger-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .trigger-checkbox {
+            margin-top: 2px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        .trigger-label { flex: 1; cursor: pointer; line-height: 1.4; font-size: 15px; }
+        .trigger-name { font-weight: 600; }
+        .trigger-description { font-weight: 400; font-size: 15px; }
+        .trigger-custom-container { padding: 4px 8px 8px 36px; }
+        .trigger-custom-input {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        /* ---------- DÉCLENCHEURS dans precrisisModal ---------- */
+        .pcm-triggers-btn {
+            width: 100%;
+            background: rgba(245,228,204,0.08);
+            border: 2px solid rgba(245,228,204,0.15);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--light);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+        .pcm-triggers-preview {
+            font-size: 14px;
+            color: rgba(245,228,204,0.6);
+            font-style: italic;
+        }
+        .pcm-triggers-preview .trigger-intensity-row {
+            border-bottom-color: rgba(245,228,204,0.1);
+        }
+        .pcm-triggers-preview .trigger-name-label {
+            color: var(--light);
+        }
+        .pcm-triggers-preview .trigger-intensity-val {
+            color: var(--accent);
+        }
+        .pcm-triggers-preview input[type="range"] {
+            background: rgba(245,228,204,0.2);
+        }
+        .pcm-triggers-preview input[type="range"]::-webkit-slider-thumb { background: var(--accent); }
+        .pcm-triggers-preview input[type="range"]::-moz-range-thumb { background: var(--accent); border: none; }
+
+        /* ---------- SOUS-MODALE DÉCLENCHEURS ---------- */
+        #pcmTriggersModal {
+            z-index: 1100;
+            background: var(--dark);
+        }
+        #pcmTriggersModal .modal-content {
+            background: var(--dark);
+            color: var(--light);
+            border-radius: 0;
+            min-height: 100vh;
+            margin: 0;
+            max-width: 100%;
+            width: 100%;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        #pcmTriggersModal .trigger-category-title { color: var(--accent); border-bottom-color: rgba(247,184,156,0.3); }
+        #pcmTriggersModal .trigger-name { color: var(--light); }
+        #pcmTriggersModal .trigger-description { color: rgba(245,228,204,0.6); }
+        #pcmTriggersModal .trigger-item:hover { background: rgba(247,184,156,0.08); }
+        #pcmTriggersModal .trigger-checkbox { accent-color: var(--accent); }
+        #pcmTriggersModal .triggers-info { color: var(--light); opacity: 0.65; }
+        #pcmTriggersModal .trigger-custom-input {
+            background: rgba(245,228,204,0.08);
+            border-color: rgba(245,228,204,0.3);
+            color: var(--light);
+        }
+        #pcmTriggersModal .trigger-custom-input::placeholder { color: rgba(245,228,204,0.4); }
+        #pcmTriggersModal .pcm-triggers-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 16px;
+        }
     </style>
 </head>
 
@@ -676,6 +832,13 @@
                 </div>
             </div>
 
+            <div class="pcm-block" style="background:rgba(245,228,204,0.04);">
+                <div class="pcm-block-title">DÉCLENCHEURS</div>
+                <p class="pcm-label" style="font-weight:400;font-style:italic;opacity:0.7;margin-bottom:10px;">Une crise peut avoir plusieurs déclencheurs.<br>Prends quelques secondes pour repenser à ce qui s'est accumulé.</p>
+                <button type="button" class="pcm-triggers-btn" onclick="openPcmTriggersModal()">＋ Sélectionner les déclencheurs</button>
+                <div id="pcmTriggersPreview" class="pcm-triggers-preview">Aucun déclencheur sélectionné</div>
+            </div>
+
             <div class="pcm-actions">
                 <button class="pcm-btn secondary" onclick="skipPrecrisis()">Passer</button>
                 <button class="pcm-btn primary" onclick="saveWithPrecrisis()">💾 Enregistrer</button>
@@ -684,6 +847,21 @@
     </div>
 
     <div class="timer-fab" id="timerFab" onclick="location.href='timer.html'"></div>
+
+    <!-- Sous-modale sélection déclencheurs (depuis precrisisModal) -->
+    <div class="modal" id="pcmTriggersModal" role="dialog" aria-modal="true" aria-label="Déclencheurs">
+        <div class="modal-content">
+            <div class="pcm-header">
+                <div class="pcm-header-title">Sélectionner les déclencheurs</div>
+                <button class="pcm-close" onclick="closePcmTriggersModal()" aria-label="Fermer">×</button>
+            </div>
+            <p class="triggers-info" style="margin:12px 16px 0;font-style:italic;font-size:15px;">Une crise peut avoir plusieurs déclencheurs.<br>Prends quelques secondes pour repenser à ce qui s'est accumulé.</p>
+            <div id="pcmTriggersContent" class="pcm-triggers-content"></div>
+            <div class="pcm-actions">
+                <button class="pcm-btn primary" onclick="validatePcmTriggers()">✅ Valider</button>
+            </div>
+        </div>
+    </div>
 
     <div class="crisis-toast" id="crisisToast"></div>
 
@@ -783,9 +961,106 @@
         document.getElementById('crisisRegisterModal').classList.add('visible');
     }
 
+    var selectedPcmTriggers = [];
+    var pcmTriggerIntensities = {};
+
+    function openPcmTriggersModal() {
+        var content = document.getElementById('pcmTriggersContent');
+        var html = '';
+        TRIGGER_CATEGORIES.forEach(function(cat) {
+            html += '<div class="trigger-category"><div class="trigger-category-title">' + cat.label + '</div>';
+            cat.items.forEach(function(trigger, idx) {
+                var storedName = cat.key + ' \u2014 ' + trigger.name;
+                var isChecked = trigger.custom
+                    ? selectedPcmTriggers.some(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; })
+                    : selectedPcmTriggers.indexOf(storedName) !== -1;
+                var uniqueId = 'pcm_t_' + cat.key + '_' + idx;
+                var descHtml = trigger.desc ? ' <span class="trigger-description">' + trigger.desc + '</span>' : '';
+                html += '<div class="trigger-item"><input type="checkbox" class="trigger-checkbox" ' +
+                    (isChecked ? 'checked' : '') + ' id="' + uniqueId + '" data-trigger-name="' +
+                    storedName.replace(/"/g, '&quot;') + '"' +
+                    (trigger.custom ? ' data-custom="true"' : '') +
+                    ' onchange="handlePcmTriggerChange(this)"><label class="trigger-label" for="' + uniqueId + '">' +
+                    '<span class="trigger-name">' + trigger.name + '</span>' + descHtml + '</label></div>';
+                if (trigger.custom) {
+                    var existing = selectedPcmTriggers.find(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; });
+                    var customValue = existing ? existing.replace('Divers \u2014 ', '') : '';
+                    html += '<div class="trigger-custom-container" id="pcmCustomTriggerContainer" style="' + (isChecked ? '' : 'display:none') + '">' +
+                        '<input type="text" id="pcmCustomTriggerInput" class="trigger-custom-input" placeholder="D\u00e9cris le d\u00e9clencheur\u2026" value="' + customValue.replace(/"/g, '&quot;') + '"></div>';
+                }
+            });
+            html += '</div>';
+        });
+        content.innerHTML = html;
+        document.getElementById('pcmTriggersModal').classList.add('visible');
+    }
+
+    function closePcmTriggersModal() {
+        document.getElementById('pcmTriggersModal').classList.remove('visible');
+    }
+
+    function handlePcmTriggerChange(checkbox) {
+        if (checkbox.getAttribute('data-custom') === 'true') {
+            document.getElementById('pcmCustomTriggerContainer').style.display = checkbox.checked ? 'block' : 'none';
+            return;
+        }
+        var triggerName = checkbox.getAttribute('data-trigger-name');
+        if (checkbox.checked) {
+            if (selectedPcmTriggers.indexOf(triggerName) === -1) selectedPcmTriggers.push(triggerName);
+        } else {
+            selectedPcmTriggers = selectedPcmTriggers.filter(function(t) { return t !== triggerName; });
+        }
+    }
+
+    function validatePcmTriggers() {
+        var customCheckbox = document.querySelector('#pcmTriggersContent [data-custom="true"]');
+        if (customCheckbox) {
+            selectedPcmTriggers = selectedPcmTriggers.filter(function(t) {
+                return !(t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9');
+            });
+            if (customCheckbox.checked) {
+                var customInput = document.getElementById('pcmCustomTriggerInput');
+                if (customInput && customInput.value.trim()) {
+                    selectedPcmTriggers.push('Divers \u2014 ' + customInput.value.trim());
+                }
+            }
+        }
+        updatePcmTriggersPreview();
+        closePcmTriggersModal();
+    }
+
+    function updatePcmTriggersPreview() {
+        var preview = document.getElementById('pcmTriggersPreview');
+        if (selectedPcmTriggers.length === 0) {
+            preview.textContent = 'Aucun d\u00e9clencheur s\u00e9lectionn\u00e9';
+            preview.style.fontStyle = 'italic';
+        } else {
+            preview.style.fontStyle = '';
+            preview.innerHTML = selectedPcmTriggers.map(function(t) {
+                var isNull = pcmTriggerIntensities[t] === undefined || pcmTriggerIntensities[t] === null;
+                var val = isNull ? 5 : pcmTriggerIntensities[t];
+                return '<div class="trigger-intensity-row">' +
+                    '<span class="trigger-name-label">\u2022 ' + t + '</span>' +
+                    '<input type="range" min="0" max="10" value="' + val + '" class="' + (isNull ? 'null-state' : '') + '" oninput="setPcmTriggerIntensity(\'' + t.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + '\', this.value, this)">' +
+                    '<span class="trigger-intensity-val ' + (isNull ? 'null-state' : '') + '">' + (isNull ? '\u2014 /10' : val + '/10') + '</span>' +
+                    '</div>';
+            }).join('');
+        }
+    }
+
+    function setPcmTriggerIntensity(name, val, input) {
+        pcmTriggerIntensities[name] = parseInt(val);
+        input.classList.remove('null-state');
+        input.nextElementSibling.classList.remove('null-state');
+        input.nextElementSibling.textContent = val + '/10';
+    }
+
     function registerCrisisNow() {
         document.getElementById('crisisRegisterModal').classList.remove('visible');
         resetPcmSliders();
+        selectedPcmTriggers = [];
+        pcmTriggerIntensities = {};
+        updatePcmTriggersPreview();
         document.getElementById('pcmType').value = '';
         document.getElementById('pcmManifestation').value = '';
         document.getElementById('pcmRemarks').value = '';
@@ -848,7 +1123,8 @@
             typeCrise: document.getElementById('pcmType').value,
             typeManifestation: document.getElementById('pcmManifestation').value,
             intensite: pcmSliderTouched.intensite ? document.getElementById('pcmIntensite').value : '',
-            remarques: document.getElementById('pcmRemarks').value
+            remarques: document.getElementById('pcmRemarks').value,
+            declencheurs: selectedPcmTriggers.map(function(t) { return { nom: t, intensite: pcmTriggerIntensities[t] || null }; })
         };
         document.getElementById('precrisisModal').classList.remove('visible');
         createJournalEntry(precrisisData);
@@ -903,7 +1179,7 @@
             typeManifestation: precrisisData ? (precrisisData.typeManifestation || '') : '',
             intensite: precrisisData ? (precrisisData.intensite || '') : '',
             duree: duree,
-            declencheurs: [],
+            declencheurs: precrisisData ? (precrisisData.declencheurs || []) : [],
             remarques: precrisisData ? (precrisisData.remarques || '') : '',
             energie: precrisisData ? String(precrisisData.energie || '') : '',
             chargeMentale: precrisisData ? String(precrisisData.chargeMentale || '') : '',

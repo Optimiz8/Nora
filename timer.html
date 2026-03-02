@@ -1246,6 +1246,10 @@
         updateSonBtn();
         updateFinBtn();
         updateUI();
+        if (timerStyle === 'kawaii') {
+          startBgRain();
+          if (!kawaiiAnimFrame && kawaiiParticles.length > 0) kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+        }
       } catch(e) {
         localStorage.removeItem('timerRunningState');
       }
@@ -1281,6 +1285,10 @@
       requestWakeLock();
       unlockAudio();
       updateUI();
+      if (timerStyle === 'kawaii') {
+        startBgRain();
+        if (!kawaiiAnimFrame && kawaiiParticles.length > 0) kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+      }
     }
 
     function startFromSheet() {
@@ -1385,13 +1393,14 @@
       const overlay = document.getElementById('alarmOverlay');
       overlay.classList.add('visible');
       if (timerStyle === 'kawaii') {
+        stopBgRain();
+        stopKawaiiAnim();
         document.getElementById('alarmText').textContent = 'Pluie de paillettes terminée !';
         overlay.classList.add('theme-kawaii');
         const progress = totalDuration > 0 ? (1 - timeRemaining / totalDuration) : 1;
         const hue = Math.round(progress * 300);
         overlay.style.background = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
         document.getElementById('kawaiiAlarmVideo').play().catch(function() {});
-        startSparkles();
       } else if (timerStyle === 'espace') {
         document.querySelector('#alarmOverlay .alarm-icon').textContent = '👨‍🚀';
         document.getElementById('alarmText').textContent = 'Houston, le temps est écoulé.';
@@ -1518,6 +1527,10 @@
       saveRunningState();
       requestWakeLock();
       updateUI();
+      if (timerStyle === 'kawaii') {
+        startBgRain();
+        if (!kawaiiAnimFrame && kawaiiParticles.length > 0) kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+      }
     }
 
     /* ---------- ALERTES INTERMÉDIAIRES ---------- */

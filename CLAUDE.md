@@ -44,12 +44,9 @@ Schéma de versioning suggéré :
 - `1.x.y` → correction de bug ou ajustement visuel mineur
 
 ## Branches Git
-- `main` → production (GitHub Pages, déploiement automatique au push)
-- `dev` → développement (tout le travail se fait ici)
-
-**Toujours vérifier qu'on est sur `dev` avant de modifier des fichiers.**
-
-Mise en production : `git checkout main` → `git merge dev` → `git push` → `git checkout dev`
+Marine travaille directement sur `main` (seule développeuse, déploiement GitHub Pages automatique au push).
+- Ne pas vérifier la branche ni suggérer de passer sur `dev`.
+- Pas de workflow de merge à suivre.
 
 ## Ce qu'on ne fait pas
 - Pas de refactoring non demandé
@@ -63,6 +60,7 @@ Mise en production : `git checkout main` → `git merge dev` → `git push` → 
 - Tester mentalement le comportement sur mobile (375px, tactile)
 - Pour une inspiration externe (React, etc.) : adapter au pattern vanilla HTML existant, ne pas copier la structure React
 - Si une modification touche `nora-common.css`, vérifier l'impact sur les autres pages
+- **Si une demande contient des points flous ou plusieurs interprétations possibles, commencer par poser les questions nécessaires avant de coder.** Ne jamais supposer — valider d'abord.
 
 ## Limite de tokens — anti-boucle
 Les fichiers volumineux (ex. `timer.html` > 80 KB) peuvent provoquer une erreur `API Error: response exceeded 32000 output token maximum` si trop de code est généré en une seule réponse. Pour éviter ça :
