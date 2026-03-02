@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="nora-common.css">
     <title>Nora – Analyse approfondie</title>
     <style>
-        body { padding-bottom: 40px; }
+        body { padding-bottom: 80px; }
 
         /* ---------- PÉRIODE ---------- */
 
@@ -173,13 +173,65 @@
             width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         .export-stats-btn:active { background: rgba(245, 228, 204, 0.14); transform: scale(0.98); }
+
+        /* ---------- FOOTER EXPORT ---------- */
+
+        .export-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 16px 24px;
+            background: var(--bg);
+            border-top: 1px solid rgba(245, 228, 204, 0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        /* ---------- ONGLETS DE PAGE ---------- */
+
+        .page-tabs {
+            display: flex;
+            padding: 12px 16px 0;
+            border-bottom: 2px solid rgba(245, 228, 204, 0.1);
+            margin-bottom: 4px;
+            position: sticky;
+            top: var(--header-height);
+            background: var(--bg);
+            z-index: 50;
+        }
+
+        .page-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 15px;
+            font-weight: 700;
+            padding: 10px 0 12px;
+            cursor: pointer;
+            opacity: 0.45;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            letter-spacing: 0.01em;
+        }
+
+        .page-tab.active {
+            opacity: 1;
+            border-bottom-color: var(--accent);
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <button class="back-button" onclick="window.location.href='stats.html'" aria-label="Retour aux statistiques">⬅️</button>
-        <h1 class="page-title">Analyse approfondie</h1>
+        <h1 class="page-title">Statistiques</h1>
     </header>
+
+    <div class="page-tabs">
+        <button class="page-tab" onclick="window.location.href='stats.html'">Vue d'ensemble</button>
+        <button class="page-tab active">Analyse</button>
+    </div>
 
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
     <div class="period-bar">
@@ -574,11 +626,13 @@
             if (!stats) {
                 main.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div>' +
                     '<div class="empty-text">Aucune crise enregistrée<br>sur cette période.</div></div>';
+                document.getElementById('exportFooter').style.display = 'none';
                 return;
             }
 
             if (stats.total < 5) {
                 main.innerHTML = '<div class="analysis-gate">Données insuffisantes pour l\'analyse approfondie.<br>Il faut au moins 5 crises sur la période sélectionnée.<br><br><em>Actuel : ' + stats.total + ' crise' + (stats.total > 1 ? 's' : '') + '</em></div>';
+                document.getElementById('exportFooter').style.display = 'none';
                 return;
             }
 
@@ -664,13 +718,8 @@
                 html += deepHtml;
             }
 
-            /* ========== RETOUR + EXPORT ========== */
-            html += '<div style="display:flex;gap:8px;margin-top:8px">' +
-                '<button class="export-stats-btn" style="flex:1" onclick="exportStats()">📋 Copier</button>' +
-                '<button class="export-stats-btn" style="flex:1" onclick="exportPDF()">🖨️ PDF</button>' +
-                '</div>';
-
             main.innerHTML = html;
+            document.getElementById('exportFooter').style.display = 'flex';
         }
 
         /* ---------- EXPORT ---------- */
@@ -680,24 +729,27 @@
                 currentDays === 365 ? 'dernière année' : 'du ' + customFrom + ' au ' + customTo;
         }
 
-        function exportStats() {
+        function shareStats() {
             var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée à exporter.'); return; }
-            var text = '== Analyse approfondie Nora — ' + getPeriodLabel() + ' ==\n\n';
+            if (!stats) { alert('Aucune donnée à partager.'); return; }
+            var text = '== Analyse Nora — ' + getPeriodLabel() + ' ==\n\n';
             text += 'Crises : ' + stats.total + '\n';
             if (stats.avgIntensity !== null) text += 'Intensité moyenne : ' + stats.avgIntensity + '/10\n';
-            if (stats.triggerStats.length) { text += '\nDéclencheurs :\n'; for (var i = 0; i < Math.min(stats.triggerStats.length, 5); i++) text += '  ' + (i+1) + '. ' + stats.triggerStats[i].name + ' (' + stats.triggerStats[i].count + '×)\n'; }
+            if (stats.avgDuration !== null) text += 'Durée moyenne : ' + formatMins(stats.avgDuration) + '\n';
+            if (stats.triggerStats.length) {
+                text += '\nDéclencheurs :\n';
+                for (var i = 0; i < Math.min(stats.triggerStats.length, 5); i++) {
+                    text += '  ' + (i + 1) + '. ' + stats.triggerStats[i].name + ' (' + stats.triggerStats[i].count + '×)\n';
+                }
+            }
             text += '\nExport du ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
-            if (navigator.clipboard && navigator.clipboard.writeText) {
+            if (navigator.share) {
+                navigator.share({ title: 'Analyse Nora', text: text }).catch(function() {});
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(function() { alert('Résumé copié !'); }).catch(function() { downloadText(text); });
-            } else { downloadText(text); }
-        }
-
-        function exportPDF() {
-            var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée.'); return; }
-            document.getElementById('printHeader') && (document.getElementById('printHeader').textContent = 'Analyse approfondie — ' + getPeriodLabel());
-            window.print();
+            } else {
+                downloadText(text);
+            }
         }
 
         function downloadText(text) {
@@ -811,6 +863,10 @@
         initFilterContextes();
         renderCurrent();
     </script>
+    <div class="export-footer" id="exportFooter" style="display:none">
+        <button class="export-stats-btn" style="flex:1" onclick="shareStats()">↑ Partager</button>
+    </div>
+
     <script src="nora-scroll.js"></script>
 </body>
 </html>
