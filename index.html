@@ -929,10 +929,8 @@
         if (banner) banner.classList.remove('visible');
     }
 
-    const TIMER_ICONS = { cercle:'⏱️', barre:'▮', segments:'🔆', pixels:'⬛', kawaii:'🌈', espace:'🌌' };
     function initTimerFab() {
-        const style = localStorage.getItem('timerStyle') || 'cercle';
-        document.getElementById('timerFab').textContent = TIMER_ICONS[style] || '⏱️';
+        document.getElementById('timerFab').textContent = '⏱️';
     }
 
     document.addEventListener('DOMContentLoaded', () => {

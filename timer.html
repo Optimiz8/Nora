@@ -1723,7 +1723,7 @@
       if (s === 'segments') buildSegmentsSvg();
 
       if (s !== 'kawaii') { stopKawaiiAnim(); stopBgRain(); }
-      else {
+      else if (state === 'running') {
         if (!kawaiiAnimFrame && kawaiiParticles.length > 0) {
           kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
         }
@@ -1994,8 +1994,7 @@
         el.style.top  = y + '%';
       });
       updateKawaiiColors(0);
-      if (kawaiiAnimFrame) cancelAnimationFrame(kawaiiAnimFrame);
-      kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+      if (kawaiiAnimFrame) { cancelAnimationFrame(kawaiiAnimFrame); kawaiiAnimFrame = null; }
     }
 
     function animateKawaii() {

@@ -927,6 +927,10 @@
             gap: 0;
             border-bottom: 2px solid rgba(245, 228, 204, 0.1);
             margin-bottom: 4px;
+            position: sticky;
+            top: var(--header-height);
+            background: var(--bg);
+            z-index: 50;
         }
 
         .page-tab {
@@ -987,7 +991,7 @@
 
     <div class="page-tabs">
         <button class="page-tab active">Vue d'ensemble</button>
-        <button class="page-tab" onclick="window.location.href='stats-approfondie.html'">Analyse →</button>
+        <button class="page-tab" onclick="window.location.href='stats-approfondie.html'">Analyse</button>
     </div>
 
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
@@ -1330,7 +1334,7 @@
             for (var tn = 0; tn < typeNames.length; tn++) {
                 var tInts2 = [], tDurs = [];
                 for (var te2 = 0; te2 < entries.length; te2++) {
-                    if (entries[te2].typeCrise === typeNames[tn]) {
+                    if (entries[te2].typeManifestation === typeNames[tn]) {
                         var tv = parseFloat(entries[te2].intensite);
                         if (!isNaN(tv)) tInts2.push(tv);
                         var td3 = parseDuration(entries[te2].duree);
@@ -2311,10 +2315,6 @@
                 html += insightsHtml;
             }
 
-            /* ========== LIEN ANALYSE APPROFONDIE ========== */
-            if (stats.total >= 3) {
-                html += '<button class="analyse-link-btn" onclick="goToAnalyse()">Analyse approfondie →</button>';
-            }
 
 
 
@@ -2417,10 +2417,6 @@
             } else {
                 downloadText(text);
             }
-        }
-
-        function exportPDF() {
-            window.print();
         }
 
         /* ---------- FILTRES AVANCÉS ---------- */
