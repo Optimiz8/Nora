@@ -859,6 +859,19 @@
             color: var(--accent);
         }
 
+        /* ---------- CARTE NARRATIVE ---------- */
+
+        .narrative-card {
+            background: var(--dark);
+            border-radius: 14px;
+            padding: 16px 18px;
+            font-size: 15px;
+            color: var(--light);
+            line-height: 1.65;
+        }
+
+        .narrative-card strong { font-weight: 700; }
+
         /* ---------- INSIGHTS ---------- */
 
         .insight-card {
@@ -974,7 +987,7 @@
 
     <div class="page-tabs">
         <button class="page-tab active">Vue d'ensemble</button>
-        <button class="page-tab" onclick="window.location.href='stats-approfondie.html'">Vue détaillée</button>
+        <button class="page-tab" onclick="window.location.href='stats-approfondie.html'">Analyse →</button>
     </div>
 
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
@@ -1059,7 +1072,6 @@
 
     <div class="export-footer" id="exportFooter" style="display:none">
         <button class="export-stats-btn" style="flex:1" onclick="shareStats()">↑ Partager</button>
-        <button class="export-stats-btn" style="flex:1" onclick="exportPDF()">🖨️ PDF</button>
     </div>
 
     <script src="nora-data.js"></script>
@@ -1875,62 +1887,6 @@
                 'Nombre de crises · intensité moy. à l\'intérieur</div></div>';
         }
 
-        /* ---------- GRAPHIQUE : SEUILS CRITIQUES ---------- */
-
-        function buildThresholdsSVG(thresholds) {
-            var fields = [
-                { key: 'energie', label: 'Énergie avant crise' },
-                { key: 'chargeMentale', label: 'Charge mentale' },
-                { key: 'chargeSociale', label: 'Charge sociale' }
-            ];
-            var html = '';
-            var hasAny = false;
-
-            for (var f = 0; f < fields.length; f++) {
-                var buckets = thresholds[fields[f].key];
-                var anyData = false;
-                for (var b = 0; b < 3; b++) {
-                    if (buckets[b].count > 0) { anyData = true; break; }
-                }
-                if (!anyData) continue;
-                hasAny = true;
-
-                var W = 280, H = 100, padL = 5, padB = 22, padT = 10;
-                var barW = 60, gap = 30;
-                var totalBarW = 3 * barW + 2 * gap;
-                var startX = (W - totalBarW) / 2;
-                var chartH = H - padT - padB;
-                var maxVal = 10;
-
-                var bars = '';
-                var colors = ['#a8d5ba', '#f7d98e', '#f5a5a5'];
-                var labels2 = ['0–3', '4–6', '7–10'];
-
-                for (var bi = 0; bi < 3; bi++) {
-                    var x = startX + bi * (barW + gap);
-                    var val = buckets[bi].avgIntensity || 0;
-                    var barH = (val / maxVal) * chartH;
-                    var y = padT + chartH - barH;
-
-                    bars += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + barH + '" rx="4" fill="' + colors[bi] + '"/>';
-                    if (val > 0) {
-                        bars += '<text x="' + (x + barW / 2) + '" y="' + (y - 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#2E3A59">' + val + '</text>';
-                    }
-                    bars += '<text x="' + (x + barW / 2) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10" fill="#2E3A59" opacity="0.5">' + labels2[bi] + '</text>';
-                    bars += '<text x="' + (x + barW / 2) + '" y="' + (H - 14) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.35">(' + buckets[bi].count + ')</text>';
-                }
-
-                html += '<div style="margin-bottom:8px">' +
-                    '<div style="font-size:13px;font-weight:600;color:var(--dark);opacity:0.7;margin-bottom:4px;padding:0 4px">' + fields[f].label + '</div>' +
-                    '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
-                    '<line x1="' + padL + '" y1="' + (padT + chartH) + '" x2="' + (W - padL) + '" y2="' + (padT + chartH) + '" stroke="#2E3A59" stroke-opacity="0.1"/>' +
-                    bars + '</svg></div>';
-            }
-
-            if (!hasAny) return '';
-            return '<div class="chart-container">' + html + '</div>';
-        }
-
         /* ---------- ANALYSE APPROFONDIE ---------- */
 
         function buildAnalysis(stats) {
@@ -2138,6 +2094,12 @@
 
             var html = '';
 
+            /* ========== NARRATIF ========== */
+            var narrativeText = buildNarrative(stats, days, from, to);
+            if (narrativeText) {
+                html += '<div class="narrative-card">' + narrativeText + '</div>';
+            }
+
             /* ========== PARTIE 1 — VUE D'ENSEMBLE : CRISES ========== */
             html += '<div class="section-tag">Vue d\'ensemble</div>';
             html += '<div class="stat-card">';
@@ -2245,44 +2207,43 @@
                 html += barChartHtml;
             }
 
-            /* ========== ORIGINE ========== */
-            if (stats.origineCounts.length) {
-                html += '<div class="section-tag">Origine</div>';
-                html += '<div class="stat-card" style="padding:12px">';
-                var maxOrig = stats.origineCounts[0].count;
-                for (var oi = 0; oi < stats.origineCounts.length; oi++) {
-                    var orig = stats.origineCounts[oi];
-                    var oIntArr = stats.avgIntensityByType[orig.name];
-                    var oDurArr = stats.avgDurationByType[orig.name];
-                    var oMeta = orig.count + '×';
-                    if (oIntArr) oMeta += ' · ' + oIntArr + '/10';
-                    if (oDurArr) oMeta += ' · ~' + formatMins(oDurArr);
-                    html += rankRow({ name: orig.name, count: orig.count, avgIntensity: null, meltdownPct: null }, oi + 1, maxOrig);
+            /* ========== MOMENTS DE LA JOURNÉE ========== */
+            var hasHourData = stats.hourSlots && stats.hourSlots.some(function(s) { return s.count > 0; });
+            if (stats.total >= 3 && hasHourData) {
+                html += '<div class="section-tag">Moments de la journée</div>';
+                html += '<div class="stat-card" style="padding:14px">';
+                html += '<div class="hour-grid">';
+                for (var hsi = 0; hsi < stats.hourSlots.length; hsi++) {
+                    var hs2 = stats.hourSlots[hsi];
+                    html += '<div class="hour-cell">' +
+                        '<div class="hour-name">' + hs2.name + '</div>' +
+                        '<div class="hour-range">' + hs2.range + '</div>' +
+                        '<div class="hour-count">' + hs2.count + '</div>' +
+                        '</div>';
                 }
-                html += '</div>';
+                html += '</div></div>';
             }
 
-            /* ========== TYPE MELTDOWN/SHUTDOWN ========== */
-            if (totalTyped > 0) {
-                html += '<div class="section-tag">Types de crise</div>';
-                html += '<div class="stat-card" style="padding:12px">';
-                var typeData = [
-                    { name: 'Meltdown', count: stats.meltdownCount },
-                    { name: 'Shutdown', count: stats.shutdownCount }
-                ];
-                var maxType = Math.max(stats.meltdownCount, stats.shutdownCount);
-                for (var ti = 0; ti < typeData.length; ti++) {
-                    if (typeData[ti].count === 0) continue;
-                    var tAvgI = stats.avgIntensityByType[typeData[ti].name];
-                    var tAvgD = stats.avgDurationByType[typeData[ti].name];
-                    html += rankRow({
-                        name: typeData[ti].name,
-                        count: typeData[ti].count,
-                        avgIntensity: tAvgI || null,
-                        meltdownPct: null
-                    }, 0, maxType);
+            /* ========== JOURS DE LA SEMAINE ========== */
+            if (isLongPeriod && stats.total >= 3 && stats.dayOfWeek && stats.dayOfWeek.length) {
+                var maxDayCount = 0;
+                for (var dgi = 0; dgi < stats.dayOfWeek.length; dgi++) {
+                    if (stats.dayOfWeek[dgi].count > maxDayCount) maxDayCount = stats.dayOfWeek[dgi].count;
                 }
-                html += '</div>';
+                if (maxDayCount > 0) {
+                    html += '<div class="section-tag">Jours de la semaine</div>';
+                    html += '<div class="stat-card" style="padding:0;overflow:hidden">';
+                    html += '<div class="day-grid">';
+                    for (var dgi2 = 0; dgi2 < stats.dayOfWeek.length; dgi2++) {
+                        var dg = stats.dayOfWeek[dgi2];
+                        var isTopDay = dg.count === maxDayCount;
+                        html += '<div class="day-cell' + (isTopDay ? ' top-day' : '') + '">' +
+                            '<div class="day-name">' + dg.name.slice(0, 3) + '</div>' +
+                            '<div class="day-count">' + dg.count + '</div>' +
+                            '</div>';
+                    }
+                    html += '</div></div>';
+                }
             }
 
             /* ========== DÉCLENCHEURS ========== */
@@ -2741,10 +2702,105 @@
                 }
             }
 
+            /* Règle L — Cluster détecté (≥3 crises en ≤5 jours) */
+            if (stats.total >= 3 && stats.entries.length >= 3) {
+                var sortedCluster = stats.entries.slice().sort(function(a, b) {
+                    return new Date(a.horodatage) - new Date(b.horodatage);
+                });
+                var maxCluster = 0;
+                for (var cl1 = 0; cl1 < sortedCluster.length; cl1++) {
+                    var clWinStart = new Date(sortedCluster[cl1].horodatage);
+                    var clWinEnd = new Date(clWinStart.getTime() + 5 * 86400000);
+                    var clCount = 0;
+                    for (var cl2 = 0; cl2 < sortedCluster.length; cl2++) {
+                        var clD = new Date(sortedCluster[cl2].horodatage);
+                        if (clD >= clWinStart && clD <= clWinEnd) clCount++;
+                    }
+                    if (clCount > maxCluster) maxCluster = clCount;
+                }
+                if (maxCluster >= 3) {
+                    insights.push({ priority: 1, icon: '⚠️',
+                        text: 'Cluster détecté : jusqu\'à <strong>' + maxCluster + ' crises en 5 jours</strong> — signe d\'une période de surcharge.' });
+                }
+            }
+
+            /* Règle M — Déclencheur le plus intense (≠ plus fréquent) */
+            if (stats.triggerStats.length >= 2) {
+                var withIntensity = stats.triggerStats.filter(function(t) { return t.avgIntensity !== null; });
+                if (withIntensity.length >= 1) {
+                    var mostIntense = withIntensity.slice().sort(function(a, b) {
+                        return (b.avgIntensity || 0) - (a.avgIntensity || 0);
+                    })[0];
+                    var mostFrequent = stats.triggerStats[0];
+                    if (mostIntense.name !== mostFrequent.name && mostIntense.avgIntensity >= 6) {
+                        insights.push({ priority: 2, icon: '🔥',
+                            text: 'Déclencheur le plus intense : <strong>' + mostIntense.name +
+                                '</strong> (' + mostIntense.avgIntensity + '/10 en moy.) — différent du plus fréquent.' });
+                    }
+                }
+            }
+
+            /* Règle N — Seuil énergie (fréquence) */
+            if (stats.thresholds && stats.thresholds.energie) {
+                var enLowN = stats.thresholds.energie[0];
+                var enTotalN = enLowN.count + stats.thresholds.energie[1].count + stats.thresholds.energie[2].count;
+                if (enTotalN >= 3 && enLowN.count >= 2) {
+                    var enPctN = Math.round((enLowN.count / enTotalN) * 100);
+                    if (enPctN >= 40) {
+                        insights.push({ priority: 2, icon: '⚡',
+                            text: '<strong>' + enPctN + '% de tes crises</strong> arrivent quand ton énergie est basse (≤3/10).' });
+                    }
+                }
+            }
+
+            /* Règle O — Seuil charge mentale (fréquence) */
+            if (stats.thresholds && stats.thresholds.chargeMentale) {
+                var cmHighO = stats.thresholds.chargeMentale[2];
+                var cmTotalO = stats.thresholds.chargeMentale[0].count + stats.thresholds.chargeMentale[1].count + cmHighO.count;
+                if (cmTotalO >= 3 && cmHighO.count >= 2) {
+                    var cmPctO = Math.round((cmHighO.count / cmTotalO) * 100);
+                    if (cmPctO >= 40) {
+                        insights.push({ priority: 2, icon: '🧠',
+                            text: '<strong>' + cmPctO + '% de tes crises</strong> arrivent quand ta charge mentale est élevée (≥7/10).' });
+                    }
+                }
+            }
+
+            /* Règle P — Seuil charge sociale (fréquence) */
+            if (stats.thresholds && stats.thresholds.chargeSociale) {
+                var csHighP = stats.thresholds.chargeSociale[2];
+                var csTotalP = stats.thresholds.chargeSociale[0].count + stats.thresholds.chargeSociale[1].count + csHighP.count;
+                if (csTotalP >= 3 && csHighP.count >= 2) {
+                    var csPctP = Math.round((csHighP.count / csTotalP) * 100);
+                    if (csPctP >= 40) {
+                        insights.push({ priority: 2, icon: '👥',
+                            text: '<strong>' + csPctP + '% de tes crises</strong> arrivent quand ta charge sociale est élevée (≥7/10).' });
+                    }
+                }
+            }
+
+            /* Règle Q — Capacité systématiquement impossible */
+            if (stats.capImpCounts.length > 0 && stats.total >= 3) {
+                var crisisesWithCaps = 0;
+                for (var qe = 0; qe < stats.entries.length; qe++) {
+                    var qCaps = stats.entries[qe].capacites || {};
+                    if ((qCaps.impossible || []).length > 0 || (qCaps.difficile || []).length > 0) crisisesWithCaps++;
+                }
+                if (crisisesWithCaps >= 3) {
+                    var topCapQ = stats.capImpCounts[0];
+                    var capPctQ = Math.round((topCapQ.count / crisisesWithCaps) * 100);
+                    if (capPctQ >= 50) {
+                        insights.push({ priority: 2, icon: '⛔',
+                            text: 'La capacité <strong>"' + topCapQ.name + '"</strong> est impossible dans <strong>' +
+                                capPctQ + '% de tes crises</strong>.' });
+                    }
+                }
+            }
+
             if (!insights.length) return '';
 
             insights.sort(function(a, b) { return a.priority - b.priority; });
-            var topInsights = insights.slice(0, 6);
+            var topInsights = insights.slice(0, 8);
 
             var html = '<div class="insights-list">';
             for (var i = 0; i < topInsights.length; i++) {
