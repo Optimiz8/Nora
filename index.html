@@ -233,6 +233,26 @@
             opacity: 0.6;
         }
 
+        /* Bouton flottant timer */
+        .timer-fab {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(245, 228, 204, 0.1);
+            border: 1.5px solid rgba(245, 228, 204, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .timer-fab:active { transform: scale(0.92); }
+
         /* Toast */
         .crisis-toast {
             position: fixed;
@@ -289,61 +309,162 @@
 
         .setup-banner-arrow { font-size: 20px; opacity: 0.5; }
 
-        /* ---------- MODAL PRÉ-CRISE ---------- */
-        .precrisis-group {
-            margin-bottom: 20px;
+        /* ---------- FORM CRISE PLEIN ÉCRAN (precrisisModal) ---------- */
+        #precrisisModal {
+            padding: 0;
+            background: var(--dark);
         }
-
-        .precrisis-label {
-            font-size: 17px;
+        #precrisisModal.visible {
+            align-items: stretch;
+        }
+        #precrisisModal .modal-content {
+            background: var(--dark);
+            color: var(--light);
+            border-radius: 0;
+            min-height: 100vh;
+            margin: 0;
+            max-width: 100%;
+            width: 100%;
+            padding: 0 0 20px 0;
+            overflow-y: auto;
+        }
+        #precrisisModal .modal-title {
+            display: none;
+        }
+        .pcm-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--dark);
+            border-bottom: 1px solid rgba(245,228,204,0.1);
+            padding: 0 20px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pcm-header-title {
+            color: var(--light);
+            font-size: 18px;
             font-weight: 600;
-            color: var(--light);
-            margin-bottom: 2px;
+            text-align: center;
+            flex: 1;
         }
-
-        .precrisis-desc {
+        .pcm-close {
+            position: absolute;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: var(--light);
+            cursor: pointer;
+            line-height: 1;
+        }
+        .pcm-block {
+            border-radius: 12px;
+            padding: 16px;
+            margin: 14px 16px 0;
+        }
+        .pcm-block-avant { background: rgba(0,0,0,0.2); }
+        .pcm-block-crise { background: rgba(247,184,156,0.07); }
+        .pcm-block-title {
             font-size: 12px;
-            color: var(--light);
-            opacity: 0.55;
-            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(245,228,204,0.12);
         }
-
-        .precrisis-slider {
+        .pcm-form-group { margin-bottom: 16px; }
+        .pcm-form-group:last-child { margin-bottom: 0; }
+        .pcm-label {
+            color: rgba(245,228,204,0.8);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .pcm-input, .pcm-select, .pcm-textarea {
+            width: 100%;
+            background: rgba(245,228,204,0.08);
+            border: 2px solid rgba(245,228,204,0.15);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 16px;
+            color: var(--light);
+            box-sizing: border-box;
+        }
+        .pcm-select option { background: var(--dark); }
+        .pcm-textarea { min-height: 80px; resize: vertical; }
+        .pcm-slider-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .pcm-slider-label { font-size: 15px; font-weight: 600; color: var(--light); }
+        .pcm-slider-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+            min-width: 50px;
+            text-align: right;
+        }
+        .pcm-slider-value.null-state {
+            color: var(--light);
+            opacity: 0.4;
+            font-style: italic;
+            font-weight: 400;
+        }
+        .pcm-slider-hints {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: var(--light);
+            opacity: 0.35;
+            margin-top: 2px;
+        }
+        .pcm-slider {
             width: 100%;
             -webkit-appearance: none;
             appearance: none;
             height: 8px;
             border-radius: 4px;
-            background: rgba(245, 228, 204, 0.2);
+            background: rgba(245,228,204,0.15);
             outline: none;
-            cursor: pointer;
         }
-
-        .precrisis-slider::-webkit-slider-thumb {
+        .pcm-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+            width: 24px;
+            height: 24px;
             background: var(--accent);
             cursor: pointer;
+            border-radius: 50%;
         }
-
-        .precrisis-slider::-moz-range-thumb {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
+        .pcm-slider::-moz-range-thumb {
+            width: 24px; height: 24px;
             background: var(--accent);
             cursor: pointer;
+            border-radius: 50%;
             border: none;
         }
-
-        .precrisis-value {
-            text-align: center;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--accent);
-            margin-top: 6px;
+        .pcm-slider.null-state::-webkit-slider-thumb { background: rgba(245,228,204,0.3); }
+        .pcm-slider.null-state::-moz-range-thumb { background: rgba(245,228,204,0.3); }
+        .pcm-actions {
+            position: sticky;
+            bottom: 0;
+            background: var(--dark);
+            border-top: 1px solid rgba(245,228,204,0.1);
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
         }
+        .pcm-btn { flex: 1; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; }
+        .pcm-btn.primary { background: var(--accent); color: var(--dark); }
+        .pcm-btn.secondary { background: rgba(245,228,204,0.1); color: var(--light); }
     </style>
 </head>
 
@@ -477,40 +598,92 @@
     </div>
 
     <!-- Modale état pré-crise -->
-    <div class="modal" id="precrisisModal" role="dialog" aria-modal="true" aria-label="État avant la crise">
+    <div class="modal" id="precrisisModal" role="dialog" aria-modal="true" aria-label="Enregistrer la crise">
         <div class="modal-content">
-            <div class="modal-title">Ton état avant la crise</div>
-            <div class="crisis-modal-text" style="font-size:14px; margin-bottom:20px;">
-                Comment te sentais-tu <strong>avant</strong> que ça commence&nbsp;?
+            <div class="pcm-header">
+                <div class="pcm-header-title">Enregistrer la crise</div>
+                <button class="pcm-close" onclick="closePcm()" aria-label="Fermer">×</button>
             </div>
 
-            <div class="precrisis-group">
-                <div class="precrisis-label">⚡ Énergie</div>
-                <div class="precrisis-desc">1 = épuisé(e) &nbsp;·&nbsp; 10 = plein(e) d'énergie</div>
-                <input type="range" class="precrisis-slider" id="sliderEnergie" min="1" max="10" value="5" oninput="updatePrecrisisValue('Energie')">
-                <div class="precrisis-value" id="valEnergie">5/10</div>
+            <div class="pcm-block pcm-block-avant">
+                <div class="pcm-block-title">AVANT LA CRISE</div>
+
+                <div class="pcm-form-group">
+                    <div class="pcm-slider-row">
+                        <span class="pcm-slider-label">⚡ Énergie</span>
+                        <span class="pcm-slider-value null-state" id="pcmEnergieDisplay">— /10</span>
+                    </div>
+                    <input type="range" class="pcm-slider null-state" id="pcmEnergie" min="0" max="10" value="5" oninput="activatePcmSlider('energie')">
+                    <div class="pcm-slider-hints"><span>épuisé</span><span>en forme</span></div>
+                </div>
+
+                <div class="pcm-form-group">
+                    <div class="pcm-slider-row">
+                        <span class="pcm-slider-label">🧠 Charge mentale</span>
+                        <span class="pcm-slider-value null-state" id="pcmMentaleDisplay">— /10</span>
+                    </div>
+                    <input type="range" class="pcm-slider null-state" id="pcmMentale" min="0" max="10" value="5" oninput="activatePcmSlider('mentale')">
+                    <div class="pcm-slider-hints"><span>légère</span><span>saturée</span></div>
+                </div>
+
+                <div class="pcm-form-group">
+                    <div class="pcm-slider-row">
+                        <span class="pcm-slider-label">👥 Charge sociale</span>
+                        <span class="pcm-slider-value null-state" id="pcmSocialeDisplay">— /10</span>
+                    </div>
+                    <input type="range" class="pcm-slider null-state" id="pcmSociale" min="0" max="10" value="5" oninput="activatePcmSlider('sociale')">
+                    <div class="pcm-slider-hints"><span>légère</span><span>saturée</span></div>
+                </div>
             </div>
 
-            <div class="precrisis-group">
-                <div class="precrisis-label">🧠 Charge mentale</div>
-                <div class="precrisis-desc">1 = légère &nbsp;·&nbsp; 10 = saturé(e)</div>
-                <input type="range" class="precrisis-slider" id="sliderMentale" min="1" max="10" value="5" oninput="updatePrecrisisValue('Mentale')">
-                <div class="precrisis-value" id="valMentale">5/10</div>
+            <div class="pcm-block pcm-block-crise">
+                <div class="pcm-block-title">LA CRISE</div>
+
+                <div class="pcm-form-group">
+                    <label class="pcm-label">Origine</label>
+                    <select class="pcm-select" id="pcmType">
+                        <option value="">Non précisé</option>
+                        <option value="Anticipatoire">Anticipatoire</option>
+                        <option value="Réactionnelle">Réactionnelle</option>
+                        <option value="Mixte">Mixte</option>
+                        <option value="Indéterminé">Indéterminé</option>
+                    </select>
+                </div>
+
+                <div class="pcm-form-group">
+                    <label class="pcm-label">Type de crise</label>
+                    <select class="pcm-select" id="pcmManifestation">
+                        <option value="">Non précisé</option>
+                        <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
+                        <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
+                        <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
+                        <option value="Indéterminé">Indéterminé</option>
+                    </select>
+                </div>
+
+                <div class="pcm-form-group">
+                    <div class="pcm-slider-row">
+                        <span class="pcm-slider-label">Intensité</span>
+                        <span class="pcm-slider-value null-state" id="pcmIntensiteDisplay">— /10</span>
+                    </div>
+                    <input type="range" class="pcm-slider null-state" id="pcmIntensite" min="0" max="10" value="5" oninput="activatePcmSlider('intensite')">
+                    <div class="pcm-slider-hints"><span>légère</span><span>très intense</span></div>
+                </div>
+
+                <div class="pcm-form-group">
+                    <label class="pcm-label">Remarques (optionnel)</label>
+                    <textarea class="pcm-textarea" id="pcmRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
+                </div>
             </div>
 
-            <div class="precrisis-group" style="margin-bottom:24px;">
-                <div class="precrisis-label">👥 Charge sociale</div>
-                <div class="precrisis-desc">1 = légère &nbsp;·&nbsp; 10 = saturé(e)</div>
-                <input type="range" class="precrisis-slider" id="sliderSociale" min="1" max="10" value="5" oninput="updatePrecrisisValue('Sociale')">
-                <div class="precrisis-value" id="valSociale">5/10</div>
-            </div>
-
-            <div class="crisis-modal-actions">
-                <button class="crisis-btn primary" onclick="saveWithPrecrisis()">Enregistrer</button>
-                <button class="crisis-btn secondary" onclick="skipPrecrisis()">Passer</button>
+            <div class="pcm-actions">
+                <button class="pcm-btn secondary" onclick="skipPrecrisis()">Passer</button>
+                <button class="pcm-btn primary" onclick="saveWithPrecrisis()">💾 Enregistrer</button>
             </div>
         </div>
     </div>
+
+    <div class="timer-fab" id="timerFab" onclick="location.href='timer.html'"></div>
 
     <div class="crisis-toast" id="crisisToast"></div>
 
@@ -612,11 +785,10 @@
 
     function registerCrisisNow() {
         document.getElementById('crisisRegisterModal').classList.remove('visible');
-        // Réinitialiser les sliders à 50 avant d'afficher
-        ['Energie', 'Mentale', 'Sociale'].forEach(function(k) {
-            document.getElementById('slider' + k).value = 50;
-            updatePrecrisisValue(k);
-        });
+        resetPcmSliders();
+        document.getElementById('pcmType').value = '';
+        document.getElementById('pcmManifestation').value = '';
+        document.getElementById('pcmRemarks').value = '';
         document.getElementById('precrisisModal').classList.add('visible');
     }
 
@@ -635,17 +807,51 @@
         showCrisisToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
     }
 
-    function updatePrecrisisValue(key) {
-        var val = parseInt(document.getElementById('slider' + key).value);
-        document.getElementById('val' + key).textContent = val + '/10';
+    var pcmSliderTouched = { energie: false, mentale: false, sociale: false, intensite: false };
+
+    var PCM_SLIDER_CONFIG = {
+        energie:   { slider: 'pcmEnergie',   display: 'pcmEnergieDisplay' },
+        mentale:   { slider: 'pcmMentale',   display: 'pcmMentaleDisplay' },
+        sociale:   { slider: 'pcmSociale',   display: 'pcmSocialeDisplay' },
+        intensite: { slider: 'pcmIntensite', display: 'pcmIntensiteDisplay' }
+    };
+
+    function activatePcmSlider(field) {
+        if (!pcmSliderTouched[field]) {
+            pcmSliderTouched[field] = true;
+            document.getElementById(PCM_SLIDER_CONFIG[field].slider).classList.remove('null-state');
+            document.getElementById(PCM_SLIDER_CONFIG[field].display).classList.remove('null-state');
+        }
+        document.getElementById(PCM_SLIDER_CONFIG[field].display).textContent =
+            document.getElementById(PCM_SLIDER_CONFIG[field].slider).value + '/10';
+    }
+
+    function resetPcmSliders() {
+        Object.keys(PCM_SLIDER_CONFIG).forEach(function(field) {
+            pcmSliderTouched[field] = false;
+            document.getElementById(PCM_SLIDER_CONFIG[field].slider).value = '5';
+            document.getElementById(PCM_SLIDER_CONFIG[field].slider).classList.add('null-state');
+            document.getElementById(PCM_SLIDER_CONFIG[field].display).textContent = '— /10';
+            document.getElementById(PCM_SLIDER_CONFIG[field].display).classList.add('null-state');
+        });
+    }
+
+    function closePcm() {
+        document.getElementById('precrisisModal').classList.remove('visible');
     }
 
     function saveWithPrecrisis() {
-        var energie = document.getElementById('sliderEnergie').value;
-        var mentale = document.getElementById('sliderMentale').value;
-        var sociale = document.getElementById('sliderSociale').value;
+        var precrisisData = {
+            energie: pcmSliderTouched.energie ? document.getElementById('pcmEnergie').value : '',
+            chargeMentale: pcmSliderTouched.mentale ? document.getElementById('pcmMentale').value : '',
+            chargeSociale: pcmSliderTouched.sociale ? document.getElementById('pcmSociale').value : '',
+            typeCrise: document.getElementById('pcmType').value,
+            typeManifestation: document.getElementById('pcmManifestation').value,
+            intensite: pcmSliderTouched.intensite ? document.getElementById('pcmIntensite').value : '',
+            remarques: document.getElementById('pcmRemarks').value
+        };
         document.getElementById('precrisisModal').classList.remove('visible');
-        createJournalEntry({ energie: energie, chargeMentale: mentale, chargeSociale: sociale });
+        createJournalEntry(precrisisData);
         cleanupCrisisData();
         showCrisisToast('✅ Crise enregistrée dans le journal !');
     }
@@ -693,15 +899,15 @@
             capacites: capacites,
             besoins: besoins,
             etats: etats,
-            typeCrise: '',
-            typeManifestation: '',
-            intensite: '',
+            typeCrise: precrisisData ? (precrisisData.typeCrise || '') : '',
+            typeManifestation: precrisisData ? (precrisisData.typeManifestation || '') : '',
+            intensite: precrisisData ? (precrisisData.intensite || '') : '',
             duree: duree,
             declencheurs: [],
-            remarques: '',
-            energie: precrisisData ? String(precrisisData.energie) : '',
-            chargeMentale: precrisisData ? String(precrisisData.chargeMentale) : '',
-            chargeSociale: precrisisData ? String(precrisisData.chargeSociale) : '',
+            remarques: precrisisData ? (precrisisData.remarques || '') : '',
+            energie: precrisisData ? String(precrisisData.energie || '') : '',
+            chargeMentale: precrisisData ? String(precrisisData.chargeMentale || '') : '',
+            chargeSociale: precrisisData ? String(precrisisData.chargeSociale || '') : '',
             manual: false
         };
 
@@ -723,7 +929,14 @@
         if (banner) banner.classList.remove('visible');
     }
 
+    const TIMER_ICONS = { cercle:'⏱️', barre:'▮', segments:'🔆', pixels:'⬛', kawaii:'🌈', espace:'🌌' };
+    function initTimerFab() {
+        const style = localStorage.getItem('timerStyle') || 'cercle';
+        document.getElementById('timerFab').textContent = TIMER_ICONS[style] || '⏱️';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+        initTimerFab();
 
         const open = id => document.getElementById(id).classList.add('visible');
         const close = id => document.getElementById(id).classList.remove('visible');
