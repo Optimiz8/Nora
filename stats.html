@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="nora-common.css">
     <title>Nora – Statistiques</title>
     <style>
-        body { padding-bottom: 40px; }
+        body { padding-bottom: 80px; }
 
         /* ---------- PÉRIODE ---------- */
 
@@ -256,6 +256,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            overflow: hidden;
         }
 
         .rank-number {
@@ -279,6 +280,7 @@
 
         .rank-bar-wrap {
             flex: 1;
+            min-width: 0;
             display: flex;
             flex-direction: column;
             gap: 3px;
@@ -289,18 +291,25 @@
             justify-content: space-between;
             align-items: baseline;
             margin-bottom: 5px;
+            gap: 6px;
         }
 
         .rank-name {
             font-size: 14px;
             font-weight: 600;
             color: var(--dark);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
         }
 
         .rank-meta {
             font-size: 13px;
             color: var(--dark);
             opacity: 0.5;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .rank-bar-row {
@@ -897,6 +906,51 @@
 
         .analyse-link-btn:active { background: rgba(245, 228, 204, 0.14); transform: scale(0.98); }
 
+        /* ---------- ONGLETS DE PAGE ---------- */
+
+        .page-tabs {
+            display: flex;
+            padding: 12px 16px 0;
+            gap: 0;
+            border-bottom: 2px solid rgba(245, 228, 204, 0.1);
+            margin-bottom: 4px;
+        }
+
+        .page-tab {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 15px;
+            font-weight: 700;
+            padding: 10px 0 12px;
+            cursor: pointer;
+            opacity: 0.45;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            letter-spacing: 0.01em;
+        }
+
+        .page-tab.active {
+            opacity: 1;
+            border-bottom-color: var(--accent);
+        }
+
+        /* ---------- FOOTER EXPORT ---------- */
+
+        .export-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 16px 24px;
+            background: var(--bg);
+            border-top: 1px solid rgba(245, 228, 204, 0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+
         /* ---------- CAPACITÉS ---------- */
 
         .cap-category {
@@ -918,6 +972,11 @@
         <h1 class="page-title">Statistiques</h1>
     </header>
 
+    <div class="page-tabs">
+        <button class="page-tab active">Vue d'ensemble</button>
+        <button class="page-tab" onclick="window.location.href='stats-approfondie.html'">Vue détaillée</button>
+    </div>
+
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
     <div class="period-bar">
         <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
@@ -928,13 +987,12 @@
     <div class="date-range-panel" id="dateRangePanel">
         <div class="date-range-row">
             <span class="date-range-label">Début</span>
-            <input type="date" class="date-range-input" id="dateFrom">
+            <input type="date" class="date-range-input" id="dateFrom" onchange="autoApplyRange()">
         </div>
         <div class="date-range-row">
             <span class="date-range-label">Fin</span>
-            <input type="date" class="date-range-input" id="dateTo">
+            <input type="date" class="date-range-input" id="dateTo" onchange="autoApplyRange()">
         </div>
-        <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
     </div>
 
     <div class="filter-bar">
@@ -998,6 +1056,11 @@
     </div>
 
     <main class="main-content" id="mainContent"></main>
+
+    <div class="export-footer" id="exportFooter" style="display:none">
+        <button class="export-stats-btn" style="flex:1" onclick="shareStats()">↑ Partager</button>
+        <button class="export-stats-btn" style="flex:1" onclick="exportPDF()">🖨️ PDF</button>
+    </div>
 
     <script src="nora-data.js"></script>
     <script>
@@ -1378,7 +1441,7 @@
                 { name: 'Après-m.', range: '12–18h', count: 0, intensities: [], meltdown: 0, shutdown: 0 },
                 { name: 'Soir', range: '18–24h', count: 0, intensities: [], meltdown: 0, shutdown: 0 }
             ];
-            var DAY_NAMES = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            var DAY_NAMES = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
             var dayFreq = [0, 0, 0, 0, 0, 0, 0];
             for (var he = 0; he < entries.length; he++) {
                 var hd = new Date(entries[he].horodatage);
@@ -1761,19 +1824,25 @@
             }
 
             var n = bucketOrder.length;
-            var W = 320, H = 150, padL = 22, padR = 6, padT = 22, padB = 28;
+            var W = 320, H = 190, padL = 26, padR = 6, padT = 22, padB = 28;
             var chartW = W - padL - padR;
             var chartH = H - padT - padB;
             var spacing = chartW / n;
-            var barW = Math.max(3, Math.min(18, spacing - 2));
+            var barW = Math.max(3, Math.min(22, spacing - 2));
 
             var barsHtml = '', labelsHtml = '', yAxisHtml = '';
 
-            for (var yl = 0; yl <= 3; yl++) {
-                var yy = padT + (yl / 3) * chartH;
-                var yv = Math.round(maxCount * (1 - yl / 3));
+            /* Y-axis : nombre de graduations adapté, sans doublon */
+            var ySteps = Math.min(maxCount, 4);
+            var ySeenVals = {};
+            for (var yl = 0; yl <= ySteps; yl++) {
+                var yy = padT + (yl / ySteps) * chartH;
+                var yv = Math.round(maxCount * (1 - yl / ySteps));
                 yAxisHtml += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '" stroke="#2E3A59" stroke-opacity="0.07"/>';
-                if (yv > 0) yAxisHtml += '<text x="' + (padL - 3) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="9" fill="#2E3A59" opacity="0.4">' + yv + '</text>';
+                if (yv > 0 && !ySeenVals[yv]) {
+                    ySeenVals[yv] = true;
+                    yAxisHtml += '<text x="' + (padL - 4) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="9" fill="#2E3A59" opacity="0.4">' + yv + '</text>';
+                }
             }
 
             var showEvery = n > 20 ? 4 : n > 10 ? 2 : 1;
@@ -2057,21 +2126,20 @@
             var last = sinceLastCrisis();
             var main = document.getElementById('mainContent');
 
-            var lastRow = last
-                ? '<div class="last-crisis-row"><span class="last-crisis-label">Dernière crise</span><span class="last-crisis-value">' + last + '</span></div>'
-                : '';
-
             if (!stats) {
-                main.innerHTML = lastRow +
+                main.innerHTML =
                     '<div class="empty-state"><div class="empty-icon">📊</div>' +
                     '<div class="empty-text">Aucune crise enregistrée<br>sur cette période.</div></div>';
+                document.getElementById('exportFooter').style.display = 'none';
                 return;
             }
 
-            var html = lastRow;
+            document.getElementById('exportFooter').style.display = 'flex';
 
-            /* ========== PARTIE 1 — BILAN ========== */
-            html += '<div class="section-tag">Bilan</div>';
+            var html = '';
+
+            /* ========== PARTIE 1 — VUE D'ENSEMBLE : CRISES ========== */
+            html += '<div class="section-tag">Vue d\'ensemble</div>';
             html += '<div class="stat-card">';
             html += '<div class="bilan-comp-header"><div class="bilan-comp-spacer"></div>' +
                 '<div class="bilan-comp-col-hd col-current">Actuel</div>' +
@@ -2080,6 +2148,11 @@
             var prevInt = stats.prev ? stats.prev.avgIntensity : null;
             var prevDur = stats.prev ? stats.prev.avgDuration : null;
             var prevCount = stats.prev ? stats.prev.count : null;
+
+            /* Dernière crise — intégrée en haut du tableau */
+            if (last) {
+                html += bilanRow('Dernière crise', '<strong>' + last + '</strong>', '');
+            }
 
             html += bilanRow('Nombre de crises', '<strong>' + stats.total + '</strong>',
                 prevCount !== null ? deltaText(stats.total, prevCount, ' crises') : '');
@@ -2102,19 +2175,6 @@
                     '<strong>' + stats.meltdownPct + '%</strong> / <strong>' + stats.shutdownPct + '%</strong>', '');
             }
 
-            if (stats.avgEnergie !== null) {
-                html += bilanRow('Énergie avant crise <span class="bilan-unit">(sur 10)</span>',
-                    '<strong>' + stats.avgEnergie + '</strong>', '');
-            }
-            if (stats.avgChargeMentale !== null) {
-                html += bilanRow('Charge mentale <span class="bilan-unit">(sur 10)</span>',
-                    '<strong>' + stats.avgChargeMentale + '</strong>', '');
-            }
-            if (stats.avgChargeSociale !== null) {
-                html += bilanRow('Charge sociale <span class="bilan-unit">(sur 10)</span>',
-                    '<strong>' + stats.avgChargeSociale + '</strong>', '');
-            }
-
             var prevProfile = stats.prev ? stats.prev.topProfile : null;
             if (stats.topProfile) {
                 var ctxDelta = '';
@@ -2124,7 +2184,7 @@
                     ctxDelta = '=';
                 }
                 html += bilanRow('Contexte principal',
-                    stats.topProfile.icon + ' ' + stats.topProfile.name + ' <span class="bilan-prev-val">(' + stats.topProfile.count + '×)</span>',
+                    stats.topProfile.name + ' <span class="bilan-prev-val">(' + stats.topProfile.count + '×)</span>',
                     ctxDelta);
             }
 
@@ -2133,7 +2193,7 @@
                     ' <span class="bilan-prev-val">(' + stats.origineCounts[0].count + '×)</span>', '');
             }
 
-            /* Jour dominant — affiché dans le bilan si période ≥30j et ≥3 crises */
+            /* Jour dominant */
             var isLongPeriod = days >= 30 || (days === 0 && customFrom && customTo &&
                 (new Date(customTo) - new Date(customFrom)) / 86400000 >= 30);
             if (isLongPeriod && stats.total >= 3 && stats.dayOfWeek.length) {
@@ -2157,6 +2217,26 @@
             }
 
             html += '</div>';
+
+            /* ========== BLOC AVANT LA CRISE ========== */
+            var hasPrecrisis = stats.avgEnergie !== null || stats.avgChargeMentale !== null || stats.avgChargeSociale !== null;
+            if (hasPrecrisis) {
+                html += '<div class="stat-card" style="margin-top:0">';
+                html += '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--dark);opacity:0.45;padding:12px 16px 4px">Avant la crise</div>';
+                if (stats.avgEnergie !== null) {
+                    html += bilanRow('Énergie <span class="bilan-unit">(sur 10)</span>',
+                        '<strong>' + stats.avgEnergie + '</strong>', '');
+                }
+                if (stats.avgChargeMentale !== null) {
+                    html += bilanRow('Charge mentale <span class="bilan-unit">(sur 10)</span>',
+                        '<strong>' + stats.avgChargeMentale + '</strong>', '');
+                }
+                if (stats.avgChargeSociale !== null) {
+                    html += bilanRow('Charge sociale <span class="bilan-unit">(sur 10)</span>',
+                        '<strong>' + stats.avgChargeSociale + '</strong>', '');
+                }
+                html += '</div>';
+            }
 
             /* ========== GRAPHIQUE EN BARRES ========== */
             var barChartHtml = buildBarChartSVG(stats.timelineEntries, days, from, to);
@@ -2275,12 +2355,7 @@
                 html += '<button class="analyse-link-btn" onclick="goToAnalyse()">Analyse approfondie →</button>';
             }
 
-            /* ========== EXPORT ========== */
-            html += '<div style="display:flex;gap:8px;margin-top:4px">' +
-                '<button class="export-stats-btn" style="flex:1" onclick="exportStats()">📋 Copier</button>' +
-                '<button class="export-stats-btn" style="flex:1" onclick="shareStats()">↑ Partager</button>' +
-                '<button class="export-stats-btn" style="flex:1" onclick="exportPDF()">🖨️ PDF</button>' +
-                '</div>';
+
 
             main.innerHTML = html;
         }
@@ -2365,6 +2440,26 @@
             a.download = 'stats-nora-' + new Date().toISOString().split('T')[0] + '.txt';
             a.click();
             URL.revokeObjectURL(url);
+        }
+
+        function shareStats() {
+            var stats = computeStats(currentDays, customFrom, customTo);
+            if (!stats) { alert('Aucune donnée à partager sur cette période.'); return; }
+            var text = buildSummaryText(stats);
+            if (navigator.share) {
+                navigator.share({ title: 'Statistiques Nora', text: text })
+                    .catch(function() {});
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(function() { alert('Résumé copié !'); })
+                    .catch(function() { downloadText(text); });
+            } else {
+                downloadText(text);
+            }
+        }
+
+        function exportPDF() {
+            window.print();
         }
 
         /* ---------- FILTRES AVANCÉS ---------- */
@@ -2471,6 +2566,36 @@
 
         /* ---------- PÉRIODE ---------- */
 
+        function saveNav() {
+            localStorage.setItem('statsNavDays', currentDays);
+            localStorage.setItem('statsNavFrom', customFrom || '');
+            localStorage.setItem('statsNavTo', customTo || '');
+            localStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
+        }
+
+        function restoreNav() {
+            var savedDays = localStorage.getItem('statsNavDays');
+            var savedFrom = localStorage.getItem('statsNavFrom');
+            var savedTo = localStorage.getItem('statsNavTo');
+            var savedFilters = localStorage.getItem('statsNavFilters');
+            if (savedDays !== null) {
+                currentDays = parseInt(savedDays, 10);
+                customFrom = savedFrom || null;
+                customTo = savedTo || null;
+                try { if (savedFilters) activeFilters = JSON.parse(savedFilters); } catch(e) {}
+            }
+            var btns = document.querySelectorAll('.period-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', parseInt(btns[i].getAttribute('data-days'), 10) === currentDays);
+            }
+            if (currentDays === 0) {
+                var panel = document.getElementById('dateRangePanel');
+                if (panel) panel.classList.add('visible');
+                if (customFrom) document.getElementById('dateFrom').value = customFrom;
+                if (customTo) document.getElementById('dateTo').value = customTo;
+            }
+        }
+
         function selectPeriod(days) {
             currentDays = days;
             var btns = document.querySelectorAll('.period-btn');
@@ -2479,7 +2604,7 @@
             }
             var panel = document.getElementById('dateRangePanel');
             if (days === 0) panel.classList.add('visible');
-            else { panel.classList.remove('visible'); renderCurrent(); }
+            else { panel.classList.remove('visible'); saveNav(); renderCurrent(); }
         }
 
         function applyCustomRange() {
@@ -2488,6 +2613,16 @@
             if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
             if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
             customFrom = from; customTo = to;
+            saveNav();
+            renderCurrent();
+        }
+
+        function autoApplyRange() {
+            var from = document.getElementById('dateFrom').value;
+            var to = document.getElementById('dateTo').value;
+            if (!from || !to || from > to) return;
+            customFrom = from; customTo = to;
+            saveNav();
             renderCurrent();
         }
 
@@ -2566,10 +2701,50 @@
                 }
             }
 
+            /* Règle H — Charge mentale haute → crises plus intenses */
+            if (stats.thresholds && stats.thresholds.chargeMentale) {
+                var cmHigh = stats.thresholds.chargeMentale[2];
+                if (cmHigh.count >= 2 && cmHigh.avgIntensity !== null && stats.avgIntensity !== null &&
+                    cmHigh.avgIntensity >= stats.avgIntensity + 1) {
+                    insights.push({ priority: 2, icon: '🧠',
+                        text: 'Les crises sont <strong>plus intenses quand la charge mentale est élevée</strong> (≥7/10).' });
+                }
+            }
+
+            /* Règle I — Charge sociale haute → crises plus intenses */
+            if (stats.thresholds && stats.thresholds.chargeSociale) {
+                var csHigh = stats.thresholds.chargeSociale[2];
+                if (csHigh.count >= 2 && csHigh.avgIntensity !== null && stats.avgIntensity !== null &&
+                    csHigh.avgIntensity >= stats.avgIntensity + 1) {
+                    insights.push({ priority: 2, icon: '👥',
+                        text: 'Les crises sont <strong>plus intenses quand la charge sociale est élevée</strong> (≥7/10).' });
+                }
+            }
+
+            /* Règle J — Besoin dominant */
+            if (stats.besoinCounts.length > 0 && stats.total >= 3) {
+                var topB = stats.besoinCounts[0];
+                var bPct = Math.round((topB.count / stats.total) * 100);
+                if (bPct >= 40) {
+                    insights.push({ priority: 3, icon: '💬',
+                        text: 'Besoin le plus exprimé : <strong>' + topB.name +
+                            '</strong> (' + bPct + '% des crises).' });
+                }
+            }
+
+            /* Règle K — Amélioration vs période précédente */
+            if (stats.prev && stats.prev.count >= 3 && stats.total >= 3) {
+                var pctImprove = Math.round(((stats.total - stats.prev.count) / stats.prev.count) * 100);
+                if (pctImprove <= -20) {
+                    insights.push({ priority: 1, icon: '✨',
+                        text: 'Bonne nouvelle : <strong>' + Math.abs(pctImprove) + '% moins de crises</strong> que la période précédente.' });
+                }
+            }
+
             if (!insights.length) return '';
 
             insights.sort(function(a, b) { return a.priority - b.priority; });
-            var topInsights = insights.slice(0, 5);
+            var topInsights = insights.slice(0, 6);
 
             var html = '<div class="insights-list">';
             for (var i = 0; i < topInsights.length; i++) {
@@ -2603,6 +2778,7 @@
         }
 
         initFilterContextes();
+        restoreNav();
         renderCurrent();
     </script>
     <script src="nora-scroll.js"></script>

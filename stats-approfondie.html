@@ -253,8 +253,8 @@
 
             if (savedDays !== null) {
                 currentDays = parseInt(savedDays, 10);
-                if (customFrom) customFrom = savedFrom || null;
-                if (customTo) customTo = savedTo || null;
+                customFrom = savedFrom || null;
+                customTo = savedTo || null;
                 try { if (savedFilters) activeFilters = JSON.parse(savedFilters); } catch(e) {}
             }
 
@@ -776,20 +776,27 @@
 
         /* ---------- PÉRIODE ---------- */
 
+        function saveNav() {
+            localStorage.setItem('statsNavDays', currentDays);
+            localStorage.setItem('statsNavFrom', customFrom || '');
+            localStorage.setItem('statsNavTo', customTo || '');
+            localStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
+        }
+
         function selectPeriod(days) {
             currentDays = days;
             var btns = document.querySelectorAll('.period-btn');
             for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', parseInt(btns[i].getAttribute('data-days'), 10) === days);
             var panel = document.getElementById('dateRangePanel');
             if (days === 0) panel.classList.add('visible');
-            else { panel.classList.remove('visible'); renderCurrent(); }
+            else { panel.classList.remove('visible'); saveNav(); renderCurrent(); }
         }
 
         function applyCustomRange() {
             var from = document.getElementById('dateFrom').value, to = document.getElementById('dateTo').value;
             if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
             if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
-            customFrom = from; customTo = to; renderCurrent();
+            customFrom = from; customTo = to; saveNav(); renderCurrent();
         }
 
         function renderCurrent() {

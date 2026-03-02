@@ -1329,6 +1329,7 @@
         releaseWakeLock();
         localStorage.removeItem('timerRunningState');
         state = 'paused';
+        if (timerStyle === 'kawaii') { stopBgRain(); stopKawaiiAnim(); }
         updateUI();
       }
       openDurationSheet();
@@ -1341,14 +1342,17 @@
         releaseWakeLock();
         localStorage.removeItem('timerRunningState');
         state = 'paused';
-        if (timerStyle === 'kawaii') stopBgRain();
+        if (timerStyle === 'kawaii') { stopBgRain(); stopKawaiiAnim(); }
       } else if (state === 'paused') {
         endTimestamp = Date.now() + timeRemaining * 1000;
         state = 'running';
         startInterval();
         saveRunningState();
         requestWakeLock();
-        if (timerStyle === 'kawaii') startBgRain();
+        if (timerStyle === 'kawaii') {
+          startBgRain();
+          if (!kawaiiAnimFrame && kawaiiParticles.length > 0) kawaiiAnimFrame = requestAnimationFrame(animateKawaii);
+        }
       }
       updateUI();
     }
@@ -2056,7 +2060,7 @@
       const hue = Math.round(progress * 300);
       const gradient = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
       const bg  = document.getElementById('kawaiiBg');
-      if (bg) { bg.style.background = gradient; bg.style.opacity = '0.55'; }
+      if (bg) { bg.style.background = gradient; bg.style.opacity = '1'; }
       const arc = document.getElementById('kawaiiArc');
       if (arc) arc.style.stroke = `hsl(${(hue + 180) % 360}, 90%, 65%)`;
       if (timerStyle === 'kawaii') {
