@@ -400,6 +400,17 @@
         }
         .pcm-select option { background: var(--dark); }
         .pcm-textarea { min-height: 80px; resize: vertical; }
+        .pcm-date-col { margin-bottom: 12px; }
+        .pcm-date-col:last-child { margin-bottom: 0; }
+        .pcm-hint { font-size: 12px; color: var(--light); opacity: 0.45; margin-top: 4px; font-style: italic; }
+        .pcm-dur-carousel { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 4px 0; }
+        .pcm-dur-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .pcm-dur-arrow { background: rgba(245,228,204,0.1); border: none; color: var(--light); font-size: 18px; width: 48px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .pcm-dur-arrow:active { background: rgba(245,228,204,0.22); }
+        .pcm-dur-value { font-size: 32px; font-weight: 700; color: var(--light); min-width: 56px; text-align: center; line-height: 1.1; }
+        .pcm-dur-unit { font-size: 11px; color: var(--light); opacity: 0.45; }
+        .pcm-dur-sep { font-size: 32px; font-weight: 300; color: var(--light); opacity: 0.4; padding: 0 2px; margin-bottom: 24px; }
+        .pcm-dur-zero { text-align: center; font-size: 13px; color: var(--light); opacity: 0.4; margin-top: 4px; font-style: italic; }
         .pcm-slider-row {
             display: flex;
             justify-content: space-between;
@@ -676,10 +687,6 @@
                 <div class="option-icon">💬</div>
                 <div class="option-text">Cartes de communication</div>
             </div>
-            <div class="modal-option" id="btnTimer">
-                <div class="option-icon">⏱️</div>
-                <div class="option-text">Timer visuel</div>
-            </div>
         </div>
     </div>
 
@@ -794,6 +801,40 @@
 
             <div class="pcm-block pcm-block-crise">
                 <div class="pcm-block-title">LA CRISE</div>
+
+                <div class="pcm-form-group">
+                    <div>
+                        <div class="pcm-date-col">
+                            <label class="pcm-label">Date</label>
+                            <input type="date" class="pcm-input" id="pcmDate">
+                        </div>
+                        <div class="pcm-date-col">
+                            <label class="pcm-label">Heure de début</label>
+                            <input type="time" class="pcm-input" id="pcmTime">
+                            <div class="pcm-hint" id="pcmStartHint"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pcm-form-group">
+                    <label class="pcm-label">Durée estimée</label>
+                    <div class="pcm-dur-carousel">
+                        <div class="pcm-dur-col">
+                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('h',1)">▲</button>
+                            <div class="pcm-dur-value" id="pcmDurH">0</div>
+                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('h',-1)">▼</button>
+                            <div class="pcm-dur-unit">heure</div>
+                        </div>
+                        <div class="pcm-dur-sep">:</div>
+                        <div class="pcm-dur-col">
+                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('m',1)">▲</button>
+                            <div class="pcm-dur-value" id="pcmDurM">00</div>
+                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('m',-1)">▼</button>
+                            <div class="pcm-dur-unit">min</div>
+                        </div>
+                    </div>
+                    <div class="pcm-dur-zero" id="pcmDurZeroLabel">Non renseigné</div>
+                </div>
 
                 <div class="pcm-form-group">
                     <label class="pcm-label">Origine</label>
@@ -1064,6 +1105,37 @@
         document.getElementById('pcmType').value = '';
         document.getElementById('pcmManifestation').value = '';
         document.getElementById('pcmRemarks').value = '';
+
+        var startTime = localStorage.getItem('crisisStartTime');
+        var hint = document.getElementById('pcmStartHint');
+        if (startTime) {
+            var start = new Date(parseInt(startTime));
+            var y = start.getFullYear();
+            var mo = String(start.getMonth() + 1).padStart(2, '0');
+            var d = String(start.getDate()).padStart(2, '0');
+            var h = String(start.getHours()).padStart(2, '0');
+            var mi = String(start.getMinutes()).padStart(2, '0');
+            document.getElementById('pcmDate').value = y + '-' + mo + '-' + d;
+            document.getElementById('pcmTime').value = h + ':' + mi;
+            if (hint) hint.textContent = 'Début de l\'enregistrement : ' + h + 'h' + mi;
+
+            var totalMin = Math.round((Date.now() - parseInt(startTime)) / 60000);
+            pcmDurHours = Math.floor(totalMin / 60);
+            var rawMin = totalMin % 60;
+            pcmDurMinutes = PCM_DUR_QUARTERS.reduce(function(a, b) {
+                return Math.abs(b - rawMin) < Math.abs(a - rawMin) ? b : a;
+            });
+            if (pcmDurMinutes === 60) { pcmDurHours++; pcmDurMinutes = 0; }
+        } else {
+            var now = new Date();
+            document.getElementById('pcmDate').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+            document.getElementById('pcmTime').value = '';
+            if (hint) hint.textContent = '';
+            pcmDurHours = 0;
+            pcmDurMinutes = 0;
+        }
+        updatePcmDurDisplay();
+
         document.getElementById('precrisisModal').classList.add('visible');
     }
 
@@ -1080,6 +1152,34 @@
         cleanupCrisisData();
         document.getElementById('crisisRegisterModal').classList.remove('visible');
         showCrisisToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
+    }
+
+    var pcmDurHours = 0, pcmDurMinutes = 0;
+    var PCM_DUR_QUARTERS = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+
+    function adjustPcmDur(unit, delta) {
+        if (unit === 'h') {
+            pcmDurHours = Math.max(0, Math.min(12, pcmDurHours + delta));
+        } else {
+            var idx = PCM_DUR_QUARTERS.indexOf(pcmDurMinutes);
+            idx = Math.max(0, Math.min(PCM_DUR_QUARTERS.length - 1, idx + delta));
+            pcmDurMinutes = PCM_DUR_QUARTERS[idx];
+        }
+        updatePcmDurDisplay();
+    }
+
+    function updatePcmDurDisplay() {
+        document.getElementById('pcmDurH').textContent = pcmDurHours;
+        document.getElementById('pcmDurM').textContent = String(pcmDurMinutes).padStart(2, '0');
+        var zl = document.getElementById('pcmDurZeroLabel');
+        if (zl) zl.style.display = (pcmDurHours === 0 && pcmDurMinutes === 0) ? 'block' : 'none';
+    }
+
+    function getPcmDur() {
+        if (pcmDurHours === 0 && pcmDurMinutes === 0) return '';
+        if (pcmDurHours === 0) return pcmDurMinutes + ' min';
+        if (pcmDurMinutes === 0) return pcmDurHours + 'h';
+        return pcmDurHours + 'h' + String(pcmDurMinutes).padStart(2, '0');
     }
 
     var pcmSliderTouched = { energie: false, mentale: false, sociale: false, intensite: false };
@@ -1116,7 +1216,33 @@
     }
 
     function saveWithPrecrisis() {
+        var dateInput = document.getElementById('pcmDate').value;
+        var timeInput = document.getElementById('pcmTime').value;
+        var horodatage;
+        if (dateInput) {
+            if (timeInput) {
+                horodatage = new Date(dateInput + 'T' + timeInput + ':00').toISOString();
+            } else {
+                var d = new Date(dateInput);
+                var now = new Date();
+                d.setHours(now.getHours(), now.getMinutes(), 0);
+                horodatage = d.toISOString();
+            }
+        }
+
+        if (horodatage) {
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0, 0, 0, 0);
+            if (new Date(horodatage) > tomorrow) {
+                alert('Tu ne peux pas enregistrer une crise dans le futur.');
+                return;
+            }
+        }
+
         var precrisisData = {
+            horodatage: horodatage,
+            duree: getPcmDur(),
             energie: pcmSliderTouched.energie ? document.getElementById('pcmEnergie').value : '',
             chargeMentale: pcmSliderTouched.mentale ? document.getElementById('pcmMentale').value : '',
             chargeSociale: pcmSliderTouched.sociale ? document.getElementById('pcmSociale').value : '',
@@ -1146,24 +1272,28 @@
         const etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
         const startTime = localStorage.getItem('crisisStartTime');
 
-        // Calculer la durée si possible
-        let duree = '';
-        if (startTime) {
-            const durationMs = Date.now() - parseInt(startTime);
-            const minutes = Math.round(durationMs / 60000);
-            if (minutes < 60) {
-                duree = minutes + ' min';
-            } else {
-                const h = Math.floor(minutes / 60);
-                const m = minutes % 60;
-                duree = m > 0 ? h + 'h' + (m < 10 ? '0' : '') + m : h + 'h';
+        let horodatage, duree;
+        if (precrisisData && precrisisData.horodatage) {
+            horodatage = precrisisData.horodatage;
+            duree = precrisisData.duree || '';
+        } else {
+            // Calculer la durée si possible
+            duree = '';
+            if (startTime) {
+                const durationMs = Date.now() - parseInt(startTime);
+                const minutes = Math.round(durationMs / 60000);
+                if (minutes < 60) {
+                    duree = minutes + ' min';
+                } else {
+                    const h = Math.floor(minutes / 60);
+                    const m = minutes % 60;
+                    duree = m > 0 ? h + 'h' + (m < 10 ? '0' : '') + m : h + 'h';
+                }
             }
+            horodatage = startTime
+                ? new Date(parseInt(startTime)).toISOString()
+                : new Date().toISOString();
         }
-
-        // Horodatage = moment du début de crise si disponible, sinon maintenant
-        const horodatage = startTime
-            ? new Date(parseInt(startTime)).toISOString()
-            : new Date().toISOString();
 
         const profilInfo = getContexteInfo(profil);
 
@@ -1244,7 +1374,6 @@
 
         btnEmergency.onclick = () => location.href = 'carte.html';
         btnComCards.onclick = () => location.href = 'cartes-communication.html';
-        btnTimer.onclick = () => location.href = 'timer.html';
 
         document.querySelectorAll('[data-close]').forEach(el =>
             el.onclick = () => close(el.dataset.close)

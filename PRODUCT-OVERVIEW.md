@@ -305,7 +305,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 ### Situation actuelle
 
 - **Hébergement :** GitHub Pages — déploiement automatique à chaque push sur `main`
-- **URL :** à préciser
+- **URL :** https://optimiz8.github.io/Nora/
 - **Format :** PWA installable depuis le navigateur mobile (Chrome/Safari)
 - **Accès :** public (URL accessible à quiconque a le lien)
 - **Coût d'infrastructure :** 0€
@@ -331,3 +331,33 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 - Faut-il un nom de domaine dédié ? (ex. `nora-app.fr`)
 - Comment gérer les mises à jour une fois l'app installée sur des appareils tierces ?
 - Quel niveau de support est envisageable si des utilisateurs rencontrent des bugs ?
+
+---
+
+## 9. To-do — par ordre de priorité
+
+### 🔴 Priorité 1 — Avant de faire tester à quiconque
+
+- [ ] Vérifier l'installation PWA depuis l'URL publique sur téléphone (iOS + Android) — s'assurer que les raccourcis fonctionnent, que l'app s'installe correctement
+- [ ] Finaliser le logo (version définitive — bloquant pour toute présentation externe)
+- [ ] Tester soi-même l'app en conditions réelles sur plusieurs semaines — noter ce qui bloque, ce qui manque
+
+### 🟠 Priorité 2 — Avant les tests utilisateurs
+
+- [ ] Définir le protocole de test : qui recruter (combien, quel profil), comment recueillir les retours (formulaire ? entretien ?), quels critères d'évaluation
+- [ ] Préparer un document ou message d'accueil pour les testeurs (expliquer ce qu'est l'app, comment l'installer, comment donner du feedback)
+- [ ] Implémenter le post-crise guidé V3 (3 questions fixes — cf. section 7) — améliore directement l'utilité pour les testeurs
+- [ ] Vérifier la cohérence visuelle inter-pages sur plusieurs tailles d'écran
+
+### 🟡 Priorité 3 — Après retours positifs des tests
+
+- [ ] Définir la stratégie de déploiement large (stores ? nom de domaine ? modèle économique ?)
+- [ ] Créer une landing page d'explication (pour les personnes qui arrivent sur l'URL sans contexte)
+- [ ] Axe psychoéducatif — aide à l'identification des déclencheurs
+
+### ⚪ Priorité 4 — Si diffusion large confirmée
+
+- [ ] Nom de domaine dédié (ex. `nora-app.fr`)
+- [ ] Distribution via PWABuilder (Play Store) et/ou App Store iOS
+- [ ] Support multilingue (anglais)
+- [ ] Définir comment gérer les mises à jour sur appareils tiers installés

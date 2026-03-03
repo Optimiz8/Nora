@@ -13,22 +13,8 @@
     <title>Nora – Journal de crises</title>
     <style>
         body {
-            padding-bottom: calc(var(--footer-height) + 20px);
+            padding-bottom: 20px;
         }
-
-        .footer-action {
-            flex: 1;
-            height: 46px;
-            border: none;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            background: rgba(245, 228, 204, 0.15);
-            color: var(--light);
-            cursor: pointer;
-        }
-
-        .footer-action:active { opacity: 0.7; transform: scale(0.98); }
 
         .header {
             justify-content: space-between;
@@ -38,22 +24,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .export-button {
-            background: rgba(245, 228, 204, 0.1);
-            border: none;
-            cursor: pointer;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 16px;
-            color: var(--light);
-            font-weight: 500;
-        }
-
-        .export-button:active {
-            background-color: rgba(245, 228, 204, 0.2);
-            transform: scale(0.95);
         }
 
         .main-content {
@@ -81,6 +51,26 @@
             transform: scale(0.98);
         }
 
+        .data-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .data-action-btn {
+            flex: 1;
+            height: 42px;
+            border: 1.5px solid rgba(245, 228, 204, 0.25);
+            border-radius: 12px;
+            background: transparent;
+            color: var(--light);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .data-action-btn:active { opacity: 0.7; transform: scale(0.98); }
+
         .table-container {
             background-color: var(--light);
             border-radius: 12px;
@@ -96,7 +86,7 @@
         }
 
         thead {
-            background-color: #2E3A59;
+            background-color: var(--dark);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -140,15 +130,15 @@
         }
 
         .year-header-row td {
-            padding: 10px 16px 4px;
-            font-size: 12px;
+            padding: 12px 16px 6px;
+            font-size: 15px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--dark);
-            opacity: 0.4;
-            background: rgba(46, 58, 89, 0.04);
-            border-bottom: 1px solid rgba(46, 58, 89, 0.08);
+            opacity: 0.65;
+            background: rgba(46, 58, 89, 0.06);
+            border-bottom: 1px solid rgba(46, 58, 89, 0.12);
         }
 
         .profile-cell {
@@ -181,6 +171,23 @@
             z-index: 500;
             display: none;
             border: 1px solid rgba(245,228,204,0.15);
+        }
+
+        .col-remarks {
+            min-width: 240px;
+            max-width: 320px;
+        }
+
+        .remarks-clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        table.no-remarks th.col-remarks,
+        table.no-remarks td.col-remarks {
+            display: none;
         }
 
         .actions-cell {
@@ -860,8 +867,8 @@
         }
 
         .export-option {
-            background-color: #2E3A59;
-            border: 2px solid #384657;
+            background: rgba(245, 228, 204, 0.08);
+            border: 1.5px solid rgba(245, 228, 204, 0.2);
             border-radius: 12px;
             padding: 16px;
             cursor: pointer;
@@ -870,7 +877,7 @@
 
         .export-option:hover {
             border-color: var(--accent);
-            background-color: #485A70;
+            background: rgba(245, 228, 204, 0.14);
         }
 
         .export-option:active {
@@ -940,6 +947,11 @@
             ➕ Ajouter une crise manuellement
         </button>
 
+        <div class="data-actions">
+            <button class="data-action-btn" onclick="window.location.href='stats.html'">📊 Statistiques</button>
+            <button class="data-action-btn" onclick="showExportOptions()">📤 Exporter</button>
+        </div>
+
         <div class="table-container" id="tableContainer">
             <table id="crisisTable">
                 <thead>
@@ -955,7 +967,7 @@
                         <th style="width: 80px;">Bes.</th>
                         <th style="width: 80px;">États</th>
                         <th style="width: 100px;">État avant</th>
-                        <th>Remarques</th>
+                        <th class="col-remarks">Remarques</th>
                         <th style="text-align: center; width: 60px;">🔧</th>
                     </tr>
                 </thead>
@@ -1140,17 +1152,17 @@
                     </div>
                 </div>
 
-                <div class="export-option" onclick="exportJSON()">
-                    <div class="export-option-title">💾 Export JSON</div>
-                    <div class="export-option-desc">
-                        Format de sauvegarde technique. Permet de réimporter tes données ou de les transférer sur un autre appareil en conservant toutes les informations.
-                    </div>
-                </div>
-
                 <div class="export-option" onclick="shareJournal()">
                     <div class="export-option-title">↗️ Partager le journal</div>
                     <div class="export-option-desc">
                         Partage un résumé textuel de tes crises via l'application de ton choix (messagerie, e-mail…). Idéal pour un envoi rapide à un professionnel.
+                    </div>
+                </div>
+
+                <div class="export-option" onclick="exportJSON()">
+                    <div class="export-option-title">💾 Export JSON</div>
+                    <div class="export-option-desc">
+                        Format de sauvegarde technique. Permet de réimporter tes données ou de les transférer sur un autre appareil en conservant toutes les informations.
                     </div>
                 </div>
             </div>
@@ -1311,14 +1323,21 @@
             const tableContainer = document.getElementById('tableContainer');
             const emptyState = document.getElementById('emptyState');
 
+            const dataActions = document.querySelector('.data-actions');
+
             if (journal.length === 0) {
                 tableContainer.style.display = 'none';
                 emptyState.style.display = 'block';
+                dataActions.style.display = 'none';
                 return;
             }
 
             tableContainer.style.display = 'block';
             emptyState.style.display = 'none';
+            dataActions.style.display = 'flex';
+
+            const hasRemarks = journal.some(e => e.remarques && e.remarques.trim());
+            document.getElementById('crisisTable').classList.toggle('no-remarks', !hasRemarks);
             tbody.innerHTML = '';
 
             journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
@@ -1388,11 +1407,11 @@
                 <td>${intensityDisplay}</td>
                 <td>${entry.duree || '-'}</td>
                 <td style="min-width: 220px; max-width: 260px;">${triggersDisplay}</td>
-                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'caps')">${capsCount}</span></td>
-                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'besoins')">${needsCount}</span></td>
-                <td><span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'etats')">${statesCount}</span></td>
+                <td>${capsCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'caps')">${capsCount}</span>` : '—'}</td>
+                <td>${needsCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'besoins')">${needsCount}</span>` : '—'}</td>
+                <td>${statesCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'etats')">${statesCount}</span>` : '—'}</td>
                 ${precrisisCell}
-                <td style="max-width: 200px;">${entry.remarques || '-'}</td>
+                <td class="col-remarks">${entry.remarques ? `<div class="remarks-clamp">${entry.remarques}</div>` : '—'}</td>
                 <td class="actions-cell" style="white-space: nowrap;">
                     <button class="action-btn" onclick="event.stopPropagation(); openFormModal('edit', ${index})" title="Modifier">✏️</button>
                     <button class="action-btn" onclick="event.stopPropagation(); deleteEntry(${index})" title="Supprimer">🗑️</button>
@@ -2047,10 +2066,6 @@ ${entriesHtml}
 
         loadJournal();
     </script>
-    <footer class="footer">
-        <button class="footer-action" onclick="window.location.href='stats.html'">📊 Statistiques</button>
-        <button class="footer-action" onclick="showExportOptions()">📤 Exporter</button>
-    </footer>
 
     <script>
         document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); } });
