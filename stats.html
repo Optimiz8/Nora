@@ -968,7 +968,27 @@
             top: var(--header-height);
             background: var(--bg);
             z-index: 50;
+            align-items: flex-end;
         }
+
+        .tabs-filter-btn {
+            margin-left: auto;
+            margin-bottom: 4px;
+            background: rgba(245, 228, 204, 0.1);
+            border: 2px solid rgba(245, 228, 204, 0.15);
+            color: var(--light);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 11px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .tabs-filter-btn.has-filters { border-color: var(--accent); color: var(--accent); }
 
         .page-tab {
             flex: 1;
@@ -1029,6 +1049,9 @@
     <div class="page-tabs">
         <button class="page-tab active">Vue d'ensemble</button>
         <button class="page-tab" onclick="window.location.href='stats-approfondie.html'">Analyse</button>
+        <button class="tabs-filter-btn" id="filterBtn" onclick="toggleFilterPanel()">
+            ⚙️ Filtre avancé <span class="filter-badge" id="filterBadge" style="display:none">0</span>
+        </button>
     </div>
 
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
@@ -1049,13 +1072,8 @@
         </div>
     </div>
 
-    <div class="filter-bar">
-        <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel()">
-            ⚙️ Filtres <span class="filter-badge" id="filterBadge" style="display:none">0</span>
-        </button>
-    </div>
 
-    <div class="filter-overlay" id="filterOverlay" onclick="closeFilterPanel()"></div>
+<div class="filter-overlay" id="filterOverlay" onclick="closeFilterPanel()"></div>
     <div class="filter-panel" id="filterPanel">
         <div class="filter-panel-title">Filtres avancés</div>
 
@@ -1112,8 +1130,8 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">↑ Partager</button>
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">⬇ Exporter</button>
+        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">✉️ Partager</button>
+        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">📥 Exporter</button>
     </div>
 
     <!-- Modale export/partage -->
@@ -1131,7 +1149,7 @@
         var currentDays = 7;
         var customFrom = null;
         var customTo = null;
-        var viewModes = { triggers: 'detail', besoins: 'detail' };
+        var viewModes = { triggers: 'freq', besoins: 'detail' };
         var activeFilters = { contexte: [], origine: [], type: [], moment: [], intMin: 1, intMax: 10 };
 
         /* ---------- DONNÉES ---------- */
@@ -1637,9 +1655,21 @@
                 if (!latest || d > latest) latest = d;
             }
             var diff = Math.floor((Date.now() - latest) / 86400000);
-            if (diff === 0) return "aujourd'hui";
-            if (diff === 1) return 'hier';
-            return 'il y a ' + diff + ' j';
+            var dd = String(latest.getDate()).padStart(2, '0');
+            var mm = String(latest.getMonth() + 1).padStart(2, '0');
+            var yy = String(latest.getFullYear()).slice(-2);
+            var dateStr = dd + '/' + mm + '/' + yy;
+            var text;
+            if (diff === 0) text = "aujourd'hui";
+            else if (diff === 1) text = 'hier';
+            else if (diff < 30) text = 'il y a ' + diff + ' jours';
+            else {
+                var months = Math.floor(diff / 30);
+                var remDays = diff - months * 30;
+                text = 'il y a ' + months + ' mois';
+                if (remDays > 0) text += ' et ' + remDays + ' jours';
+            }
+            return { text: text, date: dateStr };
         }
 
         /* ---------- NARRATIF ---------- */
@@ -2143,7 +2173,7 @@
 
         function render(days, from, to) {
             var stats = computeStats(days, from, to);
-            var last = sinceLastCrisis();
+            var lastCrisis = sinceLastCrisis();
             var main = document.getElementById('mainContent');
 
             if (!stats) {
@@ -2157,72 +2187,63 @@
             document.getElementById('exportFooter').style.display = 'flex';
 
             var html = '';
+            var isLongPeriod = days >= 30 || (days === 0 && customFrom && customTo &&
+                (new Date(customTo) - new Date(customFrom)) / 86400000 >= 30);
 
-            /* ========== NARRATIF ========== */
-            var narrativeText = buildNarrative(stats, days, from, to);
-            if (narrativeText) {
-                html += '<div class="narrative-card">' + narrativeText + '</div>';
+            /* ========== DERNIÈRE CRISE ========== */
+            if (lastCrisis) {
+                html += '<div class="last-crisis-row">' +
+                    '<span class="last-crisis-label">Dernière crise</span>' +
+                    '<span class="last-crisis-value">' + lastCrisis.text +
+                    ' <span style="font-size:14px;font-weight:400;opacity:0.55">(' + lastCrisis.date + ')</span></span>' +
+                    '</div>';
             }
 
-            /* ========== PARTIE 1 — VUE D'ENSEMBLE : CRISES ========== */
+            /* ========== VUE D'ENSEMBLE ========== */
             html += '<div class="section-tag">Vue d\'ensemble</div>';
             html += '<div class="stat-card">';
-            html += '<div class="bilan-comp-header"><div class="bilan-comp-spacer"></div>' +
-                '<div class="bilan-comp-col-hd col-current">Actuel</div>' +
-                '<div class="bilan-comp-col-hd">Évolution</div></div>';
 
-            var prevInt = stats.prev ? stats.prev.avgIntensity : null;
-            var prevDur = stats.prev ? stats.prev.avgDuration : null;
-            var prevCount = stats.prev ? stats.prev.count : null;
-
-            /* Dernière crise — intégrée en haut du tableau */
-            if (last) {
-                html += bilanRow('Dernière crise', '<strong>' + last + '</strong>', '');
-            }
-
-            html += bilanRow('Nombre de crises', '<strong>' + stats.total + '</strong>',
-                prevCount !== null ? deltaText(stats.total, prevCount, ' crises') : '');
+            html += bilanRow('Nombre de crises', '<strong>' + stats.total + '</strong>', '');
 
             html += bilanRow('Intensité moyenne <span class="bilan-unit">(sur 10)</span>',
                 stats.avgIntensity !== null ? '<strong>' + stats.avgIntensity + '</strong>' : '—',
-                prevInt !== null ? deltaPct(stats.avgIntensity, prevInt) + '<br><span class="bilan-prev-val">(' + prevInt + ')</span>' : '',
+                '',
                 stats.minIntensity !== null && stats.maxIntensity !== null && stats.minIntensity !== stats.maxIntensity
                     ? 'min <strong>' + stats.minIntensity + '</strong> · max <strong>' + stats.maxIntensity + '</strong>' : '');
 
             html += bilanRow('Durée moyenne',
                 stats.avgDuration !== null ? '<strong>' + formatMins(stats.avgDuration) + '</strong>' : '—',
-                prevDur !== null ? deltaText(Math.round(stats.avgDuration), Math.round(prevDur), ' min') : '',
+                '',
                 stats.minDuration !== null && stats.maxDuration !== null && stats.minDuration !== stats.maxDuration
                     ? 'min <strong>' + formatMins(stats.minDuration) + '</strong> · max <strong>' + formatMins(stats.maxDuration) + '</strong>' : '');
 
-            var totalTyped = stats.meltdownCount + stats.shutdownCount;
-            if (totalTyped > 0) {
-                html += bilanRow('Meltdown / Shutdown',
-                    '<strong>' + stats.meltdownPct + '%</strong> / <strong>' + stats.shutdownPct + '%</strong>', '');
+            html += '</div>';
+
+            /* ========== INSIGHTS ========== */
+            var insightsHtml = buildInsights(stats, days, from, to);
+            if (insightsHtml) {
+                html += '<div class="section-tag">À retenir</div>';
+                html += insightsHtml;
             }
 
-            var prevProfile = stats.prev ? stats.prev.topProfile : null;
+            /* ========== PROFIL DE CRISE ========== */
+            html += '<div class="section-tag">Profil de crise</div>';
+            html += '<div class="stat-card">';
+
             if (stats.topProfile) {
-                var ctxDelta = '';
-                if (prevProfile && prevProfile.name !== stats.topProfile.name) {
-                    ctxDelta = 'avant : ' + prevProfile.name;
-                } else if (prevProfile) {
-                    ctxDelta = '=';
-                }
-                html += bilanRow('Contexte principal',
-                    stats.topProfile.name + ' <span class="bilan-prev-val">(' + stats.topProfile.count + '×)</span>',
-                    ctxDelta);
+                html += bilanRow('Contexte le plus fréquent',
+                    stats.topProfile.icon + ' <strong>' + stats.topProfile.name + '</strong>' +
+                    ' <span class="bilan-prev-val">(' + stats.topProfile.count + '×)</span>', '');
             }
 
             if (stats.origineCounts.length) {
-                html += bilanRow('Origine principale', '<strong>' + stats.origineCounts[0].name + '</strong>' +
+                html += bilanRow('Origine la plus fréquente',
+                    '<strong>' + stats.origineCounts[0].name + '</strong>' +
                     ' <span class="bilan-prev-val">(' + stats.origineCounts[0].count + '×)</span>', '');
             }
 
             /* Jour dominant */
-            var isLongPeriod = days >= 30 || (days === 0 && customFrom && customTo &&
-                (new Date(customTo) - new Date(customFrom)) / 86400000 >= 30);
-            if (isLongPeriod && stats.total >= 3 && stats.dayOfWeek.length) {
+            if (stats.total >= 3 && stats.dayOfWeek.length) {
                 var maxDC = 0;
                 for (var ddi = 0; ddi < stats.dayOfWeek.length; ddi++) {
                     if (stats.dayOfWeek[ddi].count > maxDC) maxDC = stats.dayOfWeek[ddi].count;
@@ -2232,23 +2253,36 @@
                     for (var ddi2 = 0; ddi2 < stats.dayOfWeek.length; ddi2++) {
                         if (stats.dayOfWeek[ddi2].count === maxDC) topDays.push(stats.dayOfWeek[ddi2].name);
                     }
-                    if (topDays.length === 1) {
-                        html += bilanRow('Jour le plus fréquent', '<strong>' + topDays[0] + '</strong>', '');
-                    } else if (topDays.length === 2) {
-                        html += bilanRow('Jour le plus fréquent',
-                            '<strong>' + topDays[0] + '</strong> / <strong>' + topDays[1] + '</strong>',
-                            '<span style="font-size:11px">ex aequo</span>');
-                    }
+                    var dayVal = topDays.length === 1
+                        ? '<strong>' + topDays[0] + '</strong>'
+                        : '<strong>' + topDays[0] + '</strong> / <strong>' + topDays[1] + '</strong>';
+                    var daySub = topDays.length > 1 ? '<span style="font-size:11px">ex aequo</span>' : '';
+                    html += bilanRow('Jour le plus fréquent', dayVal, daySub);
+                }
+            }
+
+            /* Moment dominant */
+            var hasHourData = stats.hourSlots && stats.hourSlots.some(function(s) { return s.count > 0; });
+            if (stats.total >= 3 && hasHourData) {
+                var topSlot = null;
+                for (var hsi = 0; hsi < stats.hourSlots.length; hsi++) {
+                    if (!topSlot || stats.hourSlots[hsi].count > topSlot.count) topSlot = stats.hourSlots[hsi];
+                }
+                if (topSlot && topSlot.count > 0) {
+                    var slotLabels = { 'Nuit': 'Nuit (0–6h)', 'Matin': 'Matin (6–12h)', 'Après-m.': 'Après-midi (12–18h)', 'Soir': 'Soir (18–24h)' };
+                    html += bilanRow('Moment le plus fréquent',
+                        '<strong>' + (slotLabels[topSlot.name] || topSlot.name) + '</strong>' +
+                        ' <span class="bilan-prev-val">(' + topSlot.count + '×)</span>', '');
                 }
             }
 
             html += '</div>';
 
-            /* ========== BLOC AVANT LA CRISE ========== */
+            /* ========== AVANT LA CRISE ========== */
             var hasPrecrisis = stats.avgEnergie !== null || stats.avgChargeMentale !== null || stats.avgChargeSociale !== null;
             if (hasPrecrisis) {
-                html += '<div class="stat-card" style="margin-top:0">';
-                html += '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--dark);opacity:0.45;padding:12px 16px 4px">Avant la crise — Moyennes</div>';
+                html += '<div class="section-tag">Avant la crise</div>';
+                html += '<div class="stat-card">';
                 if (stats.avgEnergie !== null) {
                     var enRange = (stats.minEnergie !== null && stats.maxEnergie !== null && stats.minEnergie !== stats.maxEnergie)
                         ? '<span class="bilan-unit"> · min ' + stats.minEnergie + ' / max ' + stats.maxEnergie + '</span>' : '';
@@ -2270,119 +2304,8 @@
                 html += '</div>';
             }
 
-            /* ========== GRAPHIQUE EN BARRES ========== */
-            var barChartHtml = buildBarChartSVG(stats.timelineEntries, days, from, to);
-            if (barChartHtml) {
-                html += '<div class="section-tag">Évolution</div>';
-                html += barChartHtml;
-            }
-
-            /* ========== MOMENTS DE LA JOURNÉE ========== */
-            var hasHourData = stats.hourSlots && stats.hourSlots.some(function(s) { return s.count > 0; });
-            if (stats.total >= 3 && hasHourData) {
-                html += '<div class="section-tag">Moments de la journée</div>';
-                html += '<div class="stat-card" style="padding:14px">';
-                html += '<div class="hour-grid">';
-                for (var hsi = 0; hsi < stats.hourSlots.length; hsi++) {
-                    var hs2 = stats.hourSlots[hsi];
-                    html += '<div class="hour-cell">' +
-                        '<div class="hour-name">' + hs2.name + '</div>' +
-                        '<div class="hour-range">' + hs2.range + '</div>' +
-                        '<div class="hour-count">' + hs2.count + '</div>' +
-                        '</div>';
-                }
-                html += '</div></div>';
-            }
-
-            /* ========== JOURS DE LA SEMAINE ========== */
-            if (isLongPeriod && stats.total >= 3 && stats.dayOfWeek && stats.dayOfWeek.length) {
-                var maxDayCount = 0;
-                for (var dgi = 0; dgi < stats.dayOfWeek.length; dgi++) {
-                    if (stats.dayOfWeek[dgi].count > maxDayCount) maxDayCount = stats.dayOfWeek[dgi].count;
-                }
-                if (maxDayCount > 0) {
-                    html += '<div class="section-tag">Jours de la semaine</div>';
-                    html += '<div class="stat-card" style="padding:0;overflow:hidden">';
-                    html += '<div class="day-grid">';
-                    for (var dgi2 = 0; dgi2 < stats.dayOfWeek.length; dgi2++) {
-                        var dg = stats.dayOfWeek[dgi2];
-                        var isTopDay = dg.count === maxDayCount;
-                        html += '<div class="day-cell' + (isTopDay ? ' top-day' : '') + '">' +
-                            '<div class="day-name">' + dg.name.slice(0, 3) + '</div>' +
-                            '<div class="day-count">' + dg.count + '</div>' +
-                            '</div>';
-                    }
-                    html += '</div></div>';
-                }
-            }
-
             /* ========== DÉCLENCHEURS ========== */
-            html += renderToggleSection('triggers', 'Déclencheurs', stats.triggerStats, viewModes.triggers);
-
-            /* ========== BESOINS ========== */
-            html += renderToggleSection('besoins', 'Besoins exprimés', stats.besoinCounts, viewModes.besoins);
-
-            /* ========== ÉTATS ========== */
-            if (stats.etatCounts.length) {
-                html += '<div class="section-tag">États ressentis</div>';
-                html += '<div class="stat-card">';
-                var maxEtat = stats.etatCounts[0].count;
-                var topEtats = stats.etatCounts.slice(0, 5);
-                for (var ei = 0; ei < topEtats.length; ei++) {
-                    var et = topEtats[ei];
-                    var eAvgI = stats.avgIntensityByEtat[et.name];
-                    html += '<div class="rank-item"><div class="rank-header">' +
-                        '<div class="rank-name">' + et.name + '</div>' +
-                        '<div class="rank-meta">' + et.count + '×' +
-                        (eAvgI !== null ? ' · ' + eAvgI + '/10' : '') +
-                        '</div></div>' +
-                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct(et.count, maxEtat) + '%"></div></div></div>';
-                }
-                if (stats.etatCounts.length > 5) {
-                    html += '<div class="no-data">+ ' + (stats.etatCounts.length - 5) + ' autres</div>';
-                }
-                html += '</div>';
-            }
-
-            /* ========== CAPACITÉS ========== */
-            if (stats.capImpCounts.length || stats.capDifCounts.length) {
-                html += '<div class="section-tag">Capacités impactées</div>';
-                html += '<div class="stat-card">';
-                if (stats.capImpCounts.length) {
-                    html += '<div class="cap-category">Impossible</div>';
-                    var topImp = stats.capImpCounts.slice(0, 5);
-                    for (var ci = 0; ci < topImp.length; ci++) {
-                        var cap = topImp[ci];
-                        var cType = stats.capaciteByType[cap.name];
-                        html += '<div class="rank-item"><div class="rank-header">' +
-                            '<div class="rank-name">' + cap.name + '</div>' +
-                            '<div class="rank-meta">' + cap.count + '×' +
-                            (cType ? ' · ' + cType.meltdown + '% melt.' : '') +
-                            '</div></div></div>';
-                    }
-                }
-                if (stats.capDifCounts.length) {
-                    html += '<div class="cap-category cap-sep">Souvent difficile</div>';
-                    var topDif = stats.capDifCounts.slice(0, 5);
-                    for (var cdi = 0; cdi < topDif.length; cdi++) {
-                        var capD = topDif[cdi];
-                        html += '<div class="rank-item"><div class="rank-header">' +
-                            '<div class="rank-name">' + capD.name + '</div>' +
-                            '<div class="rank-meta">' + capD.count + '×</div></div></div>';
-                    }
-                }
-                html += '</div>';
-            }
-
-            /* ========== INSIGHTS ========== */
-            var insightsHtml = buildInsights(stats, days, from, to);
-            if (insightsHtml) {
-                html += '<div class="section-tag">À retenir</div>';
-                html += insightsHtml;
-            }
-
-
-
+            html += renderTriggersSection(stats);
 
             main.innerHTML = html;
         }
@@ -2418,7 +2341,7 @@
             if (stats.avgChargeMentale !== null) text += 'Charge mentale moy. : ' + stats.avgChargeMentale + '/10\n';
             if (stats.avgChargeSociale !== null) text += 'Charge sociale moy. : ' + stats.avgChargeSociale + '/10\n';
             var last = sinceLastCrisis();
-            if (last) text += 'Dernière crise : ' + last + '\n';
+            if (last) text += 'Dernière crise : ' + last.text + ' (' + last.date + ')\n';
             if (stats.triggerStats.length) {
                 text += '\nDéclencheurs :\n';
                 var top5t = stats.triggerStats.slice(0, 5);
@@ -2623,6 +2546,117 @@
             }
         }
 
+        /* ---------- DÉCLENCHEURS — NOUVELLE SECTION ---------- */
+
+        function renderTriggersSection(stats) {
+            var MEDALS = ['🥇', '🥈', '🥉'];
+            var html = '<div class="section-tag">Déclencheurs</div>';
+
+            if (!stats.triggerStats.length) {
+                html += '<div class="stat-card" style="padding:12px"><div class="no-data">Aucune donnée</div></div>';
+                return html;
+            }
+
+            /* Podium catégories */
+            var catFreq = {};
+            for (var i = 0; i < stats.triggerStats.length; i++) {
+                var tname = stats.triggerStats[i].name;
+                var cat = tname.indexOf(' — ') !== -1 ? tname.split(' — ')[0] : 'Divers';
+                catFreq[cat] = (catFreq[cat] || 0) + stats.triggerStats[i].count;
+            }
+            var catArr = [];
+            for (var k in catFreq) catArr.push({ name: k, count: catFreq[k] });
+            catArr.sort(function(a, b) { return b.count - a.count; });
+            var topCats = catArr.slice(0, 3);
+
+            html += '<div class="stat-card" style="padding:12px 12px 8px">';
+            html += '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--dark);opacity:0.45;margin-bottom:10px">Catégories</div>';
+
+            if (topCats.length) {
+                var maxCat = topCats[0].count;
+                html += '<div class="rank-list">';
+                for (var ci = 0; ci < topCats.length; ci++) {
+                    var bp = Math.round((topCats[ci].count / maxCat) * 100);
+                    html += '<div class="rank-item">' +
+                        '<div class="rank-number" style="background:none;width:24px;height:24px;font-size:18px">' + MEDALS[ci] + '</div>' +
+                        '<div class="rank-bar-wrap">' +
+                        '<div class="rank-header"><div class="rank-name">' + topCats[ci].name + '</div>' +
+                        '<div class="rank-meta">' + topCats[ci].count + '×</div></div>' +
+                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + bp + '%"></div></div>' +
+                        '</div></div>';
+                }
+                html += '</div>';
+            }
+
+            /* Séparateur + liste avec toggle */
+            html += '<div style="border-top:1px solid rgba(46,58,89,0.1);margin:10px -12px 10px;"></div>';
+            var isFreq = viewModes.triggers !== 'intensity';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+                '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--dark);opacity:0.45">Déclencheurs</div>' +
+                '<div class="view-toggle">' +
+                '<button class="view-toggle-btn ' + (isFreq ? 'active' : '') + '" onclick="setView(\'triggers\', \'freq\')">Fréquence</button>' +
+                '<button class="view-toggle-btn ' + (!isFreq ? 'active' : '') + '" onclick="setView(\'triggers\', \'intensity\')">Intensité</button>' +
+                '</div></div>';
+
+            var sorted = stats.triggerStats.slice();
+            if (!isFreq) {
+                sorted = sorted.filter(function(t) { return t.avgIntensity !== null; });
+                sorted.sort(function(a, b) { return b.avgIntensity - a.avgIntensity; });
+            }
+
+            var top3 = sorted.slice(0, 3);
+            var rest = sorted.slice(3);
+            var maxVal = isFreq
+                ? (top3.length ? top3[0].count : 1)
+                : (top3.length ? top3[0].avgIntensity : 10);
+
+            html += '<div class="rank-list">';
+            for (var ti = 0; ti < top3.length; ti++) {
+                var t = top3[ti];
+                var val = isFreq ? t.count : t.avgIntensity;
+                var bpct = Math.round((val / maxVal) * 100);
+                var meta = isFreq
+                    ? (t.count + '×' + (t.avgIntensity != null ? ' · ' + t.avgIntensity + '/10' : ''))
+                    : (t.avgIntensity + '/10 · ' + t.count + '×');
+                html += '<div class="rank-item">' +
+                    '<div class="rank-number">' + (ti + 1) + '</div>' +
+                    '<div class="rank-bar-wrap">' +
+                    '<div class="rank-header"><div class="rank-name">' + t.name + '</div>' +
+                    '<div class="rank-meta">' + meta + '</div></div>' +
+                    '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + bpct + '%"></div></div>' +
+                    '</div></div>';
+            }
+            html += '</div>';
+
+            if (rest.length > 0) {
+                var maxAll = isFreq ? sorted[0].count : sorted[0].avgIntensity;
+                var accId = 'acc_triggers';
+                html += '<button class="accordion-toggle" onclick="toggleAccordion(\'' + accId + '\', this)">' +
+                    '<span>Voir les ' + rest.length + ' autre' + (rest.length > 1 ? 's' : '') + '</span>' +
+                    '<span id="arr_' + accId + '">▾</span></button>';
+                html += '<div class="accordion-body" id="' + accId + '"><div class="all-rank-list">';
+                for (var ri = 0; ri < rest.length; ri++) {
+                    var rt = rest[ri];
+                    var rv = isFreq ? rt.count : rt.avgIntensity;
+                    var rbp = Math.round((rv / maxAll) * 100);
+                    var rm = isFreq
+                        ? (rt.count + '×' + (rt.avgIntensity != null ? ' · ' + rt.avgIntensity + '/10' : ''))
+                        : (rt.avgIntensity + '/10 · ' + rt.count + '×');
+                    html += '<div class="rank-item">' +
+                        '<div class="rank-number secondary">·</div>' +
+                        '<div class="rank-bar-wrap">' +
+                        '<div class="rank-header"><div class="rank-name">' + rt.name + '</div>' +
+                        '<div class="rank-meta">' + rm + '</div></div>' +
+                        '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + rbp + '%"></div></div>' +
+                        '</div></div>';
+                }
+                html += '</div></div>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
         function matchesFilters(entry) {
             if (activeFilters.contexte.length && activeFilters.contexte.indexOf(entry.profil || 'commun') === -1) return false;
             if (activeFilters.origine.length && activeFilters.origine.indexOf(entry.typeCrise || '') === -1) return false;
@@ -2709,7 +2743,7 @@
                 var pctVar = Math.round(((stats.total - stats.prev.count) / stats.prev.count) * 100);
                 if (Math.abs(pctVar) >= 20) {
                     var dir = pctVar > 0 ? 'augmenté' : 'diminué';
-                    insights.push({ priority: 1, icon: pctVar > 0 ? '↑' : '↓',
+                    insights.push({ priority: 1, icon: pctVar > 0 ? '⬆️' : '⬇️',
                         text: 'Le nombre de crises a <strong>' + dir + ' de ' + Math.abs(pctVar) + '%</strong> par rapport à la période précédente.' });
                 }
             }

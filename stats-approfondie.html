@@ -257,6 +257,28 @@
             opacity: 1;
             border-bottom-color: var(--accent);
         }
+
+        /* ---------- GRAPHIQUES SVG ---------- */
+
+        .chart-container { background: var(--light); border-radius: 14px; padding: 14px; overflow: hidden; }
+        .chart-container svg { width: 100%; display: block; }
+
+        /* ---------- GRILLE JOURS ---------- */
+
+        .day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: rgba(46, 58, 89, 0.08); overflow: hidden; }
+        .day-cell { background: var(--light); display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 2px; }
+        .day-cell.top-day { background: var(--dark); }
+        .day-name { font-size: 12px; font-weight: 600; color: var(--dark); opacity: 0.7; }
+        .day-count { font-size: 20px; font-weight: 700; color: var(--dark); }
+        .day-cell.top-day .day-name, .day-cell.top-day .day-count { color: var(--light); opacity: 1; }
+
+        /* ---------- GRILLE MOMENTS ---------- */
+
+        .hour-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
+        .hour-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border-radius: 8px; background: rgba(46, 58, 89, 0.06); }
+        .hour-name { font-size: 12px; font-weight: 600; color: var(--dark); opacity: 0.7; }
+        .hour-range { font-size: 10px; color: var(--dark); opacity: 0.4; }
+        .hour-count { font-size: 20px; font-weight: 700; color: var(--dark); }
     </style>
 </head>
 <body>
@@ -327,8 +349,8 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">↑ Partager</button>
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">⬇ Exporter</button>
+        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">✉️ Partager</button>
+        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">📥 Exporter</button>
     </div>
 
     <!-- Modale export/partage -->
@@ -512,6 +534,24 @@
                 for (var lb = 0; lb < 3; lb++) thresholds[field][lb] = { label: ['0–3','4–6','7–10'][lb], avgIntensity: avgArr(buckets[lb]), count: buckets[lb].length };
             }
 
+            var DAY_NAMES_A = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+            var dayFreq = [0, 0, 0, 0, 0, 0, 0];
+            var hourSlots = [
+                { name: 'Nuit', range: '0–6h', count: 0 },
+                { name: 'Matin', range: '6–12h', count: 0 },
+                { name: 'Après-m.', range: '12–18h', count: 0 },
+                { name: 'Soir', range: '18–24h', count: 0 }
+            ];
+            var timelineEntries = [];
+            for (var he = 0; he < entries.length; he++) {
+                var hd = new Date(entries[he].horodatage);
+                var hh = hd.getHours();
+                hourSlots[hh < 6 ? 0 : hh < 12 ? 1 : hh < 18 ? 2 : 3].count++;
+                dayFreq[hd.getDay()]++;
+                timelineEntries.push({ date: entries[he].horodatage, intensite: parseFloat(entries[he].intensite) || null });
+            }
+            var dayOfWeek = [1, 2, 3, 4, 5, 6, 0].map(function(i) { return { name: DAY_NAMES_A[i], count: dayFreq[i] }; });
+
             return {
                 total: entries.length, entries: entries,
                 avgIntensity: avgIntensity,
@@ -525,7 +565,8 @@
                 avgIntensityByContexte: avgIntensityByContexte,
                 percentTypeByContexte: percentTypeByContexte,
                 capImpCounts: countFreq(capImpossible), capDifCounts: countFreq(capDifficile),
-                thresholds: thresholds
+                thresholds: thresholds,
+                dayOfWeek: dayOfWeek, hourSlots: hourSlots, timelineEntries: timelineEntries
             };
         }
 
@@ -669,6 +710,116 @@
                 '</div></div>';
         }
 
+        /* ---------- GRAPHIQUE EN BARRES ---------- */
+
+        function buildBarChartSVG(entries, days, from, to) {
+            var MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jui','Jul','Aoû','Sep','Oct','Nov','Déc'];
+            var DAY_SHORT = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+            var bucketType, startDate, endDate;
+            var now = new Date();
+            if (days === 7) {
+                bucketType = 'daily';
+                endDate = new Date(now); endDate.setHours(23,59,59,999);
+                startDate = new Date(now); startDate.setDate(now.getDate() - 6); startDate.setHours(0,0,0,0);
+            } else if (days === 365) {
+                bucketType = 'monthly';
+                endDate = new Date(now); endDate.setHours(23,59,59,999);
+                startDate = new Date(now); startDate.setDate(now.getDate() - 364); startDate.setHours(0,0,0,0);
+            } else {
+                bucketType = 'weekly';
+                if (days === 0 && from && to) {
+                    startDate = new Date(from); startDate.setHours(0,0,0,0);
+                    endDate = new Date(to); endDate.setHours(23,59,59,999);
+                    var diffD = (endDate - startDate) / 86400000;
+                    if (diffD <= 14) bucketType = 'daily';
+                    else if (diffD > 200) bucketType = 'monthly';
+                } else {
+                    endDate = new Date(now); endDate.setHours(23,59,59,999);
+                    startDate = new Date(now); startDate.setDate(now.getDate() - 29); startDate.setHours(0,0,0,0);
+                }
+            }
+            var buckets = {}, bucketOrder = [], bucketLabels = {};
+            if (bucketType === 'daily') {
+                var dc = new Date(startDate);
+                while (dc <= endDate) {
+                    var dk = dc.toISOString().split('T')[0];
+                    buckets[dk] = { count: 0, intensities: [] }; bucketOrder.push(dk);
+                    bucketLabels[dk] = DAY_SHORT[dc.getDay()] + ' ' + dc.getDate();
+                    dc.setDate(dc.getDate() + 1);
+                }
+            } else if (bucketType === 'weekly') {
+                var ws = new Date(startDate), wi = 0;
+                while (ws <= endDate) {
+                    var wk = 'w' + wi;
+                    buckets[wk] = { count: 0, intensities: [], start: new Date(ws) }; bucketOrder.push(wk);
+                    bucketLabels[wk] = ws.getDate() + '/' + (ws.getMonth() + 1);
+                    ws.setDate(ws.getDate() + 7); wi++;
+                }
+            } else {
+                var ms = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+                var me = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+                var mc = new Date(ms);
+                while (mc <= me) {
+                    var mk = mc.getFullYear() + '-' + mc.getMonth();
+                    buckets[mk] = { count: 0, intensities: [] }; bucketOrder.push(mk);
+                    bucketLabels[mk] = MONTHS[mc.getMonth()];
+                    mc.setMonth(mc.getMonth() + 1);
+                }
+            }
+            for (var i = 0; i < entries.length; i++) {
+                var ed = new Date(entries[i].date); var bk = null;
+                if (bucketType === 'daily') { bk = ed.toISOString().split('T')[0]; }
+                else if (bucketType === 'weekly') {
+                    for (var bi = 0; bi < bucketOrder.length; bi++) {
+                        var bs = buckets[bucketOrder[bi]].start;
+                        var be = new Date(bs); be.setDate(bs.getDate() + 6);
+                        if (ed >= bs && ed <= be) { bk = bucketOrder[bi]; break; }
+                    }
+                } else { bk = ed.getFullYear() + '-' + ed.getMonth(); }
+                if (bk && buckets[bk]) {
+                    buckets[bk].count++;
+                    if (entries[i].intensite !== null) buckets[bk].intensities.push(entries[i].intensite);
+                }
+            }
+            var maxCount = 0;
+            for (var bi2 = 0; bi2 < bucketOrder.length; bi2++) {
+                if (buckets[bucketOrder[bi2]].count > maxCount) maxCount = buckets[bucketOrder[bi2]].count;
+            }
+            if (!bucketOrder.length || maxCount === 0) {
+                return '<div class="chart-container" style="display:flex;align-items:center;justify-content:center;min-height:80px">' +
+                    '<div style="text-align:center;opacity:0.4;color:var(--dark);font-size:14px">Aucune crise sur cette période</div></div>';
+            }
+            var n = bucketOrder.length;
+            var W = 320, H = 190, padL = 26, padR = 6, padT = 22, padB = 28;
+            var chartW = W - padL - padR, chartH = H - padT - padB;
+            var spacing = chartW / n, barW = Math.max(3, Math.min(22, spacing - 2));
+            var barsHtml = '', labelsHtml = '', yAxisHtml = '';
+            var ySteps = Math.min(maxCount, 4), ySeenVals = {};
+            for (var yl = 0; yl <= ySteps; yl++) {
+                var yy = padT + (yl / ySteps) * chartH;
+                var yv = Math.round(maxCount * (1 - yl / ySteps));
+                yAxisHtml += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '" stroke="#2E3A59" stroke-opacity="0.07"/>';
+                if (yv > 0 && !ySeenVals[yv]) { ySeenVals[yv] = true; yAxisHtml += '<text x="' + (padL - 4) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="9" fill="#2E3A59" opacity="0.4">' + yv + '</text>'; }
+            }
+            var showEvery = n > 20 ? 4 : n > 10 ? 2 : 1;
+            for (var bi3 = 0; bi3 < bucketOrder.length; bi3++) {
+                var bKey = bucketOrder[bi3], bd = buckets[bKey];
+                var cx = padL + bi3 * spacing + spacing / 2;
+                var bh = maxCount > 0 ? (bd.count / maxCount) * chartH : 0;
+                var by = padT + chartH - bh;
+                var ai = bd.intensities.length ? avgArr(bd.intensities) : null;
+                if (bd.count > 0) {
+                    barsHtml += '<rect x="' + (cx - barW / 2) + '" y="' + by + '" width="' + barW + '" height="' + bh + '" rx="2" fill="#F7B89C"/>';
+                    barsHtml += '<text x="' + cx + '" y="' + (by - 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#F5E4CC">' + bd.count + '</text>';
+                    if (ai !== null && bh > 16) barsHtml += '<text x="' + cx + '" y="' + (by + bh / 2 + 4) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.7">' + ai + '</text>';
+                }
+                if (bi3 % showEvery === 0) labelsHtml += '<text x="' + cx + '" y="' + (H - 3) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.45">' + bucketLabels[bKey] + '</text>';
+            }
+            var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' + yAxisHtml + barsHtml + labelsHtml + '</svg>';
+            return '<div class="chart-container">' + svg +
+                '<div style="font-size:11px;color:var(--dark);opacity:0.4;text-align:center;padding-top:4px">Nombre de crises · intensité moy. à l\'intérieur</div></div>';
+        }
+
         /* ---------- RENDU PRINCIPAL ---------- */
 
         function render(days, from, to) {
@@ -689,6 +840,53 @@
             }
 
             var html = '';
+            var isLongPeriod = days >= 30 || (days === 0 && customFrom && customTo &&
+                (new Date(customTo) - new Date(customFrom)) / 86400000 >= 30);
+
+            /* ========== ÉVOLUTION ========== */
+            var barChartHtml = buildBarChartSVG(stats.timelineEntries, days, from, to);
+            if (barChartHtml) {
+                html += '<div class="section-tag">Évolution</div>';
+                html += barChartHtml;
+            }
+
+            /* ========== MOMENTS DE LA JOURNÉE ========== */
+            var hasHourData = stats.hourSlots && stats.hourSlots.some(function(s) { return s.count > 0; });
+            if (hasHourData) {
+                html += '<div class="section-tag">Moments de la journée</div>';
+                html += '<div class="stat-card" style="padding:14px">';
+                html += '<div class="hour-grid">';
+                for (var hsi = 0; hsi < stats.hourSlots.length; hsi++) {
+                    var hs = stats.hourSlots[hsi];
+                    html += '<div class="hour-cell">' +
+                        '<div class="hour-name">' + hs.name + '</div>' +
+                        '<div class="hour-range">' + hs.range + '</div>' +
+                        '<div class="hour-count">' + hs.count + '</div>' +
+                        '</div>';
+                }
+                html += '</div></div>';
+            }
+
+            /* ========== JOURS DE LA SEMAINE ========== */
+            if (stats.dayOfWeek && stats.dayOfWeek.length) {
+                var maxDayCount = 0;
+                for (var dgi = 0; dgi < stats.dayOfWeek.length; dgi++) {
+                    if (stats.dayOfWeek[dgi].count > maxDayCount) maxDayCount = stats.dayOfWeek[dgi].count;
+                }
+                if (maxDayCount > 0) {
+                    html += '<div class="section-tag">Jours de la semaine</div>';
+                    html += '<div class="stat-card" style="padding:0;overflow:hidden">';
+                    html += '<div class="day-grid">';
+                    for (var dgi2 = 0; dgi2 < stats.dayOfWeek.length; dgi2++) {
+                        var dg = stats.dayOfWeek[dgi2];
+                        html += '<div class="day-cell' + (dg.count === maxDayCount ? ' top-day' : '') + '">' +
+                            '<div class="day-name">' + dg.name.slice(0, 3) + '</div>' +
+                            '<div class="day-count">' + dg.count + '</div>' +
+                            '</div>';
+                    }
+                    html += '</div></div>';
+                }
+            }
 
             /* ========== CONTEXTES ========== */
             if (stats.profileCounts.length > 1) {
