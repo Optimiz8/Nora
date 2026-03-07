@@ -1,712 +1,779 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="only light">
-    <meta name="theme-color" content="#384657">
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" href="assets/images/favicone.png" type="image/png">
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
-<link rel="stylesheet" href="nora-common.css">
-<script src="nora-data.js"></script>
-<title>Carte d'urgence numérique</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="only light" />
+    <meta name="theme-color" content="#384657" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="assets/images/favicone.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/images/logo.png" />
+    <link rel="stylesheet" href="nora-common.css" />
+    <script src="nora-data.js"></script>
+    <title>Carte d'urgence numérique</title>
 
-<style>
-body {
-    padding: 12px;
-    padding-bottom: 80px;
-}
+    <style>
+      body {
+        padding: 12px;
+        padding-bottom: 80px;
+      }
 
-/* HEADER MINIMAL : juste la croix en haut à droite */
-.close-btn {
-    position: fixed;
-    top: 8px;
-    right: 12px;
-    background: rgba(0,0,0,0.3);
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--light);
-    padding: 2px 8px;
-    line-height: 1;
-    border-radius: 50%;
-    z-index: 10;
-}
+      /* HEADER MINIMAL : juste la croix en haut à droite */
+      .close-btn {
+        position: fixed;
+        top: 8px;
+        right: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--light);
+        padding: 2px 8px;
+        line-height: 1;
+        border-radius: 50%;
+        z-index: 10;
+      }
 
-/* TITRE PRINCIPAL - ENCADRÉ */
-.main-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--accent);
-    text-align: center;
-    margin-bottom: 14px;
-    line-height: 1.1;
-    padding: 12px 16px;
-    border: 3px solid var(--accent);
-    border-radius: 16px;
-    background: rgba(247,184,156,0.08);
-}
+      /* TITRE PRINCIPAL - ENCADRÉ */
+      .main-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--accent);
+        text-align: center;
+        margin-bottom: 14px;
+        line-height: 1.1;
+        padding: 12px 16px;
+        border: 3px solid var(--accent);
+        border-radius: 16px;
+        background: rgba(247, 184, 156, 0.08);
+      }
 
-/* TOUT LE TEXTE EN 17px */
-.identity,
-.list,
-.text {
-    font-size: 17px;
-    line-height: 1.4;
-}
+      /* TOUT LE TEXTE EN 17px */
+      .identity,
+      .list,
+      .text {
+        font-size: 17px;
+        line-height: 1.4;
+      }
 
-/* IDENTITÉ */
-.identity {
-    margin-bottom: 16px;
-}
+      /* IDENTITÉ */
+      .identity {
+        margin-bottom: 16px;
+      }
 
-.identity strong {
-    color: var(--accent);
-}
+      .identity strong {
+        color: var(--accent);
+      }
 
-/* PRÉSENTATION PERSONNALISÉE */
-.presentation {
-    font-size: 16px;
-    line-height: 1.5;
-    margin-bottom: 16px;
-    white-space: pre-line;
-}
+      /* PRÉSENTATION PERSONNALISÉE */
+      .presentation {
+        font-size: 16px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+        white-space: pre-line;
+      }
 
-/* SECTIONS */
-.section {
-    margin-bottom: 14px;
-}
+      /* SECTIONS */
+      .section {
+        margin-bottom: 14px;
+      }
 
-/* SOUS-TITRES */
-.section-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
+      /* SOUS-TITRES */
+      .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
 
-/* LISTE */
-.list-item {
-    margin-bottom: 6px;
-    padding-left: 20px;
-    position: relative;
-}
+      /* LISTE */
+      .list-item {
+        margin-bottom: 6px;
+        padding-left: 20px;
+        position: relative;
+      }
 
-.list-item::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-weight: 700;
-}
+      .list-item::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 700;
+      }
 
-.list-item strong {
-    font-weight: 700;
-}
+      .list-item strong {
+        font-weight: 700;
+      }
 
-/* TEXTE NORMAL */
-.text {
-    margin-bottom: 6px;
-}
+      /* TEXTE NORMAL */
+      .text {
+        margin-bottom: 6px;
+      }
 
-/* CONTACT */
-.contact-subtitle {
-    font-size: 17px;
-    font-style: italic;
-    margin-bottom: 6px;
-    opacity: 0.9;
-}
+      /* CONTACT */
+      .contact-subtitle {
+        font-size: 17px;
+        font-style: italic;
+        margin-bottom: 6px;
+        opacity: 0.9;
+      }
 
-.contact-entry {
-    margin-bottom: 10px;
-}
+      .contact-entry {
+        margin-bottom: 10px;
+      }
 
-.contact-name {
-    font-size: 17px;
-    font-weight: 700;
-    margin-bottom: 4px;
-}
+      .contact-name {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
 
-.contact-phone {
-    font-size: 17px;
-    font-weight: 700;
-}
+      .contact-phone {
+        font-size: 17px;
+        font-weight: 700;
+      }
 
-.contact-phone a {
-    color: var(--accent);
-    text-decoration: underline;
-    font-weight: 700;
-}
+      .contact-phone a {
+        color: var(--accent);
+        text-decoration: underline;
+        font-weight: 700;
+      }
 
-.contact-remarque {
-    font-size: 15px;
-    opacity: 0.75;
-    margin-top: 2px;
-}
+      .contact-remarque {
+        font-size: 15px;
+        opacity: 0.75;
+        margin-top: 2px;
+      }
 
-.contact-remarque .remark-text {
-    font-style: italic;
-}
+      .contact-remarque .remark-text {
+        font-style: italic;
+      }
 
-.no-contacts {
-    font-size: 15px;
-    opacity: 0.7;
-    font-style: italic;
-}
+      .no-contacts {
+        font-size: 15px;
+        opacity: 0.7;
+        font-style: italic;
+      }
 
-/* BOUTON INFOS MÉDICALES */
-.medical-btn {
-    background: rgba(245,228,204,0.12);
-    border: 1px solid rgba(247,184,156,0.4);
-    color: var(--light);
-    border-radius: 12px;
-    padding: 12px 16px;
-    cursor: pointer;
-    margin: 14px auto 0;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 90%;
-    max-width: 380px;
-}
+      /* BOUTON INFOS MÉDICALES */
+      .medical-btn {
+        background: rgba(245, 228, 204, 0.12);
+        border: 1px solid rgba(247, 184, 156, 0.4);
+        color: var(--light);
+        border-radius: 12px;
+        padding: 12px 16px;
+        cursor: pointer;
+        margin: 14px auto 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 90%;
+        max-width: 380px;
+      }
 
-.medical-btn .emoji {
-    font-size: 28px;
-    flex-shrink: 0;
-}
+      .medical-btn .emoji {
+        font-size: 28px;
+        flex-shrink: 0;
+      }
 
-.medical-btn .text-content {
-    flex: 1;
-    text-align: left;
-}
+      .medical-btn .text-content {
+        flex: 1;
+        text-align: left;
+      }
 
-.medical-btn .main-text {
-    display: block;
-    text-transform: uppercase;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.2;
-}
+      .medical-btn .main-text {
+        display: block;
+        text-transform: uppercase;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.2;
+      }
 
-.medical-btn .sub-text {
-    display: block;
-    font-size: 16px;
-    font-weight: 400;
-    opacity: 0.8;
-    margin-top: 2px;
-}
+      .medical-btn .sub-text {
+        display: block;
+        font-size: 16px;
+        font-weight: 400;
+        opacity: 0.8;
+        margin-top: 2px;
+      }
 
-.medical-btn:active {
-    transform: scale(0.98);
-}
+      .medical-btn:active {
+        transform: scale(0.98);
+      }
 
-/* MESSAGE FINAL */
-.thank-you {
-    text-align: center;
-    font-size: 17px;
-    font-weight: 500;
-    margin-top: 12px;
-    margin-bottom: 16px;
-}
+      /* MESSAGE FINAL */
+      .thank-you {
+        text-align: center;
+        font-size: 17px;
+        font-weight: 500;
+        margin-top: 12px;
+        margin-bottom: 16px;
+      }
 
-/* FOOTER FIXE avec QR Code */
-.carte-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--dark);
-    padding: 12px 20px;
-    display: flex;
-    justify-content: center;
-    z-index: 10;
-    border-top: 1px solid rgba(245, 228, 204, 0.15);
-}
+      /* FOOTER FIXE avec QR Code */
+      .carte-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--dark);
+        padding: 12px 20px;
+        display: flex;
+        justify-content: center;
+        z-index: 10;
+        border-top: 1px solid rgba(245, 228, 204, 0.15);
+      }
 
-.qr-btn {
-    background: var(--accent);
-    color: var(--dark);
-    border: none;
-    border-radius: 12px;
-    padding: 10px 24px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-}
+      .qr-btn {
+        background: var(--accent);
+        color: var(--dark);
+        border: none;
+        border-radius: 12px;
+        padding: 10px 24px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+      }
 
-.qr-btn:active {
-    transform: scale(0.97);
-}
+      .qr-btn:active {
+        transform: scale(0.97);
+      }
 
-/* MODALES */
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    overflow-y: auto;
-    padding: 20px;
-}
+      /* MODALES */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+        padding: 20px;
+      }
 
-.modal.visible {
-    display: flex;
-}
+      .modal.visible {
+        display: flex;
+      }
 
-.modal-content {
-    background: var(--bg);
-    border-radius: 24px;
-    padding: 24px 20px;
-    max-width: 500px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-}
+      .modal-content {
+        background: var(--bg);
+        border-radius: 24px;
+        padding: 24px 20px;
+        max-width: 500px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
 
-.modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    font-size: 28px;
-    cursor: pointer;
-    color: var(--light);
-    background: none;
-    border: none;
-    line-height: 1;
-}
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--light);
+        background: none;
+        border: none;
+        line-height: 1;
+      }
 
-.modal-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 20px;
-    text-align: center;
-    padding-right: 30px;
-}
+      .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 20px;
+        text-align: center;
+        padding-right: 30px;
+      }
 
-/* INFOS MÉDICALES (lecture seule) */
-.medical-info-row {
-    margin-bottom: 14px;
-}
+      /* INFOS MÉDICALES (lecture seule) */
+      .medical-info-row {
+        margin-bottom: 14px;
+      }
 
-.medical-info-label {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 4px;
-}
+      .medical-info-label {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 4px;
+      }
 
-.medical-info-value {
-    font-size: 15px;
-    color: var(--light);
-    line-height: 1.4;
-    white-space: pre-line;
-}
+      .medical-info-value {
+        font-size: 15px;
+        color: var(--light);
+        line-height: 1.4;
+        white-space: pre-line;
+      }
 
-.medical-empty {
-    text-align: center;
-    font-size: 15px;
-    color: rgba(245,228,204,0.6);
-    padding: 20px;
-    line-height: 1.5;
-}
+      .medical-empty {
+        text-align: center;
+        font-size: 15px;
+        color: rgba(245, 228, 204, 0.6);
+        padding: 20px;
+        line-height: 1.5;
+      }
 
-/* QR CODE MODAL */
-#qrcode {
-    background: white;
-    padding: 16px;
-    border-radius: 12px;
-    margin: 0 auto 24px;
-    display: inline-block;
-}
+      /* QR CODE MODAL */
+      #qrcode {
+        background: white;
+        padding: 16px;
+        border-radius: 12px;
+        margin: 0 auto 24px;
+        display: inline-block;
+      }
 
-.qr-close-btn {
-    background: var(--accent);
-    color: var(--dark);
-    border: none;
-    border-radius: 12px;
-    padding: 12px 32px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-}
-</style>
-</head>
+      .qr-close-btn {
+        background: var(--accent);
+        color: var(--dark);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 32px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <button class="close-btn" onclick="closeCarte()" aria-label="Fermer">
+      ×
+    </button>
 
-<button class="close-btn" onclick="closeCarte()" aria-label="Fermer">×</button>
+    <div class="content">
+      <h1 class="main-title">URGENCE : CRISE AUTISTIQUE</h1>
 
-<div class="content">
-    <h1 class="main-title">URGENCE : CRISE AUTISTIQUE</h1>
-
-    <div class="identity" id="identityBlock">
+      <div class="identity" id="identityBlock">
         <!-- Généré dynamiquement -->
-    </div>
+      </div>
 
-    <div id="presentationBlock" style="display:none;">
+      <div id="presentationBlock" style="display: none">
         <!-- Présentation personnalisée si configurée -->
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
         <div class="section-title">Consignes</div>
         <div class="list" id="consignesBlock">
-            <!-- Généré dynamiquement -->
+          <!-- Généré dynamiquement -->
         </div>
-    </div>
+      </div>
 
-    <div class="section">
+      <div class="section">
         <div class="section-title">Informations</div>
         <div id="informationsBlock">
-            <!-- Généré dynamiquement -->
+          <!-- Généré dynamiquement -->
         </div>
-    </div>
+      </div>
 
-    <div class="section" id="remarquesSection" style="display:none;">
+      <div class="section" id="remarquesSection" style="display: none">
         <div class="section-title">Remarques</div>
         <div class="text" id="remarquesBlock"></div>
-    </div>
+      </div>
 
-    <div class="section" id="contactSection">
+      <div class="section" id="contactSection">
         <div class="section-title" id="contactTitle">Contact(s)</div>
-        <div class="contact-subtitle" id="contactSubtitle" style="display:none;"></div>
+        <div
+          class="contact-subtitle"
+          id="contactSubtitle"
+          style="display: none"
+        ></div>
         <div id="contactsBlock">
-            <!-- Généré dynamiquement -->
+          <!-- Généré dynamiquement -->
         </div>
 
         <button class="medical-btn" id="medicalBtn" onclick="openMedical()">
-            <span class="emoji">🔍</span>
-            <div class="text-content">
-                <span class="main-text">Informations médicales</span>
-                <span class="sub-text">secours uniquement</span>
-            </div>
+          <span class="emoji">🔍</span>
+          <div class="text-content">
+            <span class="main-text">Informations médicales</span>
+            <span class="sub-text">secours uniquement</span>
+          </div>
         </button>
+      </div>
+
+      <div class="thank-you">Merci pour votre aide bienveillante 💙</div>
     </div>
 
-    <div class="thank-you">Merci pour votre aide bienveillante 💙</div>
-</div>
+    <!-- FOOTER FIXE : QR Code -->
+    <div class="carte-footer footer">
+      <button class="qr-btn" onclick="generateQR()">
+        📱 Partager via QR Code
+      </button>
+    </div>
 
-<!-- FOOTER FIXE : QR Code -->
-<div class="carte-footer footer">
-    <button class="qr-btn" onclick="generateQR()">📱 Partager via QR Code</button>
-</div>
-
-<!-- MODALE INFORMATIONS MÉDICALES (lecture seule) -->
-<div class="modal" id="medicalModal" role="dialog" aria-modal="true" aria-label="Informations médicales">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeMedical()" aria-label="Fermer">×</button>
-        <div class="modal-title">Informations médicales<br><small style="font-size:15px;font-weight:400;opacity:0.8;">(secours uniquement)</small></div>
-        <div id="medicalContent">
-            <!-- Généré dynamiquement -->
+    <!-- MODALE INFORMATIONS MÉDICALES (lecture seule) -->
+    <div
+      class="modal"
+      id="medicalModal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Informations médicales"
+    >
+      <div class="modal-content">
+        <button
+          class="modal-close"
+          onclick="closeMedical()"
+          aria-label="Fermer"
+        >
+          ×
+        </button>
+        <div class="modal-title">
+          Informations médicales<br /><small
+            style="font-size: 15px; font-weight: 400; opacity: 0.8"
+            >(secours uniquement)</small
+          >
         </div>
+        <div id="medicalContent">
+          <!-- Généré dynamiquement -->
+        </div>
+      </div>
     </div>
-</div>
 
-<!-- MODALE QR CODE -->
-<div class="modal" id="qrModal" role="dialog" aria-modal="true" aria-label="QR Code">
-    <div class="modal-content" style="text-align: center;">
-        <button class="modal-close" onclick="closeQR()" aria-label="Fermer">×</button>
+    <!-- MODALE QR CODE -->
+    <div
+      class="modal"
+      id="qrModal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="QR Code"
+    >
+      <div class="modal-content" style="text-align: center">
+        <button class="modal-close" onclick="closeQR()" aria-label="Fermer">
+          ×
+        </button>
         <div class="modal-title">Scannez ce QR Code</div>
         <div id="qrcode"></div>
         <button class="qr-close-btn" onclick="closeQR()">Fermer</button>
+      </div>
     </div>
-</div>
 
-<!-- Bibliothèque QR Code -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- Bibliothèque QR Code -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
-<script>
-let qrCodeInstance = null;
+    <script>
+      let qrCodeInstance = null;
 
-const DEFAULT_CONSIGNES = `NE PAS ME TOUCHER
+      const DEFAULT_CONSIGNES = `NE PAS ME TOUCHER
 METTEZ-MOI AU CALME (éteindre les lumières et réduire les bruits au maximum)
 NE PAS M'EMMENER AUX URGENCES (sauf blessure grave)
-Si agitée → endroit froid pour me calmer
-Si calme → me couvrir si possible
 Si je porte un casque/écouteurs → ne pas les retirer, ils m'aident
 Patienter (la crise peut durer de 30 min à plusieurs heures)`;
 
-const DEFAULT_INFORMATIONS = `Je ne suis pas dangereuse. Je peux me figer, pleurer, crier, faire des gestes involontaires.
+      const DEFAULT_INFORMATIONS = `Cette crise n'est pas un caprice, elle est involontaire. Durant celle-ci, je peux me figer, pleurer, crier, faire des gestes involontaires.
 Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.`;
 
-const DEFAULT_CONTACTS_NOTE = `Si il y a une urgence ou si je vous le demande, contacter :`;
+      const DEFAULT_CONTACTS_NOTE = `Si il y a une urgence ou si je vous le demande, contacter :`;
 
-window.addEventListener('DOMContentLoaded', () => {
-    loadIdentity();
-    loadPresentation();
-    loadConsignes();
-    loadInformations();
-    loadRemarques();
-    loadContacts();
-    loadMedicalData();
-});
+      window.addEventListener("DOMContentLoaded", () => {
+        loadIdentity();
+        loadPresentation();
+        loadConsignes();
+        loadInformations();
+        loadRemarques();
+        loadContacts();
+        loadMedicalData();
+      });
 
-function closeCarte() {
-    // Revenir à la page précédente (index, carte-config, ou autre)
-    if (history.length > 1) {
-        history.back();
-    } else {
-        location.href = 'index.html';
-    }
-}
-
-function loadConsignes() {
-    if (localStorage.getItem('carteShowConsignes') === 'false') {
-        document.getElementById('consignesBlock').parentElement.style.display = 'none';
-        return;
-    }
-    const texte = localStorage.getItem('carteConsignes') || DEFAULT_CONSIGNES;
-    const container = document.getElementById('consignesBlock');
-    const lines = texte.split('\n').filter(l => l.trim());
-
-    container.innerHTML = lines.map(line => {
-        const trimmed = line.trim();
-        // Séparer la partie principale de la parenthèse éventuelle
-        const match = trimmed.match(/^([^(]+?)(\s*\(.+\))?$/);
-        if (match) {
-            const mainPart = match[1].trim();
-            const parenthesis = match[2] ? match[2].trim() : '';
-            // Mettre en gras si la partie principale est en MAJUSCULES
-            const isUpperCase = mainPart === mainPart.toUpperCase() && /[A-ZÀ-Ú]/.test(mainPart);
-            if (isUpperCase) {
-                return `<div class="list-item"><strong>${mainPart}</strong>${parenthesis ? ' ' + parenthesis : ''}</div>`;
-            }
+      function closeCarte() {
+        // Revenir à la page précédente (index, carte-config, ou autre)
+        if (history.length > 1) {
+          history.back();
+        } else {
+          location.href = "index.html";
         }
-        return `<div class="list-item">${trimmed}</div>`;
-    }).join('');
-}
+      }
 
-function loadInformations() {
-    if (localStorage.getItem('carteShowInformations') === 'false') {
-        document.getElementById('informationsBlock').parentElement.style.display = 'none';
-        return;
-    }
-    const texte = localStorage.getItem('carteInformations') || DEFAULT_INFORMATIONS;
-    const container = document.getElementById('informationsBlock');
-    const lines = texte.split('\n').filter(l => l.trim());
-    container.innerHTML = lines.map(line => `<div class="text">${line.trim()}</div>`).join('');
-}
+      function loadConsignes() {
+        if (localStorage.getItem("carteShowConsignes") === "false") {
+          document.getElementById(
+            "consignesBlock",
+          ).parentElement.style.display = "none";
+          return;
+        }
+        const texte =
+          localStorage.getItem("carteConsignes") || DEFAULT_CONSIGNES;
+        const container = document.getElementById("consignesBlock");
+        const lines = texte.split("\n").filter((l) => l.trim());
 
-function loadRemarques() {
-    if (localStorage.getItem('carteShowRemarques') === 'false') return;
-    const texte = localStorage.getItem('carteRemarques') || '';
-    if (texte.trim()) {
-        document.getElementById('remarquesSection').style.display = 'block';
-        const container = document.getElementById('remarquesBlock');
-        container.style.whiteSpace = 'pre-line';
-        container.textContent = texte;
-    }
-}
+        container.innerHTML = lines
+          .map((line) => {
+            const trimmed = line.trim();
+            // Séparer la partie principale de la parenthèse éventuelle
+            const match = trimmed.match(/^([^(]+?)(\s*\(.+\))?$/);
+            if (match) {
+              const mainPart = match[1].trim();
+              const parenthesis = match[2] ? match[2].trim() : "";
+              // Mettre en gras si la partie principale est en MAJUSCULES
+              const isUpperCase =
+                mainPart === mainPart.toUpperCase() &&
+                /[A-ZÀ-Ú]/.test(mainPart);
+              if (isUpperCase) {
+                return `<div class="list-item"><strong>${mainPart}</strong>${parenthesis ? " " + parenthesis : ""}</div>`;
+              }
+            }
+            return `<div class="list-item">${trimmed}</div>`;
+          })
+          .join("");
+      }
 
-// Charger l'identité depuis localStorage
-function loadIdentity() {
-    const container = document.getElementById('identityBlock');
+      function loadInformations() {
+        if (localStorage.getItem("carteShowInformations") === "false") {
+          document.getElementById(
+            "informationsBlock",
+          ).parentElement.style.display = "none";
+          return;
+        }
+        const texte =
+          localStorage.getItem("carteInformations") || DEFAULT_INFORMATIONS;
+        const container = document.getElementById("informationsBlock");
+        const lines = texte.split("\n").filter((l) => l.trim());
+        container.innerHTML = lines
+          .map((line) => `<div class="text">${line.trim()}</div>`)
+          .join("");
+      }
 
-    if (localStorage.getItem('carteShowIdentity') === 'false') {
-        container.style.display = 'none';
-        return;
-    }
+      function loadRemarques() {
+        if (localStorage.getItem("carteShowRemarques") === "false") return;
+        const texte = localStorage.getItem("carteRemarques") || "";
+        if (texte.trim()) {
+          document.getElementById("remarquesSection").style.display = "block";
+          const container = document.getElementById("remarquesBlock");
+          container.style.whiteSpace = "pre-line";
+          container.textContent = texte;
+        }
+      }
 
-    const prenom = localStorage.getItem('userPrenom') || '';
-    const nom = localStorage.getItem('userNom') || '';
+      // Charger l'identité depuis localStorage
+      function loadIdentity() {
+        const container = document.getElementById("identityBlock");
 
-    if (prenom || nom) {
-        const fullName = [prenom, nom.toUpperCase()].filter(Boolean).join(' ');
-        container.innerHTML = `Je m'appelle <strong>${fullName}</strong>.`;
-    } else {
-        container.style.display = 'none';
-    }
-}
+        if (localStorage.getItem("carteShowIdentity") === "false") {
+          container.style.display = "none";
+          return;
+        }
 
-// Charger la présentation personnalisée
-function loadPresentation() {
-    if (localStorage.getItem('carteShowPresentation') === 'false') return;
-    const texte = localStorage.getItem('cartePresentation') || '';
-    const block = document.getElementById('presentationBlock');
-    if (texte.trim()) {
-        block.style.display = 'block';
-        block.className = 'presentation';
-        block.textContent = texte;
-    }
-}
+        const prenom = localStorage.getItem("userPrenom") || "";
+        const nom = localStorage.getItem("userNom") || "";
 
-// Sépare emojis (non italique) du texte (italique)
-function formatRemarque(text) {
-    try {
-        var emojiRegex = new RegExp('(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})', 'gu');
-        return '<span class="remark-text">' + text.replace(emojiRegex, '</span>$1<span class="remark-text">') + '</span>';
-    } catch(e) {
-        // Fallback : tout en italique si le navigateur ne supporte pas \p{}
-        return '<span class="remark-text">' + text + '</span>';
-    }
-}
+        if (prenom || nom) {
+          const fullName = [prenom, nom.toUpperCase()]
+            .filter(Boolean)
+            .join(" ");
+          container.innerHTML = `Je m'appelle <strong>${fullName}</strong>.`;
+        } else {
+          container.style.display = "none";
+        }
+      }
 
-// Charger les contacts sélectionnés pour la carte
-function loadContacts() {
-    if (localStorage.getItem('carteShowContacts') === 'false') {
-        document.getElementById('contactSection').style.display = 'none';
-        return;
-    }
-    const container = document.getElementById('contactsBlock');
-    const allContacts = JSON.parse(localStorage.getItem('contactsUrgence') || '[]');
-    const carteSelection = JSON.parse(localStorage.getItem('carteContacts') || '[]');
+      // Charger la présentation personnalisée
+      function loadPresentation() {
+        if (localStorage.getItem("carteShowPresentation") === "false") return;
+        const texte = localStorage.getItem("cartePresentation") || "";
+        const block = document.getElementById("presentationBlock");
+        if (texte.trim()) {
+          block.style.display = "block";
+          block.className = "presentation";
+          block.textContent = texte;
+        }
+      }
 
-    // Filtrer les contacts sélectionnés pour la carte
-    let selectedContacts = [];
-    if (carteSelection.length > 0) {
-        selectedContacts = carteSelection
-            .map(id => allContacts.find(c => c.id === id))
+      // Sépare emojis (non italique) du texte (italique)
+      function formatRemarque(text) {
+        try {
+          var emojiRegex = new RegExp(
+            "(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})",
+            "gu",
+          );
+          return (
+            '<span class="remark-text">' +
+            text.replace(emojiRegex, '</span>$1<span class="remark-text">') +
+            "</span>"
+          );
+        } catch (e) {
+          // Fallback : tout en italique si le navigateur ne supporte pas \p{}
+          return '<span class="remark-text">' + text + "</span>";
+        }
+      }
+
+      // Charger les contacts sélectionnés pour la carte
+      function loadContacts() {
+        if (localStorage.getItem("carteShowContacts") === "false") {
+          document.getElementById("contactSection").style.display = "none";
+          return;
+        }
+        const container = document.getElementById("contactsBlock");
+        const allContacts = JSON.parse(
+          localStorage.getItem("contactsUrgence") || "[]",
+        );
+        const carteSelection = JSON.parse(
+          localStorage.getItem("carteContacts") || "[]",
+        );
+
+        // Filtrer les contacts sélectionnés pour la carte
+        let selectedContacts = [];
+        if (carteSelection.length > 0) {
+          selectedContacts = carteSelection
+            .map((id) => allContacts.find((c) => c.id === id))
             .filter(Boolean);
-    }
+        }
 
-    if (selectedContacts.length === 0) {
-        // Masquer toute la section contacts si rien n'est sélectionné
-        document.getElementById('contactSection').style.display = 'none';
-        return;
-    }
+        if (selectedContacts.length === 0) {
+          // Masquer toute la section contacts si rien n'est sélectionné
+          document.getElementById("contactSection").style.display = "none";
+          return;
+        }
 
-    // Ajuster le titre selon le nombre
-    document.getElementById('contactTitle').textContent = selectedContacts.length > 1 ? 'Contacts' : 'Contact';
+        // Ajuster le titre selon le nombre
+        document.getElementById("contactTitle").textContent =
+          selectedContacts.length > 1 ? "Contacts" : "Contact";
 
-    // Afficher le sous-titre configurable
-    const noteRaw = localStorage.getItem('carteContactsNote');
-    const note = (noteRaw !== null && noteRaw !== '') ? noteRaw : DEFAULT_CONTACTS_NOTE;
-    const subtitleEl = document.getElementById('contactSubtitle');
-    if (note.trim()) {
-        subtitleEl.textContent = note.trim();
-        subtitleEl.style.display = 'block';
-    }
+        // Afficher le sous-titre configurable
+        const noteRaw = localStorage.getItem("carteContactsNote");
+        const note =
+          noteRaw !== null && noteRaw !== "" ? noteRaw : DEFAULT_CONTACTS_NOTE;
+        const subtitleEl = document.getElementById("contactSubtitle");
+        if (note.trim()) {
+          subtitleEl.textContent = note.trim();
+          subtitleEl.style.display = "block";
+        }
 
-    container.innerHTML = selectedContacts.map(contact => {
-        const lien = contact.lien ? ` (${contact.lien})` : '';
-        const tel = contact.telephone || '';
-        const remarque = contact.remarque ? `<div class="contact-remarque">${formatRemarque(contact.remarque)}</div>` : '';
-        return `
+        container.innerHTML = selectedContacts
+          .map((contact) => {
+            const lien = contact.lien ? ` (${contact.lien})` : "";
+            const tel = contact.telephone || "";
+            const remarque = contact.remarque
+              ? `<div class="contact-remarque">${formatRemarque(contact.remarque)}</div>`
+              : "";
+            return `
             <div class="contact-entry">
                 <div class="contact-name">${contact.nom}${lien}</div>
-                ${tel ? `<div class="contact-phone"><a href="tel:${tel.replace(/\s/g, '')}">${tel}</a></div>` : ''}
+                ${tel ? `<div class="contact-phone"><a href="tel:${tel.replace(/\s/g, "")}">${tel}</a></div>` : ""}
                 ${remarque}
             </div>
         `;
-    }).join('');
-}
+          })
+          .join("");
+      }
 
-// Charger les infos médicales depuis localStorage (clé unifiée : infosMedicales)
-function loadMedicalData() {
-    const saved = localStorage.getItem('infosMedicales');
-    const container = document.getElementById('medicalContent');
+      // Charger les infos médicales depuis localStorage (clé unifiée : infosMedicales)
+      function loadMedicalData() {
+        const saved = localStorage.getItem("infosMedicales");
+        const container = document.getElementById("medicalContent");
 
-    // Migration : si anciennes données dans medicalData, les migrer
-    if (!saved) {
-        const oldData = localStorage.getItem('medicalData');
-        if (oldData) {
+        // Migration : si anciennes données dans medicalData, les migrer
+        if (!saved) {
+          const oldData = localStorage.getItem("medicalData");
+          if (oldData) {
             const old = JSON.parse(oldData);
             const migrated = {
-                groupeSanguin: old.bloodType || '',
-                allergiesMedic: old.drugAllergies || '',
-                autresAllergies: old.otherAllergies || '',
-                traitements: old.currentTreatment || '',
-                antecedents: old.medicalHistory || '',
-                autresInfos: old.otherInfo || ''
+              groupeSanguin: old.bloodType || "",
+              allergiesMedic: old.drugAllergies || "",
+              autresAllergies: old.otherAllergies || "",
+              traitements: old.currentTreatment || "",
+              antecedents: old.medicalHistory || "",
+              autresInfos: old.otherInfo || "",
             };
-            localStorage.setItem('infosMedicales', JSON.stringify(migrated));
-            localStorage.removeItem('medicalData');
+            localStorage.setItem("infosMedicales", JSON.stringify(migrated));
+            localStorage.removeItem("medicalData");
             renderMedical(migrated);
             return;
+          }
         }
-    }
 
-    // Vérifier si le médical est activé dans la config carte
-    if (localStorage.getItem('carteMedical') === 'false') {
-        document.getElementById('medicalBtn').style.display = 'none';
-        return;
-    }
+        // Vérifier si le médical est activé dans la config carte
+        if (localStorage.getItem("carteMedical") === "false") {
+          document.getElementById("medicalBtn").style.display = "none";
+          return;
+        }
 
-    if (!saved) {
-        container.innerHTML = '<div class="medical-empty">Aucune information médicale renseignée.<br>Configurez-les dans Paramètres > Informations médicales.</div>';
-        document.getElementById('medicalBtn').style.display = 'none';
-        return;
-    }
+        if (!saved) {
+          container.innerHTML =
+            '<div class="medical-empty">Aucune information médicale renseignée.<br>Configurez-les dans Paramètres > Informations médicales.</div>';
+          document.getElementById("medicalBtn").style.display = "none";
+          return;
+        }
 
-    const data = JSON.parse(saved);
-    renderMedical(data);
-}
+        const data = JSON.parse(saved);
+        renderMedical(data);
+      }
 
-function renderMedical(data) {
-    const container = document.getElementById('medicalContent');
-    const fields = [
-        { label: 'Groupe sanguin', value: data.groupeSanguin },
-        { label: 'Allergies médicamenteuses', value: data.allergiesMedic },
-        { label: 'Autres allergies', value: data.autresAllergies },
-        { label: 'Traitement en cours', value: data.traitements },
-        { label: 'Antécédents médicaux', value: data.antecedents },
-        { label: 'Autres informations', value: data.autresInfos }
-    ];
+      function renderMedical(data) {
+        const container = document.getElementById("medicalContent");
+        const fields = [
+          { label: "Groupe sanguin", value: data.groupeSanguin },
+          { label: "Allergies médicamenteuses", value: data.allergiesMedic },
+          { label: "Autres allergies", value: data.autresAllergies },
+          { label: "Traitement en cours", value: data.traitements },
+          { label: "Antécédents médicaux", value: data.antecedents },
+          { label: "Autres informations", value: data.autresInfos },
+        ];
 
-    const filledFields = fields.filter(f => f.value && f.value.trim());
+        const filledFields = fields.filter((f) => f.value && f.value.trim());
 
-    if (filledFields.length === 0) {
-        container.innerHTML = '<div class="medical-empty">Aucune information médicale renseignée.<br>Configurez-les dans Paramètres > Informations médicales.</div>';
-        document.getElementById('medicalBtn').style.display = 'none';
-        return;
-    }
+        if (filledFields.length === 0) {
+          container.innerHTML =
+            '<div class="medical-empty">Aucune information médicale renseignée.<br>Configurez-les dans Paramètres > Informations médicales.</div>';
+          document.getElementById("medicalBtn").style.display = "none";
+          return;
+        }
 
-    container.innerHTML = filledFields.map(f => `
+        container.innerHTML = filledFields
+          .map(
+            (f) => `
         <div class="medical-info-row">
             <div class="medical-info-label">${f.label}</div>
             <div class="medical-info-value">${f.value}</div>
         </div>
-    `).join('');
-}
+    `,
+          )
+          .join("");
+      }
 
-function openMedical() {
-    document.getElementById('medicalModal').classList.add('visible');
-}
+      function openMedical() {
+        document.getElementById("medicalModal").classList.add("visible");
+      }
 
-function closeMedical() {
-    document.getElementById('medicalModal').classList.remove('visible');
-}
+      function closeMedical() {
+        document.getElementById("medicalModal").classList.remove("visible");
+      }
 
-function generateQR() {
-    const modal = document.getElementById('qrModal');
-    const qrContainer = document.getElementById('qrcode');
+      function generateQR() {
+        const modal = document.getElementById("qrModal");
+        const qrContainer = document.getElementById("qrcode");
 
-    qrContainer.innerHTML = '';
+        qrContainer.innerHTML = "";
 
-    const pageUrl = window.location.href;
+        const pageUrl = window.location.href;
 
-    qrCodeInstance = new QRCode(qrContainer, {
-        text: pageUrl,
-        width: 256,
-        height: 256,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.M
-    });
+        qrCodeInstance = new QRCode(qrContainer, {
+          text: pageUrl,
+          width: 256,
+          height: 256,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M,
+        });
 
-    modal.classList.add('visible');
-}
+        modal.classList.add("visible");
+      }
 
-function closeQR() {
-    document.getElementById('qrModal').classList.remove('visible');
-}
+      function closeQR() {
+        document.getElementById("qrModal").classList.remove("visible");
+      }
 
-// Fermer avec Echap
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeMedical();
-        closeQR();
-    }
-});
-</script>
+      // Fermer avec Echap
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeMedical();
+          closeQR();
+        }
+      });
+    </script>
 
     <script src="nora-scroll.js"></script>
-</body>
+  </body>
 </html>

@@ -790,16 +790,47 @@
         }
 
         .trigger-category {
-            margin-bottom: 20px;
+            margin-bottom: 8px;
         }
 
         .trigger-category-title {
             font-size: 17px;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 10px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #F7B89C;
+            background: rgba(46, 58, 89, 0.07);
+            border-radius: 8px;
+            padding: 10px 14px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .trigger-category-title:active {
+            background: rgba(46, 58, 89, 0.13);
+        }
+
+        .trigger-category-chevron {
+            font-size: 14px;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .trigger-category-items {
+            display: none;
+            padding: 4px 0 8px 0;
+        }
+
+        .trigger-category.open .trigger-category-items {
+            display: block;
+        }
+
+        .trigger-category.open .trigger-category-chevron {
+            transform: rotate(90deg);
         }
 
         .trigger-item {
@@ -899,6 +930,25 @@
             color: var(--light);
             opacity: 0.8;
             line-height: 1.4;
+        }
+
+        /* ---------- SECTION OPTIONNELLE (pendant crise) ---------- */
+        .form-block-optional {
+            background: rgba(46, 58, 89, 0.04);
+        }
+        .form-optional-hint {
+            font-size: 13px;
+            color: var(--dark);
+            opacity: 0.65;
+            font-style: italic;
+            margin: -4px 0 14px 0;
+            line-height: 1.4;
+        }
+        #formModal .form-block-optional {
+            background: rgba(245,228,204,0.04);
+        }
+        #formModal .form-optional-hint {
+            color: var(--light);
         }
 
         /* ---------- PRÉ-CRISE ---------- */
@@ -1053,7 +1103,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Heure (optionnel)</label>
+                    <label class="form-label">Heure</label>
                     <input type="time" class="form-input" id="formTime">
                 </div>
 
@@ -1111,6 +1161,35 @@
                 <div class="form-group">
                     <label class="form-label">Remarques (optionnel)</label>
                     <textarea class="form-textarea" id="formRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-block form-block-optional">
+                <div class="form-block-title">MON ÉTAT PENDANT LA CRISE</div>
+                <p class="form-optional-hint">Optionnel — utile si tu te souviens de ton état pendant la crise.</p>
+
+                <div class="form-group">
+                    <label class="form-label">🤲 Besoins</label>
+                    <button type="button" class="triggers-button" onclick="navigateToFormPage('besoins.html')">
+                        <span>Sélectionner mes besoins</span>
+                    </button>
+                    <div class="triggers-preview" id="besoisFormPreview">Non renseigné</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">💭 États</label>
+                    <button type="button" class="triggers-button" onclick="navigateToFormPage('etats.html')">
+                        <span>Sélectionner mes états</span>
+                    </button>
+                    <div class="triggers-preview" id="etatsFormPreview">Non renseigné</div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label">🎯 Capacités</label>
+                    <button type="button" class="triggers-button" onclick="navigateToFormPage('capacites.html')">
+                        <span>Renseigner mes capacités</span>
+                    </button>
+                    <div class="triggers-preview" id="capsFormPreview">Non renseigné</div>
                 </div>
             </div>
 
@@ -1215,6 +1294,7 @@
         let deleteTargetIndex = null;
         let deleteFromDetail = false;
         let sliderTouched = { energie: false, chargeMentale: false, chargeSociale: false, intensite: false };
+        let visitedBesoins = false, visitedEtats = false, visitedCapacites = false;
 
         const SLIDER_IDS = {
             energie:      { slider: 'formEnergie',        display: 'formEnergieDisplay' },
@@ -1474,21 +1554,27 @@
             `;
 
             // Besoins
-            if (entry.besoins && entry.besoins.length > 0) {
+            if (entry.besoins === undefined || entry.besoins === null) {
+                html += `<div class="modal-section"><div class="modal-section-title">🤲 Besoins</div><div class="modal-text">—</div></div>`;
+            } else if (entry.besoins.length > 0) {
                 var besoinsLabels = entry.besoins.map(function(b) { return b.label || b; });
                 html += `<div class="modal-section"><div class="modal-section-title">🤲 Besoins</div>`;
                 html += `<div class="modal-text">${besoinsLabels.join(', ')}</div></div>`;
             }
 
             // États
-            if (entry.etats && entry.etats.length > 0) {
+            if (entry.etats === undefined || entry.etats === null) {
+                html += `<div class="modal-section"><div class="modal-section-title">💭 États</div><div class="modal-text">—</div></div>`;
+            } else if (entry.etats.length > 0) {
                 var etatsLabels = entry.etats.map(function(e) { return e.label || e; });
                 html += `<div class="modal-section"><div class="modal-section-title">💭 États</div>`;
                 html += `<div class="modal-text">${etatsLabels.join(', ')}</div></div>`;
             }
 
             // Capacités
-            if (entry.capacites) {
+            if (entry.capacites === undefined || entry.capacites === null) {
+                html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div><div class="modal-text">—</div></div>`;
+            } else {
                 var capLines = [];
                 if (entry.capacites.impossible && entry.capacites.impossible.length) capLines.push('<strong>Impossible :</strong> ' + entry.capacites.impossible.join(', '));
                 if (entry.capacites.difficile && entry.capacites.difficile.length) capLines.push('<strong>Difficile :</strong> ' + entry.capacites.difficile.join(', '));
@@ -1512,14 +1598,39 @@
             document.getElementById('detailModal').classList.add('visible');
         }
 
-        function openFormModal(mode, index = null) {
+        function openFormModal(mode, index = null, draft = null) {
             formMode = mode;
             currentEntryIndex = index;
 
             const modalTitle = document.getElementById('formModalTitle');
             const dateGroup = document.getElementById('dateGroup');
 
-            if (mode === 'create') {
+            if (draft) {
+                // Restoration depuis navigation vers besoins/etats/capacites
+                modalTitle.textContent = mode === 'create' ? 'Ajouter une crise manuellement' : 'Modifier la crise';
+                dateGroup.style.display = 'block';
+                document.getElementById('formDate').value = draft.date || '';
+                document.getElementById('formTime').value = draft.time || '';
+                document.getElementById('formType').value = draft.type || '';
+                document.getElementById('formTypeManifestation').value = draft.typeManifestation || '';
+                if (draft.intensite !== null) setSliderValue('intensite', draft.intensite); else resetSlider('intensite');
+                if (draft.energie !== null) setSliderValue('energie', draft.energie); else resetSlider('energie');
+                if (draft.chargeMentale !== null) setSliderValue('chargeMentale', draft.chargeMentale); else resetSlider('chargeMentale');
+                if (draft.chargeSociale !== null) setSliderValue('chargeSociale', draft.chargeSociale); else resetSlider('chargeSociale');
+                durHours = draft.dureeH || 0; durMinutes = draft.dureeM || 0; updateDurDisplay();
+                document.getElementById('formRemarks').value = draft.remarques || '';
+                selectedTriggers = draft.triggers || [];
+                triggerIntensities = draft.triggerIntensities || {};
+                visitedBesoins = draft.visitedBesoins || false;
+                visitedEtats = draft.visitedEtats || false;
+                visitedCapacites = draft.visitedCapacites || false;
+                // Marquer la section visitée selon la page d'où on revient
+                if (draft.fromPage === 'besoins.html') visitedBesoins = true;
+                else if (draft.fromPage === 'etats.html') visitedEtats = true;
+                else if (draft.fromPage === 'capacites.html') visitedCapacites = true;
+                updateTriggersPreview();
+                updateBesEtaCapsPreview();
+            } else if (mode === 'create') {
                 modalTitle.textContent = 'Ajouter une crise manuellement';
                 dateGroup.style.display = 'block';
 
@@ -1539,7 +1650,12 @@
                 document.getElementById('formRemarks').value = '';
                 selectedTriggers = [];
                 triggerIntensities = {};
+                visitedBesoins = false; visitedEtats = false; visitedCapacites = false;
+                localStorage.removeItem('currentBesoins');
+                localStorage.removeItem('currentEtats');
+                localStorage.removeItem('currentCapacites');
                 updateTriggersPreview();
+                updateBesEtaCapsPreview();
             } else {
                 modalTitle.textContent = 'Modifier la crise';
                 dateGroup.style.display = 'block';
@@ -1577,7 +1693,17 @@
                         triggerIntensities[d.nom] = d.intensite;
                     }
                 });
+
+                // Pré-remplir les pages besoins/etats/capacites avec les données de l'entrée
+                visitedBesoins = entry.besoins !== null && entry.besoins !== undefined;
+                visitedEtats = entry.etats !== null && entry.etats !== undefined;
+                visitedCapacites = entry.capacites !== null && entry.capacites !== undefined;
+                if (visitedBesoins) localStorage.setItem('currentBesoins', JSON.stringify(entry.besoins));
+                if (visitedEtats) localStorage.setItem('currentEtats', JSON.stringify(entry.etats));
+                if (visitedCapacites) localStorage.setItem('currentCapacites', JSON.stringify(entry.capacites));
+
                 updateTriggersPreview();
+                updateBesEtaCapsPreview();
             }
 
             history.pushState({ noraModal: true }, '');
@@ -1590,8 +1716,16 @@
             let html = '';
 
             TRIGGER_CATEGORIES.forEach(cat => {
-                html += `<div class="trigger-category">`;
-                html += `<div class="trigger-category-title">${cat.label}</div>`;
+                const hasSelected = cat.items.some(trigger => {
+                    if (trigger.custom) return selectedTriggers.some(t => t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9');
+                    return selectedTriggers.includes(cat.key + ' \u2014 ' + trigger.name);
+                });
+                html += `<div class="trigger-category${hasSelected ? ' open' : ''}">`;
+                html += `<div class="trigger-category-title" onclick="toggleTriggerCategory(this)">
+                    <span>${cat.label}</span>
+                    <span class="trigger-category-chevron">▶</span>
+                </div>`;
+                html += `<div class="trigger-category-items">`;
 
                 cat.items.forEach((trigger, idx) => {
                     const storedName = cat.key + ' \u2014 ' + trigger.name;
@@ -1624,12 +1758,96 @@
                     }
                 });
 
-                html += `</div>`;
+                html += `</div></div>`;
             });
 
             content.innerHTML = html;
             history.pushState({ noraModal: true }, '');
             document.getElementById('triggersModal').classList.add('visible');
+        }
+
+        function toggleTriggerCategory(titleEl) {
+            titleEl.parentElement.classList.toggle('open');
+        }
+
+        /* ---------- NAVIGATION BESOINS / ÉTATS / CAPACITÉS ---------- */
+        function navigateToFormPage(page) {
+            const draft = {
+                mode: formMode,
+                index: currentEntryIndex,
+                date: document.getElementById('formDate').value,
+                time: document.getElementById('formTime').value,
+                type: document.getElementById('formType').value,
+                typeManifestation: document.getElementById('formTypeManifestation').value,
+                intensite: sliderTouched.intensite ? document.getElementById('formIntensity').value : null,
+                dureeH: durHours,
+                dureeM: durMinutes,
+                remarques: document.getElementById('formRemarks').value,
+                energie: sliderTouched.energie ? document.getElementById('formEnergie').value : null,
+                chargeMentale: sliderTouched.chargeMentale ? document.getElementById('formChargeMentale').value : null,
+                chargeSociale: sliderTouched.chargeSociale ? document.getElementById('formChargeSociale').value : null,
+                triggers: selectedTriggers,
+                triggerIntensities: triggerIntensities,
+                visitedBesoins: visitedBesoins,
+                visitedEtats: visitedEtats,
+                visitedCapacites: visitedCapacites,
+                fromPage: page
+            };
+            localStorage.setItem('journalFormDraft', JSON.stringify(draft));
+            localStorage.setItem('journalRetour', 'true');
+            window.location.href = page;
+        }
+
+        function updateBesEtaCapsPreview() {
+            var bPrev = document.getElementById('besoisFormPreview');
+            var ePrev = document.getElementById('etatsFormPreview');
+            var cPrev = document.getElementById('capsFormPreview');
+            if (!bPrev) return;
+
+            if (!visitedBesoins) {
+                bPrev.textContent = 'Non renseigné';
+            } else {
+                try {
+                    var besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
+                    bPrev.textContent = besoins.length === 0
+                        ? 'Aucun sélectionné'
+                        : besoins.map(function(b) { return (b.icon || '') + ' ' + (b.label || b); }).join(', ');
+                } catch(e) { bPrev.textContent = 'Non renseigné'; }
+            }
+
+            if (!visitedEtats) {
+                ePrev.textContent = 'Non renseigné';
+            } else {
+                try {
+                    var etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
+                    ePrev.textContent = etats.length === 0
+                        ? 'Aucun sélectionné'
+                        : etats.map(function(e) { return (e.icon || '') + ' ' + (e.label || e); }).join(', ');
+                } catch(e) { ePrev.textContent = 'Non renseigné'; }
+            }
+
+            if (!visitedCapacites) {
+                cPrev.textContent = 'Non renseigné';
+            } else {
+                try {
+                    var caps = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
+                    var total = (caps.impossible || []).length + (caps.difficile || []).length
+                              + (caps.possible || []).length + (caps.incertain || []).length;
+                    cPrev.textContent = total === 0
+                        ? 'Aucune renseignée'
+                        : total + ' capacité' + (total > 1 ? 's' : '') + ' renseignée' + (total > 1 ? 's' : '');
+                } catch(e) { cPrev.textContent = 'Non renseigné'; }
+            }
+        }
+
+        function checkFormDraftRestore() {
+            if (!localStorage.getItem('journalRetour')) return;
+            localStorage.removeItem('journalRetour');
+            var draft = null;
+            try { draft = JSON.parse(localStorage.getItem('journalFormDraft') || 'null'); } catch(e) {}
+            if (!draft) return;
+            localStorage.removeItem('journalFormDraft');
+            openFormModal(draft.mode, draft.index, draft);
         }
 
         function handleTriggerChange(checkbox) {
@@ -1721,12 +1939,17 @@
                     return;
                 }
                 
+                var savedBesoins = null, savedEtats = null, savedCapacites = null;
+                if (visitedBesoins) { try { savedBesoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]'); } catch(e) { savedBesoins = []; } }
+                if (visitedEtats) { try { savedEtats = JSON.parse(localStorage.getItem('currentEtats') || '[]'); } catch(e) { savedEtats = []; } }
+                if (visitedCapacites) { try { savedCapacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}'); } catch(e) { savedCapacites = {}; } }
+
                 const entry = {
                     horodatage: horodatage,
                     profil: localStorage.getItem('currentProfil') || 'maison',
-                    capacites: JSON.parse(localStorage.getItem('currentCapacites') || '{}'),
-                    besoins: JSON.parse(localStorage.getItem('currentBesoins') || '[]'),
-                    etats: JSON.parse(localStorage.getItem('currentEtats') || '[]'),
+                    capacites: savedCapacites,
+                    besoins: savedBesoins,
+                    etats: savedEtats,
                     typeCrise: document.getElementById('formType').value,
                     typeManifestation: document.getElementById('formTypeManifestation').value,
                     intensite: sliderTouched.intensite ? document.getElementById('formIntensity').value : '',
@@ -1774,6 +1997,9 @@
                 sorted[currentEntryIndex].energie = sliderTouched.energie ? document.getElementById('formEnergie').value : '';
                 sorted[currentEntryIndex].chargeMentale = sliderTouched.chargeMentale ? document.getElementById('formChargeMentale').value : '';
                 sorted[currentEntryIndex].chargeSociale = sliderTouched.chargeSociale ? document.getElementById('formChargeSociale').value : '';
+                if (visitedBesoins) { try { sorted[currentEntryIndex].besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]'); } catch(e) {} }
+                if (visitedEtats) { try { sorted[currentEntryIndex].etats = JSON.parse(localStorage.getItem('currentEtats') || '[]'); } catch(e) {} }
+                if (visitedCapacites) { try { sorted[currentEntryIndex].capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}'); } catch(e) {} }
                 delete sorted[currentEntryIndex].precrisis;
 
                 localStorage.setItem('journalCrises', JSON.stringify(sorted));
@@ -2064,7 +2290,30 @@ ${entriesHtml}
             }
         }
 
+        /* ---------- ANTI-SCROLL SLIDERS ---------- */
+        function attachSliderScrollGuard(el) {
+            var startX, startY, locked = false;
+            el.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                locked = false;
+            }, { passive: true });
+            el.addEventListener('touchmove', function(e) {
+                if (locked) return;
+                var dx = Math.abs(e.touches[0].clientX - startX);
+                var dy = Math.abs(e.touches[0].clientY - startY);
+                if (dy > dx) {
+                    e.preventDefault();
+                } else {
+                    locked = true;
+                }
+            }, { passive: false });
+        }
+
+        document.querySelectorAll('.intensity-slider').forEach(attachSliderScrollGuard);
+
         loadJournal();
+        checkFormDraftRestore();
     </script>
 
     <script>

@@ -489,8 +489,8 @@
       position: relative;
       width: min(160px, 44vw);
       height: min(430px, 82vh);
-      background: rgba(80, 100, 200, 0.1);
-      border: 1px solid rgba(100, 130, 220, 0.15);
+      background: rgba(245, 228, 204, 0.08);
+      border: 2px solid rgba(245, 228, 204, 0.25);
       border-radius: 20px;
       overflow: hidden;
       cursor: pointer;
@@ -500,7 +500,7 @@
     .bar-fill {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(to top, var(--dark), rgba(90, 120, 210, 0.85));
+      background: linear-gradient(to top, var(--light), rgba(247, 184, 156, 0.7));
       border-radius: 0 0 20px 20px;
       transition: height 0.9s linear;
     }
@@ -1128,8 +1128,10 @@
     /* ---------- CONSTANTES ---------- */
     const CIRCUMFERENCE = 2 * Math.PI * 42;
 
-    const THRESHOLDS = [3600, 1800, 900, 120];
+    const THRESHOLDS = [7200, 5400, 3600, 1800, 900, 120];
     const THRESHOLD_MSGS = {
+      7200: 'Il reste deux heures',
+      5400: 'Il reste une heure et demie',
       3600: 'Il reste une heure',
       1800: 'Il reste trente minutes',
       900:  'Il reste quinze minutes',
@@ -1137,6 +1139,8 @@
     };
 
     const THRESHOLD_MSGS_KAWAII = {
+      7200: 'Encore deux heures de paillettes',
+      5400: 'Encore une heure et demie de paillettes',
       3600: 'Encore une heure de paillettes',
       1800: 'Encore trente minutes de paillettes',
       900:  'Encore quinze minutes de paillettes',
@@ -1144,6 +1148,8 @@
     };
 
     const THRESHOLD_MSGS_ESPACE = {
+      7200: 'Fin de la mission orbitale dans deux heures',
+      5400: 'Fin de la mission orbitale dans une heure et demie',
       3600: 'Fin de la mission orbitale dans une heure',
       1800: 'Fin de la mission orbitale dans trente minutes',
       900:  'Fin de la mission orbitale dans quinze minutes',
@@ -1154,9 +1160,9 @@
     const SON_ICONS  = { bip: '🔔', voix: '🗣️', vibration: '📳', mute: '🔇' };
     const SON_LABELS = { bip: 'BIP', voix: 'VOIX', vibration: 'VIB', mute: 'MUET' };
     const SON_TOASTS = {
-      bip:       'Bip sonore aux seuils : 1 h, 30 min, 15 min et 2 min',
-      voix:      'Annonces vocales aux seuils : 1 h, 30 min, 15 min et 2 min',
-      vibration: 'Vibrations aux seuils : 1 h, 30 min, 15 min et 2 min',
+      bip:       'Bip sonore aux seuils : 2 h, 1 h 30, 1 h, 30 min, 15 min et 2 min',
+      voix:      'Annonces vocales aux seuils : 2 h, 1 h 30, 1 h, 30 min, 15 min et 2 min',
+      vibration: 'Vibrations aux seuils : 2 h, 1 h 30, 1 h, 30 min, 15 min et 2 min',
       mute:      'Alertes désactivées'
     };
 

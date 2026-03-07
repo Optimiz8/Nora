@@ -802,17 +802,29 @@
         }
 
         .trigger-category {
-            margin-bottom: 20px;
+            margin-bottom: 8px;
         }
 
         .trigger-category-title {
             font-size: 17px;
             font-weight: 700;
             color: var(--accent);
-            margin-bottom: 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(247,184,156,0.3);
+            background: rgba(245,228,204,0.07);
+            border-radius: 8px;
+            padding: 10px 14px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 0;
         }
+        .trigger-category-title:active { background: rgba(245,228,204,0.13); }
+        .trigger-category-chevron { font-size: 14px; transition: transform 0.2s; flex-shrink: 0; }
+        .trigger-category-items { display: none; padding: 4px 0 8px 0; }
+        .trigger-category.open .trigger-category-items { display: block; }
+        .trigger-category.open .trigger-category-chevron { transform: rotate(90deg); }
 
         .trigger-item {
             display: flex;
@@ -1912,8 +1924,16 @@
             let html = '';
 
             TRIGGER_CATEGORIES.forEach(cat => {
-                html += `<div class="trigger-category">`;
-                html += `<div class="trigger-category-title">${cat.label}</div>`;
+                const hasSelected = cat.items.some(trigger => {
+                    if (trigger.custom) return selectedTriggers.some(t => t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9');
+                    return selectedTriggers.includes(cat.key + ' \u2014 ' + trigger.name);
+                });
+                html += `<div class="trigger-category${hasSelected ? ' open' : ''}">`;
+                html += `<div class="trigger-category-title" onclick="toggleTriggerCategory(this)">
+                    <span>${cat.label}</span>
+                    <span class="trigger-category-chevron">▶</span>
+                </div>`;
+                html += `<div class="trigger-category-items">`;
 
                 cat.items.forEach((trigger, idx) => {
                     const storedName = cat.key + ' \u2014 ' + trigger.name;
@@ -1946,11 +1966,15 @@
                     }
                 });
 
-                html += `</div>`;
+                html += `</div></div>`;
             });
 
             content.innerHTML = html;
             document.getElementById('triggersModal').classList.add('open');
+        }
+
+        function toggleTriggerCategory(titleEl) {
+            titleEl.parentElement.classList.toggle('open');
         }
 
         function handleTriggerChange(checkbox) {

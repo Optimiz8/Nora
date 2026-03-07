@@ -257,16 +257,19 @@ function loadBesoins(){
 
 function goBack(){
   saveBesoins();
+  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getPrevPage('besoins.html', profileConfig);
 }
 
 function goNext(){
   saveBesoins();
+  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getNextPage('besoins.html', profileConfig);
 }
 
 function finish(){
   saveBesoins();
+  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = 'recap.html';
 }
 

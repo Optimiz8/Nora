@@ -1353,8 +1353,14 @@
             var minDuration = durations.length ? Math.min.apply(null, durations) : null;
             var maxDuration = durations.length ? Math.max.apply(null, durations) : null;
             var avgEnergie = avgArr(energies);
+            var minEnergie = energies.length ? Math.min.apply(null, energies) : null;
+            var maxEnergie = energies.length ? Math.max.apply(null, energies) : null;
             var avgChargeMentale = avgArr(chargesMentales);
+            var minChargeMentale = chargesMentales.length ? Math.min.apply(null, chargesMentales) : null;
+            var maxChargeMentale = chargesMentales.length ? Math.max.apply(null, chargesMentales) : null;
             var avgChargeSociale = avgArr(chargesSociales);
+            var minChargeSociale = chargesSociales.length ? Math.min.apply(null, chargesSociales) : null;
+            var maxChargeSociale = chargesSociales.length ? Math.max.apply(null, chargesSociales) : null;
 
             var prev = computePrevStats(prevEntries);
 
@@ -1586,8 +1592,14 @@
                 minDuration: minDuration,
                 maxDuration: maxDuration,
                 avgEnergie: avgEnergie,
+                minEnergie: minEnergie,
+                maxEnergie: maxEnergie,
                 avgChargeMentale: avgChargeMentale,
+                minChargeMentale: minChargeMentale,
+                maxChargeMentale: maxChargeMentale,
                 avgChargeSociale: avgChargeSociale,
+                minChargeSociale: minChargeSociale,
+                maxChargeSociale: maxChargeSociale,
                 meltdownCount: meltdownCount,
                 shutdownCount: shutdownCount,
                 meltdownPct: meltdownPct,
@@ -2236,18 +2248,24 @@
             var hasPrecrisis = stats.avgEnergie !== null || stats.avgChargeMentale !== null || stats.avgChargeSociale !== null;
             if (hasPrecrisis) {
                 html += '<div class="stat-card" style="margin-top:0">';
-                html += '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--dark);opacity:0.45;padding:12px 16px 4px">Avant la crise</div>';
+                html += '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--dark);opacity:0.45;padding:12px 16px 4px">Avant la crise — Moyennes</div>';
                 if (stats.avgEnergie !== null) {
+                    var enRange = (stats.minEnergie !== null && stats.maxEnergie !== null && stats.minEnergie !== stats.maxEnergie)
+                        ? '<span class="bilan-unit"> · min ' + stats.minEnergie + ' / max ' + stats.maxEnergie + '</span>' : '';
                     html += bilanRow('Énergie <span class="bilan-unit">(sur 10)</span>',
-                        '<strong>' + stats.avgEnergie + '</strong>', '');
+                        '<strong>' + stats.avgEnergie + '</strong>' + enRange, '');
                 }
                 if (stats.avgChargeMentale !== null) {
+                    var cmRange = (stats.minChargeMentale !== null && stats.maxChargeMentale !== null && stats.minChargeMentale !== stats.maxChargeMentale)
+                        ? '<span class="bilan-unit"> · min ' + stats.minChargeMentale + ' / max ' + stats.maxChargeMentale + '</span>' : '';
                     html += bilanRow('Charge mentale <span class="bilan-unit">(sur 10)</span>',
-                        '<strong>' + stats.avgChargeMentale + '</strong>', '');
+                        '<strong>' + stats.avgChargeMentale + '</strong>' + cmRange, '');
                 }
                 if (stats.avgChargeSociale !== null) {
+                    var csRange = (stats.minChargeSociale !== null && stats.maxChargeSociale !== null && stats.minChargeSociale !== stats.maxChargeSociale)
+                        ? '<span class="bilan-unit"> · min ' + stats.minChargeSociale + ' / max ' + stats.maxChargeSociale + '</span>' : '';
                     html += bilanRow('Charge sociale <span class="bilan-unit">(sur 10)</span>',
-                        '<strong>' + stats.avgChargeSociale + '</strong>', '');
+                        '<strong>' + stats.avgChargeSociale + '</strong>' + csRange, '');
                 }
                 html += '</div>';
             }

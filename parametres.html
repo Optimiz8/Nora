@@ -567,8 +567,17 @@
                 if (config) contextesConfigs[ctx.id] = JSON.parse(config);
             });
 
+            // Collecte des volumes du mixeur (clés dynamiques mixer_*)
+            const mixerVolumes = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('mixer_')) {
+                    mixerVolumes[key] = localStorage.getItem(key);
+                }
+            }
+
             const data = {
-                version: '2.1',
+                version: '2.5',
                 dateExport: new Date().toISOString(),
                 prenom: localStorage.getItem('userPrenom') || '',
                 nom: localStorage.getItem('userNom') || '',
@@ -597,7 +606,11 @@
                 journalCrises: JSON.parse(localStorage.getItem('journalCrises') || '[]'),
                 autoRegisterCrise: localStorage.getItem('autoRegisterCrise') || 'false',
                 cartesCommunication: JSON.parse(localStorage.getItem('cartesCommunication') || '[]'),
-                cartesShowIcons: localStorage.getItem('cartesShowIcons') || 'true'
+                cartesShowIcons: localStorage.getItem('cartesShowIcons') || 'true',
+                mixerPresets: JSON.parse(localStorage.getItem('mixerPresets') || '[]'),
+                mixerVolumes: mixerVolumes,
+                playlistName: localStorage.getItem('playlistName') || '',
+                lienPlaylist: localStorage.getItem('lienPlaylist') || ''
             };
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -687,6 +700,22 @@
                         if (data.cartesShowIcons) {
                             localStorage.setItem('cartesShowIcons', data.cartesShowIcons);
                         }
+
+                        // Ambiances sonores du mixeur
+                        if (data.mixerPresets) {
+                            localStorage.setItem('mixerPresets', JSON.stringify(data.mixerPresets));
+                        }
+                        if (data.mixerVolumes && typeof data.mixerVolumes === 'object') {
+                            Object.keys(data.mixerVolumes).forEach(key => {
+                                if (key.startsWith('mixer_')) {
+                                    localStorage.setItem(key, data.mixerVolumes[key]);
+                                }
+                            });
+                        }
+
+                        // Playlist
+                        if (data.playlistName) localStorage.setItem('playlistName', data.playlistName);
+                        if (data.lienPlaylist) localStorage.setItem('lienPlaylist', data.lienPlaylist);
 
                         // Garantir que les 4 contextes par défaut existent
                         ensureDefaultContextes();

@@ -176,6 +176,15 @@
             color: var(--light);
         }
 
+        .crisis-btn.dismiss {
+            background: none;
+            color: var(--light);
+            opacity: 0.5;
+            font-size: 14px;
+            font-weight: 400;
+            padding: 10px 16px;
+        }
+
         .crisis-btn-desc {
             font-size: 13px;
             font-weight: 400;
@@ -528,13 +537,26 @@
         }
 
         /* ---------- TRIGGER CHECKBOXES dans pcmTriggersModal ---------- */
-        .trigger-category { margin-bottom: 20px; }
+        .trigger-category { margin-bottom: 8px; }
         .trigger-category-title {
             font-size: 17px;
             font-weight: 700;
-            margin-bottom: 10px;
-            padding-bottom: 6px;
+            background: rgba(245,228,204,0.07);
+            border-radius: 8px;
+            padding: 10px 14px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 0;
         }
+        .trigger-category-title:active { background: rgba(245,228,204,0.13); }
+        .trigger-category-chevron { font-size: 14px; transition: transform 0.2s; flex-shrink: 0; }
+        .trigger-category-items { display: none; padding: 4px 0 8px 0; }
+        .trigger-category.open .trigger-category-items { display: block; }
+        .trigger-category.open .trigger-category-chevron { transform: rotate(90deg); }
         .trigger-item {
             display: flex;
             align-items: flex-start;
@@ -615,7 +637,7 @@
             flex-direction: column;
             overflow-y: auto;
         }
-        #pcmTriggersModal .trigger-category-title { color: var(--accent); border-bottom-color: rgba(247,184,156,0.3); }
+        #pcmTriggersModal .trigger-category-title { color: var(--accent); }
         #pcmTriggersModal .trigger-name { color: var(--light); }
         #pcmTriggersModal .trigger-description { color: rgba(245,228,204,0.6); }
         #pcmTriggersModal .trigger-item:hover { background: rgba(247,184,156,0.08); }
@@ -755,6 +777,9 @@
                 <button class="crisis-btn secondary" onclick="enableAutoRegister()">
                     Toujours enregistrer automatiquement
                     <div class="crisis-btn-desc">Les prochaines crises seront ajoutées au journal sans demander</div>
+                </button>
+                <button class="crisis-btn dismiss" onclick="dismissCrisis()">
+                    Non, je ne souhaite pas
                 </button>
             </div>
         </div>
@@ -1009,7 +1034,15 @@
         var content = document.getElementById('pcmTriggersContent');
         var html = '';
         TRIGGER_CATEGORIES.forEach(function(cat) {
-            html += '<div class="trigger-category"><div class="trigger-category-title">' + cat.label + '</div>';
+            var hasSelected = cat.items.some(function(trigger) {
+                if (trigger.custom) return selectedPcmTriggers.some(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; });
+                return selectedPcmTriggers.indexOf(cat.key + ' \u2014 ' + trigger.name) !== -1;
+            });
+            html += '<div class="trigger-category' + (hasSelected ? ' open' : '') + '">';
+            html += '<div class="trigger-category-title" onclick="togglePcmTriggerCategory(this)">' +
+                '<span>' + cat.label + '</span>' +
+                '<span class="trigger-category-chevron">\u25ba</span></div>';
+            html += '<div class="trigger-category-items">';
             cat.items.forEach(function(trigger, idx) {
                 var storedName = cat.key + ' \u2014 ' + trigger.name;
                 var isChecked = trigger.custom
@@ -1030,7 +1063,7 @@
                         '<input type="text" id="pcmCustomTriggerInput" class="trigger-custom-input" placeholder="D\u00e9cris le d\u00e9clencheur\u2026" value="' + customValue.replace(/"/g, '&quot;') + '"></div>';
                 }
             });
-            html += '</div>';
+            html += '</div></div>';
         });
         content.innerHTML = html;
         document.getElementById('pcmTriggersModal').classList.add('visible');
@@ -1038,6 +1071,10 @@
 
     function closePcmTriggersModal() {
         document.getElementById('pcmTriggersModal').classList.remove('visible');
+    }
+
+    function togglePcmTriggerCategory(titleEl) {
+        titleEl.parentElement.classList.toggle('open');
     }
 
     function handlePcmTriggerChange(checkbox) {
@@ -1143,6 +1180,12 @@
         localStorage.setItem('lastCrisisCheck', getTodayStr());
         // Marquer comme "à traiter" pour ne pas perdre les données
         localStorage.setItem('criseATraiter', 'true');
+        document.getElementById('crisisRegisterModal').classList.remove('visible');
+    }
+
+    function dismissCrisis() {
+        localStorage.setItem('lastCrisisCheck', getTodayStr());
+        cleanupCrisisData();
         document.getElementById('crisisRegisterModal').classList.remove('visible');
     }
 

@@ -256,16 +256,19 @@ function loadEtats(){
 
 function goBack(){
   saveEtats();
+  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getPrevPage('etats.html', profileConfig);
 }
 
 function goNext(){
   saveEtats();
+  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getNextPage('etats.html', profileConfig);
 }
 
 function finish(){
   saveEtats();
+  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = 'recap.html';
 }
 

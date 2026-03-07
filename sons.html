@@ -897,7 +897,7 @@ soundsData.forEach(name => {
   }
   
   card.innerHTML = `
-    <img src="assets/images/${fileName}.jpg" alt="${displayName}">
+    <img src="assets/images/${fileName}.jpg" alt="${displayName}" loading="lazy">
     <div class="card-title">${displayName}</div>
   `;
   
@@ -987,7 +987,7 @@ function initMixer() {
     const div = document.createElement("div");
     div.className = "mixer-item";
     div.innerHTML = `
-      <img src="assets/images/${fileName}.jpg" alt="${displayName}">
+      <img src="assets/images/${fileName}.jpg" alt="${displayName}" loading="lazy">
       <div class="mixer-item-content">
         <div class="mixer-item-name">${displayName}</div>
         <input type="range" min="0" max="100" value="${initialVolume}">
@@ -1001,38 +1001,43 @@ function initMixer() {
       a.volume = initialVolume / 100;
     }
 
-    // Détection de geste pour éviter les changements accidentels lors du scroll
+    // Détection de geste : n'activer le slider que sur drag horizontal intentionnel
     let touchStartY = 0;
     let touchStartX = 0;
     let isScrolling = null;
+    let savedSliderValue = slider.value;
 
     slider.addEventListener('touchstart', (e) => {
       touchStartY = e.touches[0].clientY;
       touchStartX = e.touches[0].clientX;
       isScrolling = null;
+      savedSliderValue = slider.value;
     }, { passive: true });
 
     slider.addEventListener('touchmove', (e) => {
       if (isScrolling === null) {
-        const touchY = e.touches[0].clientY;
-        const touchX = e.touches[0].clientX;
-        const deltaY = Math.abs(touchY - touchStartY);
-        const deltaX = Math.abs(touchX - touchStartX);
-
-        // Si le mouvement vertical est plus important que l'horizontal, c'est un scroll
-        isScrolling = deltaY > deltaX;
+        const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+        const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
+        if (deltaY > 5 || deltaX > 5) {
+          isScrolling = deltaY > deltaX;
+        }
       }
-
-      // Si c'est un scroll vertical, empêcher le slider de bouger
+      // Si scroll vertical : restaurer la valeur sans bloquer le scroll
       if (isScrolling) {
-        e.preventDefault();
-        return false;
+        slider.value = savedSliderValue;
       }
-    }, { passive: false });
+    }, { passive: true });
+
+    slider.addEventListener('touchend', () => {
+      isScrolling = null;
+    });
 
     slider.oninput = (e) => {
-      // Ne rien faire si c'est un scroll
-      if (isScrolling) return;
+      // Si geste vertical, annuler le changement
+      if (isScrolling) {
+        slider.value = savedSliderValue;
+        return;
+      }
 
       const volume = e.target.value / 100;
       a.volume = volume;

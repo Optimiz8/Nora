@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : février 2026
+> Dernière mise à jour : mars 2026
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -87,15 +87,32 @@ V1 : 2 raccourcis — "Démarrer une crise" + "Cartes de communication".
 
 ## V3 — Publication & Accessibilité élargie
 
+### Nouvelles fonctionnalités confirmées V3
+
+#### Export sélectif des crises
+Permettre à l'utilisatrice de choisir quelles crises exporter (filtre par date, contexte, etc.) au lieu d'un export global.
+
+#### Bibliothèque de scripts sociaux
+Phrases types à réutiliser dans des situations sociales courantes (refus, demande d'aide, signalement de surcharge…).
+À définir : format, catégories, possibilité de personnalisation.
+
+#### Export chiffré avec rappel de sauvegarde
+- Export protégé par mot de passe (chiffrement côté client)
+- Message de rappel automatique tous les X crises : "Pense à sauvegarder ton journal"
+- À creuser : quelle librairie de chiffrement ? Gestion du mot de passe oublié ?
+
 ### Ordre recommandé
 
 ```
 1. Service Worker / offline garanti          [prérequis pour Capacitor]
 2. Onboarding / tutoriel premier lancement
 3. Palettes de couleurs
-4. App Shortcuts V2 (enrichis si besoin)
-5. Capacitor + stores                        [probable, pas acté]
-6. Multi-langue (anglais)                    [en dernier absolu]
+4. Export sélectif des crises
+5. Bibliothèque de scripts sociaux
+6. Export chiffré + rappel sauvegarde
+7. App Shortcuts V2 (enrichis si besoin)
+8. Capacitor + stores                        [probable, pas acté]
+9. Multi-langue (anglais)                    [en dernier absolu]
 ```
 
 ### Détail
@@ -154,7 +171,14 @@ Uniquement quand tous les textes sont stables. Priorité : anglais.
 - **Playlists multiples** (jusqu'à 5).
 - **Partage de profil entre appareils** — très lointain (pas avant V4).
 - **Numéros d'urgence rapides** — 3114, 15, 114, 18. Accès depuis l'accueil ou la carte d'urgence. Questions à trancher avant de coder.
-- **Post-crise + Ancrage 5-4-3-2-1** — Page auto après enregistrement d'une crise + guide sensoriel. Pas en V2, à réévaluer.
+- **Post-crise guidé** — Remplacer les notes libres post-crise par 3 questions fixes : "Qu'est-ce qui a aidé ?", "Qu'est-ce qui a aggravé ?", "Qu'aurais-tu aimé différent ?" → exploitable en TCC.
+- **Mood tracker autisme** — Suivi des états émotionnels entre les crises, côté autisme (à définir : format, fréquence, données collectées).
+- **Guide meltdown / shutdown** — Page éducative pour aider à identifier et distinguer un meltdown d'un shutdown. Exemples guidés, descriptions sensorielles et comportementales.
+- **Tracking des surcharges (hors crise)** — On peut être en surcharge sans faire de crise. Pouvoir enregistrer ces états permettrait un suivi plus fin du niveau d'énergie global et des patterns de risque.
+- **Carte "qui je suis en tant qu'autiste"** — Synthèse personnelle : mes déclencheurs principaux, mes signaux d'alarme, mes besoins de régulation. À faire évoluer automatiquement à partir des stats.
+- **Profil automatique après X crises** — Générer un profil de données à partir des statistiques accumulées (déclencheurs dominants, moments à risque, intensité moyenne par contexte…).
+- **Contexte décalé** — Réflexion ouverte : quand une crise est déclenchée par le travail mais se produit à la maison, dans quel contexte l'enregistrer ? Pas de solution simple.
+- **Axe psychoéducatif — identification des déclencheurs** — Modules courts d'aide à la reconnaissance des déclencheurs (sensoriels vs cognitifs vs sociaux, etc.) pour les profils qui ont beaucoup de "déclencheur flou ou non identifié".
 
 ---
 

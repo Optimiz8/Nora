@@ -16,21 +16,49 @@
 
 .main {
   height: calc(100vh - var(--header-height) - var(--footer-height));
-  padding: 20px 16px;
+  padding: 24px 16px 32px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 28px;
   overflow-y: auto;
 }
 
 /* ---------- SECTION TITLES ---------- */
 h2 {
-  font-size: 13px;
+  font-size: 15px;
   text-transform: uppercase;
-  letter-spacing: .12em;
+  letter-spacing: .10em;
   color: var(--accent);
-  margin: 0 0 10px 2px;
+  margin: 0 0 12px 2px;
   text-align: left;
+}
+
+/* ---------- SECTION HEADER WITH INFO BUTTON ---------- */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px 2px;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.info-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: rgba(247,184,156,0.55);
+  padding: 4px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s;
+}
+
+.info-btn:active {
+  color: var(--accent);
 }
 
 /* ---------- PROGRAMME GRID ---------- */
@@ -68,9 +96,9 @@ h2 {
 }
 
 .prog-sub {
-  font-size: 12px;
-  opacity: 0.6;
-  font-weight: 400;
+  font-size: 14px;
+  opacity: 0.7;
+  font-weight: 500;
 }
 
 .prog-btn.active .prog-sub {
@@ -79,8 +107,9 @@ h2 {
 
 .edit-link {
   display: block;
-  margin-top: 2px;
-  font-size: 10px;
+  margin-top: 4px;
+  padding: 4px 0;
+  font-size: 13px;
   color: var(--accent);
   text-decoration: underline;
   cursor: pointer;
@@ -137,8 +166,9 @@ h2 {
   text-transform: uppercase;
   letter-spacing: .10em;
   color: rgba(247,184,156,0.5);
-  margin: 0 0 10px 2px;
+  margin: 0 0 10px 0;
   display: block;
+  text-align: center;
 }
 
 .preview-container {
@@ -399,6 +429,22 @@ h2 {
   border: 2px solid rgba(245,228,204,0.15);
 }
 
+/* ---------- END MODAL ---------- */
+.end-modal-message {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--light);
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.end-modal-note {
+  font-size: 13px;
+  color: rgba(245,228,204,0.5);
+  text-align: center;
+  margin-top: 4px;
+}
+
 /* ---------- BREATHING SCREEN ---------- */
 #breathing {
   display: none;
@@ -509,7 +555,10 @@ h2 {
 
   <!-- Programmes -->
   <div>
-    <h2>Programmes</h2>
+    <div class="section-header">
+      <h2>Programmes</h2>
+      <button class="info-btn" onclick="openInfoModal()" aria-label="En savoir plus sur les programmes">ⓘ</button>
+    </div>
     <div class="prog-grid">
       <button class="prog-btn active" id="progCoherence">
         <span>Cohérence<br>cardiaque</span>
@@ -576,6 +625,40 @@ h2 {
     <div class="text" id="label">Prêt</div>
     <div class="progress-bar"><div class="progress" id="progress"></div></div>
     <button class="back-btn" onclick="back()">⬅️ Retour</button>
+  </div>
+</div>
+
+<!-- MODAL FIN D'EXERCICE -->
+<div class="modal-overlay" id="endModal" role="dialog" aria-modal="true" aria-label="Exercice terminé">
+  <div class="modal-content">
+    <div class="modal-title">Bien joué !</div>
+    <p class="end-modal-message" id="endMessage"></p>
+    <p class="end-modal-note">Chaque exercice compte.</p>
+    <div class="modal-buttons" style="margin-top:24px;">
+      <button class="modal-btn modal-btn-primary" onclick="restartExercise()">Recommencer</button>
+      <button class="modal-btn modal-btn-secondary" onclick="endExercise()">Terminer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INFO PROGRAMMES -->
+<div class="modal-overlay" id="infoModal" role="dialog" aria-modal="true" aria-label="À propos des programmes">
+  <div class="modal-content">
+    <div class="modal-close" onclick="closeInfoModal()" role="button" aria-label="Fermer">✕</div>
+    <div class="modal-title">Les programmes</div>
+    <div style="display:flex; flex-direction:column; gap:18px; color:var(--light);">
+      <div>
+        <div style="font-weight:700; font-size:15px; margin-bottom:6px; color:var(--accent);">Cohérence cardiaque — 5s / 5s</div>
+        <p style="font-size:14px; line-height:1.65; margin:0; opacity:0.85;">À 6 respirations par minute, ce rythme correspond à la fréquence de résonance du système cardiovasculaire. Il maximise la variabilité de la fréquence cardiaque (VFC), un indicateur clé de la régulation du système nerveux. Utilisé dans des protocoles thérapeutiques validés contre le stress et l'anxiété, ses effets se perçoivent dès quelques minutes de pratique régulière.</p>
+      </div>
+      <div>
+        <div style="font-weight:700; font-size:15px; margin-bottom:6px; color:var(--accent);">Apaisement — 4s / 8s</div>
+        <p style="font-size:14px; line-height:1.65; margin:0; opacity:0.85;">L'expiration plus longue que l'inspiration stimule le nerf vague, principale voie du système parasympathique. Ce signal indique au cerveau que le danger est passé et abaisse rapidement le niveau d'alerte physiologique. Particulièrement efficace lors d'une agitation forte ou d'une montée d'angoisse.</p>
+      </div>
+    </div>
+    <div class="modal-buttons" style="margin-top:24px;">
+      <button class="modal-btn modal-btn-primary" onclick="closeInfoModal()">Compris</button>
+    </div>
   </div>
 </div>
 
@@ -828,6 +911,15 @@ document.getElementById('btnSoundOff').addEventListener('click', () => {
   soundOn = false;
 });
 
+/* ---------- INFO MODAL ---------- */
+function openInfoModal() {
+  document.getElementById('infoModal').classList.add('visible');
+}
+
+function closeInfoModal() {
+  document.getElementById('infoModal').classList.remove('visible');
+}
+
 /* ---------- CUSTOM MODAL ---------- */
 function openCustomModal() {
   document.getElementById('customInhale').value = localStorage.getItem('customInhale') || '5';
@@ -858,6 +950,9 @@ updatePreview();
 
 /* ---------- BREATHING ---------- */
 let remaining, timer, startTime, isPlaying;
+let phaseStartTime = null;
+let pausedPhase = 'in';
+let remainingInPhase = 0;
 
 function start() {
   initAudio();
@@ -895,10 +990,35 @@ function buildVisual() {
   }
 }
 
+function showEndModal() {
+  const durationText = minutes <= 1 ? '1 minute' : `${minutes} minutes`;
+  document.getElementById('endMessage').textContent =
+    `Tu viens de faire ${durationText} de respiration. Prends un instant pour sentir la différence.`;
+  document.getElementById('progress').style.width = '100%';
+  document.getElementById('endModal').classList.add('visible');
+}
+
+function restartExercise() {
+  document.getElementById('endModal').classList.remove('visible');
+  remaining = minutes * 60;
+  startTime = Date.now();
+  isPlaying = true;
+  buildVisual();
+  setTimeout(() => {
+    breathe('in');
+    updateProgressContinuous();
+  }, 500);
+}
+
+function endExercise() {
+  document.getElementById('endModal').classList.remove('visible');
+  back();
+}
+
 function breathe(type) {
   if (remaining <= 0) {
-    document.getElementById('label').textContent = 'Terminé';
     isPlaying = false;
+    showEndModal();
     return;
   }
   const label = document.getElementById('label');
@@ -907,6 +1027,9 @@ function breathe(type) {
 
   label.textContent = type === 'in' ? 'Inspirez' : 'Expirez';
   if (type === 'in') playDing(); else playDong();
+
+  pausedPhase = type;
+  phaseStartTime = Date.now();
 
   if (animation === 'circle') {
     el.style.transition = `transform ${duration}s linear`;
@@ -948,23 +1071,55 @@ function back() {
 document.getElementById('breathing').addEventListener('click', (e) => {
   if (e.target.tagName === 'BUTTON') return;
   if (isPlaying) {
+    // Calcul du temps restant dans la phase courante
+    const elapsedInPhase = (Date.now() - phaseStartTime) / 1000;
+    const fullPhaseDur = pausedPhase === 'in' ? inhale : exhale;
+    remainingInPhase = Math.max(0.1, fullPhaseDur - elapsedInPhase);
+
     clearTimeout(timer);
     isPlaying = false;
     document.getElementById('label').textContent = 'Pause';
+
+    // Gel immédiat de l'animation
+    const el = document.getElementById('animElement');
+    if (el) {
+      const computed = getComputedStyle(el).transform;
+      el.style.transition = 'none';
+      el.style.transform = computed;
+    }
   } else {
     if (remaining > 0) {
       const elapsed = (minutes * 60 - remaining);
       startTime = Date.now() - (elapsed * 1000);
       isPlaying = true;
-      const label = document.getElementById('label');
-      breathe(label.textContent === 'Expirez' ? 'out' : 'in');
+      document.getElementById('label').textContent = pausedPhase === 'in' ? 'Inspirez' : 'Expirez';
+
+      // Reprise de l'animation depuis la position gelée
+      const el = document.getElementById('animElement');
+      if (el) {
+        el.getBoundingClientRect(); // force reflow
+        const fullPhaseDur = pausedPhase === 'in' ? inhale : exhale;
+        if (animation === 'circle') {
+          el.style.transition = `transform ${remainingInPhase}s linear`;
+          el.style.transform = pausedPhase === 'in' ? 'scale(2)' : 'scale(1)';
+        } else {
+          const oval = el.parentElement;
+          const maxY = -(oval.offsetHeight - el.offsetHeight);
+          el.style.transition = `transform ${remainingInPhase}s linear`;
+          el.style.transform = pausedPhase === 'in' ? `translateY(${maxY}px)` : 'translateY(0)';
+        }
+        timer = setTimeout(() => {
+          remaining -= fullPhaseDur;
+          breathe(pausedPhase === 'in' ? 'out' : 'in');
+        }, remainingInPhase * 1000);
+      }
       updateProgressContinuous();
     }
   }
 });
 </script>
 
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") closeCustomModal(); });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCustomModal(); closeInfoModal(); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>
