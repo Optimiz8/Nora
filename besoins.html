@@ -64,7 +64,7 @@ cursor:pointer;
 transition: all 0.2s;
 user-select:none;
 
-border:2px solid rgba(46,58,89,0.12);
+border:2px solid var(--bg);
 background:var(--light);
 color:var(--dark);
 
@@ -76,9 +76,10 @@ gap:14px;
 .need-item:active{transform:scale(.97)}
 
 .need-item.active{
-background:var(--light);
+background:var(--accent);
 color:var(--dark);
-border:2px solid var(--dark);
+border:2px solid var(--bg);
+box-shadow:0 4px 8px rgba(0,0,0,0.2);
 }
 
 .need-icon{font-size:24px}
@@ -257,19 +258,16 @@ function loadBesoins(){
 
 function goBack(){
   saveBesoins();
-  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getPrevPage('besoins.html', profileConfig);
 }
 
 function goNext(){
   saveBesoins();
-  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getNextPage('besoins.html', profileConfig);
 }
 
 function finish(){
   saveBesoins();
-  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = 'recap.html';
 }
 

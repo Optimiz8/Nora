@@ -104,34 +104,47 @@
         /* ---------- PAILLETTES ---------- */
         const glitterCanvas = document.getElementById('glitterCanvas');
         const glitterCtx = glitterCanvas.getContext('2d');
-        const GLITTER_COLORS = ['#FFD700', '#FFE4B5', '#FFB6C1', '#E0B0FF', '#ADD8E6', '#FFDAB9', '#FFF0F5', '#C8E6C9', '#F7B89C', '#F5E4CC'];
+        const GLITTER_COLORS = [
+            '#FFD700', '#FFF0AA', '#FFFDE0', // ors et jaunes
+            '#FF9ECD', '#FF69B4', '#FFB6D9', // roses
+            '#C8A8FF', '#A07AFF',             // violets
+            '#7FDBFF', '#B0EEFF',             // bleus clairs
+            '#FFFFFF', '#F5E4CC'              // blanc et crème
+        ];
         let glitterParticles = [];
+        let glitterReady = false;
 
         function resizeGlitterCanvas() {
             glitterCanvas.width = glitterCanvas.offsetWidth;
             glitterCanvas.height = glitterCanvas.offsetHeight;
+            glitterParticles = []; // Réinitialiser après resize
         }
 
         function spawnGlitter() {
-            for (let s = 0; s < 8; s++) {
+            const spawnRate = Math.max(3, Math.round(6 * speed));
+            for (let s = 0; s < spawnRate; s++) {
                 glitterParticles.push({
                     x: Math.random() * glitterCanvas.width,
                     y: Math.random() * glitterCanvas.height,
-                    size: Math.random() * 2.5 + 0.5,
+                    size: Math.random() * 1.2 + 0.3,
                     color: GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)],
                     alpha: 0,
-                    maxAlpha: Math.random() * 0.7 + 0.3,
-                    decay: Math.random() * 0.015 + 0.008,
+                    maxAlpha: Math.random() * 0.8 + 0.2,
+                    decay: (Math.random() * 0.012 + 0.006) * speed,
                     growing: true,
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: (Math.random() - 0.5) * 0.4
+                    vx: (Math.random() - 0.5) * 0.3 * speed,
+                    vy: (Math.random() - 0.5) * 0.3 * speed
                 });
             }
-            if (glitterParticles.length > 500) glitterParticles.splice(0, glitterParticles.length - 500);
+            if (glitterParticles.length > 600) glitterParticles.splice(0, glitterParticles.length - 600);
         }
 
         function drawGlitter() {
-            if (glitterCanvas.width === 0) resizeGlitterCanvas();
+            // Redimensionner le canvas si nécessaire (corrige l'effet ovale)
+            if (!glitterReady || glitterCanvas.width !== glitterCanvas.offsetWidth || glitterCanvas.height !== glitterCanvas.offsetHeight) {
+                resizeGlitterCanvas();
+                glitterReady = true;
+            }
             glitterCtx.clearRect(0, 0, glitterCanvas.width, glitterCanvas.height);
             spawnGlitter();
             glitterParticles = glitterParticles.filter(p => p.alpha > 0 || p.growing);

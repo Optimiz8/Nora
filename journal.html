@@ -12,6 +12,17 @@
     <script src="nora-data.js"></script>
     <title>Nora – Journal de crises</title>
     <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+        input[type="checkbox"] {
+            accent-color: var(--dark);
+        }
+
         body {
             padding-bottom: 20px;
         }
@@ -400,8 +411,9 @@
         }
         #formModal .form-block-title {
             color: var(--accent);
-            font-size: 12px;
-            letter-spacing: 0.08em;
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
             border-bottom-color: rgba(245,228,204,0.12);
         }
         #formModal .form-label {
@@ -514,6 +526,16 @@
             text-align: center;
             line-height: 1.1;
         }
+        .dur-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 64px;
+            padding: 0;
+            -moz-appearance: textfield;
+        }
+        .dur-input::-webkit-inner-spin-button,
+        .dur-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         .dur-unit {
             font-size: 11px;
             color: var(--light);
@@ -539,8 +561,10 @@
         /* ---------- TRIGGERS MODAL PLEIN ÉCRAN ---------- */
         #triggersModal {
             padding: 0;
+            background: var(--dark);
         }
         #triggersModal .modal-content {
+            background: var(--dark);
             border-radius: 0;
             max-width: 100%;
             width: 100%;
@@ -549,14 +573,42 @@
             padding-bottom: 0;
             max-height: none;
         }
+        #triggersModal .modal-header {
+            background: var(--dark);
+            border-bottom: 1px solid rgba(245,228,204,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 0 20px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #triggersModal .modal-title { color: var(--light); font-size: 18px; text-align: center; flex: 1; }
+        #triggersModal .close-button { color: var(--light); position: absolute; right: 16px; }
+        #triggersModal .triggers-info { color: rgba(245,228,204,0.65); margin: 16px 16px 8px; }
+        #triggersModal #triggersContent { padding: 0 16px; }
+        #triggersModal .trigger-category-title { background: rgba(245,228,204,0.07); color: var(--light); }
+        #triggersModal .trigger-category-title:active { background: rgba(245,228,204,0.14); }
+        #triggersModal .trigger-name { color: var(--light); }
+        #triggersModal .trigger-description { color: rgba(245,228,204,0.6); }
+        #triggersModal .trigger-item:hover { background: rgba(245,228,204,0.06); }
+        #triggersModal .trigger-custom-input { background: rgba(245,228,204,0.08); border-color: rgba(245,228,204,0.2); color: var(--light); }
         #triggersModal .modal-actions {
             position: sticky;
             bottom: 0;
-            background: var(--light);
+            background: var(--dark);
+            border-top: 1px solid rgba(245,228,204,0.1);
             padding: 12px 16px;
             margin: 0;
-            border-top: 2px solid rgba(46,58,89,0.1);
         }
+        #triggersModal .trigger-intensity-row { border-bottom-color: rgba(245,228,204,0.1); }
+        #triggersModal .trigger-name-label { color: var(--light); }
+        #triggersModal .trigger-intensity-val { color: var(--light); }
+        #triggersModal .trigger-intensity-row input[type="range"] { background: rgba(245,228,204,0.2); }
+        #triggersModal .trigger-intensity-row input[type="range"]::-webkit-slider-thumb { background: var(--accent); }
+        #triggersModal .trigger-intensity-row input[type="range"]::-moz-range-thumb { background: var(--accent); }
 
         .trigger-intensity-row {
             display: flex;
@@ -853,7 +905,6 @@
             cursor: pointer;
             width: 18px;
             height: 18px;
-            accent-color: #2E3A59;
         }
 
         .trigger-label {
@@ -972,6 +1023,92 @@
             font-weight: 600;
         }
 
+        /* ---------- MODALES BESOINS / ÉTATS / CAPACITÉS ---------- */
+        .j-sub-modal {
+            padding: 0;
+            background: var(--dark);
+            z-index: 300;
+        }
+        .j-sub-modal.visible {
+            align-items: stretch;
+        }
+        .j-sub-modal .modal-content {
+            background: var(--dark);
+            border-radius: 0;
+            max-width: 100%;
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 0;
+        }
+        .j-sub-modal .modal-header {
+            background: var(--dark);
+            border-bottom: 1px solid rgba(245,228,204,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 0 20px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .j-sub-modal .modal-title { color: var(--light); font-size: 18px; text-align: center; flex: 1; }
+        .j-sub-modal .close-button { color: var(--light); position: absolute; right: 16px; }
+        .j-sub-modal .triggers-info { color: rgba(245,228,204,0.65); margin: 16px 16px 8px; font-size: 15px; }
+        #jBesContent, #jEtatsContent, #jCapsContent { padding: 0 16px 16px; }
+        .j-sub-modal .modal-actions {
+            position: sticky;
+            bottom: 0;
+            background: var(--dark);
+            border-top: 1px solid rgba(245,228,204,0.1);
+            padding: 12px 16px;
+            margin: 0;
+        }
+        .j-item {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: 2px solid rgba(245,228,204,0.2);
+            background: rgba(245,228,204,0.1);
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            user-select: none;
+            transition: all 0.15s;
+        }
+        .j-item:active { transform: scale(.97); }
+        .j-item.active {
+            background: var(--light);
+            color: var(--dark);
+            border-color: rgba(46,58,89,0.8);
+        }
+        .j-item-icon { font-size: 24px; }
+        .j-item-text { flex: 1; font-size: 16px; }
+        .j-cap-item {
+            background: var(--light);
+            color: var(--dark);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 10px;
+            user-select: none;
+            cursor: pointer;
+            transition: .15s;
+        }
+        .j-cap-item:active { transform: scale(.97); }
+        .j-cap-item[data-state="possible"] { background: linear-gradient(to right, rgba(76,175,80,0.15), var(--light)); }
+        .j-cap-item[data-state="difficult"] { background: linear-gradient(to right, rgba(255,152,0,0.15), var(--light)); }
+        .j-cap-item[data-state="impossible"] { background: linear-gradient(to right, rgba(244,67,54,0.15), var(--light)); }
+        .j-cap-item[data-state="unknown"] { background: linear-gradient(to right, rgba(158,158,158,0.15), var(--light)); }
+        .j-cap-state { font-size: 24px; min-width: 32px; text-align: center; }
+        .j-cap-icon { font-size: 24px; }
+        .j-cap-text { flex: 1; font-size: 16px; }
+
         @media (max-width: 600px) {
             .table-container {
                 border-radius: 0;
@@ -1013,6 +1150,7 @@
                         <th style="width: 70px;">Intensité</th>
                         <th style="width: 80px;">Durée</th>
                         <th style="min-width: 220px;">Déclencheurs</th>
+                        <th style="min-width: 130px;">Catégories</th>
                         <th style="width: 80px;">Cap.</th>
                         <th style="width: 80px;">Bes.</th>
                         <th style="width: 80px;">États</th>
@@ -1143,14 +1281,14 @@
                     <div class="duration-carousel">
                         <div class="dur-col">
                             <button type="button" class="dur-arrow" onclick="adjustDur('h',1)">▲</button>
-                            <div class="dur-value" id="durH">0</div>
+                            <input type="number" class="dur-value dur-input" id="durH" min="0" max="12" value="0" inputmode="numeric" onclick="this.select()" onchange="onDurInputChange('h', this.value)">
                             <button type="button" class="dur-arrow" onclick="adjustDur('h',-1)">▼</button>
                             <div class="dur-unit">heure</div>
                         </div>
                         <div class="dur-sep">:</div>
                         <div class="dur-col">
                             <button type="button" class="dur-arrow" onclick="adjustDur('m',1)">▲</button>
-                            <div class="dur-value" id="durM">00</div>
+                            <input type="number" class="dur-value dur-input" id="durM" min="0" max="45" step="15" value="0" inputmode="numeric" onclick="this.select()" onchange="onDurInputChange('m', this.value)">
                             <button type="button" class="dur-arrow" onclick="adjustDur('m',-1)">▼</button>
                             <div class="dur-unit">min</div>
                         </div>
@@ -1159,37 +1297,36 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Remarques (optionnel)</label>
+                    <label class="form-label">Remarques</label>
                     <textarea class="form-textarea" id="formRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
                 </div>
             </div>
 
             <div class="form-block form-block-optional">
                 <div class="form-block-title">MON ÉTAT PENDANT LA CRISE</div>
-                <p class="form-optional-hint">Optionnel — utile si tu te souviens de ton état pendant la crise.</p>
+
+                <div class="form-group">
+                    <label class="form-label">🎯 Capacités</label>
+                    <button type="button" class="triggers-button" onclick="openJCapsModal()">
+                        <span>Renseigner mes capacités</span>
+                    </button>
+                    <div class="triggers-preview" id="capsFormPreview">Non renseigné</div>
+                </div>
 
                 <div class="form-group">
                     <label class="form-label">🤲 Besoins</label>
-                    <button type="button" class="triggers-button" onclick="navigateToFormPage('besoins.html')">
+                    <button type="button" class="triggers-button" onclick="openJBesModal()">
                         <span>Sélectionner mes besoins</span>
                     </button>
                     <div class="triggers-preview" id="besoisFormPreview">Non renseigné</div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom:0">
                     <label class="form-label">💭 États</label>
-                    <button type="button" class="triggers-button" onclick="navigateToFormPage('etats.html')">
+                    <button type="button" class="triggers-button" onclick="openJEtatsModal()">
                         <span>Sélectionner mes états</span>
                     </button>
                     <div class="triggers-preview" id="etatsFormPreview">Non renseigné</div>
-                </div>
-
-                <div class="form-group" style="margin-bottom:0">
-                    <label class="form-label">🎯 Capacités</label>
-                    <button type="button" class="triggers-button" onclick="navigateToFormPage('capacites.html')">
-                        <span>Renseigner mes capacités</span>
-                    </button>
-                    <div class="triggers-preview" id="capsFormPreview">Non renseigné</div>
                 </div>
             </div>
 
@@ -1262,6 +1399,48 @@
         </div>
     </div>
 
+    <div class="modal j-sub-modal" id="jBesModal" role="dialog" aria-modal="true" aria-label="Besoins">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">🤲 Mes besoins</h2>
+                <button class="close-button" onclick="closeJBesModal()" aria-label="Fermer">×</button>
+            </div>
+            <p class="triggers-info">Appuie pour sélectionner. Plusieurs sélections possibles.</p>
+            <div id="jBesContent"></div>
+            <div class="modal-actions">
+                <button class="modal-button primary" onclick="validerJBes()">✅ Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal j-sub-modal" id="jEtatsModal" role="dialog" aria-modal="true" aria-label="États">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">💭 Comment je me sens</h2>
+                <button class="close-button" onclick="closeJEtatsModal()" aria-label="Fermer">×</button>
+            </div>
+            <p class="triggers-info">Appuie pour sélectionner. Plusieurs sélections possibles.</p>
+            <div id="jEtatsContent"></div>
+            <div class="modal-actions">
+                <button class="modal-button primary" onclick="validerJEtats()">✅ Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal j-sub-modal" id="jCapsModal" role="dialog" aria-modal="true" aria-label="Capacités">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">🎯 Mes capacités</h2>
+                <button class="close-button" onclick="closeJCapsModal()" aria-label="Fermer">×</button>
+            </div>
+            <p class="triggers-info">Appuie pour changer l'état. Appui long pour remettre à zéro.</p>
+            <div id="jCapsContent"></div>
+            <div class="modal-actions">
+                <button class="modal-button primary" onclick="validerJCaps()">✅ Valider</button>
+            </div>
+        </div>
+    </div>
+
     <div id="badgeTooltip"></div>
 
     <script>
@@ -1294,7 +1473,7 @@
         let deleteTargetIndex = null;
         let deleteFromDetail = false;
         let sliderTouched = { energie: false, chargeMentale: false, chargeSociale: false, intensite: false };
-        let visitedBesoins = false, visitedEtats = false, visitedCapacites = false;
+        var jFormBes = null, jFormEtats = null, jFormCaps = null;
 
         const SLIDER_IDS = {
             energie:      { slider: 'formEnergie',        display: 'formEnergieDisplay' },
@@ -1319,10 +1498,23 @@
         }
 
         function updateDurDisplay() {
-            document.getElementById('durH').textContent = durHours;
-            document.getElementById('durM').textContent = String(durMinutes).padStart(2, '0');
+            document.getElementById('durH').value = durHours;
+            document.getElementById('durM').value = String(durMinutes).padStart(2, '0');
             var zl = document.getElementById('durZeroLabel');
             if (zl) zl.style.display = (durHours === 0 && durMinutes === 0) ? 'block' : 'none';
+        }
+
+        function onDurInputChange(field, val) {
+            var n = parseInt(val, 10);
+            if (isNaN(n)) { updateDurDisplay(); return; }
+            if (field === 'h') {
+                durHours = Math.max(0, Math.min(12, n));
+            } else {
+                durMinutes = DUR_QUARTERS.reduce(function(a, b) {
+                    return Math.abs(b - n) < Math.abs(a - n) ? b : a;
+                });
+            }
+            updateDurDisplay();
         }
 
         function getDuration() {
@@ -1429,7 +1621,7 @@
                     currentYear = year;
                     const yearRow = document.createElement('tr');
                     yearRow.className = 'year-header-row';
-                    yearRow.innerHTML = '<td colspan="13">' + year + '</td>';
+                    yearRow.innerHTML = '<td colspan="14">' + year + '</td>';
                     tbody.appendChild(yearRow);
                 }
                 const row = createTableRow(entry, index);
@@ -1465,6 +1657,15 @@
                 ? decl.map(function(d) { return d.nom; }).join(', ')
                 : '-';
 
+            var catCounts = {};
+            decl.forEach(function(d) {
+                var cat = d.nom.includes(' \u2014 ') ? d.nom.split(' \u2014 ')[0] : 'Autre';
+                catCounts[cat] = (catCounts[cat] || 0) + 1;
+            });
+            var catsDisplay = Object.keys(catCounts).length > 0
+                ? Object.keys(catCounts).map(function(c) { return c + (catCounts[c] > 1 ? ' \xd7' + catCounts[c] : ''); }).join(' · ')
+                : '-';
+
             var ener = normalizeEnergie(entry);
             var chM = normalizeChargeMentale(entry);
             var chS = normalizeChargeSociale(entry);
@@ -1487,6 +1688,7 @@
                 <td>${intensityDisplay}</td>
                 <td>${entry.duree || '-'}</td>
                 <td style="min-width: 220px; max-width: 260px;">${triggersDisplay}</td>
+                <td style="min-width: 130px; font-size: 13px; color: var(--dark); opacity: 0.8;">${catsDisplay}</td>
                 <td>${capsCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'caps')">${capsCount}</span>` : '—'}</td>
                 <td>${needsCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'besoins')">${needsCount}</span>` : '—'}</td>
                 <td>${statesCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'etats')">${statesCount}</span>` : '—'}</td>
@@ -1553,6 +1755,22 @@
                 </div>
             `;
 
+            // Capacités
+            if (entry.capacites === undefined || entry.capacites === null) {
+                html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div><div class="modal-text">—</div></div>`;
+            } else {
+                var capLines = [];
+                if (entry.capacites.impossible && entry.capacites.impossible.length) capLines.push('<strong>Impossible :</strong> ' + entry.capacites.impossible.join(', '));
+                if (entry.capacites.difficile && entry.capacites.difficile.length) capLines.push('<strong>Difficile :</strong> ' + entry.capacites.difficile.join(', '));
+                if (entry.capacites.possible && entry.capacites.possible.length) capLines.push('<strong>Possible :</strong> ' + entry.capacites.possible.join(', '));
+                if (entry.capacites.incertain && entry.capacites.incertain.length) capLines.push('<strong>Incertain :</strong> ' + entry.capacites.incertain.join(', '));
+                if (capLines.length > 0) {
+                    html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div>`;
+                    capLines.forEach(function(l) { html += `<div class="modal-text">${l}</div>`; });
+                    html += `</div>`;
+                }
+            }
+
             // Besoins
             if (entry.besoins === undefined || entry.besoins === null) {
                 html += `<div class="modal-section"><div class="modal-section-title">🤲 Besoins</div><div class="modal-text">—</div></div>`;
@@ -1571,22 +1789,6 @@
                 html += `<div class="modal-text">${etatsLabels.join(', ')}</div></div>`;
             }
 
-            // Capacités
-            if (entry.capacites === undefined || entry.capacites === null) {
-                html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div><div class="modal-text">—</div></div>`;
-            } else {
-                var capLines = [];
-                if (entry.capacites.impossible && entry.capacites.impossible.length) capLines.push('<strong>Impossible :</strong> ' + entry.capacites.impossible.join(', '));
-                if (entry.capacites.difficile && entry.capacites.difficile.length) capLines.push('<strong>Difficile :</strong> ' + entry.capacites.difficile.join(', '));
-                if (entry.capacites.possible && entry.capacites.possible.length) capLines.push('<strong>Possible :</strong> ' + entry.capacites.possible.join(', '));
-                if (entry.capacites.incertain && entry.capacites.incertain.length) capLines.push('<strong>Incertain :</strong> ' + entry.capacites.incertain.join(', '));
-                if (capLines.length > 0) {
-                    html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div>`;
-                    capLines.forEach(function(l) { html += `<div class="modal-text">${l}</div>`; });
-                    html += `</div>`;
-                }
-            }
-
             // Remarques
             if (entry.remarques) {
                 html += `<div class="modal-section"><div class="modal-section-title">📝 Remarques</div>`;
@@ -1598,39 +1800,14 @@
             document.getElementById('detailModal').classList.add('visible');
         }
 
-        function openFormModal(mode, index = null, draft = null) {
+        function openFormModal(mode, index = null) {
             formMode = mode;
             currentEntryIndex = index;
 
             const modalTitle = document.getElementById('formModalTitle');
             const dateGroup = document.getElementById('dateGroup');
 
-            if (draft) {
-                // Restoration depuis navigation vers besoins/etats/capacites
-                modalTitle.textContent = mode === 'create' ? 'Ajouter une crise manuellement' : 'Modifier la crise';
-                dateGroup.style.display = 'block';
-                document.getElementById('formDate').value = draft.date || '';
-                document.getElementById('formTime').value = draft.time || '';
-                document.getElementById('formType').value = draft.type || '';
-                document.getElementById('formTypeManifestation').value = draft.typeManifestation || '';
-                if (draft.intensite !== null) setSliderValue('intensite', draft.intensite); else resetSlider('intensite');
-                if (draft.energie !== null) setSliderValue('energie', draft.energie); else resetSlider('energie');
-                if (draft.chargeMentale !== null) setSliderValue('chargeMentale', draft.chargeMentale); else resetSlider('chargeMentale');
-                if (draft.chargeSociale !== null) setSliderValue('chargeSociale', draft.chargeSociale); else resetSlider('chargeSociale');
-                durHours = draft.dureeH || 0; durMinutes = draft.dureeM || 0; updateDurDisplay();
-                document.getElementById('formRemarks').value = draft.remarques || '';
-                selectedTriggers = draft.triggers || [];
-                triggerIntensities = draft.triggerIntensities || {};
-                visitedBesoins = draft.visitedBesoins || false;
-                visitedEtats = draft.visitedEtats || false;
-                visitedCapacites = draft.visitedCapacites || false;
-                // Marquer la section visitée selon la page d'où on revient
-                if (draft.fromPage === 'besoins.html') visitedBesoins = true;
-                else if (draft.fromPage === 'etats.html') visitedEtats = true;
-                else if (draft.fromPage === 'capacites.html') visitedCapacites = true;
-                updateTriggersPreview();
-                updateBesEtaCapsPreview();
-            } else if (mode === 'create') {
+            if (mode === 'create') {
                 modalTitle.textContent = 'Ajouter une crise manuellement';
                 dateGroup.style.display = 'block';
 
@@ -1650,10 +1827,7 @@
                 document.getElementById('formRemarks').value = '';
                 selectedTriggers = [];
                 triggerIntensities = {};
-                visitedBesoins = false; visitedEtats = false; visitedCapacites = false;
-                localStorage.removeItem('currentBesoins');
-                localStorage.removeItem('currentEtats');
-                localStorage.removeItem('currentCapacites');
+                jFormBes = null; jFormEtats = null; jFormCaps = null;
                 updateTriggersPreview();
                 updateBesEtaCapsPreview();
             } else {
@@ -1694,21 +1868,18 @@
                     }
                 });
 
-                // Pré-remplir les pages besoins/etats/capacites avec les données de l'entrée
-                visitedBesoins = entry.besoins !== null && entry.besoins !== undefined;
-                visitedEtats = entry.etats !== null && entry.etats !== undefined;
-                visitedCapacites = entry.capacites !== null && entry.capacites !== undefined;
-                if (visitedBesoins) localStorage.setItem('currentBesoins', JSON.stringify(entry.besoins));
-                if (visitedEtats) localStorage.setItem('currentEtats', JSON.stringify(entry.etats));
-                if (visitedCapacites) localStorage.setItem('currentCapacites', JSON.stringify(entry.capacites));
+                jFormBes = (entry.besoins !== null && entry.besoins !== undefined) ? entry.besoins : null;
+                jFormEtats = (entry.etats !== null && entry.etats !== undefined) ? entry.etats : null;
+                jFormCaps = (entry.capacites !== null && entry.capacites !== undefined) ? entry.capacites : null;
 
                 updateTriggersPreview();
                 updateBesEtaCapsPreview();
             }
 
             history.pushState({ noraModal: true }, '');
-            document.getElementById('formModal').classList.add('visible');
-        }
+            var fm = document.getElementById('formModal');
+            fm.classList.add('visible');
+            fm.scrollTop = 0;
 
 
         function openTriggersModal() {
@@ -1770,33 +1941,6 @@
             titleEl.parentElement.classList.toggle('open');
         }
 
-        /* ---------- NAVIGATION BESOINS / ÉTATS / CAPACITÉS ---------- */
-        function navigateToFormPage(page) {
-            const draft = {
-                mode: formMode,
-                index: currentEntryIndex,
-                date: document.getElementById('formDate').value,
-                time: document.getElementById('formTime').value,
-                type: document.getElementById('formType').value,
-                typeManifestation: document.getElementById('formTypeManifestation').value,
-                intensite: sliderTouched.intensite ? document.getElementById('formIntensity').value : null,
-                dureeH: durHours,
-                dureeM: durMinutes,
-                remarques: document.getElementById('formRemarks').value,
-                energie: sliderTouched.energie ? document.getElementById('formEnergie').value : null,
-                chargeMentale: sliderTouched.chargeMentale ? document.getElementById('formChargeMentale').value : null,
-                chargeSociale: sliderTouched.chargeSociale ? document.getElementById('formChargeSociale').value : null,
-                triggers: selectedTriggers,
-                triggerIntensities: triggerIntensities,
-                visitedBesoins: visitedBesoins,
-                visitedEtats: visitedEtats,
-                visitedCapacites: visitedCapacites,
-                fromPage: page
-            };
-            localStorage.setItem('journalFormDraft', JSON.stringify(draft));
-            localStorage.setItem('journalRetour', 'true');
-            window.location.href = page;
-        }
 
         function updateBesEtaCapsPreview() {
             var bPrev = document.getElementById('besoisFormPreview');
@@ -1804,53 +1948,34 @@
             var cPrev = document.getElementById('capsFormPreview');
             if (!bPrev) return;
 
-            if (!visitedBesoins) {
+            if (jFormBes === null) {
                 bPrev.textContent = 'Non renseigné';
             } else {
-                try {
-                    var besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]');
-                    bPrev.textContent = besoins.length === 0
-                        ? 'Aucun sélectionné'
-                        : besoins.map(function(b) { return (b.icon || '') + ' ' + (b.label || b); }).join(', ');
-                } catch(e) { bPrev.textContent = 'Non renseigné'; }
+                bPrev.textContent = jFormBes.length === 0
+                    ? 'Aucun sélectionné'
+                    : jFormBes.map(function(b) { return (b.icon || '') + ' ' + (b.label || b); }).join(', ');
             }
 
-            if (!visitedEtats) {
+            if (jFormEtats === null) {
                 ePrev.textContent = 'Non renseigné';
             } else {
-                try {
-                    var etats = JSON.parse(localStorage.getItem('currentEtats') || '[]');
-                    ePrev.textContent = etats.length === 0
-                        ? 'Aucun sélectionné'
-                        : etats.map(function(e) { return (e.icon || '') + ' ' + (e.label || e); }).join(', ');
-                } catch(e) { ePrev.textContent = 'Non renseigné'; }
+                ePrev.textContent = jFormEtats.length === 0
+                    ? 'Aucun sélectionné'
+                    : jFormEtats.map(function(e) { return (e.icon || '') + ' ' + (e.label || e); }).join(', ');
             }
 
-            if (!visitedCapacites) {
+            if (jFormCaps === null) {
                 cPrev.textContent = 'Non renseigné';
             } else {
-                try {
-                    var caps = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
-                    var total = (caps.impossible || []).length + (caps.difficile || []).length
-                              + (caps.possible || []).length + (caps.incertain || []).length;
-                    cPrev.textContent = total === 0
-                        ? 'Aucune renseignée'
-                        : total + ' capacité' + (total > 1 ? 's' : '') + ' renseignée' + (total > 1 ? 's' : '');
-                } catch(e) { cPrev.textContent = 'Non renseigné'; }
+                var total = (jFormCaps.impossible || []).length + (jFormCaps.difficile || []).length
+                          + (jFormCaps.possible || []).length + (jFormCaps.incertain || []).length;
+                cPrev.textContent = total === 0
+                    ? 'Aucune renseignée'
+                    : total + ' capacité' + (total > 1 ? 's' : '') + ' renseignée' + (total > 1 ? 's' : '');
             }
         }
 
-        function checkFormDraftRestore() {
-            if (!localStorage.getItem('journalRetour')) return;
-            localStorage.removeItem('journalRetour');
-            var draft = null;
-            try { draft = JSON.parse(localStorage.getItem('journalFormDraft') || 'null'); } catch(e) {}
-            if (!draft) return;
-            localStorage.removeItem('journalFormDraft');
-            openFormModal(draft.mode, draft.index, draft);
-        }
-
-        function handleTriggerChange(checkbox) {
+function handleTriggerChange(checkbox) {
             if (checkbox.getAttribute('data-custom') === 'true') {
                 const container = document.getElementById('customTriggerContainer');
                 container.style.display = checkbox.checked ? 'block' : 'none';
@@ -1891,7 +2016,7 @@
                     var isNull = triggerIntensities[t] === undefined || triggerIntensities[t] === null;
                     var val = isNull ? 5 : triggerIntensities[t];
                     return `<div class="trigger-intensity-row">
-                        <span class="trigger-name-label">• ${t}</span>
+                        <span class="trigger-name-label">• ${t.includes(' \u2014 ') ? t.split(' \u2014 ')[1] : t}</span>
                         <input type="range" min="0" max="10" value="${val}" class="${isNull ? 'null-state' : ''}" oninput="setTriggerIntensity('${t.replace(/'/g, "\\'")}', this.value, this)">
                         <span class="trigger-intensity-val ${isNull ? 'null-state' : ''}">${isNull ? '— /10' : val + '/10'}</span>
                     </div>`;
@@ -1939,17 +2064,12 @@
                     return;
                 }
                 
-                var savedBesoins = null, savedEtats = null, savedCapacites = null;
-                if (visitedBesoins) { try { savedBesoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]'); } catch(e) { savedBesoins = []; } }
-                if (visitedEtats) { try { savedEtats = JSON.parse(localStorage.getItem('currentEtats') || '[]'); } catch(e) { savedEtats = []; } }
-                if (visitedCapacites) { try { savedCapacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}'); } catch(e) { savedCapacites = {}; } }
-
                 const entry = {
                     horodatage: horodatage,
                     profil: localStorage.getItem('currentProfil') || 'maison',
-                    capacites: savedCapacites,
-                    besoins: savedBesoins,
-                    etats: savedEtats,
+                    capacites: jFormCaps,
+                    besoins: jFormBes,
+                    etats: jFormEtats,
                     typeCrise: document.getElementById('formType').value,
                     typeManifestation: document.getElementById('formTypeManifestation').value,
                     intensite: sliderTouched.intensite ? document.getElementById('formIntensity').value : '',
@@ -1997,9 +2117,9 @@
                 sorted[currentEntryIndex].energie = sliderTouched.energie ? document.getElementById('formEnergie').value : '';
                 sorted[currentEntryIndex].chargeMentale = sliderTouched.chargeMentale ? document.getElementById('formChargeMentale').value : '';
                 sorted[currentEntryIndex].chargeSociale = sliderTouched.chargeSociale ? document.getElementById('formChargeSociale').value : '';
-                if (visitedBesoins) { try { sorted[currentEntryIndex].besoins = JSON.parse(localStorage.getItem('currentBesoins') || '[]'); } catch(e) {} }
-                if (visitedEtats) { try { sorted[currentEntryIndex].etats = JSON.parse(localStorage.getItem('currentEtats') || '[]'); } catch(e) {} }
-                if (visitedCapacites) { try { sorted[currentEntryIndex].capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}'); } catch(e) {} }
+                if (jFormBes !== null) sorted[currentEntryIndex].besoins = jFormBes;
+                if (jFormEtats !== null) sorted[currentEntryIndex].etats = jFormEtats;
+                if (jFormCaps !== null) sorted[currentEntryIndex].capacites = jFormCaps;
                 delete sorted[currentEntryIndex].precrisis;
 
                 localStorage.setItem('journalCrises', JSON.stringify(sorted));
@@ -2291,36 +2411,167 @@ ${entriesHtml}
         }
 
         /* ---------- ANTI-SCROLL SLIDERS ---------- */
-        function attachSliderScrollGuard(el) {
-            var startX, startY, locked = false;
+        function attachSliderScrollGuard(el, onValueChange) {
+            var _startX = 0, _startY = 0, _scrolling = null;
             el.addEventListener('touchstart', function(e) {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-                locked = false;
-            }, { passive: true });
-            el.addEventListener('touchmove', function(e) {
-                if (locked) return;
-                var dx = Math.abs(e.touches[0].clientX - startX);
-                var dy = Math.abs(e.touches[0].clientY - startY);
-                if (dy > dx) {
-                    e.preventDefault();
-                } else {
-                    locked = true;
-                }
+                e.preventDefault();
+                _startX = e.touches[0].clientX;
+                _startY = e.touches[0].clientY;
+                _scrolling = null;
             }, { passive: false });
+            el.addEventListener('touchmove', function(e) {
+                var dx = e.touches[0].clientX - _startX;
+                var dy = Math.abs(e.touches[0].clientY - _startY);
+                if (_scrolling === null && (Math.abs(dx) > 6 || dy > 6)) {
+                    _scrolling = dy > Math.abs(dx);
+                }
+                if (_scrolling !== false) return;
+                var rect = el.getBoundingClientRect();
+                var min = parseInt(el.min) || 0;
+                var max = parseInt(el.max) || 10;
+                var ratio = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+                var newVal = Math.round(min + ratio * (max - min));
+                if (parseInt(el.value) !== newVal) {
+                    el.value = newVal;
+                    el.dispatchEvent(new Event('input'));
+                }
+            }, { passive: true });
+            el.addEventListener('touchend', function() { _scrolling = null; }, { passive: true });
         }
 
-        document.querySelectorAll('.intensity-slider').forEach(attachSliderScrollGuard);
+        /* ---------- MODALES BESOINS / ÉTATS / CAPACITÉS ---------- */
+        function getJProfileConfig() {
+            return getProfileConfig(localStorage.getItem('profilActuel') || 'maison');
+        }
+
+        function toggleJItem(el) {
+            el.classList.toggle('active');
+        }
+
+        function openJBesModal() {
+            var config = getJProfileConfig();
+            var visibles = config.besoins.visibles || [];
+            var allItems = BESOINS.concat(config.besoins.personnalisees || []);
+            var items = allItems.filter(function(i) { return visibles.includes(i.id); });
+            document.getElementById('jBesContent').innerHTML = items.map(function(item) {
+                var active = jFormBes && jFormBes.some(function(b) { return b.label === item.nom; });
+                return '<div class="j-item' + (active ? ' active' : '') + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" data-icon="' + item.emoji + '" onclick="toggleJItem(this)">' +
+                    '<div class="j-item-icon">' + item.emoji + '</div>' +
+                    '<div class="j-item-text">' + item.nom + '</div></div>';
+            }).join('');
+            history.pushState({ noraModal: true }, '');
+            var m = document.getElementById('jBesModal');
+            m.classList.add('visible');
+            m.scrollTop = 0;
+        }
+
+        function closeJBesModal() {
+            document.getElementById('jBesModal').classList.remove('visible');
+        }
+
+        function validerJBes() {
+            var actifs = document.querySelectorAll('#jBesContent .j-item.active');
+            jFormBes = Array.from(actifs).map(function(el) { return { label: el.dataset.label, icon: el.dataset.icon }; });
+            updateBesEtaCapsPreview();
+            closeJBesModal();
+        }
+
+        function openJEtatsModal() {
+            var config = getJProfileConfig();
+            var visibles = config.etats.visibles || [];
+            var allItems = ETATS.concat(config.etats.personnalisees || []);
+            var items = allItems.filter(function(i) { return visibles.includes(i.id); });
+            document.getElementById('jEtatsContent').innerHTML = items.map(function(item) {
+                var active = jFormEtats && jFormEtats.some(function(e) { return e.label === item.nom; });
+                return '<div class="j-item' + (active ? ' active' : '') + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" data-icon="' + item.emoji + '" onclick="toggleJItem(this)">' +
+                    '<div class="j-item-icon">' + item.emoji + '</div>' +
+                    '<div class="j-item-text">' + item.nom + '</div></div>';
+            }).join('');
+            history.pushState({ noraModal: true }, '');
+            var m = document.getElementById('jEtatsModal');
+            m.classList.add('visible');
+            m.scrollTop = 0;
+        }
+
+        function closeJEtatsModal() {
+            document.getElementById('jEtatsModal').classList.remove('visible');
+        }
+
+        function validerJEtats() {
+            var actifs = document.querySelectorAll('#jEtatsContent .j-item.active');
+            jFormEtats = Array.from(actifs).map(function(el) { return { label: el.dataset.label, icon: el.dataset.icon }; });
+            updateBesEtaCapsPreview();
+            closeJEtatsModal();
+        }
+
+        var J_CAP_STATES = {
+            empty: { emoji: '', next: 'possible' },
+            possible: { emoji: '✅', next: 'difficult' },
+            difficult: { emoji: '⚠️', next: 'impossible' },
+            impossible: { emoji: '⛔', next: 'unknown' },
+            unknown: { emoji: '❓', next: 'empty' }
+        };
+
+        function cycleJCapState(el) {
+            if (el._longPress) { el._longPress = false; return; }
+            var next = J_CAP_STATES[el.dataset.state].next;
+            el.dataset.state = next;
+            el.querySelector('.j-cap-state').textContent = J_CAP_STATES[next].emoji;
+        }
+
+        function openJCapsModal() {
+            var config = getJProfileConfig();
+            var visibles = config.capacites.visibles || [];
+            var allItems = CAPACITES.concat(config.capacites.personnalisees || []);
+            var items = allItems.filter(function(i) { return visibles.includes(i.id); });
+            document.getElementById('jCapsContent').innerHTML = items.map(function(item) {
+                var state = 'empty';
+                if (jFormCaps) {
+                    if (jFormCaps.impossible && jFormCaps.impossible.includes(item.nom)) state = 'impossible';
+                    else if (jFormCaps.difficile && jFormCaps.difficile.includes(item.nom)) state = 'difficult';
+                    else if (jFormCaps.possible && jFormCaps.possible.includes(item.nom)) state = 'possible';
+                    else if (jFormCaps.incertain && jFormCaps.incertain.includes(item.nom)) state = 'unknown';
+                }
+                return '<div class="j-cap-item" data-state="' + state + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" onclick="cycleJCapState(this)">' +
+                    '<div class="j-cap-state">' + J_CAP_STATES[state].emoji + '</div>' +
+                    '<div class="j-cap-icon">' + item.emoji + '</div>' +
+                    '<div class="j-cap-text">' + item.nom + '</div></div>';
+            }).join('');
+            history.pushState({ noraModal: true }, '');
+            var m = document.getElementById('jCapsModal');
+            m.classList.add('visible');
+            m.scrollTop = 0;
+        }
+
+        function closeJCapsModal() {
+            document.getElementById('jCapsModal').classList.remove('visible');
+        }
+
+        function validerJCaps() {
+            var caps = { impossible: [], difficile: [], possible: [], incertain: [] };
+            document.querySelectorAll('#jCapsContent .j-cap-item').forEach(function(el) {
+                var s = el.dataset.state;
+                var label = el.dataset.label;
+                if (s === 'impossible') caps.impossible.push(label);
+                else if (s === 'difficult') caps.difficile.push(label);
+                else if (s === 'possible') caps.possible.push(label);
+                else if (s === 'unknown') caps.incertain.push(label);
+            });
+            jFormCaps = caps;
+            updateBesEtaCapsPreview();
+            closeJCapsModal();
+        }
+
+        document.querySelectorAll('.intensity-slider').forEach(function(el) { attachSliderScrollGuard(el); });
 
         loadJournal();
-        checkFormDraftRestore();
     </script>
 
     <script>
-        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); } });
+        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(null, "detailModal"); closeModal(null, "formModal"); closeModal(null, "triggersModal"); closeModal(null, "exportModal"); document.getElementById('jBesModal').classList.remove('visible'); document.getElementById('jEtatsModal').classList.remove('visible'); document.getElementById('jCapsModal').classList.remove('visible'); } });
 
         window.addEventListener('popstate', function() {
-            var order = ['triggersModal', 'deleteModal', 'exportModal', 'formModal', 'detailModal'];
+            var order = ['jCapsModal', 'jEtatsModal', 'jBesModal', 'triggersModal', 'deleteModal', 'exportModal', 'formModal', 'detailModal'];
             for (var i = 0; i < order.length; i++) {
                 var el = document.getElementById(order[i]);
                 if (el && el.classList.contains('visible')) {

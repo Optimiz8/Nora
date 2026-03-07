@@ -1001,64 +1001,57 @@ function initMixer() {
       a.volume = initialVolume / 100;
     }
 
-    // Détection de geste : n'activer le slider que sur drag horizontal intentionnel
-    let touchStartY = 0;
-    let touchStartX = 0;
-    let isScrolling = null;
-    let savedSliderValue = slider.value;
+    // Gestion tactile : drag horizontal uniquement, pas de saut au tap
+    let _touchStartX = 0, _touchStartY = 0;
+    let _sliderScrolling = null; // null=indéterminé, true=scroll, false=drag
 
-    slider.addEventListener('touchstart', (e) => {
-      touchStartY = e.touches[0].clientY;
-      touchStartX = e.touches[0].clientX;
-      isScrolling = null;
-      savedSliderValue = slider.value;
-    }, { passive: true });
-
-    slider.addEventListener('touchmove', (e) => {
-      if (isScrolling === null) {
-        const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
-        const deltaX = Math.abs(e.touches[0].clientX - touchStartX);
-        if (deltaY > 5 || deltaX > 5) {
-          isScrolling = deltaY > deltaX;
-        }
-      }
-      // Si scroll vertical : restaurer la valeur sans bloquer le scroll
-      if (isScrolling) {
-        slider.value = savedSliderValue;
-      }
-    }, { passive: true });
-
-    slider.addEventListener('touchend', () => {
-      isScrolling = null;
-    });
-
-    slider.oninput = (e) => {
-      // Si geste vertical, annuler le changement
-      if (isScrolling) {
-        slider.value = savedSliderValue;
-        return;
-      }
-
-      const volume = e.target.value / 100;
+    function applySliderVolume(val) {
+      const volume = val / 100;
       a.volume = volume;
-
-      // Sauvegarder dans localStorage
-      localStorage.setItem(`mixer_${fileName}`, e.target.value);
-
+      localStorage.setItem(`mixer_${fileName}`, String(val));
       if (volume > 0) {
         if (!mixerTimerStarted) {
           mixerTimerStarted = true;
           startTimer('mixer');
         }
-        if (mixerPlaying) {
-          a.play().catch(() => {});
-        }
+        if (mixerPlaying) a.play().catch(() => {});
       } else {
         a.pause();
-        // Vérifier si tous les curseurs sont à zéro
         checkAllSlidersZero();
       }
-    };
+    }
+
+    slider.addEventListener('touchstart', (e) => {
+      e.preventDefault(); // Bloque le saut immédiat du slider au point de toucher
+      _touchStartX = e.touches[0].clientX;
+      _touchStartY = e.touches[0].clientY;
+      _sliderScrolling = null;
+    }, { passive: false });
+
+    slider.addEventListener('touchmove', (e) => {
+      const dx = e.touches[0].clientX - _touchStartX;
+      const dy = Math.abs(e.touches[0].clientY - _touchStartY);
+      if (_sliderScrolling === null && (Math.abs(dx) > 6 || dy > 6)) {
+        _sliderScrolling = dy > Math.abs(dx);
+      }
+      if (_sliderScrolling !== false) return; // Vertical ou indéterminé : rien
+      // Drag horizontal confirmé : calculer la valeur depuis la position du doigt
+      const rect = slider.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
+      const newVal = Math.round(ratio * 100);
+      if (parseInt(slider.value) !== newVal) {
+        slider.value = newVal;
+        applySliderVolume(newVal);
+      }
+    }, { passive: true });
+
+    slider.addEventListener('touchend', () => { _sliderScrolling = null; }, { passive: true });
+
+    // Interactions non-tactiles (souris, clavier)
+    slider.addEventListener('input', (e) => {
+      if (_sliderScrolling !== null) return; // Géré par touch
+      applySliderVolume(parseInt(e.target.value));
+    });
 
     mixerList.appendChild(div);
   });

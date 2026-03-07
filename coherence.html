@@ -16,10 +16,10 @@
 
 .main {
   height: calc(100vh - var(--header-height) - var(--footer-height));
-  padding: 24px 16px 32px;
+  padding: 20px 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  justify-content: space-between;
   overflow-y: auto;
 }
 
@@ -339,13 +339,13 @@ h2 {
 }
 
 .modal-content {
-  background: var(--dark);
+  background: var(--bg);
   border-radius: 24px;
   padding: 28px 24px;
   width: 90%;
   max-width: 340px;
   position: relative;
-  border: 1px solid rgba(245,228,204,.08);
+  border: 1px solid rgba(245,228,204,.12);
   box-shadow: 0 24px 60px rgba(0,0,0,0.5);
 }
 
@@ -546,7 +546,7 @@ h2 {
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
+  <button class="back-button" id="headerBackBtn" onclick="handleHeaderBack()" aria-label="Retour">⬅️</button>
   <h1 class="page-title">Exercices de respiration</h1>
   <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>
@@ -735,6 +735,7 @@ function loadCustomProgram() {
     document.getElementById('customSub').textContent = `${inVal}s / ${outVal}s`;
     return { in: inVal, out: outVal };
   }
+  document.getElementById('customSub').textContent = '_ s / _ s';
   return null;
 }
 
@@ -911,6 +912,20 @@ document.getElementById('btnSoundOff').addEventListener('click', () => {
   soundOn = false;
 });
 
+/* ---------- HEADER BACK BUTTON ---------- */
+function handleHeaderBack() {
+  if (document.getElementById('breathing').style.display === 'flex') {
+    back();
+    return;
+  }
+  if (localStorage.getItem('calmSource') === 'recap') {
+    localStorage.removeItem('calmSource');
+    location.href = 'recap.html';
+  } else {
+    location.href = 'index.html#calm';
+  }
+}
+
 /* ---------- INFO MODAL ---------- */
 function openInfoModal() {
   document.getElementById('infoModal').classList.add('visible');
@@ -948,6 +963,24 @@ function saveCustomProgram() {
 updateDurations('coherence');
 updatePreview();
 
+/* ---------- WAKE LOCK ---------- */
+let wakeLock = null;
+let wakeLockReleaseTimer = null;
+
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try { wakeLock = await navigator.wakeLock.request('screen'); } catch (e) {}
+}
+
+function releaseWakeLock() {
+  clearTimeout(wakeLockReleaseTimer);
+  if (wakeLock) { wakeLock.release(); wakeLock = null; }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && isPlaying) requestWakeLock();
+});
+
 /* ---------- BREATHING ---------- */
 let remaining, timer, startTime, isPlaying;
 let phaseStartTime = null;
@@ -955,6 +988,7 @@ let pausedPhase = 'in';
 let remainingInPhase = 0;
 
 function start() {
+  requestWakeLock();
   initAudio();
   document.getElementById('setup').style.display = 'none';
   document.getElementById('startFooter').style.display = 'none';
@@ -996,10 +1030,13 @@ function showEndModal() {
     `Tu viens de faire ${durationText} de respiration. Prends un instant pour sentir la différence.`;
   document.getElementById('progress').style.width = '100%';
   document.getElementById('endModal').classList.add('visible');
+  wakeLockReleaseTimer = setTimeout(() => releaseWakeLock(), 35000);
 }
 
 function restartExercise() {
   document.getElementById('endModal').classList.remove('visible');
+  clearTimeout(wakeLockReleaseTimer);
+  requestWakeLock();
   remaining = minutes * 60;
   startTime = Date.now();
   isPlaying = true;
@@ -1012,6 +1049,7 @@ function restartExercise() {
 
 function endExercise() {
   document.getElementById('endModal').classList.remove('visible');
+  releaseWakeLock();
   back();
 }
 
@@ -1062,6 +1100,7 @@ function updateProgressContinuous() {
 
 function back() {
   clearTimeout(timer);
+  releaseWakeLock();
   isPlaying = false;
   document.getElementById('breathing').style.display = 'none';
   document.getElementById('setup').style.display = 'flex';

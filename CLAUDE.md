@@ -22,6 +22,11 @@ Application mobile de soutien en crise autistique, utilisée sur téléphone. In
 > **`--accent` (rose/pêche) réservé aux boutons "Commencer", "Valider", actions primaires.**
 > Ne jamais utiliser `--accent` comme couleur de sélection.
 
+## Règle absolue — Couleurs
+> **Toutes les couleurs du code doivent provenir exclusivement des 4 variables CSS du design system** (`--bg`, `--dark`, `--light`, `--accent`) ou de leurs déclinaisons `rgba()`.
+> Aucune couleur hexadécimale, RGB ou nom de couleur CSS en dur dans les pages.
+> Toute teinte de survol, focus, tap highlight, outline, accent de formulaire doit utiliser ces variables. Aucune invention de couleur, même "neutre".
+
 ## Conventions de code
 - En-têtes de section en CSS : `/* ---------- NOM SECTION ---------- */`
 - Variables CSS pour couleurs et dimensions, jamais de valeurs hexadécimales en dur dans les pages

@@ -305,19 +305,16 @@ function loadCapacities(){
 
 function goBack(){
   saveCapacities();
-  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getPrevPage('capacites.html', profileConfig);
 }
 
 function goNext(){
   saveCapacities();
-  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href = getNextPage('capacites.html', profileConfig);
 }
 
 function finish(){
   saveCapacities();
-  if (localStorage.getItem('journalRetour')) { location.href = 'journal.html'; return; }
   location.href='recap.html';
 }
 

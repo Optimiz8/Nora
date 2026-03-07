@@ -344,6 +344,27 @@
       z-index: 1;
     }
 
+    .carousel-input {
+      position: absolute;
+      top: 40px; left: 0; right: 0;
+      height: 40px;
+      display: none;
+      z-index: 5;
+      background: var(--dark);
+      border: 1px solid rgba(245, 228, 204, 0.5);
+      border-radius: 8px;
+      color: var(--light);
+      font-size: 2rem;
+      font-weight: 300;
+      text-align: center;
+      padding: 0;
+      outline: none;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    .carousel-input::-webkit-inner-spin-button,
+    .carousel-input::-webkit-outer-spin-button { display: none; }
+
     /* ---------- AJUSTEURS ---------- */
     .sheet-adjusters {
       display: grid;
@@ -474,6 +495,24 @@
 
     .style-btn > .style-preview { font-size: 28px; line-height: 1; }
 
+    .style-preview-bar {
+      width: 22px;
+      height: 36px;
+      border-radius: 6px;
+      background: rgba(245, 228, 204, 0.12);
+      border: 1px solid rgba(245, 228, 204, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .style-preview-bar::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(to top, var(--light), rgba(247, 184, 156, 0.7));
+      border-radius: 0 0 5px 5px;
+    }
+
     .style-btn > .style-name {
       font-size: 0.65rem;
       font-weight: 700;
@@ -484,11 +523,17 @@
     }
 
     /* ---------- STYLE 2 — BARRE ---------- */
-    .bar-wrap {
+    .bar-outer {
       display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .bar-wrap {
       position: relative;
       width: min(160px, 44vw);
-      height: min(430px, 82vh);
+      height: min(350px, 60vh);
       background: rgba(245, 228, 204, 0.08);
       border: 2px solid rgba(245, 228, 204, 0.25);
       border-radius: 20px;
@@ -505,15 +550,11 @@
       transition: height 0.9s linear;
     }
 
-    .bar-center {
-      position: absolute;
-      inset: 0;
+    .bar-time {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       gap: 6px;
-      pointer-events: none;
     }
 
     /* ---------- STYLE 3 — SEGMENTS ---------- */
@@ -871,10 +912,12 @@
     </div>
 
     <!-- Style 2 : Barre -->
-    <div class="bar-wrap" id="barWrap" onclick="onCircleTap()">
-      <div class="bar-fill" id="barFill" style="height:0%"></div>
-      <div class="bar-center">
-        <div class="time-display" id="timeDisplay2" onclick="onTimeTap(event)" style="text-shadow:0 0 12px rgba(0,0,0,0.7)">15:00</div>
+    <div class="bar-outer" id="barOuter">
+      <div class="bar-wrap" id="barWrap" onclick="onCircleTap()">
+        <div class="bar-fill" id="barFill" style="height:0%"></div>
+      </div>
+      <div class="bar-time">
+        <div class="time-display" id="timeDisplay2" onclick="onTimeTap(event)">15:00</div>
         <div class="time-hint" id="timeHint2">Appuie pour régler</div>
       </div>
     </div>
@@ -1101,7 +1144,7 @@
           <span class="style-name">Cercle</span>
         </button>
         <button class="style-btn" id="styleBtn-barre" onclick="setStyle('barre')">
-          <span class="style-preview">▮</span>
+          <div class="style-preview-bar"></div>
           <span class="style-name">Barre</span>
         </button>
         <button class="style-btn" id="styleBtn-segments" onclick="setStyle('segments')">
@@ -1730,10 +1773,10 @@
     }
 
     function applyStyle(s) {
-      const map = { cercle:'circleWrap', barre:'barWrap', segments:'segmentsWrap', pixels:'pixelsWrap', kawaii:'kawaiiWrap', espace:'spaceWrap' };
+      const map = { cercle:'circleWrap', barre:'barOuter', segments:'segmentsWrap', pixels:'pixelsWrap', kawaii:'kawaiiWrap', espace:'spaceWrap' };
       Object.values(map).forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
       const el = document.getElementById(map[s]);
-      if (el) el.style.display = s === 'segments' ? 'flex' : 'block';
+      if (el) el.style.display = (s === 'segments' || s === 'barre') ? 'flex' : 'block';
       const pixelsTimeRow = document.getElementById('pixelsTimeRow');
       if (pixelsTimeRow) pixelsTimeRow.style.display = s === 'pixels' ? 'flex' : 'none';
       document.getElementById('styleIcon').textContent  = STYLE_ICONS[s];
@@ -1806,12 +1849,32 @@
       track.appendChild(ghost.cloneNode());
       setCarouselByIdx(trackId, 0);
       addDrumListeners(trackId, drumId, min, max);
+
+      const drum = document.getElementById(drumId);
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.className = 'carousel-input';
+      input.min = min;
+      input.max = max;
+      drum.appendChild(input);
+
+      function commitInput() {
+        let val = parseInt(input.value);
+        if (isNaN(val)) val = min;
+        val = Math.max(min, Math.min(max, val));
+        input.style.display = 'none';
+        snapTo(trackId, drumId, val - min, min, max);
+      }
+      input.addEventListener('blur', commitInput);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); });
+      input.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+      input.addEventListener('mousedown', e => e.stopPropagation());
     }
 
     function addDrumListeners(trackId, drumId, min, max) {
       const drum  = document.getElementById(drumId);
       const track = document.getElementById(trackId);
-      let startY = 0, startOffset = 0, isDragging = false;
+      let startY = 0, startOffset = 0, isDragging = false, hasMoved = false;
 
       function getOffset() {
         const match = track.style.transform && track.style.transform.match(/translateY\((.+)px\)/);
@@ -1820,6 +1883,7 @@
 
       function onStart(y) {
         isDragging = true;
+        hasMoved = false;
         startY = y;
         startOffset = getOffset();
         track.style.transition = 'none';
@@ -1827,6 +1891,7 @@
 
       function onMove(y) {
         if (!isDragging) return;
+        if (Math.abs(y - startY) > 4) hasMoved = true;
         const minOff = -(max - min) * ITEM_H;
         const delta = startOffset + (y - startY);
         const next = Math.max(minOff - ITEM_H, Math.min(ITEM_H, delta));
@@ -1836,6 +1901,16 @@
       function onEnd() {
         if (!isDragging) return;
         isDragging = false;
+        if (!hasMoved) {
+          const input = drum.querySelector('.carousel-input');
+          if (input) {
+            const selected = track.querySelector('.carousel-item.selected');
+            input.value = selected ? selected.dataset.value : min;
+            input.style.display = 'block';
+            setTimeout(() => { input.focus(); input.select(); }, 50);
+          }
+          return;
+        }
         snapTo(trackId, drumId, Math.round(-getOffset() / ITEM_H), min, max);
       }
 
