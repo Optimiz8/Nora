@@ -26,7 +26,7 @@ Fonctionnalités principales : flux de crise, récapitulatif partageable, outils
 
 ---
 
-## V2 — Compagnon au quotidien 🔄 *en cours*
+## V2 — Compagnon au quotidien ✅ *publiée (2.5)*
 
 L'app ne se limite plus à la crise : elle devient un outil de vie.
 
@@ -49,12 +49,14 @@ Complice, respectueux de l'autonomie.
 ### Ordre de développement V2
 
 ```
-0. Relecture et harmonisation de tous les textes   [non bloquant, en parallèle]
+0. Relecture et harmonisation de tous les textes   ✅ [livré]
 1. Cartes de communication ✅                      [livré]
-2. Timer visuel anti-cécité temporelle ✅          [livré, à tester]
-3. Tutoriel (onboarding) ✅                        [livré, à tester]
-4. Journal — statistiques simples ✅               [livré]
-5. App Shortcuts V1 ✅                             [livré, à tester]
+2. Timer visuel anti-cécité temporelle ✅          [livré]
+3. Tutoriel (onboarding) ✅                        [livré]
+4. Journal — statistiques ✅                       [livré — vue synthétique + analyse approfondie + graphiques + insights]
+5. App Shortcuts V1 ✅                             [livré]
+6. Export / Import des données ✅                  [livré en V2.5 — global : journal, profil, cartes, sons, playlist]
+7. Harmonie visuelle enrichie ✅                   [livré — mode Paillettes, Wake Lock 15 min]
 ```
 
 ### Détail des fonctionnalités V2
@@ -74,8 +76,11 @@ Comportement de fin configurable : voix / vibration / flash / rien.
 Snooze (+5/+15/+30 min) ou arrêt. Wake lock actif pendant le décompte.
 Accès depuis la modale "J'ai besoin d'aide et de communiquer" (accueil).
 
-#### 3. Journal — statistiques simples
-Nombre de crises par semaine/mois, déclencheurs fréquents, intensité moyenne.
+#### 3. Journal — statistiques ✅
+Vue synthétique (stats.html) + analyse approfondie (stats-approfondie.html).
+Filtres : contexte, origine, type, intensité, moment de la journée.
+Graphiques, moyennes avant-crise, insights automatiques (règles A–Q).
+Export graphique partageable (vue d'ensemble / analyse / les deux).
 Suppression d'entrées individuelles.
 
 #### 4. App Shortcuts V1
@@ -105,14 +110,13 @@ Phrases types à réutiliser dans des situations sociales courantes (refus, dema
 
 ```
 1. Service Worker / offline garanti          [prérequis pour Capacitor]
-2. Onboarding / tutoriel premier lancement
-3. Palettes de couleurs
-4. Export sélectif des crises
-5. Bibliothèque de scripts sociaux
-6. Export chiffré + rappel sauvegarde
-7. App Shortcuts V2 (enrichis si besoin)
-8. Capacitor + stores                        [probable, pas acté]
-9. Multi-langue (anglais)                    [en dernier absolu]
+2. Palettes de couleurs
+3. Export sélectif des crises
+4. Bibliothèque de scripts sociaux
+5. Export chiffré + rappel sauvegarde
+6. App Shortcuts V2 (enrichis si besoin)
+7. Capacitor + stores                        [probable, pas acté]
+8. Multi-langue (anglais)                    [en dernier absolu]
 ```
 
 ### Détail
@@ -124,11 +128,7 @@ Garantit le fonctionnement sans réseau, même après mise à jour.
 
 En clair : actuellement Nora charge depuis internet à chaque ouverture. Avec un Service Worker, une copie complète de l'app est stockée sur le téléphone — elle fonctionne même hors connexion et les mises à jour se téléchargent silencieusement en arrière-plan.
 
-#### 2. Onboarding / tutoriel premier lancement ✅ *(livré en V2)*
-Tutoriel en 7 étapes couvrant les deux piliers (aide & communication, apaisement), configuration de la carte d'urgence et des cartes de communication.
-Accessible depuis Paramètres. Détection premier lancement à vérifier.
-
-#### 3. Palettes de couleurs
+#### 2. Palettes de couleurs
 Remplace l'idée de "mode sombre" — l'app actuelle est déjà sur un fond sombre, un mode sombre n'aurait pas de sens.
 
 **Principe** : 3 palettes prédéfinies, choisissables dans Paramètres (et présentées dès le tutoriel).
@@ -152,15 +152,15 @@ Toutes les pages sauf les visuels spéciaux du timer (`kawaii` et `espace`) qui 
 
 **Note** : les couleurs exactes des palettes "Clair neutre" et "Clair pastel" sont à définir quand les hex sont trouvés.
 
-#### 4. App Shortcuts V2
+#### 6. App Shortcuts V2
 Enrichissement si de nouvelles fonctionnalités le justifient.
 
-#### 5. Capacitor + stores
+#### 7. Capacitor + stores
 Envelopper la PWA dans une coque native pour Play Store et App Store.
 Pas de réécriture — le HTML/CSS/JS existant est conservé.
 Fort probable mais pas définitivement acté.
 
-#### 6. Multi-langue
+#### 8. Multi-langue
 Uniquement quand tous les textes sont stables. Priorité : anglais.
 
 ---

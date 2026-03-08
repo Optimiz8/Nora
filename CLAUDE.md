@@ -15,15 +15,17 @@ Application mobile de soutien en crise autistique, utilisée sur téléphone. In
 --dark:   #2E3A59  (bleu marine — texte foncé, éléments sombres)
 --light:  #F5E4CC  (crème — texte clair, état actif/sélectionné)
 --accent: #F7B89C  (pêche/saumon — boutons d'action primaire uniquement)
+--danger: rgba(255, 70, 70, 0.8)  (rouge — boutons destructeurs uniquement, ex. suppression)
 ```
+Exception documentée : les 4 couleurs sémantiques d'état des capacités dans `journal.html` (vert/orange/rouge/gris en dégradé très transparent) sont hors-charte mais conservées pour leur utilité fonctionnelle.
 
 ## Règle fondamentale UI
-> **`--light` (blanc-crème) pour les états sélectionnés/actifs.**
-> **`--accent` (rose/pêche) réservé aux boutons "Commencer", "Valider", actions primaires.**
-> Ne jamais utiliser `--accent` comme couleur de sélection.
+> **`--accent` (rose/pêche) pour les items sélectionnés dans les listes (besoins, états) — avec `box-shadow:0 4px 8px rgba(0,0,0,0.2)`.**
+> **`--accent` aussi pour les boutons d'action primaire ("Commencer", "Valider").**
+> **`--light` (blanc-crème) pour le fond par défaut des items de liste (non sélectionnés).**
 
 ## Règle absolue — Couleurs
-> **Toutes les couleurs du code doivent provenir exclusivement des 4 variables CSS du design system** (`--bg`, `--dark`, `--light`, `--accent`) ou de leurs déclinaisons `rgba()`.
+> **Toutes les couleurs du code doivent provenir exclusivement des 5 variables CSS du design system** (`--bg`, `--dark`, `--light`, `--accent`, `--danger`) ou de leurs déclinaisons `rgba()`.
 > Aucune couleur hexadécimale, RGB ou nom de couleur CSS en dur dans les pages.
 > Toute teinte de survol, focus, tap highlight, outline, accent de formulaire doit utiliser ces variables. Aucune invention de couleur, même "neutre".
 

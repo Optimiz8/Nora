@@ -7,6 +7,7 @@
   --dark: #2E3A59;
   --light: #F5E4CC;
   --accent: #F7B89C;
+  --danger: rgba(255, 70, 70, 0.8);
   --header-height: 56px;
   --footer-height: 64px;
 }
@@ -133,16 +134,16 @@ body {
   }
 
   body {
-    background-color: #384657 !important;
-    color: #F5E4CC !important;
+    background-color: var(--bg) !important;
+    color: var(--light) !important;
   }
 
   .header {
-    background-color: #384657 !important;
+    background-color: var(--bg) !important;
   }
 
   .footer {
-    background: #2E3A59 !important;
+    background: var(--dark) !important;
   }
 }
 

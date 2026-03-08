@@ -672,7 +672,7 @@
 
         .form-input, .form-textarea, .form-select {
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: var(--light);
             border: 2px solid rgba(46, 58, 89, 0.2);
             border-radius: 8px;
             padding: 10px;
@@ -698,7 +698,7 @@
             appearance: none;
             height: 8px;
             border-radius: 4px;
-            background: #384657;
+            background: var(--bg);
             outline: none;
         }
 
@@ -707,7 +707,7 @@
             appearance: none;
             width: 24px;
             height: 24px;
-            background: #F7B89C;
+            background: var(--accent);
             cursor: pointer;
             border-radius: 50%;
             margin-top: -8px;
@@ -716,20 +716,20 @@
         .intensity-slider::-moz-range-thumb {
             width: 24px;
             height: 24px;
-            background: #F7B89C;
+            background: var(--accent);
             cursor: pointer;
             border-radius: 50%;
             border: none;
         }
 
         .intensity-slider::-webkit-slider-runnable-track {
-            background: #384657;
+            background: var(--bg);
             height: 8px;
             border-radius: 4px;
         }
 
         .intensity-slider::-moz-range-track {
-            background: #384657;
+            background: var(--bg);
             height: 8px;
             border-radius: 4px;
         }
@@ -769,7 +769,7 @@
         }
 
         .modal-button.danger {
-            background-color: rgba(255, 70, 70, 0.8);
+            background-color: var(--danger);
             color: var(--light);
         }
 
@@ -778,8 +778,8 @@
         }
 
         .triggers-button {
-            background-color: #2E3A59;
-            border: 2px solid #384657;
+            background-color: var(--dark);
+            border: 2px solid var(--bg);
             color: var(--light);
             padding: 10px;
             border-radius: 8px;
@@ -793,12 +793,8 @@
             gap: 8px;
         }
 
-        .triggers-button:hover {
-            background-color: #485A70;
-        }
-
         .triggers-button:active {
-            background-color: #384657;
+            background-color: var(--bg);
         }
 
         .triggers-preview {
@@ -1880,7 +1876,7 @@
             var fm = document.getElementById('formModal');
             fm.classList.add('visible');
             fm.scrollTop = 0;
-
+        }
 
         function openTriggersModal() {
             const content = document.getElementById('triggersContent');
@@ -2066,7 +2062,7 @@ function handleTriggerChange(checkbox) {
                 
                 const entry = {
                     horodatage: horodatage,
-                    profil: localStorage.getItem('currentProfil') || 'maison',
+                    profil: localStorage.getItem('profilActuel') || 'maison',
                     capacites: jFormCaps,
                     besoins: jFormBes,
                     etats: jFormEtats,
@@ -2265,11 +2261,11 @@ function handleTriggerChange(checkbox) {
   h1 { font-size: 20px; margin: 0 0 4px; }
   .meta { color: #666; font-size: 13px; margin-bottom: 28px; }
   .entry { border: 1px solid #ccc; border-radius: 6px; padding: 12px 14px; margin-bottom: 12px; page-break-inside: avoid; }
-  .entry-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e8e8e8; }
+  .entry-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(46, 58, 89, 0.15); }
   .entry-date { font-weight: 700; font-size: 14px; }
   .entry-context { font-size: 13px; color: #555; }
   .entry-line { margin-bottom: 4px; line-height: 1.5; }
-  .print-btn { background: #384657; color: #F5E4CC; border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; cursor: pointer; margin-bottom: 24px; }
+  .print-btn { background: var(--bg); color: var(--light); border: none; padding: 12px 24px; border-radius: 8px; font-size: 15px; cursor: pointer; margin-bottom: 24px; }
   @media print { .print-btn { display: none; } }
 </style>
 </head>

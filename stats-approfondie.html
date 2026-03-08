@@ -279,6 +279,26 @@
         .hour-name { font-size: 12px; font-weight: 600; color: var(--dark); opacity: 0.7; }
         .hour-range { font-size: 10px; color: var(--dark); opacity: 0.4; }
         .hour-count { font-size: 20px; font-weight: 700; color: var(--dark); }
+
+        /* ---------- PROFIL DE CRISE ---------- */
+
+        .profile-modal {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--dark); border-radius: 20px 20px 0 0;
+            padding: 20px 16px 32px; z-index: 201;
+            display: flex; flex-direction: column; gap: 10px;
+            transform: translateY(100%); transition: transform 0.25s ease;
+            max-height: 88vh; overflow-y: auto;
+        }
+        .profile-modal.visible { transform: translateY(0); }
+        .profile-modal-header { display: flex; justify-content: space-between; align-items: center; }
+        .profile-modal-title { font-size: 17px; font-weight: 700; color: var(--light); }
+        .profile-modal-close { background: none; border: none; color: var(--light); font-size: 24px; cursor: pointer; opacity: 0.4; line-height: 1; padding: 2px 4px; }
+        .profile-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent); padding-top: 6px; }
+        .profile-card { background: rgba(245,228,204,0.07); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 5px; }
+        .profile-line { font-size: 14px; color: var(--light); line-height: 1.55; }
+        .profile-share-btn { background: var(--accent); color: var(--dark); border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 4px; }
+        .profile-share-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -350,8 +370,21 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
+        <button class="export-stats-btn icon-btn" id="profileBtn" onclick="openProfileModal()" style="display:none">👤 Profil</button>
         <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">✉️ Partager</button>
         <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">📥 Exporter</button>
+    </div>
+
+    <!-- Modale profil de crise -->
+    <div class="modal-overlay" id="profileModalOverlay" onclick="closeProfileModal()"></div>
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-modal-header">
+            <div class="profile-modal-title">Mon profil de crise</div>
+            <button class="profile-modal-close" onclick="closeProfileModal()">×</button>
+        </div>
+        <div id="profileContent"></div>
+        <button class="profile-share-btn" onclick="shareProfile()">✉️ Partager ce profil</button>
+        <button class="export-cancel-btn" onclick="closeProfileModal()">Fermer</button>
     </div>
 
     <!-- Modale export/partage -->
@@ -463,6 +496,8 @@
             var intensities = [], energies = [], chargesMentales = [], chargesSociales = [];
             var profileArr = [], triggerFreq = {}, etatArr = [], capImpossible = [], capDifficile = [];
             var meltdownCount = 0, shutdownCount = 0;
+            var besoinArr = [], totalTrigCount = 0, entriesWithTrigs = 0;
+            var durees = [], meltdownDurees = [], shutdownDurees = [];
 
             for (var k = 0; k < entries.length; k++) {
                 var e = entries[k];
@@ -475,11 +510,15 @@
                 else if (e.typeManifestation === 'Shutdown') shutdownCount++;
                 var decl = normDeclencheurs(e.declencheurs);
                 for (var d2 = 0; d2 < decl.length; d2++) { if (decl[d2].nom) triggerFreq[decl[d2].nom] = (triggerFreq[decl[d2].nom] || 0) + 1; }
+                if (decl.length > 0) { totalTrigCount += decl.length; entriesWithTrigs++; }
                 var etats = e.etats || [];
                 for (var et = 0; et < etats.length; et++) { var el = extractLabel(etats[et]); if (el) etatArr.push(el); }
                 var caps = e.capacites || {};
                 if (caps.impossible) for (var ci = 0; ci < caps.impossible.length; ci++) capImpossible.push(caps.impossible[ci]);
                 if (caps.difficile) for (var cd = 0; cd < caps.difficile.length; cd++) capDifficile.push(caps.difficile[cd]);
+                var bess = e.besoins || [];
+                for (var be2 = 0; be2 < bess.length; be2++) { var bl = extractLabel(bess[be2]); if (bl) besoinArr.push(bl); }
+                if (e.duree) { var dm = parseFloat(e.duree); if (!isNaN(dm) && dm > 0) { durees.push(dm); if (e.typeManifestation === 'Meltdown') meltdownDurees.push(dm); else if (e.typeManifestation === 'Shutdown') shutdownDurees.push(dm); } }
             }
 
             var avgIntensity = avgArr(intensities);
@@ -490,13 +529,17 @@
 
             var triggerStats = [];
             for (var tkey in triggerFreq) {
-                var tInts = [], tMelt = 0, tShut = 0;
+                var tInts = [], tMelt = 0, tShut = 0, tTrigInts = [];
                 for (var te = 0; te < entries.length; te++) {
                     var decl2 = normDeclencheurs(entries[te].declencheurs);
-                    var has = false; for (var dd = 0; dd < decl2.length; dd++) { if (decl2[dd].nom === tkey) { has = true; break; } }
-                    if (has) { var tv = parseFloat(entries[te].intensite); if (!isNaN(tv)) tInts.push(tv); if (entries[te].typeManifestation === 'Meltdown') tMelt++; else if (entries[te].typeManifestation === 'Shutdown') tShut++; }
+                    var foundDecl = null; for (var dd = 0; dd < decl2.length; dd++) { if (decl2[dd].nom === tkey) { foundDecl = decl2[dd]; break; } }
+                    if (foundDecl) {
+                        var tv = parseFloat(entries[te].intensite); if (!isNaN(tv)) tInts.push(tv);
+                        if (entries[te].typeManifestation === 'Meltdown') tMelt++; else if (entries[te].typeManifestation === 'Shutdown') tShut++;
+                        if (foundDecl.intensite !== null && foundDecl.intensite !== undefined) { var tti = parseFloat(foundDecl.intensite); if (!isNaN(tti)) tTrigInts.push(tti); }
+                    }
                 }
-                triggerStats.push({ name: tkey, count: triggerFreq[tkey], avgIntensity: avgArr(tInts), meltdownPct: pct(tMelt, tMelt + tShut) });
+                triggerStats.push({ name: tkey, count: triggerFreq[tkey], avgIntensity: avgArr(tInts), meltdownPct: pct(tMelt, tMelt + tShut), avgTrigIntensity: avgArr(tTrigInts) });
             }
             triggerStats.sort(function(a, b) { return b.count - a.count; });
 
@@ -553,10 +596,53 @@
             }
             var dayOfWeek = [1, 2, 3, 4, 5, 6, 0].map(function(i) { return { name: DAY_NAMES_A[i], count: dayFreq[i] }; });
 
+            /* Déclencheurs dans les crises fortes (≥7) */
+            var strongTrigArr = [];
+            for (var se2 = 0; se2 < entries.length; se2++) {
+                var sv2 = parseFloat(entries[se2].intensite);
+                if (isNaN(sv2) || sv2 < 7) continue;
+                var decls2 = normDeclencheurs(entries[se2].declencheurs);
+                for (var sd = 0; sd < decls2.length; sd++) { if (decls2[sd].nom) strongTrigArr.push(decls2[sd].nom); }
+            }
+            /* Distribution des intensités */
+            var intRanges = [{label:'1–2',count:0},{label:'3–4',count:0},{label:'5–6',count:0},{label:'7–8',count:0},{label:'9–10',count:0}];
+            var intMins = [1,3,5,7,9];
+            for (var id = 0; id < intensities.length; id++) {
+                var iv2 = Math.round(intensities[id]);
+                for (var ir2 = 0; ir2 < 5; ir2++) { if (iv2 >= intMins[ir2] && iv2 <= intMins[ir2] + 1) { intRanges[ir2].count++; break; } }
+            }
+            /* Catégories de déclencheurs */
+            var trigCatFreq = {};
+            for (var tk in triggerFreq) {
+                var parts = tk.split(' — ');
+                var cat = parts.length > 1 ? parts[0] : 'Divers';
+                trigCatFreq[cat] = (trigCatFreq[cat] || 0) + triggerFreq[tk];
+            }
+            var trigCatCounts = [];
+            for (var tc in trigCatFreq) trigCatCounts.push({ name: tc, count: trigCatFreq[tc] });
+            trigCatCounts.sort(function(a, b) { return b.count - a.count; });
+
+            /* Tendance intensité : première moitié vs deuxième moitié */
+            var trend = null;
+            if (intensities.length >= 6) {
+                var sorted = entries.slice().sort(function(a, b) { return new Date(a.horodatage) - new Date(b.horodatage); });
+                var mid = Math.floor(sorted.length / 2);
+                var firstInts = [], secondInts = [];
+                for (var tr1 = 0; tr1 < mid; tr1++) { var tv1 = parseFloat(sorted[tr1].intensite); if (!isNaN(tv1)) firstInts.push(tv1); }
+                for (var tr2 = mid; tr2 < sorted.length; tr2++) { var tv2 = parseFloat(sorted[tr2].intensite); if (!isNaN(tv2)) secondInts.push(tv2); }
+                var firstAvg = avgArr(firstInts), secondAvg = avgArr(secondInts);
+                if (firstAvg !== null && secondAvg !== null) {
+                    var diff = parseFloat((secondAvg - firstAvg).toFixed(1));
+                    if (diff >= 0.8) trend = { direction: 'up', from: firstAvg, to: secondAvg };
+                    else if (diff <= -0.8) trend = { direction: 'down', from: firstAvg, to: secondAvg };
+                }
+            }
+
             return {
                 total: entries.length, entries: entries,
                 avgIntensity: avgIntensity,
                 avgEnergie: avgArr(energies), avgChargeMentale: avgArr(chargesMentales), avgChargeSociale: avgArr(chargesSociales),
+                avgDuree: avgArr(durees), avgDureeMeltdown: avgArr(meltdownDurees), avgDureeShutdown: avgArr(shutdownDurees),
                 meltdownCount: meltdownCount, shutdownCount: shutdownCount,
                 meltdownPct: pct(meltdownCount, meltdownCount + shutdownCount),
                 shutdownPct: pct(shutdownCount, meltdownCount + shutdownCount),
@@ -566,10 +652,20 @@
                 avgIntensityByContexte: avgIntensityByContexte,
                 percentTypeByContexte: percentTypeByContexte,
                 capImpCounts: countFreq(capImpossible), capDifCounts: countFreq(capDifficile),
-                thresholds: thresholds,
+                besoinsCounts: countFreq(besoinArr),
+                avgTrigPerCrise: entriesWithTrigs > 0 ? parseFloat((totalTrigCount / entriesWithTrigs).toFixed(1)) : null,
+                triggerStrongCrises: countFreq(strongTrigArr),
+                intDistribution: intRanges,
+                trigCatCounts: trigCatCounts,
+                thresholds: thresholds, trend: trend,
                 dayOfWeek: dayOfWeek, hourSlots: hourSlots, timelineEntries: timelineEntries
             };
         }
+
+        /* ---------- SVG : COULEURS ---------- */
+        var svgDark = getComputedStyle(document.documentElement).getPropertyValue('--dark').trim();
+        var svgAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+        var svgLight = getComputedStyle(document.documentElement).getPropertyValue('--light').trim();
 
         /* ---------- SVG : SEUILS CRITIQUES ---------- */
 
@@ -588,23 +684,49 @@
                 var W = 280, H = 100, padL = 5, padB = 22, padT = 10;
                 var barW = 60, gap = 30, totalBarW = 3 * barW + 2 * gap;
                 var startX = (W - totalBarW) / 2, chartH = H - padT - padB, bars = '';
-                var colors = ['#a8d5ba','#f7d98e','#f5a5a5'], labels2 = ['0–3','4–6','7–10'];
+                var colors = ['rgba(46,58,89,0.3)','rgba(46,58,89,0.55)','rgba(46,58,89,0.8)'], labels2 = ['0–3','4–6','7–10'];
                 for (var bi = 0; bi < 3; bi++) {
                     var x = startX + bi * (barW + gap), val = buckets[bi].avgIntensity || 0;
                     var barH = (val / 10) * chartH, y = padT + chartH - barH;
                     bars += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + barH + '" rx="4" fill="' + colors[bi] + '"/>';
-                    if (val > 0) bars += '<text x="' + (x + barW/2) + '" y="' + (y - 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#2E3A59">' + val + '</text>';
-                    bars += '<text x="' + (x + barW/2) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10" fill="#2E3A59" opacity="0.5">' + labels2[bi] + '</text>';
-                    bars += '<text x="' + (x + barW/2) + '" y="' + (H - 14) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.35">(' + buckets[bi].count + ')</text>';
+                    if (val > 0) bars += '<text x="' + (x + barW/2) + '" y="' + (y - 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="' + svgDark + '">' + val + '</text>';
+                    bars += '<text x="' + (x + barW/2) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="10" fill="' + svgDark + '" opacity="0.5">' + labels2[bi] + '</text>';
+                    bars += '<text x="' + (x + barW/2) + '" y="' + (H - 14) + '" text-anchor="middle" font-size="9" fill="' + svgDark + '" opacity="0.35">(' + buckets[bi].count + ')</text>';
                 }
                 html += '<div style="margin-bottom:8px">' +
                     '<div style="font-size:13px;font-weight:600;color:var(--dark);opacity:0.7;margin-bottom:4px">' + fields[f].label + '</div>' +
                     '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
-                    '<line x1="' + padL + '" y1="' + (padT + chartH) + '" x2="' + (W - padL) + '" y2="' + (padT + chartH) + '" stroke="#2E3A59" stroke-opacity="0.1"/>' +
+                    '<line x1="' + padL + '" y1="' + (padT + chartH) + '" x2="' + (W - padL) + '" y2="' + (padT + chartH) + '" stroke="' + svgDark + '" stroke-opacity="0.1"/>' +
                     bars + '</svg></div>';
             }
             if (!hasAny) return '';
             return '<div class="chart-container">' + html + '</div>';
+        }
+
+        /* ---------- SVG : DISTRIBUTION DES INTENSITÉS ---------- */
+
+        function buildIntDistributionSVG(intRanges) {
+            var maxCount = 0;
+            for (var i = 0; i < intRanges.length; i++) { if (intRanges[i].count > maxCount) maxCount = intRanges[i].count; }
+            if (maxCount === 0) return '';
+            var W = 280, H = 110, padL = 6, padR = 6, padT = 22, padB = 22;
+            var chartW = W - padL - padR, chartH = H - padT - padB;
+            var n = intRanges.length, spacing = chartW / n, barW = Math.max(28, spacing - 8);
+            var bars = '';
+            for (var bi = 0; bi < n; bi++) {
+                var r = intRanges[bi];
+                var cx = padL + bi * spacing + spacing / 2;
+                var bh = maxCount > 0 ? (r.count / maxCount) * chartH : 0;
+                var by = padT + chartH - bh;
+                bars += '<rect x="' + (cx - barW/2) + '" y="' + by + '" width="' + barW + '" height="' + bh + '" rx="4" fill="rgba(46,58,89,0.6)"/>';
+                if (r.count > 0) bars += '<text x="' + cx + '" y="' + (by - 4) + '" text-anchor="middle" font-size="12" font-weight="700" fill="' + svgDark + '">' + r.count + '</text>';
+                bars += '<text x="' + cx + '" y="' + (H - 2) + '" text-anchor="middle" font-size="10" fill="' + svgDark + '" opacity="0.5">' + r.label + '</text>';
+            }
+            var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' +
+                '<line x1="' + padL + '" y1="' + (padT + chartH) + '" x2="' + (W - padR) + '" y2="' + (padT + chartH) + '" stroke="' + svgDark + '" stroke-opacity="0.1"/>' +
+                bars + '</svg>';
+            return '<div class="chart-container">' + svg +
+                '<div style="font-size:11px;color:var(--dark);opacity:0.4;text-align:center;padding-top:2px">Nombre de crises par niveau d\'intensité</div></div>';
         }
 
         /* ---------- INSIGHTS CLINIQUES ---------- */
@@ -661,7 +783,7 @@
             if (stats.triggerStats.length > 0 && (stats.meltdownCount > 0 || stats.shutdownCount > 0)) {
                 var topT = stats.triggerStats[0];
                 if (topT.meltdownPct >= 70 && topT.count >= 3) {
-                    insights.push({ priority: 2, icon: '🎯',
+                    insights.push({ priority: 2, icon: '🧨',
                         text: 'Le déclencheur <strong>' + topT.name + '</strong> est principalement associé à des meltdowns (' + topT.meltdownPct + '%).' });
                 }
             }
@@ -684,9 +806,67 @@
                     text: 'L\'intensité moyenne des crises sur cette période est <strong>élevée</strong> (' + stats.avgIntensity + '/10).' });
             }
 
+            /* Énergie basse systématiquement avant les crises */
+            if (stats.avgEnergie !== null && stats.avgEnergie < 4) {
+                insights.push({ priority: 1, icon: '🔋',
+                    text: 'L\'énergie est <strong>souvent basse avant les crises</strong> (moy. ' + stats.avgEnergie + '/10). La fatigue semble être un facteur de vulnérabilité régulier.' });
+            }
+
+            /* Charge sociale dominante vs charge mentale */
+            if (stats.avgChargeSociale !== null && stats.avgChargeMentale !== null && stats.avgChargeSociale > stats.avgChargeMentale + 0.9) {
+                insights.push({ priority: 1, icon: '👥',
+                    text: 'La <strong>charge sociale</strong> est plus élevée que la charge mentale avant les crises (' + stats.avgChargeSociale + ' vs ' + stats.avgChargeMentale + '/10). Le contexte social joue un rôle clé.' });
+            }
+
+            /* Moment dominant */
+            if (stats.hourSlots) {
+                var maxSlot = null;
+                for (var hsi = 0; hsi < stats.hourSlots.length; hsi++) { if (!maxSlot || stats.hourSlots[hsi].count > maxSlot.count) maxSlot = stats.hourSlots[hsi]; }
+                if (maxSlot && maxSlot.count > 0 && maxSlot.count / stats.total > 0.5) {
+                    insights.push({ priority: 2, icon: '🕐',
+                        text: 'Plus de la moitié des crises se produisent <strong>' + maxSlot.name.toLowerCase() + '</strong> (' + maxSlot.range + ').' });
+                }
+            }
+
+            /* Type dominant */
+            var typeTotal = stats.meltdownCount + stats.shutdownCount;
+            if (typeTotal >= 4) {
+                if (stats.meltdownPct >= 65) {
+                    insights.push({ priority: 2, icon: '🌊',
+                        text: 'Les crises sont <strong>majoritairement des meltdowns</strong> (' + stats.meltdownPct + '%). Les stratégies de décharge sensorielle peuvent aider.' });
+                } else if (stats.shutdownPct >= 65) {
+                    insights.push({ priority: 2, icon: '🔒',
+                        text: 'Les crises sont <strong>majoritairement des shutdowns</strong> (' + stats.shutdownPct + '%). Privilégier un environnement calme et sans pression.' });
+                }
+            }
+
+            /* Accumulation de déclencheurs */
+            if (stats.avgTrigPerCrise !== null && stats.avgTrigPerCrise >= 2) {
+                insights.push({ priority: 2, icon: '📦',
+                    text: 'En moyenne <strong>' + stats.avgTrigPerCrise + ' déclencheurs par crise</strong>. Les crises semblent liées à une accumulation plutôt qu\'à un seul élément.' });
+            }
+
+            /* Tendance intensité */
+            if (stats.trend) {
+                if (stats.trend.direction === 'up') {
+                    insights.push({ priority: 1, icon: '📈',
+                        text: 'L\'intensité des crises est <strong>en hausse</strong> sur la période (' + stats.trend.from + ' → ' + stats.trend.to + '/10). À surveiller.' });
+                } else {
+                    insights.push({ priority: 1, icon: '📉',
+                        text: 'L\'intensité des crises est <strong>en baisse</strong> sur la période (' + stats.trend.from + ' → ' + stats.trend.to + '/10). Bonne évolution.' });
+                }
+            }
+
+            /* Déclencheur dominant */
+            if (stats.triggerStats.length > 0 && stats.triggerStats[0].count / stats.total > 0.3) {
+                var topTrig = stats.triggerStats[0];
+                insights.push({ priority: 2, icon: '🎯',
+                    text: '<strong>' + topTrig.name + '</strong> est présent dans ' + Math.round((topTrig.count / stats.total) * 100) + '% des crises — c\'est le déclencheur le plus récurrent.' });
+            }
+
             if (!insights.length) return '';
             insights.sort(function(a, b) { return a.priority - b.priority; });
-            var topInsights = insights.slice(0, 7);
+            var topInsights = insights.slice(0, 5);
             var html = '<div class="insights-list">';
             for (var i = 0; i < topInsights.length; i++) {
                 html += '<div class="insight-card"><div class="insight-icon">' + topInsights[i].icon + '</div>' +
@@ -799,8 +979,8 @@
             for (var yl = 0; yl <= ySteps; yl++) {
                 var yy = padT + (yl / ySteps) * chartH;
                 var yv = Math.round(maxCount * (1 - yl / ySteps));
-                yAxisHtml += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '" stroke="#2E3A59" stroke-opacity="0.07"/>';
-                if (yv > 0 && !ySeenVals[yv]) { ySeenVals[yv] = true; yAxisHtml += '<text x="' + (padL - 4) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="9" fill="#2E3A59" opacity="0.4">' + yv + '</text>'; }
+                yAxisHtml += '<line x1="' + padL + '" y1="' + yy + '" x2="' + (W - padR) + '" y2="' + yy + '" stroke="' + svgDark + '" stroke-opacity="0.07"/>';
+                if (yv > 0 && !ySeenVals[yv]) { ySeenVals[yv] = true; yAxisHtml += '<text x="' + (padL - 4) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="9" fill="' + svgDark + '" opacity="0.4">' + yv + '</text>'; }
             }
             var showEvery = n > 20 ? 4 : n > 10 ? 2 : 1;
             for (var bi3 = 0; bi3 < bucketOrder.length; bi3++) {
@@ -810,11 +990,11 @@
                 var by = padT + chartH - bh;
                 var ai = bd.intensities.length ? avgArr(bd.intensities) : null;
                 if (bd.count > 0) {
-                    barsHtml += '<rect x="' + (cx - barW / 2) + '" y="' + by + '" width="' + barW + '" height="' + bh + '" rx="2" fill="#F7B89C"/>';
-                    barsHtml += '<text x="' + cx + '" y="' + (by - 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#F5E4CC">' + bd.count + '</text>';
-                    if (ai !== null && bh > 16) barsHtml += '<text x="' + cx + '" y="' + (by + bh / 2 + 4) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.7">' + ai + '</text>';
+                    barsHtml += '<rect x="' + (cx - barW / 2) + '" y="' + by + '" width="' + barW + '" height="' + bh + '" rx="2" fill="' + svgAccent + '"/>';
+                    barsHtml += '<text x="' + cx + '" y="' + (by - 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="' + svgLight + '">' + bd.count + '</text>';
+                    if (ai !== null && bh > 16) barsHtml += '<text x="' + cx + '" y="' + (by + bh / 2 + 4) + '" text-anchor="middle" font-size="9" fill="' + svgDark + '" opacity="0.7">' + ai + '</text>';
                 }
-                if (bi3 % showEvery === 0) labelsHtml += '<text x="' + cx + '" y="' + (H - 3) + '" text-anchor="middle" font-size="9" fill="#2E3A59" opacity="0.45">' + bucketLabels[bKey] + '</text>';
+                if (bi3 % showEvery === 0) labelsHtml += '<text x="' + cx + '" y="' + (H - 3) + '" text-anchor="middle" font-size="9" fill="' + svgDark + '" opacity="0.45">' + bucketLabels[bKey] + '</text>';
             }
             var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">' + yAxisHtml + barsHtml + labelsHtml + '</svg>';
             return '<div class="chart-container">' + svg +
@@ -841,8 +1021,30 @@
             }
 
             var html = '';
-            var isLongPeriod = days >= 30 || (days === 0 && customFrom && customTo &&
-                (new Date(customTo) - new Date(customFrom)) / 86400000 >= 30);
+
+            /* ========== RÉSUMÉ ========== */
+            var resumeChips = '<div style="display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center">';
+            resumeChips += '<span style="font-size:15px;font-weight:700;color:var(--dark)">' + stats.total + ' crise' + (stats.total > 1 ? 's' : '') + '</span>';
+            if (stats.avgIntensity !== null) resumeChips += '<span style="font-size:14px;color:var(--dark);opacity:0.7">intensité moy. <strong>' + stats.avgIntensity + '/10</strong></span>';
+            if (stats.avgDuree !== null) resumeChips += '<span style="font-size:14px;color:var(--dark);opacity:0.7">durée moy. <strong>' + formatMins(stats.avgDuree) + '</strong></span>';
+            var typeTotal = stats.meltdownCount + stats.shutdownCount;
+            if (typeTotal > 0) {
+                if (stats.meltdownPct >= 55) resumeChips += '<span style="font-size:14px;color:var(--dark);opacity:0.7"><strong>' + stats.meltdownPct + '%</strong> meltdown</span>';
+                else if (stats.shutdownPct >= 55) resumeChips += '<span style="font-size:14px;color:var(--dark);opacity:0.7"><strong>' + stats.shutdownPct + '%</strong> shutdown</span>';
+                else resumeChips += '<span style="font-size:14px;color:var(--dark);opacity:0.7"><strong>' + stats.meltdownPct + '%</strong> melt · <strong>' + stats.shutdownPct + '%</strong> shut</span>';
+            }
+            if (stats.avgDureeMeltdown !== null && stats.avgDureeShutdown !== null) {
+                resumeChips += '<span style="font-size:12px;color:var(--dark);opacity:0.45">melt. ' + formatMins(stats.avgDureeMeltdown) + ' · shut. ' + formatMins(stats.avgDureeShutdown) + '</span>';
+            }
+            resumeChips += '</div>';
+            html += '<div class="stat-card" style="padding:12px 14px;margin-bottom:2px">' + resumeChips + '</div>';
+
+            /* ========== OBSERVATIONS (en premier) ========== */
+            var deepHtml = buildDeepInsights(stats);
+            if (deepHtml) {
+                html += '<div class="section-tag">Observations</div>';
+                html += deepHtml;
+            }
 
             /* ========== ÉVOLUTION ========== */
             var barChartHtml = buildBarChartSVG(stats.timelineEntries, days, from, to);
@@ -851,32 +1053,40 @@
                 html += barChartHtml;
             }
 
-            /* ========== MOMENTS DE LA JOURNÉE ========== */
-            var hasHourData = stats.hourSlots && stats.hourSlots.some(function(s) { return s.count > 0; });
-            if (hasHourData) {
-                html += '<div class="section-tag">Moments de la journée</div>';
-                html += '<div class="stat-card" style="padding:14px">';
-                html += '<div class="hour-grid">';
-                for (var hsi = 0; hsi < stats.hourSlots.length; hsi++) {
-                    var hs = stats.hourSlots[hsi];
-                    html += '<div class="hour-cell">' +
-                        '<div class="hour-name">' + hs.name + '</div>' +
-                        '<div class="hour-range">' + hs.range + '</div>' +
-                        '<div class="hour-count">' + hs.count + '</div>' +
-                        '</div>';
-                }
-                html += '</div></div>';
+            /* ========== DISTRIBUTION DES INTENSITÉS ========== */
+            var distHtml = buildIntDistributionSVG(stats.intDistribution);
+            if (distHtml) {
+                html += '<div class="section-tag">Distribution</div>';
+                html += distHtml;
             }
 
-            /* ========== JOURS DE LA SEMAINE ========== */
+            /* ========== QUAND ? (Moments + Jours fusionnés) ========== */
+            var hasHourData = stats.hourSlots && stats.hourSlots.some(function(s) { return s.count > 0; });
+            var maxDayCount = 0;
             if (stats.dayOfWeek && stats.dayOfWeek.length) {
-                var maxDayCount = 0;
                 for (var dgi = 0; dgi < stats.dayOfWeek.length; dgi++) {
                     if (stats.dayOfWeek[dgi].count > maxDayCount) maxDayCount = stats.dayOfWeek[dgi].count;
                 }
+            }
+            if (hasHourData || maxDayCount > 0) {
+                html += '<div class="section-tag">Quand ?</div>';
+                if (hasHourData) {
+                    html += '<div class="stat-card" style="padding:14px;margin-bottom:6px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Moment de la journée</div>';
+                    html += '<div class="hour-grid">';
+                    for (var hsi = 0; hsi < stats.hourSlots.length; hsi++) {
+                        var hs = stats.hourSlots[hsi];
+                        html += '<div class="hour-cell">' +
+                            '<div class="hour-name">' + hs.name + '</div>' +
+                            '<div class="hour-range">' + hs.range + '</div>' +
+                            '<div class="hour-count">' + hs.count + '</div>' +
+                            '</div>';
+                    }
+                    html += '</div></div>';
+                }
                 if (maxDayCount > 0) {
-                    html += '<div class="section-tag">Jours de la semaine</div>';
-                    html += '<div class="stat-card" style="padding:0;overflow:hidden">';
+                    html += '<div class="stat-card" style="padding:14px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Jour de la semaine</div>';
                     html += '<div class="day-grid">';
                     for (var dgi2 = 0; dgi2 < stats.dayOfWeek.length; dgi2++) {
                         var dg = stats.dayOfWeek[dgi2];
@@ -886,6 +1096,119 @@
                             '</div>';
                     }
                     html += '</div></div>';
+                }
+            }
+
+            /* ========== AVANT LA CRISE ========== */
+            var thresholdsHtml = buildThresholdsSVG(stats.thresholds);
+            if (thresholdsHtml) {
+                html += '<div class="section-tag">Avant la crise</div>';
+                html += '<div style="font-size:12px;color:var(--light);opacity:0.5;padding:0 2px 6px">Pour chaque niveau mesuré avant la crise, quelle était l\'intensité moyenne de la crise qui a suivi</div>';
+                html += thresholdsHtml;
+            }
+
+            /* ========== DÉCLENCHEURS ENRICHIS ========== */
+            if (stats.triggerStats.length) {
+                var trigHeader = 'Déclencheurs';
+                if (stats.avgTrigPerCrise !== null) trigHeader += '<span style="font-size:12px;font-weight:500;opacity:0.5;text-transform:none;letter-spacing:0"> — moy. ' + stats.avgTrigPerCrise + '/crise</span>';
+                html += '<div class="section-tag">' + trigHeader + '</div>';
+
+                /* Catégories */
+                if (stats.trigCatCounts.length > 1) {
+                    html += '<div class="stat-card" style="padding:12px;margin-bottom:6px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Par catégorie</div>';
+                    var maxCat = stats.trigCatCounts[0].count;
+                    for (var tci = 0; tci < stats.trigCatCounts.length; tci++) {
+                        html += rankRow({ name: stats.trigCatCounts[tci].name, count: stats.trigCatCounts[tci].count, avgIntensity: null, meltdownPct: null }, tci + 1, maxCat);
+                    }
+                    html += '</div>';
+                }
+
+                /* Déclencheurs détaillés */
+                html += '<div class="stat-card" style="padding:12px;margin-bottom:6px">';
+                html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Tous les déclencheurs</div>';
+                var maxTrig = stats.triggerStats[0].count;
+                for (var ti = 0; ti < Math.min(stats.triggerStats.length, 8); ti++) {
+                    html += rankRow(stats.triggerStats[ti], ti + 1, maxTrig);
+                }
+                html += '</div>';
+
+                /* Déclencheurs des crises fortes (≥7) */
+                if (stats.triggerStrongCrises.length) {
+                    html += '<div class="stat-card" style="padding:12px;margin-bottom:6px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Dans les crises ≥ 7/10</div>';
+                    var maxStrong = stats.triggerStrongCrises[0].count;
+                    for (var si = 0; si < Math.min(stats.triggerStrongCrises.length, 5); si++) {
+                        html += rankRow({ name: stats.triggerStrongCrises[si].name, count: stats.triggerStrongCrises[si].count, avgIntensity: null, meltdownPct: null }, si + 1, maxStrong);
+                    }
+                    html += '</div>';
+                }
+
+                /* Intensité perçue des déclencheurs */
+                var trigWithInt = stats.triggerStats.filter(function(t) { return t.avgTrigIntensity !== null; });
+                trigWithInt.sort(function(a, b) { return b.avgTrigIntensity - a.avgTrigIntensity; });
+                if (trigWithInt.length >= 3) {
+                    html += '<div class="stat-card" style="padding:12px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Intensité perçue des déclencheurs</div>';
+                    html += '<div style="font-size:11px;color:var(--dark);opacity:0.4;margin-bottom:8px">À quel point ce stimulus était intense, selon ton ressenti au moment de la crise</div>';
+                    for (var twi = 0; twi < Math.min(trigWithInt.length, 5); twi++) {
+                        var ti2 = trigWithInt[twi];
+                        var barPct2 = Math.round((ti2.avgTrigIntensity / 10) * 100);
+                        html += '<div class="rank-item"><div class="rank-number">' + (twi + 1) + '</div>' +
+                            '<div class="rank-bar-wrap"><div class="rank-header">' +
+                            '<div class="rank-name">' + ti2.name + '</div>' +
+                            '<div class="rank-meta">' + ti2.avgTrigIntensity + '/10</div></div>' +
+                            '<div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + barPct2 + '%"></div></div>' +
+                            '</div></div>';
+                    }
+                    html += '</div>';
+                }
+            }
+
+            /* ========== IMPACT (Besoins + États + Capacités) ========== */
+            var hasBesoins = stats.besoinsCounts.length > 0;
+            var hasEtats = stats.etatCounts.length > 0;
+            var hasCaps = stats.capImpCounts.length > 0 || stats.capDifCounts.length > 0;
+            if (hasBesoins || hasEtats || hasCaps) {
+                html += '<div class="section-tag">Impact</div>';
+                if (hasBesoins) {
+                    html += '<div class="stat-card" style="padding:12px;margin-bottom:6px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Besoins pendant la crise</div>';
+                    var maxBesoin = stats.besoinsCounts[0].count;
+                    for (var bbi = 0; bbi < Math.min(stats.besoinsCounts.length, 7); bbi++) {
+                        html += rankRow({ name: stats.besoinsCounts[bbi].name, count: stats.besoinsCounts[bbi].count, avgIntensity: null, meltdownPct: null }, bbi + 1, maxBesoin);
+                    }
+                    html += '</div>';
+                }
+                if (hasEtats) {
+                    html += '<div class="stat-card" style="padding:12px;margin-bottom:6px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">États ressentis</div>';
+                    var maxEtat = stats.etatCounts[0].count;
+                    for (var ei = 0; ei < Math.min(stats.etatCounts.length, 7); ei++) {
+                        var et = stats.etatCounts[ei];
+                        var eAvgI = stats.avgIntensityByEtat[et.name];
+                        html += rankRow({ name: et.name, count: et.count, avgIntensity: eAvgI, meltdownPct: null }, ei + 1, maxEtat);
+                    }
+                    html += '</div>';
+                }
+                if (hasCaps) {
+                    html += '<div class="stat-card" style="padding:12px">';
+                    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--dark);opacity:0.5;margin-bottom:8px">Capacités impactées</div>';
+                    if (stats.capImpCounts.length) {
+                        html += '<div class="cap-category">Impossible</div>';
+                        var maxImp = stats.capImpCounts[0].count;
+                        for (var ci = 0; ci < Math.min(stats.capImpCounts.length, 7); ci++) {
+                            html += rankRow({ name: stats.capImpCounts[ci].name, count: stats.capImpCounts[ci].count, avgIntensity: null, meltdownPct: null }, ci + 1, maxImp);
+                        }
+                    }
+                    if (stats.capDifCounts.length) {
+                        html += '<div class="cap-category cap-sep">Souvent difficile</div>';
+                        var maxDif = stats.capDifCounts[0].count;
+                        for (var cdi = 0; cdi < Math.min(stats.capDifCounts.length, 7); cdi++) {
+                            html += rankRow({ name: stats.capDifCounts[cdi].name, count: stats.capDifCounts[cdi].count, avgIntensity: null, meltdownPct: null }, cdi + 1, maxDif);
+                        }
+                    }
+                    html += '</div>';
                 }
             }
 
@@ -909,66 +1232,6 @@
                 html += '</div>';
             }
 
-            /* ========== SEUILS CRITIQUES ========== */
-            var thresholdsHtml = buildThresholdsSVG(stats.thresholds);
-            if (thresholdsHtml) {
-                html += '<div class="section-tag">Seuils critiques</div>';
-                html += '<div style="font-size:12px;color:var(--light);opacity:0.5;padding:0 2px 6px">Intensité moyenne de crise selon le niveau avant la crise</div>';
-                html += thresholdsHtml;
-            }
-
-            /* ========== DÉCLENCHEURS ENRICHIS ========== */
-            if (stats.triggerStats.length) {
-                html += '<div class="section-tag">Déclencheurs</div>';
-                html += '<div class="stat-card" style="padding:12px">';
-                var maxTrig = stats.triggerStats[0].count;
-                for (var ti = 0; ti < Math.min(stats.triggerStats.length, 8); ti++) {
-                    html += rankRow(stats.triggerStats[ti], ti + 1, maxTrig);
-                }
-                html += '</div>';
-            }
-
-            /* ========== ÉTATS × INTENSITÉ ========== */
-            if (stats.etatCounts.length) {
-                html += '<div class="section-tag">États ressentis</div>';
-                html += '<div class="stat-card" style="padding:12px">';
-                var maxEtat = stats.etatCounts[0].count;
-                for (var ei = 0; ei < Math.min(stats.etatCounts.length, 7); ei++) {
-                    var et = stats.etatCounts[ei];
-                    var eAvgI = stats.avgIntensityByEtat[et.name];
-                    html += rankRow({ name: et.name, count: et.count, avgIntensity: eAvgI, meltdownPct: null }, ei + 1, maxEtat);
-                }
-                html += '</div>';
-            }
-
-            /* ========== CAPACITÉS ========== */
-            if (stats.capImpCounts.length || stats.capDifCounts.length) {
-                html += '<div class="section-tag">Capacités impactées</div>';
-                html += '<div class="stat-card" style="padding:12px">';
-                if (stats.capImpCounts.length) {
-                    html += '<div class="cap-category">Impossible</div>';
-                    var maxImp = stats.capImpCounts[0].count;
-                    for (var ci = 0; ci < Math.min(stats.capImpCounts.length, 7); ci++) {
-                        html += rankRow({ name: stats.capImpCounts[ci].name, count: stats.capImpCounts[ci].count, avgIntensity: null, meltdownPct: null }, ci + 1, maxImp);
-                    }
-                }
-                if (stats.capDifCounts.length) {
-                    html += '<div class="cap-category cap-sep">Souvent difficile</div>';
-                    var maxDif = stats.capDifCounts[0].count;
-                    for (var cdi = 0; cdi < Math.min(stats.capDifCounts.length, 7); cdi++) {
-                        html += rankRow({ name: stats.capDifCounts[cdi].name, count: stats.capDifCounts[cdi].count, avgIntensity: null, meltdownPct: null }, cdi + 1, maxDif);
-                    }
-                }
-                html += '</div>';
-            }
-
-            /* ========== INSIGHTS CLINIQUES ========== */
-            var deepHtml = buildDeepInsights(stats);
-            if (deepHtml) {
-                html += '<div class="section-tag">Observations</div>';
-                html += deepHtml;
-            }
-
             main.innerHTML = html;
             document.getElementById('exportFooter').style.display = 'flex';
         }
@@ -986,6 +1249,145 @@
             var a = document.createElement('a'); a.href = url;
             a.download = 'analyse-nora-' + new Date().toISOString().split('T')[0] + '.txt';
             a.click(); URL.revokeObjectURL(url);
+        }
+
+        /* ---------- PROFIL DE CRISE ---------- */
+
+        function computeProfileStats() {
+            var journal = getJournal();
+            if (journal.length < 10) return null;
+            var intensities = [], energies = [], chargesMentales = [], chargesSociales = [], durees = [];
+            var triggerFreq = {}, besoinArr = [], meltdownCount = 0, shutdownCount = 0;
+            var hourCounts = [0, 0, 0, 0];
+            for (var k = 0; k < journal.length; k++) {
+                var e = journal[k];
+                var iv = parseFloat(e.intensite); if (!isNaN(iv)) intensities.push(iv);
+                var en = normEnergie(e); if (!isNaN(en)) energies.push(en);
+                var cm = normChargeMentale(e); if (!isNaN(cm)) chargesMentales.push(cm);
+                var cs = normChargeSociale(e); if (!isNaN(cs)) chargesSociales.push(cs);
+                if (e.typeManifestation === 'Meltdown') meltdownCount++;
+                else if (e.typeManifestation === 'Shutdown') shutdownCount++;
+                var decl = normDeclencheurs(e.declencheurs);
+                for (var d2 = 0; d2 < decl.length; d2++) { if (decl[d2].nom) triggerFreq[decl[d2].nom] = (triggerFreq[decl[d2].nom] || 0) + 1; }
+                var bess = e.besoins || [];
+                for (var be2 = 0; be2 < bess.length; be2++) { var bl = extractLabel(bess[be2]); if (bl) besoinArr.push(bl); }
+                if (e.horodatage) { var hh = new Date(e.horodatage).getHours(); hourCounts[hh < 6 ? 0 : hh < 12 ? 1 : hh < 18 ? 2 : 3]++; }
+                if (e.duree) { var dm = parseFloat(e.duree); if (!isNaN(dm)) durees.push(dm); }
+            }
+            var trigCatFreq = {};
+            for (var tk in triggerFreq) { var parts = tk.split(' — '); var cat = parts.length > 1 ? parts[0] : 'Divers'; trigCatFreq[cat] = (trigCatFreq[cat] || 0) + triggerFreq[tk]; }
+            var trigCatCounts = [];
+            for (var tc in trigCatFreq) trigCatCounts.push({ name: tc, count: trigCatFreq[tc] });
+            trigCatCounts.sort(function(a, b) { return b.count - a.count; });
+            var triggerStats = [];
+            for (var tkey in triggerFreq) triggerStats.push({ name: tkey, count: triggerFreq[tkey] });
+            triggerStats.sort(function(a, b) { return b.count - a.count; });
+            var hourSlotNames = ['Nuit (0–6h)', 'Matin (6–12h)', 'Après-midi (12–18h)', 'Soir (18–24h)'];
+            var maxHourIdx = 0;
+            for (var hi = 1; hi < 4; hi++) { if (hourCounts[hi] > hourCounts[maxHourIdx]) maxHourIdx = hi; }
+            return {
+                total: journal.length,
+                avgIntensity: avgArr(intensities),
+                avgEnergie: avgArr(energies), avgChargeMentale: avgArr(chargesMentales), avgChargeSociale: avgArr(chargesSociales),
+                avgDuree: durees.length ? avgArr(durees) : null,
+                meltdownCount: meltdownCount, shutdownCount: shutdownCount,
+                meltdownPct: pct(meltdownCount, meltdownCount + shutdownCount),
+                shutdownPct: pct(shutdownCount, meltdownCount + shutdownCount),
+                triggerStats: triggerStats.slice(0, 5), trigCatCounts: trigCatCounts,
+                besoinsCounts: countFreq(besoinArr).slice(0, 5),
+                dominantSlot: hourCounts[maxHourIdx] > 0 ? { name: hourSlotNames[maxHourIdx], pct: pct(hourCounts[maxHourIdx], journal.length) } : null
+            };
+        }
+
+        function buildProfileHTML(ps) {
+            var html = '<div style="font-size:13px;color:var(--light);opacity:0.4;margin-bottom:4px">Basé sur ' + ps.total + ' crises enregistrées</div>';
+            html += '<div class="profile-section-title">Résumé</div><div class="profile-card">';
+            if (ps.avgIntensity !== null) html += '<div class="profile-line">Intensité typique : <strong>' + ps.avgIntensity + '/10</strong></div>';
+            var typeTotal = ps.meltdownCount + ps.shutdownCount;
+            if (typeTotal >= 3) {
+                if (ps.meltdownPct >= 55) html += '<div class="profile-line">Type dominant : <strong>meltdown</strong> (' + ps.meltdownPct + '% des crises typées)</div>';
+                else if (ps.shutdownPct >= 55) html += '<div class="profile-line">Type dominant : <strong>shutdown</strong> (' + ps.shutdownPct + '% des crises typées)</div>';
+                else html += '<div class="profile-line">Type : <strong>mixte</strong> (' + ps.meltdownPct + '% meltdown · ' + ps.shutdownPct + '% shutdown)</div>';
+            }
+            if (ps.avgDuree !== null) html += '<div class="profile-line">Durée typique : <strong>' + formatMins(ps.avgDuree) + '</strong></div>';
+            html += '</div>';
+            if (ps.triggerStats.length) {
+                html += '<div class="profile-section-title">Déclencheurs</div><div class="profile-card">';
+                if (ps.trigCatCounts.length > 1) { html += '<div class="profile-line" style="opacity:0.7">Catégories : ' + ps.trigCatCounts.map(function(c) { return c.name; }).join(', ') + '</div>'; }
+                for (var ti = 0; ti < Math.min(ps.triggerStats.length, 3); ti++) html += '<div class="profile-line"><strong>' + (ti+1) + '.</strong> ' + ps.triggerStats[ti].name + '</div>';
+                html += '</div>';
+            }
+            if (ps.besoinsCounts.length) {
+                html += '<div class="profile-section-title">Besoins pendant la crise</div><div class="profile-card">';
+                for (var bi = 0; bi < ps.besoinsCounts.length; bi++) html += '<div class="profile-line"><strong>' + (bi+1) + '.</strong> ' + ps.besoinsCounts[bi].name + '</div>';
+                html += '</div>';
+            }
+            var hasPrecrisis = ps.avgEnergie !== null || ps.avgChargeMentale !== null || ps.avgChargeSociale !== null;
+            if (hasPrecrisis || ps.dominantSlot) {
+                html += '<div class="profile-section-title">Patterns habituels</div><div class="profile-card">';
+                if (ps.avgEnergie !== null) html += '<div class="profile-line">Énergie avant crise : <strong>' + ps.avgEnergie + '/10</strong></div>';
+                if (ps.avgChargeMentale !== null) html += '<div class="profile-line">Charge mentale : <strong>' + ps.avgChargeMentale + '/10</strong></div>';
+                if (ps.avgChargeSociale !== null) html += '<div class="profile-line">Charge sociale : <strong>' + ps.avgChargeSociale + '/10</strong></div>';
+                if (ps.dominantSlot) html += '<div class="profile-line">Moment habituel : <strong>' + ps.dominantSlot.name + '</strong> (' + ps.dominantSlot.pct + '% des crises)</div>';
+                html += '</div>';
+            }
+            return html;
+        }
+
+        function buildProfileText(ps) {
+            var text = '== Mon profil de crise — Nora ==\nBasé sur ' + ps.total + ' crises\n\n';
+            text += '— Résumé —\n';
+            if (ps.avgIntensity !== null) text += 'Intensité typique : ' + ps.avgIntensity + '/10\n';
+            var typeTotal = ps.meltdownCount + ps.shutdownCount;
+            if (typeTotal >= 3) {
+                if (ps.meltdownPct >= 55) text += 'Type dominant : meltdown (' + ps.meltdownPct + '%)\n';
+                else if (ps.shutdownPct >= 55) text += 'Type dominant : shutdown (' + ps.shutdownPct + '%)\n';
+                else text += 'Type : mixte (' + ps.meltdownPct + '% meltdown / ' + ps.shutdownPct + '% shutdown)\n';
+            }
+            if (ps.avgDuree !== null) text += 'Durée typique : ' + formatMins(ps.avgDuree) + '\n';
+            if (ps.triggerStats.length) {
+                text += '\n— Déclencheurs —\n';
+                if (ps.trigCatCounts.length > 1) text += 'Catégories : ' + ps.trigCatCounts.map(function(c) { return c.name; }).join(', ') + '\n';
+                for (var ti = 0; ti < Math.min(ps.triggerStats.length, 3); ti++) text += (ti+1) + '. ' + ps.triggerStats[ti].name + '\n';
+            }
+            if (ps.besoinsCounts.length) {
+                text += '\n— Besoins pendant la crise —\n';
+                for (var bi = 0; bi < ps.besoinsCounts.length; bi++) text += (bi+1) + '. ' + ps.besoinsCounts[bi].name + '\n';
+            }
+            var hasPrecrisis = ps.avgEnergie !== null || ps.avgChargeMentale !== null || ps.avgChargeSociale !== null;
+            if (hasPrecrisis || ps.dominantSlot) {
+                text += '\n— Avant la crise —\n';
+                if (ps.avgEnergie !== null) text += 'Énergie : ' + ps.avgEnergie + '/10\n';
+                if (ps.avgChargeMentale !== null) text += 'Charge mentale : ' + ps.avgChargeMentale + '/10\n';
+                if (ps.avgChargeSociale !== null) text += 'Charge sociale : ' + ps.avgChargeSociale + '/10\n';
+                if (ps.dominantSlot) text += 'Moment habituel : ' + ps.dominantSlot.name + ' (' + ps.dominantSlot.pct + '%)\n';
+            }
+            text += '\nGénéré le ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
+            return text;
+        }
+
+        function openProfileModal() {
+            var ps = computeProfileStats();
+            if (!ps) return;
+            document.getElementById('profileContent').innerHTML = buildProfileHTML(ps);
+            document.getElementById('profileModalOverlay').classList.add('visible');
+            setTimeout(function() { document.getElementById('profileModal').classList.add('visible'); }, 10);
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('visible');
+            document.getElementById('profileModalOverlay').classList.remove('visible');
+        }
+
+        function shareProfile() {
+            var ps = computeProfileStats();
+            if (!ps) return;
+            var text = buildProfileText(ps);
+            if (navigator.share) {
+                navigator.share({ title: 'Mon profil de crise — Nora', text: text }).catch(function() {});
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() { alert('Profil copié !'); }).catch(function() {});
+            }
         }
 
         /* ---------- FILTRES ---------- */
@@ -1195,6 +1597,7 @@
         }
 
         initFilterContextes();
+        if (getJournal().length >= 10) document.getElementById('profileBtn').style.display = '';
         renderCurrent();
     </script>
 

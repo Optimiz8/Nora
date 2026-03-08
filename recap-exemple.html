@@ -180,7 +180,7 @@
         }
 
         .section-header:active {
-            background-color: #eed9b8;
+            background-color: var(--light);
         }
 
         .chevron {
@@ -301,7 +301,7 @@
         }
 
         .footer-btn:active {
-            background-color: #eed9b8;
+            background-color: var(--light);
         }
 
         .hidden {
@@ -321,7 +321,7 @@
         .capacity-inline-list,
         .need-item,
         .state-item {
-            color: #2E3A59 !important;
+            color: var(--dark) !important;
         }
     </style>
 </head>
@@ -357,7 +357,7 @@
             </button>
             <div class="section-content">
                 <div class="section-inner" id="capacitesContent">
-                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                    <p style="color: var(--dark); opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
@@ -370,7 +370,7 @@
             </button>
             <div class="section-content">
                 <div class="section-inner" id="besoinsContent">
-                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                    <p style="color: var(--dark); opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
@@ -383,7 +383,7 @@
             </button>
             <div class="section-content">
                 <div class="section-inner" id="etatsContent">
-                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                    <p style="color: var(--dark); opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
@@ -396,7 +396,7 @@
             </button>
             <div class="section-content">
                 <div class="section-inner" id="contactContent">
-                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                    <p style="color: var(--dark); opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
@@ -409,7 +409,7 @@
             </button>
             <div class="section-content">
                 <div class="section-inner" id="medicalContent">
-                    <p style="color: #2E3A59; opacity: 0.6;">Chargement...</p>
+                    <p style="color: var(--dark); opacity: 0.6;">Chargement...</p>
                 </div>
             </div>
         </div>
@@ -512,7 +512,7 @@
         function loadCapacites(capacites) {
             const container = document.getElementById('capacitesContent');
             if (!capacites) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucune capacité configurée</p>';
+                container.innerHTML = '<p style="color: var(--dark); opacity: 0.6;">Aucune capacité configurée</p>';
                 return;
             }
 
@@ -556,7 +556,7 @@
             const container = document.getElementById('besoinsContent');
 
             if (!besoins || besoins.length === 0) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6; font-style: italic;">Les besoins sélectionnés lors d\'une crise apparaîtront ici (ex: boire, manger, réduire le bruit, m\'isoler, etc.). Tu pourras les choisir lors de la personnalisation de ton récapitulatif de crise.</p>';
+                container.innerHTML = '<p style="color: var(--dark); opacity: 0.6; font-style: italic;">Les besoins sélectionnés lors d\'une crise apparaîtront ici (ex: boire, manger, réduire le bruit, m\'isoler, etc.). Tu pourras les choisir lors de la personnalisation de ton récapitulatif de crise.</p>';
                 return;
             }
             
@@ -576,7 +576,7 @@
             const container = document.getElementById('etatsContent');
 
             if (!etats || etats.length === 0) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6; font-style: italic;">Les états et ressentis sélectionnés lors d\'une crise apparaîtront ici (ex: anxiété, surcharge sensorielle, fatigue, etc.). Tu pourras les choisir lors de la personnalisation de ton récapitulatif de crise.</p>';
+                container.innerHTML = '<p style="color: var(--dark); opacity: 0.6; font-style: italic;">Les états et ressentis sélectionnés lors d\'une crise apparaîtront ici (ex: anxiété, surcharge sensorielle, fatigue, etc.). Tu pourras les choisir lors de la personnalisation de ton récapitulatif de crise.</p>';
                 return;
             }
             
@@ -596,7 +596,7 @@
             const container = document.getElementById('contactContent');
 
             if (!contacts || contacts.length === 0) {
-                container.innerHTML = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact configuré ou sélectionné pour ce contexte.</p>';
+                container.innerHTML = '<p style="color: var(--dark); opacity: 0.6;">Aucun contact configuré ou sélectionné pour ce contexte.</p>';
                 return;
             }
 
@@ -608,7 +608,7 @@
                     <div style="margin-bottom: 20px;">
                         <p style="margin-bottom: 4px; font-size: 16px; color: var(--dark);"><strong>${contact.nom}</strong>${lien}</p>
                         ${remarque}
-                        ${contact.telephone ? `<p style="margin-bottom: 12px; color: #2E3A59;">📞 ${contact.telephone}</p>` : ''}
+                        ${contact.telephone ? `<p style="margin-bottom: 12px; color: var(--dark);">📞 ${contact.telephone}</p>` : ''}
                         <div class="contact-buttons">
                             <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
                                 <span>📞</span>
@@ -624,7 +624,7 @@
             });
 
             if (html === '') {
-                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucun contact sélectionné pour ce contexte.</p>';
+                html = '<p style="color: var(--dark); opacity: 0.6;">Aucun contact sélectionné pour ce contexte.</p>';
             }
 
             container.innerHTML = html;
@@ -675,7 +675,7 @@
             }
 
             if (!html) {
-                html = '<p style="color: #2E3A59; opacity: 0.6;">Aucune information médicale configurée</p>';
+                html = '<p style="color: var(--dark); opacity: 0.6;">Aucune information médicale configurée</p>';
             }
 
             container.innerHTML = html;

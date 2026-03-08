@@ -136,7 +136,7 @@
 
         // Reset visuel
         hd.style.opacity = (mode === 'trail') ? "0" : "1";
-        hd.style.backgroundColor = "var(--accent)";
+        hd.style.setProperty('background-color', 'var(--accent)');
         fill.style.opacity = (mode === 'trail') ? "1" : "0";
         fill.style.height = "0%";
       }
