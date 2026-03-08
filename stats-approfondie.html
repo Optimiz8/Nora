@@ -64,15 +64,16 @@
 
         /* ---------- FILTRES ---------- */
 
-        .filter-bar { padding: 6px 16px 10px; }
+        .filter-bar { padding: 8px 16px; }
 
         .filter-btn {
-            background: rgba(245, 228, 204, 0.1); border: 2px solid rgba(245, 228, 204, 0.15);
+            width: 100%; background: rgba(245, 228, 204, 0.08);
+            border: 1.5px solid rgba(245, 228, 204, 0.22);
             color: var(--light); font-size: 14px; font-weight: 600;
-            padding: 8px 14px; border-radius: 10px; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 6px;
+            padding: 11px 16px; border-radius: 12px; cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
         }
-        .filter-btn.has-filters { border-color: var(--accent); color: var(--accent); }
+        .filter-btn.has-filters { border-color: var(--accent); color: var(--accent); background: rgba(247,184,156,0.08); }
 
         .filter-badge {
             background: var(--accent); color: var(--dark); font-size: 11px;
@@ -283,21 +284,26 @@
         /* ---------- PROFIL DE CRISE ---------- */
 
         .profile-modal {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--dark); border-radius: 20px 20px 0 0;
-            padding: 20px 16px 32px; z-index: 201;
-            display: flex; flex-direction: column; gap: 10px;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--dark); z-index: 201;
+            display: flex; flex-direction: column;
             transform: translateY(100%); transition: transform 0.25s ease;
-            max-height: 88vh; overflow-y: auto;
+            overflow: hidden;
         }
         .profile-modal.visible { transform: translateY(0); }
-        .profile-modal-header { display: flex; justify-content: space-between; align-items: center; }
-        .profile-modal-title { font-size: 17px; font-weight: 700; color: var(--light); }
-        .profile-modal-close { background: none; border: none; color: var(--light); font-size: 24px; cursor: pointer; opacity: 0.4; line-height: 1; padding: 2px 4px; }
+        .profile-modal-header {
+            display: flex; justify-content: center; align-items: center;
+            height: 56px; flex-shrink: 0; padding: 0 20px;
+            border-bottom: 1px solid rgba(245,228,204,0.1); position: relative;
+        }
+        .profile-modal-title { font-size: 20px; font-weight: 700; color: var(--light); text-align: center; flex: 1; }
+        .profile-modal-close { position: absolute; right: 16px; background: none; border: none; color: var(--light); font-size: 24px; cursor: pointer; opacity: 0.4; line-height: 1; padding: 2px 4px; }
+        #profileContent { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .profile-modal-footer { flex-shrink: 0; padding: 12px 16px; border-top: 1px solid rgba(245,228,204,0.1); display: flex; flex-direction: column; gap: 10px; }
         .profile-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--accent); padding-top: 6px; }
         .profile-card { background: rgba(245,228,204,0.07); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 5px; }
         .profile-line { font-size: 14px; color: var(--light); line-height: 1.55; }
-        .profile-share-btn { background: var(--accent); color: var(--dark); border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 4px; }
+        .profile-share-btn { background: var(--accent); color: var(--dark); border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; }
         .profile-share-btn:active { transform: scale(0.98); }
     </style>
 </head>
@@ -305,12 +311,18 @@
     <header class="header">
         <button class="back-button" onclick="window.location.href='stats.html'" aria-label="Retour aux statistiques">⬅️</button>
         <h1 class="page-title">Statistiques</h1>
-        <button class="header-icon" onclick="location.href='index.html'" style="margin-left:auto" aria-label="Accueil">🏠</button>
+        <button class="header-icon" onclick="location.replace('index.html')" style="margin-left:auto" aria-label="Accueil">🏠</button>
     </header>
 
     <div class="page-tabs">
         <button class="page-tab" onclick="window.location.href='stats.html'">Vue d'ensemble</button>
         <button class="page-tab active">Analyse</button>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel()">
+            ⚙️ Filtres avancés <span class="filter-badge" id="filterBadge" style="display:none">0</span>
+        </button>
     </div>
 
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
@@ -330,12 +342,6 @@
             <input type="date" class="date-range-input" id="dateTo">
         </div>
         <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
-    </div>
-
-    <div class="filter-bar">
-        <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel()">
-            ⚙️ Filtres <span class="filter-badge" id="filterBadge" style="display:none">0</span>
-        </button>
     </div>
 
     <div class="filter-overlay" id="filterOverlay" onclick="closeFilterPanel()"></div>
@@ -370,7 +376,7 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn icon-btn" id="profileBtn" onclick="openProfileModal()" style="display:none">👤 Profil</button>
+        <button class="export-stats-btn icon-btn" id="profileBtn" onclick="window.location.href='profil-crise.html'" style="display:none">👤 Profil</button>
         <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">✉️ Partager</button>
         <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">📥 Exporter</button>
     </div>
@@ -383,8 +389,11 @@
             <button class="profile-modal-close" onclick="closeProfileModal()">×</button>
         </div>
         <div id="profileContent"></div>
-        <button class="profile-share-btn" onclick="shareProfile()">✉️ Partager ce profil</button>
-        <button class="export-cancel-btn" onclick="closeProfileModal()">Fermer</button>
+        <div class="profile-modal-footer">
+            <button class="profile-share-btn" onclick="shareProfile()">✉️ Partager ce profil</button>
+            <button class="profile-share-btn" style="background: rgba(245,228,204,0.15); color: var(--light);" onclick="exportProfile()">📥 Exporter ce profil</button>
+            <button class="export-cancel-btn" onclick="closeProfileModal()">Fermer</button>
+        </div>
     </div>
 
     <!-- Modale export/partage -->
@@ -444,6 +453,17 @@
         function pct(part, total) { return total > 0 ? Math.round((part / total) * 100) : 0; }
         function avgArr(arr) { if (!arr.length) return null; var s = 0; for (var i = 0; i < arr.length; i++) s += arr[i]; return parseFloat((s / arr.length).toFixed(1)); }
         function formatMins(m) { m = Math.round(m); if (m < 60) return m + ' min'; var h = Math.floor(m/60), r = m%60; return r > 0 ? h + 'h' + (r < 10 ? '0' : '') + r : h + 'h'; }
+        function parseDuration(str) {
+            if (!str) return null;
+            str = str.toLowerCase().trim();
+            var mins = 0, found = false;
+            var hMatch = str.match(/(\d+)\s*h/);
+            if (hMatch) { mins += parseInt(hMatch[1], 10) * 60; found = true; }
+            var mMatch = str.match(/(\d+)\s*(min|mn|m\b)/);
+            if (mMatch) { mins += parseInt(mMatch[1], 10); found = true; }
+            if (!found) { var n = str.match(/^(\d+)$/); if (n) { mins = parseInt(n[1], 10); found = true; } }
+            return (found && mins > 0) ? mins : null;
+        }
 
         function normDeclencheurs(arr) {
             if (!Array.isArray(arr)) return [];
@@ -742,7 +762,7 @@
                     var pAvg = stats.avgIntensityByContexte[pn.name];
                     if (pAvg !== null && pAvg !== undefined && pAvg >= stats.avgIntensity + 1 && stats.profileCounts[pc].count >= 2) {
                         insights.push({ priority: 1, icon: '📍',
-                            text: 'Les crises sont <strong>plus intenses dans le contexte ' + pn.icon + ' ' + pn.name + '</strong> (' + pAvg + '/10 vs ' + stats.avgIntensity + '/10 en moyenne).' });
+                            text: 'Les crises sont <strong>plus intenses dans le contexte ' + pn.name + '</strong> (' + pAvg + '/10 vs ' + stats.avgIntensity + '/10 en moyenne).' });
                         break;
                     }
                 }
@@ -755,7 +775,7 @@
                     var pt = stats.percentTypeByContexte[pn2.name];
                     if (pt && pt.meltdown >= 70 && stats.profileCounts[pc2].count >= 3) {
                         insights.push({ priority: 1, icon: '🔴',
-                            text: 'Dans le contexte <strong>' + pn2.icon + ' ' + pn2.name + '</strong>, les crises sont majoritairement des meltdowns (' + pt.meltdown + '%).' });
+                            text: 'Dans le contexte <strong>' + pn2.name + '</strong>, les crises sont majoritairement des meltdowns (' + pt.meltdown + '%).' });
                         break;
                     }
                 }
@@ -1101,10 +1121,37 @@
 
             /* ========== AVANT LA CRISE ========== */
             var thresholdsHtml = buildThresholdsSVG(stats.thresholds);
-            if (thresholdsHtml) {
+            var hasPrecrisisAvg = stats.avgEnergie !== null || stats.avgChargeMentale !== null || stats.avgChargeSociale !== null;
+            if (thresholdsHtml || hasPrecrisisAvg) {
                 html += '<div class="section-tag">Avant la crise</div>';
-                html += '<div style="font-size:12px;color:var(--light);opacity:0.5;padding:0 2px 6px">Pour chaque niveau mesuré avant la crise, quelle était l\'intensité moyenne de la crise qui a suivi</div>';
-                html += thresholdsHtml;
+
+                /* Jauges moyennes */
+                if (hasPrecrisisAvg) {
+                    var precFields = [
+                        { label: 'Énergie', val: stats.avgEnergie },
+                        { label: 'Charge mentale', val: stats.avgChargeMentale },
+                        { label: 'Charge sociale', val: stats.avgChargeSociale }
+                    ];
+                    html += '<div class="stat-card" style="padding:12px;margin-bottom:6px">';
+                    html += '<div style="font-size:13px;color:var(--dark);opacity:0.5;margin-bottom:10px">Valeurs moyennes mesurées avant les crises</div>';
+                    for (var pf = 0; pf < precFields.length; pf++) {
+                        if (precFields[pf].val === null) continue;
+                        var pct = Math.round((precFields[pf].val / 10) * 100);
+                        html += '<div class="rank-item" style="margin-bottom:6px">' +
+                            '<div class="rank-bar-wrap"><div class="rank-header">' +
+                            '<div class="rank-name" style="font-size:15px">' + precFields[pf].label + '</div>' +
+                            '<div class="rank-meta" style="font-size:15px;font-weight:700">' + precFields[pf].val + '<span style="font-size:12px;font-weight:400"> /10</span></div>' +
+                            '</div><div class="rank-bar-bg"><div class="rank-bar-fill" style="width:' + pct + '%"></div></div>' +
+                            '</div></div>';
+                    }
+                    html += '</div>';
+                }
+
+                /* Graphique corrélation */
+                if (thresholdsHtml) {
+                    html += '<div style="font-size:13px;color:var(--light);opacity:0.5;padding:0 2px 6px">Pour chaque niveau mesuré avant la crise, quelle était l\'intensité moyenne de la crise qui a suivi</div>';
+                    html += thresholdsHtml;
+                }
             }
 
             /* ========== DÉCLENCHEURS ENRICHIS ========== */
@@ -1272,7 +1319,7 @@
                 var bess = e.besoins || [];
                 for (var be2 = 0; be2 < bess.length; be2++) { var bl = extractLabel(bess[be2]); if (bl) besoinArr.push(bl); }
                 if (e.horodatage) { var hh = new Date(e.horodatage).getHours(); hourCounts[hh < 6 ? 0 : hh < 12 ? 1 : hh < 18 ? 2 : 3]++; }
-                if (e.duree) { var dm = parseFloat(e.duree); if (!isNaN(dm)) durees.push(dm); }
+                if (e.duree) { var dm = parseDuration(e.duree); if (dm !== null) durees.push(dm); }
             }
             var trigCatFreq = {};
             for (var tk in triggerFreq) { var parts = tk.split(' — '); var cat = parts.length > 1 ? parts[0] : 'Divers'; trigCatFreq[cat] = (trigCatFreq[cat] || 0) + triggerFreq[tk]; }
@@ -1300,67 +1347,104 @@
         }
 
         function buildProfileHTML(ps) {
-            var html = '<div style="font-size:13px;color:var(--light);opacity:0.4;margin-bottom:4px">Basé sur ' + ps.total + ' crises enregistrées</div>';
+            var html = '';
+
+            // Description + baseline
+            html += '<div style="font-size:14px;color:rgba(245,228,204,0.65);line-height:1.55;margin-bottom:6px">';
+            html += 'Ce profil résume tes tendances de crise en chiffres clés. Toutes les valeurs sont des moyennes calculées sur l\'ensemble de ton historique, sans filtres.';
+            html += '</div>';
+            html += '<div style="font-size:12px;color:rgba(245,228,204,0.35);margin-bottom:8px">Basé sur ' + ps.total + ' crises enregistrées</div>';
+
+            // Résumé — insight
             html += '<div class="profile-section-title">Résumé</div><div class="profile-card">';
-            if (ps.avgIntensity !== null) html += '<div class="profile-line">Intensité typique : <strong>' + ps.avgIntensity + '/10</strong></div>';
+            var resumeParts = [];
+            if (ps.avgIntensity !== null) resumeParts.push('une intensité moyenne de <strong>' + ps.avgIntensity + '/10</strong>');
             var typeTotal = ps.meltdownCount + ps.shutdownCount;
             if (typeTotal >= 3) {
-                if (ps.meltdownPct >= 55) html += '<div class="profile-line">Type dominant : <strong>meltdown</strong> (' + ps.meltdownPct + '% des crises typées)</div>';
-                else if (ps.shutdownPct >= 55) html += '<div class="profile-line">Type dominant : <strong>shutdown</strong> (' + ps.shutdownPct + '% des crises typées)</div>';
-                else html += '<div class="profile-line">Type : <strong>mixte</strong> (' + ps.meltdownPct + '% meltdown · ' + ps.shutdownPct + '% shutdown)</div>';
+                if (ps.meltdownPct >= 55) resumeParts.push('un profil majoritairement <strong>meltdown</strong> (' + ps.meltdownPct + '% des crises typées)');
+                else if (ps.shutdownPct >= 55) resumeParts.push('un profil majoritairement <strong>shutdown</strong> (' + ps.shutdownPct + '% des crises typées)');
+                else resumeParts.push('un profil <strong>mixte</strong> (' + ps.meltdownPct + '% meltdown · ' + ps.shutdownPct + '% shutdown)');
             }
-            if (ps.avgDuree !== null) html += '<div class="profile-line">Durée typique : <strong>' + formatMins(ps.avgDuree) + '</strong></div>';
+            if (resumeParts.length > 0) {
+                html += '<div class="profile-line">Tes crises présentent ' + resumeParts.join(' et ') + '.</div>';
+            }
+            if (ps.avgDuree !== null) html += '<div class="profile-line">Elles durent en moyenne <strong>' + formatMins(ps.avgDuree) + '</strong>.</div>';
             html += '</div>';
-            if (ps.triggerStats.length) {
-                html += '<div class="profile-section-title">Déclencheurs</div><div class="profile-card">';
-                if (ps.trigCatCounts.length > 1) { html += '<div class="profile-line" style="opacity:0.7">Catégories : ' + ps.trigCatCounts.map(function(c) { return c.name; }).join(', ') + '</div>'; }
-                for (var ti = 0; ti < Math.min(ps.triggerStats.length, 3); ti++) html += '<div class="profile-line"><strong>' + (ti+1) + '.</strong> ' + ps.triggerStats[ti].name + '</div>';
-                html += '</div>';
-            }
-            if (ps.besoinsCounts.length) {
-                html += '<div class="profile-section-title">Besoins pendant la crise</div><div class="profile-card">';
-                for (var bi = 0; bi < ps.besoinsCounts.length; bi++) html += '<div class="profile-line"><strong>' + (bi+1) + '.</strong> ' + ps.besoinsCounts[bi].name + '</div>';
-                html += '</div>';
-            }
+
+            // Schémas récurrents (ex "Patterns habituels") — déplacé sous Résumé
             var hasPrecrisis = ps.avgEnergie !== null || ps.avgChargeMentale !== null || ps.avgChargeSociale !== null;
             if (hasPrecrisis || ps.dominantSlot) {
-                html += '<div class="profile-section-title">Patterns habituels</div><div class="profile-card">';
-                if (ps.avgEnergie !== null) html += '<div class="profile-line">Énergie avant crise : <strong>' + ps.avgEnergie + '/10</strong></div>';
-                if (ps.avgChargeMentale !== null) html += '<div class="profile-line">Charge mentale : <strong>' + ps.avgChargeMentale + '/10</strong></div>';
-                if (ps.avgChargeSociale !== null) html += '<div class="profile-line">Charge sociale : <strong>' + ps.avgChargeSociale + '/10</strong></div>';
-                if (ps.dominantSlot) html += '<div class="profile-line">Moment habituel : <strong>' + ps.dominantSlot.name + '</strong> (' + ps.dominantSlot.pct + '% des crises)</div>';
+                html += '<div class="profile-section-title">Schémas récurrents</div><div class="profile-card">';
+                if (ps.dominantSlot) {
+                    html += '<div class="profile-line">Elles surviennent surtout <strong>' + ps.dominantSlot.name + '</strong> (' + ps.dominantSlot.pct + '% des crises).</div>';
+                }
+                if (hasPrecrisis) {
+                    var precrisisParts = [];
+                    if (ps.avgEnergie !== null) precrisisParts.push('énergie à <strong>' + ps.avgEnergie + '/10</strong>');
+                    if (ps.avgChargeMentale !== null) precrisisParts.push('charge mentale à <strong>' + ps.avgChargeMentale + '/10</strong>');
+                    if (ps.avgChargeSociale !== null) precrisisParts.push('charge sociale à <strong>' + ps.avgChargeSociale + '/10</strong>');
+                    html += '<div class="profile-line">Avant la crise, en moyenne : ' + precrisisParts.join(', ') + '.</div>';
+                }
                 html += '</div>';
             }
+
+            // Déclencheurs fréquents
+            if (ps.triggerStats.length) {
+                html += '<div class="profile-section-title">Déclencheurs fréquents</div><div class="profile-card">';
+                if (ps.trigCatCounts.length > 1) {
+                    html += '<div class="profile-line" style="font-size:13px;opacity:0.6">Catégories : ' + ps.trigCatCounts.map(function(c) { return c.name; }).join(' · ') + '</div>';
+                }
+                for (var ti = 0; ti < Math.min(ps.triggerStats.length, 3); ti++) {
+                    html += '<div class="profile-line"><strong>' + (ti+1) + '.</strong> ' + ps.triggerStats[ti].name + '</div>';
+                }
+                html += '</div>';
+            }
+
+            // Besoins
+            if (ps.besoinsCounts.length) {
+                html += '<div class="profile-section-title">Besoins pendant la crise</div><div class="profile-card">';
+                for (var bi = 0; bi < ps.besoinsCounts.length; bi++) {
+                    html += '<div class="profile-line"><strong>' + (bi+1) + '.</strong> ' + ps.besoinsCounts[bi].name + '</div>';
+                }
+                html += '</div>';
+            }
+
             return html;
         }
 
         function buildProfileText(ps) {
-            var text = '== Mon profil de crise — Nora ==\nBasé sur ' + ps.total + ' crises\n\n';
+            var text = '== Mon profil de crise — Nora ==\n';
+            text += 'Basé sur ' + ps.total + ' crises enregistrées (toutes crises, sans filtres)\n';
+            text += 'Toutes les valeurs sont des moyennes.\n\n';
+
             text += '— Résumé —\n';
-            if (ps.avgIntensity !== null) text += 'Intensité typique : ' + ps.avgIntensity + '/10\n';
+            var resumeParts = [];
+            if (ps.avgIntensity !== null) resumeParts.push('intensité moyenne ' + ps.avgIntensity + '/10');
             var typeTotal = ps.meltdownCount + ps.shutdownCount;
             if (typeTotal >= 3) {
-                if (ps.meltdownPct >= 55) text += 'Type dominant : meltdown (' + ps.meltdownPct + '%)\n';
-                else if (ps.shutdownPct >= 55) text += 'Type dominant : shutdown (' + ps.shutdownPct + '%)\n';
-                else text += 'Type : mixte (' + ps.meltdownPct + '% meltdown / ' + ps.shutdownPct + '% shutdown)\n';
+                if (ps.meltdownPct >= 55) resumeParts.push('profil majoritairement meltdown (' + ps.meltdownPct + '% des crises typées)');
+                else if (ps.shutdownPct >= 55) resumeParts.push('profil majoritairement shutdown (' + ps.shutdownPct + '% des crises typées)');
+                else resumeParts.push('profil mixte (' + ps.meltdownPct + '% meltdown / ' + ps.shutdownPct + '% shutdown)');
             }
-            if (ps.avgDuree !== null) text += 'Durée typique : ' + formatMins(ps.avgDuree) + '\n';
+            if (resumeParts.length) text += 'Tes crises présentent : ' + resumeParts.join(', ') + '.\n';
+            if (ps.avgDuree !== null) text += 'Durée moyenne : ' + formatMins(ps.avgDuree) + '\n';
+
+            var hasPrecrisis = ps.avgEnergie !== null || ps.avgChargeMentale !== null || ps.avgChargeSociale !== null;
+            if (hasPrecrisis || ps.dominantSlot) {
+                text += '\n— Schémas récurrents —\n';
+                if (ps.dominantSlot) text += 'Moment habituel : ' + ps.dominantSlot.name + ' (' + ps.dominantSlot.pct + '% des crises)\n';
+                if (ps.avgEnergie !== null) text += 'Énergie avant crise (moy.) : ' + ps.avgEnergie + '/10\n';
+                if (ps.avgChargeMentale !== null) text += 'Charge mentale (moy.) : ' + ps.avgChargeMentale + '/10\n';
+                if (ps.avgChargeSociale !== null) text += 'Charge sociale (moy.) : ' + ps.avgChargeSociale + '/10\n';
+            }
             if (ps.triggerStats.length) {
-                text += '\n— Déclencheurs —\n';
+                text += '\n— Déclencheurs fréquents —\n';
                 if (ps.trigCatCounts.length > 1) text += 'Catégories : ' + ps.trigCatCounts.map(function(c) { return c.name; }).join(', ') + '\n';
                 for (var ti = 0; ti < Math.min(ps.triggerStats.length, 3); ti++) text += (ti+1) + '. ' + ps.triggerStats[ti].name + '\n';
             }
             if (ps.besoinsCounts.length) {
                 text += '\n— Besoins pendant la crise —\n';
                 for (var bi = 0; bi < ps.besoinsCounts.length; bi++) text += (bi+1) + '. ' + ps.besoinsCounts[bi].name + '\n';
-            }
-            var hasPrecrisis = ps.avgEnergie !== null || ps.avgChargeMentale !== null || ps.avgChargeSociale !== null;
-            if (hasPrecrisis || ps.dominantSlot) {
-                text += '\n— Avant la crise —\n';
-                if (ps.avgEnergie !== null) text += 'Énergie : ' + ps.avgEnergie + '/10\n';
-                if (ps.avgChargeMentale !== null) text += 'Charge mentale : ' + ps.avgChargeMentale + '/10\n';
-                if (ps.avgChargeSociale !== null) text += 'Charge sociale : ' + ps.avgChargeSociale + '/10\n';
-                if (ps.dominantSlot) text += 'Moment habituel : ' + ps.dominantSlot.name + ' (' + ps.dominantSlot.pct + '%)\n';
             }
             text += '\nGénéré le ' + new Date().toLocaleDateString('fr-FR') + ' — Nora.';
             return text;
@@ -1369,7 +1453,9 @@
         function openProfileModal() {
             var ps = computeProfileStats();
             if (!ps) return;
-            document.getElementById('profileContent').innerHTML = buildProfileHTML(ps);
+            var content = document.getElementById('profileContent');
+            content.innerHTML = buildProfileHTML(ps);
+            content.scrollTop = 0;
             document.getElementById('profileModalOverlay').classList.add('visible');
             setTimeout(function() { document.getElementById('profileModal').classList.add('visible'); }, 10);
         }
@@ -1388,6 +1474,19 @@
             } else if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(function() { alert('Profil copié !'); }).catch(function() {});
             }
+        }
+
+        function exportProfile() {
+            var ps = computeProfileStats();
+            if (!ps) return;
+            var text = buildProfileText(ps);
+            var blob = new Blob([text], { type: 'text/plain' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'profil-crise-nora.txt';
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
         /* ---------- FILTRES ---------- */
