@@ -3139,6 +3139,23 @@
         initFilterContextes();
         restoreNav();
         renderCurrent();
+
+        (function() {
+            var startX, startY;
+            document.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }, { passive: true });
+            document.addEventListener('touchend', function(e) {
+                if (startX === undefined) return;
+                var dx = e.changedTouches[0].clientX - startX;
+                var dy = e.changedTouches[0].clientY - startY;
+                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
+                    if (dx < 0) window.location.href = 'stats-approfondie.html';
+                }
+                startX = undefined;
+            }, { passive: true });
+        })();
     </script>
     <script src="nora-scroll.js"></script>
 </body>
