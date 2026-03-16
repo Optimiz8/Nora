@@ -76,13 +76,12 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--dark);
+  background: var(--bg);
   height: var(--footer-height);
   padding: 0 16px;
   display: flex;
   align-items: center;
   gap: 12px;
-  border-top: 1px solid rgba(245, 228, 204, 0.1);
   z-index: 100;
 }
 
@@ -143,7 +142,7 @@ body {
   }
 
   .footer {
-    background: var(--dark) !important;
+    background: var(--bg) !important;
   }
 }
 
@@ -151,6 +150,28 @@ body {
 html, body, *, *::before, *::after {
   -webkit-text-fill-color: inherit;
 }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: calc(var(--footer-height) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--dark);
+  color: var(--light);
+  padding: 14px 24px;
+  border-radius: 24px;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.toast.visible { opacity: 1; }
 
 /* ===== SCROLL INDICATOR ===== */
 .scroll-indicator {

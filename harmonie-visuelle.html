@@ -29,7 +29,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #1a2129;
+            background: var(--dark);
+        }
+
+        .footer {
+            background: var(--bg);
         }
 
         .container {
@@ -105,11 +109,11 @@
         const glitterCanvas = document.getElementById('glitterCanvas');
         const glitterCtx = glitterCanvas.getContext('2d');
         const GLITTER_COLORS = [
-            '#FFD700', '#FFF0AA', '#FFFDE0', // ors et jaunes
-            '#FF9ECD', '#FF69B4', '#FFB6D9', // roses
-            '#C8A8FF', '#A07AFF',             // violets
-            '#7FDBFF', '#B0EEFF',             // bleus clairs
-            '#FFFFFF', '#F5E4CC'              // blanc et crème
+            '#F5E4CC', '#FFF5E6', '#FDEBD0', // crèmes et blancs chauds
+            '#F7B89C', '#FFCBA4', '#FFD4B8', // pêches (--accent et déclinaisons)
+            '#FFE4C4', '#FFDAB9', '#FFD0A0', // abricots doux
+            '#FFFDE0', '#FFF0AA', '#FFF8DC', // ors très pâles
+            '#FFFFFF', '#FFF9F0'             // blanc nacré
         ];
         let glitterParticles = [];
         let glitterReady = false;
@@ -191,8 +195,8 @@
                 p.x += p.vx * speed;
                 p.y += p.vy * speed;
                 p.rotation += p.rotationSpeed;
-                if (p.y > h * 0.78) {
-                    p.baseAlpha = Math.max(0, p.baseAlpha - 0.022);
+                if (p.y > h * 0.94) {
+                    p.baseAlpha = Math.max(0, p.baseAlpha - 0.06);
                 }
                 // Scintillement : l'opacité pulse quand le losange capte la lumière
                 const lightCatch = Math.pow(Math.abs(Math.sin(p.rotation * 2)), 2.5);
