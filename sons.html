@@ -247,6 +247,70 @@
   color: var(--dark);
 }
 
+/* ===== MODALE CONFIRMATION SUPPRESSION ===== */
+.delete-confirm-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1400;
+  padding: 20px;
+}
+
+.delete-confirm-modal.active {
+  display: flex;
+}
+
+.delete-confirm-box {
+  background: #020617;
+  border-radius: 16px;
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.delete-confirm-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--light);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.delete-confirm-name {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.delete-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-confirm-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.delete-confirm-actions button.cancel-btn {
+  background: #1e293b;
+  color: var(--light);
+}
+
+.delete-confirm-actions button.delete-btn {
+  background: var(--danger);
+  color: var(--light);
+}
+
 /* ===== GRID DES SONS ===== */
 .grid {
   display: grid;
@@ -576,7 +640,7 @@ input[type=range]::-moz-range-thumb {
 <div class="mixer-modal" id="mixerModal" role="dialog" aria-modal="true" aria-label="Mixeur de sons">
   <div class="mixer-box">
     <div class="mixer-header">
-      <strong>Ambiance personnalisée</strong>
+      <strong>Ambiance sonore personnalisée</strong>
       <span id="closeMixer" role="button" aria-label="Fermer">✕</span>
     </div>
     <div class="mixer-center">
@@ -595,6 +659,18 @@ input[type=range]::-moz-range-thumb {
     </div>
 
     <div id="mixerList"></div>
+  </div>
+</div>
+
+<!-- MODALE CONFIRMATION SUPPRESSION PRÉRÉGLAGE -->
+<div class="delete-confirm-modal" id="deleteConfirmModal">
+  <div class="delete-confirm-box">
+    <div class="delete-confirm-title">Supprimer ce préréglage ?</div>
+    <div class="delete-confirm-name" id="deleteConfirmName"></div>
+    <div class="delete-confirm-actions">
+      <button class="cancel-btn" onclick="cancelDeletePreset()">Annuler</button>
+      <button class="delete-btn" onclick="confirmDeletePreset()">Supprimer</button>
+    </div>
   </div>
 </div>
 
@@ -831,8 +907,27 @@ function loadPreset(id) {
   });
 }
 
+let _presetToDelete = null;
+
 function deletePreset(id) {
-  setPresets(getPresets().filter(p => p.id !== id));
+  const presets = getPresets();
+  const preset = presets.find(p => p.id === id);
+  if (!preset) return;
+  _presetToDelete = id;
+  document.getElementById('deleteConfirmName').textContent = `"${preset.name}"`;
+  document.getElementById('deleteConfirmModal').classList.add('active');
+}
+
+function cancelDeletePreset() {
+  _presetToDelete = null;
+  document.getElementById('deleteConfirmModal').classList.remove('active');
+}
+
+function confirmDeletePreset() {
+  if (!_presetToDelete) return;
+  setPresets(getPresets().filter(p => p.id !== _presetToDelete));
+  _presetToDelete = null;
+  document.getElementById('deleteConfirmModal').classList.remove('active');
   renderPresets();
 }
 
@@ -1004,6 +1099,7 @@ function initMixer() {
     // Gestion tactile : drag horizontal uniquement, pas de saut au tap
     let _touchStartX = 0, _touchStartY = 0;
     let _sliderScrolling = null; // null=indéterminé, true=scroll, false=drag
+    let _isTouching = false;
 
     function applySliderVolume(val) {
       const volume = val / 100;
@@ -1023,6 +1119,7 @@ function initMixer() {
 
     slider.addEventListener('touchstart', (e) => {
       e.preventDefault(); // Bloque le saut immédiat du slider au point de toucher
+      _isTouching = true;
       _touchStartX = e.touches[0].clientX;
       _touchStartY = e.touches[0].clientY;
       _sliderScrolling = null;
@@ -1045,11 +1142,11 @@ function initMixer() {
       }
     }, { passive: true });
 
-    slider.addEventListener('touchend', () => { _sliderScrolling = null; }, { passive: true });
+    slider.addEventListener('touchend', () => { _sliderScrolling = null; _isTouching = false; }, { passive: true });
 
     // Interactions non-tactiles (souris, clavier)
     slider.addEventListener('input', (e) => {
-      if (_sliderScrolling !== null) return; // Géré par touch
+      if (_isTouching) return; // Géré par touch
       applySliderVolume(parseInt(e.target.value));
     });
 
@@ -1193,7 +1290,7 @@ timerModal.onclick = (e) => {
 };
 </script>
 
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closePlayer(); closeMixer(); document.getElementById('timerModal').classList.remove('active'); cancelSavePreset(); } });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closePlayer(); closeMixer(); document.getElementById('timerModal').classList.remove('active'); cancelSavePreset(); cancelDeletePreset(); } });</script>
     <script src="nora-scroll.js"></script>
 </body>
 </html>

@@ -113,59 +113,106 @@
         ];
         let glitterParticles = [];
         let glitterReady = false;
+        let glitterInitialized = false;
+        let glitterBurstTimer = 0;
 
         function resizeGlitterCanvas() {
             glitterCanvas.width = glitterCanvas.offsetWidth;
             glitterCanvas.height = glitterCanvas.offsetHeight;
-            glitterParticles = []; // Réinitialiser après resize
+        }
+
+        function createParticle(x, y) {
+            return {
+                x,
+                y,
+                size: Math.random() * 3.5 + 1.5,
+                color: GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)],
+                baseAlpha: Math.random() * 0.5 + 0.5,
+                rotation: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 0.12,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: Math.random() * 1.8 + 0.8,
+            };
+        }
+
+        function spawnGlitterBurst(centerX) {
+            const count = 18 + Math.floor(Math.random() * 14);
+            const spread = glitterCanvas.width * 0.22;
+            for (let i = 0; i < count; i++) {
+                glitterParticles.push(createParticle(
+                    centerX + (Math.random() - 0.5) * spread,
+                    Math.random() * -20
+                ));
+            }
         }
 
         function spawnGlitter() {
-            const spawnRate = Math.max(3, Math.round(6 * speed));
-            for (let s = 0; s < spawnRate; s++) {
-                glitterParticles.push({
-                    x: Math.random() * glitterCanvas.width,
-                    y: Math.random() * glitterCanvas.height,
-                    size: Math.random() * 1.2 + 0.3,
-                    color: GLITTER_COLORS[Math.floor(Math.random() * GLITTER_COLORS.length)],
-                    alpha: 0,
-                    maxAlpha: Math.random() * 0.8 + 0.2,
-                    decay: (Math.random() * 0.012 + 0.006) * speed,
-                    growing: true,
-                    vx: (Math.random() - 0.5) * 0.3 * speed,
-                    vy: (Math.random() - 0.5) * 0.3 * speed
-                });
+            if (Math.random() < 0.65) {
+                glitterParticles.push(createParticle(
+                    Math.random() * glitterCanvas.width,
+                    Math.random() * -30
+                ));
             }
-            if (glitterParticles.length > 600) glitterParticles.splice(0, glitterParticles.length - 600);
+            glitterBurstTimer--;
+            if (glitterBurstTimer <= 0) {
+                spawnGlitterBurst(Math.random() * glitterCanvas.width);
+                glitterBurstTimer = 80 + Math.floor(Math.random() * 100);
+            }
+            if (glitterParticles.length > 450) glitterParticles.splice(0, 20);
+        }
+
+        function initGlitterMode() {
+            if (!glitterReady || glitterCanvas.width !== glitterCanvas.offsetWidth || glitterCanvas.height !== glitterCanvas.offsetHeight) {
+                resizeGlitterCanvas();
+                glitterReady = true;
+            }
+            glitterParticles = [];
+            const h = glitterCanvas.height;
+            for (let i = 0; i < 90; i++) {
+                const p = createParticle(
+                    Math.random() * glitterCanvas.width,
+                    Math.random() * h
+                );
+                glitterParticles.push(p);
+            }
+            glitterBurstTimer = 60;
         }
 
         function drawGlitter() {
-            // Redimensionner le canvas si nécessaire (corrige l'effet ovale)
             if (!glitterReady || glitterCanvas.width !== glitterCanvas.offsetWidth || glitterCanvas.height !== glitterCanvas.offsetHeight) {
                 resizeGlitterCanvas();
                 glitterReady = true;
             }
             glitterCtx.clearRect(0, 0, glitterCanvas.width, glitterCanvas.height);
             spawnGlitter();
-            glitterParticles = glitterParticles.filter(p => p.alpha > 0 || p.growing);
+            const h = glitterCanvas.height;
+            glitterParticles = glitterParticles.filter(p => p.y < h + 20 && p.baseAlpha > 0.01);
             glitterParticles.forEach(p => {
+                p.x += p.vx * speed;
+                p.y += p.vy * speed;
+                p.rotation += p.rotationSpeed;
+                if (p.y > h * 0.78) {
+                    p.baseAlpha = Math.max(0, p.baseAlpha - 0.022);
+                }
+                // Scintillement : l'opacité pulse quand le losange capte la lumière
+                const lightCatch = Math.pow(Math.abs(Math.sin(p.rotation * 2)), 2.5);
+                const displayAlpha = p.baseAlpha * (0.12 + lightCatch * 0.88);
+                const s = p.size;
                 glitterCtx.save();
-                glitterCtx.globalAlpha = Math.min(p.alpha, p.maxAlpha);
+                glitterCtx.translate(p.x, p.y);
+                glitterCtx.rotate(p.rotation);
+                glitterCtx.globalAlpha = displayAlpha;
                 glitterCtx.fillStyle = p.color;
-                glitterCtx.shadowBlur = 4;
+                glitterCtx.shadowBlur = 10;
                 glitterCtx.shadowColor = p.color;
                 glitterCtx.beginPath();
-                glitterCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                glitterCtx.moveTo(0, -s);
+                glitterCtx.lineTo(s * 0.55, 0);
+                glitterCtx.lineTo(0, s);
+                glitterCtx.lineTo(-s * 0.55, 0);
+                glitterCtx.closePath();
                 glitterCtx.fill();
                 glitterCtx.restore();
-                if (p.growing) {
-                    p.alpha += p.decay;
-                    if (p.alpha >= p.maxAlpha) p.growing = false;
-                } else {
-                    p.alpha -= p.decay * 0.7;
-                }
-                p.x += p.vx;
-                p.y += p.vy;
             });
         }
 
@@ -184,6 +231,7 @@
         function nextMode() {
             currentMode = (currentMode + 1) % 6;
             modeBtn.innerText = modeNames[currentMode];
+            if (currentMode !== 5) glitterInitialized = false;
             if (navigator.vibrate) navigator.vibrate(15);
         }
 
@@ -198,6 +246,10 @@
             if (currentMode === 5) {
                 container.style.display = 'none';
                 glitterCanvas.style.display = 'block';
+                if (!glitterInitialized) {
+                    initGlitterMode();
+                    glitterInitialized = true;
+                }
                 drawGlitter();
                 requestAnimationFrame(animate);
                 return;
@@ -252,7 +304,7 @@
         }
 
         window.addEventListener('resize', () => {
-            if (currentMode === 5) resizeGlitterCanvas();
+            if (currentMode === 5) { resizeGlitterCanvas(); glitterInitialized = false; }
         });
 
         requestAnimationFrame(animate);

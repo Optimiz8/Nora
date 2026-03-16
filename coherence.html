@@ -20,7 +20,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 /* ---------- SECTION TITLES ---------- */
@@ -119,19 +119,36 @@ h2 {
   color: rgba(46,58,89,0.55);
 }
 
-/* ---------- ANIMATIONS + PRÉVISUALISATION ---------- */
-.mid-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.toggle-group {
+/* ---------- ANIMATION TABS ---------- */
+.anim-tabs {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  background: rgba(245,228,204,0.07);
+  border-radius: 10px;
+  padding: 3px;
+  align-self: center;
 }
 
+.anim-tab {
+  padding: 6px 22px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: rgba(245,228,204,0.5);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.anim-tab.active {
+  background: var(--light);
+  color: var(--dark);
+}
+
+/* ---------- TOGGLE BTN (son) ---------- */
 .toggle-btn {
   padding: 10px;
   border-radius: 12px;
@@ -156,35 +173,31 @@ h2 {
 }
 
 /* ---------- PRÉVISUALISATION ---------- */
-.preview-col {
+.preview-section {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-}
-
-.preview-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: .10em;
-  color: rgba(247,184,156,0.5);
-  margin: 0 0 10px 0;
-  display: block;
-  text-align: center;
-}
-
-.preview-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 70px;
+  justify-content: center;
+  gap: 14px;
+}
+
+.preview-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .preview-circle {
-  width: 72px;
-  height: 72px;
+  width: min(170px, 44vw);
+  height: min(170px, 44vw);
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(247,184,156,.9), rgba(247,184,156,.3));
-  box-shadow: 0 0 28px rgba(247,184,156,0.35);
+  box-shadow: 0 0 50px rgba(247,184,156,0.4), 0 0 100px rgba(247,184,156,0.1);
   animation: previewPulse 5s ease-in-out infinite;
 }
 
@@ -194,8 +207,8 @@ h2 {
 }
 
 .preview-oval {
-  width: 42px;
-  height: 100px;
+  width: min(72px, 18vw);
+  height: min(176px, 44vw);
   border-radius: 9999px;
   border: 2px solid rgba(245,228,204,.2);
   background: rgba(245,228,204,.05);
@@ -218,7 +231,7 @@ h2 {
 
 @keyframes previewFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-56px); }
+  50% { transform: translateY(-100%); }
 }
 
 /* ---------- SON ---------- */
@@ -233,57 +246,100 @@ h2 {
   gap: 8px;
 }
 
-/* ---------- DURATION CAROUSEL ---------- */
-.carousel-section {
-  width: 100%;
-}
-
-.carousel-wrapper {
-  width: 100%;
-  overflow: hidden;
-}
-
-.carousel {
+/* ---------- DURATION STEPPER ---------- */
+.stepper-section {
   display: flex;
+  flex-direction: column;
   gap: 10px;
-  overflow-x: scroll;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  padding: 4px 0 10px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.carousel::-webkit-scrollbar { display: none; }
-
-.carousel-spacer {
-  flex: 0 0 calc(50% - 34px);
-  min-width: calc(50% - 34px);
 }
 
-.item {
-  flex: 0 0 auto;
-  min-width: 56px;
-  padding: 12px 8px;
-  text-align: center;
-  border-radius: 16px;
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepper-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(245,228,204,0.15);
+  background: rgba(245,228,204,0.07);
+  color: var(--light);
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+}
+
+.stepper-btn:active {
+  background: rgba(245,228,204,0.15);
+}
+
+.stepper-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.stepper-display {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background: rgba(245,228,204,0.07);
   border: 1.5px solid rgba(245,228,204,0.12);
-  color: rgba(245,228,204,0.5);
-  scroll-snap-align: center;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  font-weight: 600;
-  font-size: 15px;
+  border-radius: 14px;
+  padding: 6px 16px;
 }
 
-.item.active {
-  background: var(--light);
-  border-color: var(--light);
-  color: var(--dark);
-  font-weight: 700;
+.stepper-value {
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.stepper-unit {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,228,204,0.4);
+  margin-top: 2px;
+}
+
+.stepper-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.stepper-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(245,228,204,0.18);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.stepper-dot.active {
+  background: var(--accent);
+  transform: scale(1.4);
 }
 
 /* ---------- FOOTER COMMENCER ---------- */
@@ -576,20 +632,14 @@ h2 {
     </div>
   </div>
 
-  <!-- Animations + Prévisualisation côte à côte -->
-  <div class="mid-row">
-    <div>
-      <h2>Animations</h2>
-      <div class="toggle-group">
-        <button class="toggle-btn active" id="animCircle">Cercle</button>
-        <button class="toggle-btn" id="animOval">Bulle</button>
-      </div>
+  <!-- Prévisualisation -->
+  <div class="preview-section">
+    <div class="anim-tabs">
+      <button class="anim-tab active" id="animCircle">Cercle</button>
+      <button class="anim-tab" id="animOval">Bulle</button>
     </div>
-    <div class="preview-col">
-      <span class="preview-label">Prévisualisation</span>
-      <div class="preview-container" id="previewContainer">
-        <div class="preview-circle"></div>
-      </div>
+    <div class="preview-main" id="previewContainer">
+      <div class="preview-circle"></div>
     </div>
   </div>
 
@@ -603,14 +653,17 @@ h2 {
   </div>
 
   <!-- Durée -->
-  <div class="carousel-section">
-    <h2>Durée (minutes)</h2>
-    <div class="carousel-wrapper">
-      <div class="carousel" id="duration">
-        <div class="carousel-spacer"></div>
-        <div class="carousel-spacer"></div>
+  <div class="stepper-section">
+    <h2>Durée</h2>
+    <div class="stepper">
+      <button class="stepper-btn" id="stepperMinus" onclick="stepDuration(-1)">−</button>
+      <div class="stepper-display">
+        <span class="stepper-value" id="stepperValue">2</span>
+        <span class="stepper-unit">minutes</span>
       </div>
+      <button class="stepper-btn" id="stepperPlus" onclick="stepDuration(1)">+</button>
     </div>
+    <div class="stepper-dots" id="stepperDots"></div>
   </div>
 
 </div>
@@ -719,11 +772,8 @@ let currentProgram = 'coherence';
 
 let audioContext = null;
 
-const durationsByProgram = {
-  coherence:  [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20],
-  apaisement: [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20],
-  custom:     [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20]
-};
+const DURATIONS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20];
+let durationIndex = 0;
 
 /* ---------- CUSTOM PROGRAM ---------- */
 function loadCustomProgram() {
@@ -792,61 +842,50 @@ function updatePreview() {
   }
 }
 
-/* ---------- DURATION CAROUSEL ---------- */
-function updateDurations(program) {
-  const carousel = document.getElementById('duration');
-  Array.from(carousel.querySelectorAll('.item')).forEach(el => el.remove());
-
-  const durations = durationsByProgram[program] || [2, 3, 4, 5];
-  const lastSpacer = carousel.querySelectorAll('.carousel-spacer')[1];
-
-  durations.forEach((min, index) => {
-    const item = document.createElement('div');
-    item.className = 'item';
-    if (index === 0) item.classList.add('active');
-    item.dataset.min = min;
-    item.textContent = min;
-    item.addEventListener('click', () => {
-      carousel.querySelectorAll('.item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      minutes = parseFloat(item.dataset.min);
+/* ---------- DURATION STEPPER ---------- */
+function renderDots() {
+  const container = document.getElementById('stepperDots');
+  container.innerHTML = '';
+  DURATIONS.forEach((d, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'stepper-dot' + (i === durationIndex ? ' active' : '');
+    dot.addEventListener('click', () => {
+      durationIndex = i;
+      minutes = DURATIONS[i];
+      document.getElementById('stepperValue').textContent = minutes;
+      document.getElementById('stepperMinus').disabled = i === 0;
+      document.getElementById('stepperPlus').disabled = i === DURATIONS.length - 1;
+      updateDots();
     });
-    lastSpacer.before(item);
+    container.appendChild(dot);
   });
-
-  minutes = durations[0];
-
-  setTimeout(() => {
-    const active = carousel.querySelector('.item.active');
-    if (active) active.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' });
-  }, 100);
 }
 
-// Scroll-snap listener for duration carousel
-(function() {
-  const carousel = document.getElementById('duration');
-  let scrollTimeout;
-  carousel.addEventListener('scroll', () => {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      const items = Array.from(carousel.querySelectorAll('.item'));
-      const rect = carousel.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      let closest = null, minDist = Infinity;
-      items.forEach(item => {
-        const r = item.getBoundingClientRect();
-        const dist = Math.abs(r.left + r.width / 2 - centerX);
-        if (dist < minDist) { minDist = dist; closest = item; }
-      });
-      if (closest && !closest.classList.contains('active')) {
-        items.forEach(i => i.classList.remove('active'));
-        closest.classList.add('active');
-        minutes = parseFloat(closest.dataset.min);
-      }
-    }, 100);
-  }, { passive: true });
-})();
+function updateDots() {
+  document.querySelectorAll('.stepper-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === durationIndex);
+  });
+}
+
+function stepDuration(dir) {
+  const newIndex = durationIndex + dir;
+  if (newIndex < 0 || newIndex >= DURATIONS.length) return;
+  durationIndex = newIndex;
+  minutes = DURATIONS[durationIndex];
+  document.getElementById('stepperValue').textContent = minutes;
+  document.getElementById('stepperMinus').disabled = durationIndex === 0;
+  document.getElementById('stepperPlus').disabled = durationIndex === DURATIONS.length - 1;
+  updateDots();
+}
+
+function initStepper() {
+  durationIndex = 0;
+  minutes = DURATIONS[0];
+  document.getElementById('stepperValue').textContent = minutes;
+  document.getElementById('stepperMinus').disabled = true;
+  document.getElementById('stepperPlus').disabled = false;
+  renderDots();
+}
 
 /* ---------- PROGRAMME BUTTONS ---------- */
 function setActiveProg(id) {
@@ -859,14 +898,14 @@ document.getElementById('progCoherence').addEventListener('click', () => {
   setActiveProg('progCoherence');
   inhale = 5; exhale = 5;
   currentProgram = 'coherence';
-  updateDurations('coherence');
+  initStepper();
 });
 
 document.getElementById('progApaisement').addEventListener('click', () => {
   setActiveProg('progApaisement');
   inhale = 4; exhale = 8;
   currentProgram = 'apaisement';
-  updateDurations('apaisement');
+  initStepper();
 });
 
 document.getElementById('progCustom').addEventListener('click', (e) => {
@@ -876,7 +915,7 @@ document.getElementById('progCustom').addEventListener('click', (e) => {
   inhale = custom ? custom.in : 5;
   exhale = custom ? custom.out : 5;
   currentProgram = 'custom';
-  updateDurations('custom');
+  initStepper();
 });
 
 document.getElementById('editLink').addEventListener('click', (e) => {
@@ -960,7 +999,7 @@ function saveCustomProgram() {
 }
 
 /* ---------- INIT ---------- */
-updateDurations('coherence');
+initStepper();
 updatePreview();
 
 /* ---------- WAKE LOCK ---------- */
