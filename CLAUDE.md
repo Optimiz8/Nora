@@ -38,6 +38,24 @@ Exception documentée : les 4 couleurs sémantiques d'état des capacités dans 
 - Interface entièrement en français, tutoiement
 - Modales : `.classList.add('visible')` / `.classList.remove('visible')`
 
+## Docs de support — synchronisation
+
+Les fichiers `.md` du projet sont appelés **docs de support** (ou "project docs"). Ils couvrent :
+- `CHANGELOG.md` — historique des versions
+- `ROADMAP.md` — feuille de route
+- `PRODUCT-OVERVIEW.md` — vision & stratégie produit
+- `ARCHITECTURE.md` — fonctionnement technique (Service Worker, localStorage, choix d'implémentation)
+- `README.md` — présentation générale
+- `analyse-donnees.md` — documentation des insights statistiques
+
+**Chaque doc contient une ligne `> Dernière mise à jour : ... — couvre jusqu'au commit X (vY.Z)`**
+→ En début de session, lire cette ligne et comparer avec `git log --oneline -10` pour savoir si des commits non documentés existent.
+→ Si oui, proposer proactivement une mise à jour des docs avant de commencer le travail, ou en fin de session.
+
+**Convention de mise à jour :**
+Les docs doivent être mis à jour **en fin de session**, juste avant de signaler le commit à Marine.
+L'ordre : 1) `a-propos.html` (version), 2) `CHANGELOG.md`, 3) `ROADMAP.md` si nécessaire, 4) `ARCHITECTURE.md` si modification technique, 5) `PRODUCT-OVERVIEW.md` si nouvelle fonctionnalité majeure.
+
 ## Commits et versioning
 Quand une session de travail représente une avancée significative (nouvelle fonctionnalité, refonte d'une page, lot de corrections), signaler proactivement qu'il serait bon de faire un commit.
 

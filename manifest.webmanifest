@@ -15,28 +15,40 @@
       "short_name": "Urgence",
       "description": "Accéder directement à la carte d'urgence",
       "url": "./carte.html",
-      "icons": [{ "src": "assets/images/shortcut-urgence.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }]
+      "icons": [
+        { "src": "assets/images/shortcut-urgence.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "assets/images/shortcut-urgence.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
+      ]
     },
     {
       "name": "Communication",
       "short_name": "Cartes",
       "description": "Accéder aux cartes de communication",
       "url": "./cartes-communication.html",
-      "icons": [{ "src": "assets/images/shortcut-cartes.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }]
+      "icons": [
+        { "src": "assets/images/shortcut-cartes.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "assets/images/shortcut-cartes.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
+      ]
     },
     {
       "name": "Cohérence cardiaque",
       "short_name": "Respiration",
       "description": "Lancer un exercice de cohérence cardiaque",
       "url": "./coherence.html",
-      "icons": [{ "src": "assets/images/shortcut-coherence.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }]
+      "icons": [
+        { "src": "assets/images/shortcut-coherence.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "assets/images/shortcut-coherence.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
+      ]
     },
     {
       "name": "Timer",
       "short_name": "Timer",
       "description": "Lancer le timer",
       "url": "./timer.html",
-      "icons": [{ "src": "assets/images/shortcut-timer.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }]
+      "icons": [
+        { "src": "assets/images/shortcut-timer.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "assets/images/shortcut-timer.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
+      ]
     }
   ],
   "icons": [

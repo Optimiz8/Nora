@@ -1,6 +1,7 @@
 # Nora — Vision & Stratégie Produit
 
 > **Document vivant.** À mettre à jour à chaque évolution significative : nouvelle fonctionnalité aboutie, décision de déploiement, changement de cap. Demander à Claude Code de le mettre à jour en fin de session si nécessaire.
+> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `857e83d` (v2.8.0)
 
 ---
 
@@ -40,7 +41,7 @@ Si les retours des tests utilisateurs sont positifs, diffusion plus large auprè
 Aucun compte, aucun serveur, aucune donnée transmise. Tout reste sur l'appareil (localStorage). C'est un choix structurant non négociable : les données de crise sont intimes et sensibles.
 
 **Offline-first**
-L'app fonctionne sans connexion. Installable comme une vraie application (PWA). Une crise ne prévient pas — l'outil doit être là, tout le temps, même en sous-sol ou en zone blanche.
+L'app fonctionne sans connexion. Installable comme une vraie application (PWA). Une crise ne prévient pas — l'outil doit être là, tout le temps, même en sous-sol ou en zone blanche. Garanti depuis V2.8 par un Service Worker qui met toute l'app en cache local dès le premier lancement.
 
 **Conçue pour la crise, pas pour le bureau**
 L'interface doit être lisible en quelques secondes sous stress cognitif élevé. Grande typographie, peu de choix, navigation évidente. Ce n'est pas une app qu'on consulte posément — c'est un outil de secours.
@@ -181,8 +182,9 @@ Le logo est utilisé en `maskable` dans le manifest (adaptatif aux formes d'icô
 | `--dark` | `#2E3A59` | Bleu marine — texte foncé, éléments sombres, headers |
 | `--light` | `#F5E4CC` | Crème — texte clair, cartes, **états actifs/sélectionnés** |
 | `--accent` | `#F7B89C` | Pêche/saumon — **boutons d'action primaire uniquement** |
+| `--danger` | `rgba(255, 70, 70, 0.8)` | Rouge — **boutons destructeurs uniquement** (suppression) |
 
-**Règle fondamentale :** `--light` pour les sélections/actifs. `--accent` uniquement pour les appels à l'action ("Commencer", "Valider"). Ne jamais inverser.
+**Règle fondamentale :** `--light` pour les sélections/actifs. `--accent` uniquement pour les appels à l'action ("Commencer", "Valider"). `--danger` uniquement pour les actions destructrices irréversibles. Ne jamais inverser.
 
 ### Thème système
 
@@ -240,25 +242,30 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 ## 7. Roadmap globale
 
-### ✅ Fait (V1 → V2.4)
+### ✅ Fait (V1 → V2.8)
 
 **Fonctionnel**
 - [x] Toutes les pages de l'app (voir section 4)
-- [x] Questionnaire de crise V2 (déclencheurs catégorisés + intensité)
-- [x] Statistiques + analyse approfondie avec insights automatiques
-- [x] Export / partage des rapports de crise
+- [x] Questionnaire de crise V2 (déclencheurs catégorisés + intensité, 6 catégories)
+- [x] Statistiques synthétiques + analyse approfondie avec insights automatiques (règles A–Q)
+- [x] Profil de crise (`profil-crise.html`) — synthèse en phrases, patterns, partage
+- [x] Export / partage des rapports de crise (graphique + CSV + PDF)
+- [x] Export / Import global des données (journal, profil, cartes, sons, playlist)
 - [x] Tutoriel guidé en 7 étapes
 - [x] FAQ + Politique de confidentialité
-- [x] Installation PWA (manifest, raccourcis)
+- [x] Installation PWA (manifest, raccourcis app shortcuts avec icônes SVG)
+- [x] **Service Worker offline** — app disponible sans réseau depuis V2.8
 
 **Design & identité**
-- [x] Charte graphique définie et appliquée sur toutes les pages
+- [x] Charte graphique définie et appliquée (5 variables CSS, 0 couleur en dur)
 - [x] Logo créé
 - [x] Favicon créée
-- [x] `nora-common.css` — système de styles partagés
+- [x] `nora-common.css` — système de styles partagés (header, footer, toast, reset)
+- [x] Icônes SVG pour raccourcis PWA
 
 **Contenu**
-- [x] ~25 ambiances sonores avec images associées
+- [x] ~29 ambiances sonores avec images associées
+- [x] Mixeur de sons avec préréglages (jusqu'à 4)
 - [x] Bibliothèque de fidgets (pop-it, slider, cliqueur)
 
 ---
@@ -305,7 +312,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 ### Situation actuelle
 
 - **Hébergement :** GitHub Pages — déploiement automatique à chaque push sur `main`
-- **URL :** https://optimiz8.github.io/Nora/
+- **URL :** https://optimiz8.github.io/Nora-2/
 - **Format :** PWA installable depuis le navigateur mobile (Chrome/Safari)
 - **Accès :** public (URL accessible à quiconque a le lien)
 - **Coût d'infrastructure :** 0€

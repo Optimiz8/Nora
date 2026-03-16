@@ -2274,6 +2274,7 @@ function handleTriggerChange(checkbox) {
 <h1>Journal de crises${nomComplet ? ' de ' + nomComplet : ''}</h1>
 <div class="meta">Export du ${exportDate} — ${journal.length} entrée${journal.length > 1 ? 's' : ''}</div>
 ${entriesHtml}
+<script src="sw-register.js"></script>
 </body>
 </html>`;
 
@@ -2578,5 +2579,6 @@ ${entriesHtml}
         });
     </script>
     <script src="nora-scroll.js"></script>
+<script src="sw-register.js"></script>
 </body>
 </html>

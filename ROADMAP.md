@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026
+> Dernière mise à jour : mars 2026 — V2.8
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -113,7 +113,7 @@ Phrases types à réutiliser dans des situations sociales courantes (refus, dema
    - Tester App Shortcuts Android (raccourcis appui long)
    - Tester import / export / sauvegarde des données complètes
 2. Tutoriel V2                               [améliorations à définir]
-3. Service Worker / offline garanti          [prérequis pour Capacitor — workflow git inchangé]
+3. Service Worker / offline garanti ✅       [livré en V2.8 — prérequis pour Capacitor]
 4. Export sélectif des crises
 5. Bibliothèque de scripts sociaux
 6. Export chiffré + rappel sauvegarde
@@ -124,12 +124,13 @@ Phrases types à réutiliser dans des situations sociales courantes (refus, dema
 
 ### Détail
 
-#### 1. Service Worker / offline garanti
+#### 1. Service Worker / offline garanti ✅
 Script background qui met toute l'app en cache local.
 Garantit le fonctionnement sans réseau, même après mise à jour.
 **Prérequis pour Capacitor.**
 
-En clair : actuellement Nora charge depuis internet à chaque ouverture. Avec un Service Worker, une copie complète de l'app est stockée sur le téléphone — elle fonctionne même hors connexion et les mises à jour se téléchargent silencieusement en arrière-plan.
+Livré en V2.8 : `sw.js` + `sw-register.js`. Voir `ARCHITECTURE.md` pour le détail du fonctionnement.
+Stratégie : stale-while-revalidate pour les pages, cache-first pour l'audio. Sons des préréglages pré-cachés au lancement.
 
 #### 2. Tutoriel V2
 Améliorations à définir selon les retours d'usage.
