@@ -12,8 +12,9 @@ Quand on est en pleine surcharge sensorielle ou en crise autistique, parler devi
 
 - **Montrer son téléphone** plutôt que de parler — le récapitulatif de crise dit tout à ta place
 - **Indiquer ses capacités actuelles** (parler, bouger, lire…) et ses besoins immédiats
-- **Accéder rapidement à des outils de régulation** : sons, respiration, fidgets, harmonie visuelle
-- **Enregistrer et suivre ses crises** dans un journal personnel
+- **Communiquer avec des cartes personnalisées** (pictogrammes, texte, plein écran)
+- **Accéder rapidement à des outils de régulation** : sons, respiration, fidgets, harmonie visuelle, timer visuel
+- **Enregistrer et suivre ses crises** dans un journal personnel avec statistiques et profil de crise
 - **Configurer des profils par contexte** (maison, extérieur, travail, secours)
 
 ---
@@ -31,9 +32,9 @@ L'app est installable sur Android et iOS via le navigateur (option "Ajouter à l
 | | |
 |---|---|
 | Langages | HTML5, CSS3, JavaScript vanilla |
-| Architecture | 26 pages HTML autonomes, aucun framework |
+| Architecture | 36 pages HTML autonomes, aucun framework |
 | Données | localStorage (100% local, aucun serveur) |
-| PWA | manifest.webmanifest, installable |
+| PWA | manifest.webmanifest, Service Worker, installable |
 | Hébergement | GitHub Pages (statique, gratuit) |
 | Dépendances | Aucune bibliothèque externe |
 
@@ -41,8 +42,7 @@ L'app est installable sur Android et iOS via le navigateur (option "Ajouter à l
 
 ## Fonctionnement hors ligne
 
-L'app fonctionne sans connexion une fois chargée dans le navigateur.
-Un Service Worker (mode offline garanti) est prévu en V3.
+Dès la première ouverture, un **Service Worker** met en cache toutes les pages, le CSS, les images et les sons déjà joués. L'app fonctionne ensuite entièrement sans connexion internet.
 
 ---
 
@@ -69,5 +69,5 @@ Voir [CHANGELOG.md](CHANGELOG.md).
 |---|---|
 | V1 | ✅ Publiée |
 | V1.1 | ✅ Corrections post-lancement |
-| V2 | 🔄 En cours |
+| V2 | ✅ Publiée (2.8 — mars 2026) |
 | V3 | 📋 Planifiée |

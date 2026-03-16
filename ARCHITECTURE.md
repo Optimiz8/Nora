@@ -2,7 +2,7 @@
 
 > Document de référence pour comprendre les choix d'implémentation qui ne se lisent pas directement dans le code.
 > À mettre à jour à chaque décision technique significative.
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `857e83d` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
 
 ---
 
@@ -152,7 +152,7 @@ Claude Code n'a pas de mémoire entre deux sessions. À chaque nouvelle conversa
 
 Chaque doc de support contient une ligne de ce type :
 ```
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `857e83d` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
 ```
 
 Ce marqueur indique jusqu'à quel commit le doc a été mis à jour.

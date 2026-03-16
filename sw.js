@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'nora-v2.7.1';
+const CACHE_VERSION = 'nora-v2.8.1';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const AUDIO_CACHE  = `${CACHE_VERSION}-audio`;
 
@@ -42,8 +42,11 @@ const STATIC_ASSETS = [
   './timer.html',
   './tutoriel.html',
   './404.html',
-  // CSS & manifest
+  // CSS, JS partagés & manifest
   './nora-common.css',
+  './nora-data.js',
+  './nora-scroll.js',
+  './sw-register.js',
   './manifest.webmanifest',
   // Images
   './assets/images/logo.png',

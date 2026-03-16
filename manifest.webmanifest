@@ -31,9 +31,9 @@
       ]
     },
     {
-      "name": "Cohérence cardiaque",
+      "name": "Exercices de respiration",
       "short_name": "Respiration",
-      "description": "Lancer un exercice de cohérence cardiaque",
+      "description": "Lancer un exercice de respiration",
       "url": "./coherence.html",
       "icons": [
         { "src": "assets/images/shortcut-coherence.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },

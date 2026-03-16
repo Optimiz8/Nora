@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `857e83d` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)

@@ -1,7 +1,7 @@
 # Nora — Vision & Stratégie Produit
 
 > **Document vivant.** À mettre à jour à chaque évolution significative : nouvelle fonctionnalité aboutie, décision de déploiement, changement de cap. Demander à Claude Code de le mettre à jour en fin de session si nécessaire.
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `857e83d` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
 
 ---
 
@@ -116,7 +116,7 @@ Des outils sensoriels pour redescendre.
 
 | Fonctionnalité | Fichier | État |
 |---|---|---|
-| Cohérence cardiaque (respiration guidée) | `coherence.html` | ✅ Fait |
+| Exercices de respiration | `coherence.html` | ✅ Fait |
 | Sons & ambiances sonores | `sons.html` + `playlist.html` | ✅ Fait |
 | Fidget numérique — Pop-it | `Pop-it.html` | ✅ Fait |
 | Fidget numérique — Slider | `Slider.html` | ✅ Fait |
@@ -126,7 +126,7 @@ Des outils sensoriels pour redescendre.
 | Hub fidgets | `fidgets.html` | ✅ Fait |
 
 **Détails notables :**
-- La cohérence cardiaque propose plusieurs programmes (fréquences et durées) avec animation visuelle + son optionnel.
+- Les exercices de respiration proposent plusieurs programmes (fréquences et durées, dont la cohérence cardiaque 5s/5s) avec animation visuelle + son optionnel. Un bouton ⓘ ouvre une modale de description scientifique de chaque programme. Une modale "Bien joué !" s'affiche à la fin avec la durée réalisée.
 - La bibliothèque de sons contient ~25 ambiances (nature, eau, feu, etc.) avec images évocatrices.
 - Les fidgets numériques reproduisent la stimulation sensorielle sans objet physique.
 
@@ -143,6 +143,7 @@ Comprendre les patterns pour mieux les anticiper.
 | Récapitulatif — exemple | `recap-exemple.html` | ✅ Fait |
 | Statistiques synthétiques | `stats.html` | ✅ Fait |
 | Analyse approfondie (≥5 crises) | `stats-approfondie.html` | ✅ Fait |
+| Profil de crise (synthèse + insights) | `profil-crise.html` | ✅ Fait |
 
 **Détails notables :**
 - Le questionnaire est en deux temps : ce qui précédait (énergie, charges, déclencheurs) et la crise elle-même (date, origine, type, intensité, durée).
@@ -155,8 +156,8 @@ Comprendre les patterns pour mieux les anticiper.
 ### Raccourcis PWA (accès ultra-rapide)
 Depuis l'écran d'accueil du téléphone (appui long sur l'icône) :
 - Carte d'urgence
-- Cartes de communication
-- Cohérence cardiaque
+- Communication
+- Exercices de respiration
 - Timer
 
 ---

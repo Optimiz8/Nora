@@ -64,8 +64,8 @@
         }
 
         .privacy-highlight {
-            background-color: rgba(100, 200, 100, 0.12);
-            border: 2px solid rgba(100, 200, 100, 0.3);
+            background-color: rgba(46, 58, 89, 0.08);
+            border: 2px solid rgba(46, 58, 89, 0.2);
             border-radius: 10px;
             padding: 14px 16px;
             margin-bottom: 16px;
@@ -105,11 +105,13 @@
                 <ul class="text" id="dataList">
                     <li>Ton prénom et nom (optionnel)</li>
                     <li>Tes contacts d'urgence (nom, téléphone, lien)</li>
-                    <li>Tes informations médicales (groupe sanguin, allergies, traitements...)</li>
+                    <li>Tes informations médicales (groupe sanguin, allergies, traitements…)</li>
                     <li>La configuration de ta carte d'urgence numérique</li>
                     <li>Tes cartes de communication personnalisées</li>
                     <li>Tes paramètres de contextes</li>
                     <li>Ton journal de crises</li>
+                    <li>Tes ambiances sonores (préréglages mixeur et volumes)</li>
+                    <li>Ta playlist musicale</li>
                     <li>Tes préférences d'affichage (timer, son…)</li>
                 </ul>
                 <div id="dynamicDataSummary" style="margin-top:12px"></div>
@@ -172,6 +174,8 @@
                 { key: 'cartesCommunication', label: 'Cartes de communication' },
                 { key: 'journalCrises', label: 'Journal de crises' },
                 { key: 'carteInformations', label: 'Infos médicales' },
+                { key: 'mixerPresets', label: 'Ambiances sonores (préréglages)' },
+                { key: 'playlistName', label: 'Playlist musicale' },
             ];
             var present = checks.filter(function(c) { return !!localStorage.getItem(c.key); });
             if (present.length === 0) return;

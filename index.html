@@ -623,19 +623,20 @@
         #pcmTriggersModal {
             z-index: 1100;
             background: var(--dark);
+            overflow: hidden;
         }
         #pcmTriggersModal .modal-content {
             background: var(--dark);
             color: var(--light);
             border-radius: 0;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
             max-width: 100%;
             width: 100%;
             padding: 0;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            overflow: hidden;
         }
         #pcmTriggersModal .trigger-category-title { color: var(--accent); }
         #pcmTriggersModal .trigger-name { color: var(--light); }
@@ -665,9 +666,9 @@
     </header>
 
     <main class="main">
-        <div class="crisis-banner" id="crisisBanner" onclick="document.getElementById('crisisEndModal').classList.add('visible')">
+        <div class="crisis-banner" id="crisisBanner">
             <div class="crisis-banner-dot"></div>
-            <div class="crisis-banner-text">Crise en cours</div>
+            <div class="crisis-banner-text" id="crisisBannerText">Crise en cours</div>
             <div class="crisis-banner-arrow">›</div>
         </div>
         <div class="setup-banner" id="setupBanner">
@@ -1452,7 +1453,14 @@
 
         // Afficher le bandeau crise en cours si applicable
         if (localStorage.getItem('criseEnCours') === 'true') {
-            document.getElementById('crisisBanner').classList.add('visible');
+            var banner = document.getElementById('crisisBanner');
+            banner.classList.add('visible');
+            if (localStorage.getItem('criseATraiter') === 'true') {
+                document.getElementById('crisisBannerText').textContent = 'Crise à enregistrer';
+                banner.onclick = function() { document.getElementById('crisisRegisterModal').classList.add('visible'); };
+            } else {
+                banner.onclick = function() { document.getElementById('crisisEndModal').classList.add('visible'); };
+            }
         }
 
         // Afficher la bannière setup si onboarding skippé mais non terminé

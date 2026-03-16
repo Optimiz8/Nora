@@ -9,6 +9,15 @@ Application mobile de soutien en crise autistique, utilisée sur téléphone. In
 - Les styles partagés sont dans `nora-common.css` (variables CSS, header, footer, back-button)
 - Ne jamais introduire de framework, bibliothèque externe ou bundler
 
+## Scripts systématiquement présents en fin de `<body>`
+Toute page HTML du projet doit se terminer par ces deux scripts, dans cet ordre :
+```html
+<script src="nora-scroll.js"></script>
+<script src="sw-register.js"></script>
+```
+- `nora-scroll.js` — gestion du scroll natif
+- `sw-register.js` — enregistrement du Service Worker (offline)
+
 ## Design system — Couleurs
 ```
 --bg:     #384657  (fond principal)

@@ -26,7 +26,7 @@ Fonctionnalités principales : flux de crise, récapitulatif partageable, outils
 
 ---
 
-## V2 — Compagnon au quotidien ✅ *publiée (2.5)*
+## V2 — Compagnon au quotidien ✅ *publiée (2.8)*
 
 L'app ne se limite plus à la crise : elle devient un outil de vie.
 
@@ -85,8 +85,7 @@ Suppression d'entrées individuelles.
 
 #### 4. App Shortcuts V1
 Raccourcis Android via appui long sur l'icône.
-V1 : 2 raccourcis — "Démarrer une crise" + "Cartes de communication".
-À faire en dernier (dépend des Cartes de communication).
+Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respiration · Timer. Icônes SVG dédiées.
 
 ---
 

@@ -1096,10 +1096,9 @@ function initMixer() {
       a.volume = initialVolume / 100;
     }
 
-    // Gestion tactile : drag horizontal uniquement, pas de saut au tap
-    let _touchStartX = 0, _touchStartY = 0;
-    let _sliderScrolling = null; // null=indéterminé, true=scroll, false=drag
-    let _isTouching = false;
+    // Gestion tactile — approche "restore" : n'activer que sur drag horizontal
+    let _savedVal = parseInt(slider.value);
+    let _touchStartX = 0, _touchStartY = 0, _isScrolling = null;
 
     function applySliderVolume(val) {
       const volume = val / 100;
@@ -1118,35 +1117,25 @@ function initMixer() {
     }
 
     slider.addEventListener('touchstart', (e) => {
-      e.preventDefault(); // Bloque le saut immédiat du slider au point de toucher
-      _isTouching = true;
       _touchStartX = e.touches[0].clientX;
       _touchStartY = e.touches[0].clientY;
-      _sliderScrolling = null;
-    }, { passive: false });
-
-    slider.addEventListener('touchmove', (e) => {
-      const dx = e.touches[0].clientX - _touchStartX;
-      const dy = Math.abs(e.touches[0].clientY - _touchStartY);
-      if (_sliderScrolling === null && (Math.abs(dx) > 6 || dy > 6)) {
-        _sliderScrolling = dy > Math.abs(dx);
-      }
-      if (_sliderScrolling !== false) return; // Vertical ou indéterminé : rien
-      // Drag horizontal confirmé : calculer la valeur depuis la position du doigt
-      const rect = slider.getBoundingClientRect();
-      const ratio = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
-      const newVal = Math.round(ratio * 100);
-      if (parseInt(slider.value) !== newVal) {
-        slider.value = newVal;
-        applySliderVolume(newVal);
-      }
+      _isScrolling = null;
+      _savedVal = parseInt(slider.value);
     }, { passive: true });
 
-    slider.addEventListener('touchend', () => { _sliderScrolling = null; _isTouching = false; }, { passive: true });
+    slider.addEventListener('touchmove', (e) => {
+      if (_isScrolling === null) {
+        const dx = Math.abs(e.touches[0].clientX - _touchStartX);
+        const dy = Math.abs(e.touches[0].clientY - _touchStartY);
+        if (dx > 5 || dy > 5) _isScrolling = dy > dx;
+      }
+      if (_isScrolling) slider.value = _savedVal;
+    }, { passive: true });
 
-    // Interactions non-tactiles (souris, clavier)
+    slider.addEventListener('touchend', () => { _isScrolling = null; }, { passive: true });
+
     slider.addEventListener('input', (e) => {
-      if (_isTouching) return; // Géré par touch
+      if (_isScrolling) { slider.value = _savedVal; return; }
       applySliderVolume(parseInt(e.target.value));
     });
 
