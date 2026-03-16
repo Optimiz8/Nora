@@ -1116,7 +1116,7 @@
 
     <div class="page-tabs">
         <button class="page-tab active">Vue d'ensemble</button>
-        <button class="page-tab" onclick="window.location.href='stats-approfondie.html'">Analyse</button>
+        <button class="page-tab" onclick="goToAnalyse()">Analyse</button>
     </div>
 
     <div class="filter-bar">
@@ -3139,6 +3139,7 @@
         initFilterContextes();
         restoreNav();
         renderCurrent();
+        window.addEventListener('pagehide', saveNav);
 
         (function() {
             var startX, startY;
@@ -3151,7 +3152,7 @@
                 var dx = e.changedTouches[0].clientX - startX;
                 var dy = e.changedTouches[0].clientY - startY;
                 if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
-                    if (dx < 0) window.location.href = 'stats-approfondie.html';
+                    if (dx < 0) { saveNav(); window.location.href = 'stats-approfondie.html'; }
                 }
                 startX = undefined;
             }, { passive: true });

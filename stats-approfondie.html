@@ -315,7 +315,7 @@
     </header>
 
     <div class="page-tabs">
-        <button class="page-tab" onclick="window.location.href='stats.html'">Vue d'ensemble</button>
+        <button class="page-tab" onclick="saveNav(); window.location.href='stats.html'">Vue d'ensemble</button>
         <button class="page-tab active">Analyse</button>
     </div>
 
@@ -1698,6 +1698,7 @@
         initFilterContextes();
         if (getJournal().length >= 10) document.getElementById('profileBtn').style.display = '';
         renderCurrent();
+        window.addEventListener('pagehide', saveNav);
 
         (function() {
             var startX, startY;
@@ -1710,7 +1711,7 @@
                 var dx = e.changedTouches[0].clientX - startX;
                 var dy = e.changedTouches[0].clientY - startY;
                 if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
-                    if (dx > 0) window.location.href = 'stats.html';
+                    if (dx > 0) { saveNav(); window.location.href = 'stats.html'; }
                 }
                 startX = undefined;
             }, { passive: true });

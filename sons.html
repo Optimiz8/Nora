@@ -12,6 +12,12 @@
 <link rel="stylesheet" href="nora-common.css">
 
 <style>
+/* ===== COULEURS HORS-CHARTE (intentionnel) =====
+   Cette page utilise une palette très sombre (#020617, #1e293b...)
+   car elle peut rester ouverte la nuit — ne pas éblouir.
+   Exception design system documentée, comme les couleurs du journal.
+   ================================================ */
+
 /* ===== BOUTON MIXEUR ===== */
 .mix-cta {
   margin: 16px;
@@ -1135,7 +1141,7 @@ function initMixer() {
     slider.addEventListener('touchend', () => { _isScrolling = null; }, { passive: true });
 
     slider.addEventListener('input', (e) => {
-      if (_isScrolling) { slider.value = _savedVal; return; }
+      if (_isScrolling === null || _isScrolling) { slider.value = _savedVal; return; }
       applySliderVolume(parseInt(e.target.value));
     });
 
