@@ -109,14 +109,17 @@ Phrases types à réutiliser dans des situations sociales courantes (refus, dema
 ### Ordre recommandé
 
 ```
-1. Service Worker / offline garanti          [prérequis pour Capacitor]
-2. Palettes de couleurs
-3. Export sélectif des crises
-4. Bibliothèque de scripts sociaux
-5. Export chiffré + rappel sauvegarde
-6. App Shortcuts V2 (enrichis si besoin)
-7. Capacitor + stores                        [probable, pas acté]
-8. Multi-langue (anglais)                    [en dernier absolu]
+1. Tests à faire avant de continuer
+   - Tester App Shortcuts Android (raccourcis appui long)
+   - Tester import / export / sauvegarde des données complètes
+2. Tutoriel V2                               [améliorations à définir]
+3. Service Worker / offline garanti          [prérequis pour Capacitor — workflow git inchangé]
+4. Export sélectif des crises
+5. Bibliothèque de scripts sociaux
+6. Export chiffré + rappel sauvegarde
+7. App Shortcuts V2 (enrichis si besoin)
+8. Capacitor + stores                        [probable, pas acté]
+9. Multi-langue (anglais)                    [en dernier absolu]
 ```
 
 ### Détail
@@ -128,29 +131,11 @@ Garantit le fonctionnement sans réseau, même après mise à jour.
 
 En clair : actuellement Nora charge depuis internet à chaque ouverture. Avec un Service Worker, une copie complète de l'app est stockée sur le téléphone — elle fonctionne même hors connexion et les mises à jour se téléchargent silencieusement en arrière-plan.
 
-#### 2. Palettes de couleurs
-Remplace l'idée de "mode sombre" — l'app actuelle est déjà sur un fond sombre, un mode sombre n'aurait pas de sens.
+#### 2. Tutoriel V2
+Améliorations à définir selon les retours d'usage.
 
-**Principe** : 3 palettes prédéfinies, choisissables dans Paramètres (et présentées dès le tutoriel).
-Chaque palette redéfinit les 4 variables CSS globales : `--bg`, `--dark`, `--light`, `--accent`.
-La classe de thème est appliquée sur `<body>` via le localStorage, au chargement de chaque page.
-
-**Palettes envisagées :**
-- **Standard** (actuelle) : fond bleu-ardoise, crème, pêche — ambiance nocturne
-- **Clair neutre** : fond gris-beige clair, texte anthracite, accent gris-bleu — sobre et lisible
-- **Clair pastel** : fond lavande très clair, texte violet foncé, accent lavande — doux et apaisant
-
-**Périmètre d'application :**
-Toutes les pages sauf les visuels spéciaux du timer (`kawaii` et `espace`) qui ont leur propre univers graphique indépendant et ne doivent pas être affectés.
-
-**Travail requis avant d'implémenter :**
-- Audit de tous les fichiers HTML : repérer les `rgba(46, 58, 89, …)` / `rgba(245, 228, 204, …)` codés en dur dans les `<style>` embarqués
-- Migrer ces valeurs vers des variables CSS RGB channels (`--dark-rgb: 46, 58, 89`) pour permettre l'usage dans `rgba()`
-- Ajouter un script de chargement de thème dans `nora-scroll.js` (ou fichier dédié)
-- Ajouter le sélecteur de palette dans `parametres.html`
-- Intégrer la présentation des palettes dans le tutoriel (step de personnalisation)
-
-**Note** : les couleurs exactes des palettes "Clair neutre" et "Clair pastel" sont à définir quand les hex sont trouvés.
+#### ~~Palettes de couleurs~~ — abandonné
+Le code couleur actuel est l'identité visuelle de Nora. Changer de palette serait too much et diluerait cette identité. Idée mise de côté définitivement.
 
 #### 6. App Shortcuts V2
 Enrichissement si de nouvelles fonctionnalités le justifient.
@@ -185,6 +170,7 @@ Uniquement quand tous les textes sont stables. Priorité : anglais.
 
 ## Archivé / Abandonné
 
+- **Palettes de couleurs** — le design actuel est l'identité de Nora, changer de thème diluerait ça.
 - **Mode accompagnant** — mis de côté indéfiniment.
 - **Widgets natifs Android** — nécessite une app native complète.
 - **Théorie des cuillères** — en vrac, pas prioritaire.

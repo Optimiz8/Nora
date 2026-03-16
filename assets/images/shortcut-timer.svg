@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#384657"/>
+  <!-- Cercle horloge -->
+  <circle cx="256" cy="276" r="180" fill="none" stroke="#F5E4CC" stroke-width="22"/>
+  <!-- Tige du haut -->
+  <rect x="230" y="72" width="52" height="30" rx="12" fill="#F5E4CC"/>
+  <!-- Aiguille minute -->
+  <line x1="256" y1="276" x2="256" y2="150" stroke="#F5E4CC" stroke-width="20" stroke-linecap="round"/>
+  <!-- Aiguille heure -->
+  <line x1="256" y1="276" x2="330" y2="220" stroke="#F7B89C" stroke-width="16" stroke-linecap="round"/>
+  <!-- Centre -->
+  <circle cx="256" cy="276" r="16" fill="#F7B89C"/>
+</svg>

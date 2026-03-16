@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#384657"/>
+  <!-- Coeur -->
+  <path d="M256 390 C256 390 90 290 90 180 C90 130 130 100 180 110 C210 116 240 136 256 160 C272 136 302 116 332 110 C382 100 422 130 422 180 C422 290 256 390 256 390Z" fill="#F7B89C"/>
+  <!-- Onde respiration -->
+  <path d="M96 310 Q140 270 180 310 Q220 350 256 290 Q292 230 330 290 Q368 350 416 300" fill="none" stroke="#F5E4CC" stroke-width="18" stroke-linecap="round"/>
+</svg>

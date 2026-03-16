@@ -630,7 +630,7 @@
       overflow: hidden;
     }
 
-    .kawaii-bg { position: absolute; inset: 0; border-radius: 50%; }
+    .kawaii-bg { position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 240deg, #ff6b9d, #ff9a6c, #ffd93d, #6bceff, #a29bfe, #fd79a8, #ff6b9d); }
 
     .kawaii-stickers {
       position: absolute;
@@ -2134,7 +2134,7 @@
       const container = document.getElementById('kawaiiBgRain');
       container.innerHTML = '';
       container.style.display = 'block';
-      for (let i = 0; i < 22; i++) {
+      for (let i = 0; i < 40; i++) {
         const p = document.createElement('div');
         p.className = 'bg-sparkle';
         const color = SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)];
@@ -2158,8 +2158,6 @@
     function updateKawaiiColors(progress) {
       const hue = Math.round(progress * 300);
       const gradient = `conic-gradient(from ${hue}deg, ${RAINBOW.join(',')}, ${RAINBOW[0]})`;
-      const bg  = document.getElementById('kawaiiBg');
-      if (bg) { bg.style.background = gradient; bg.style.opacity = '1'; }
       const arc = document.getElementById('kawaiiArc');
       if (arc) arc.style.stroke = `hsl(${(hue + 180) % 360}, 90%, 65%)`;
       if (timerStyle === 'kawaii') {

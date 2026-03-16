@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#384657"/>
+  <!-- Bulle principale -->
+  <rect x="80" y="120" width="290" height="190" rx="30" fill="#F5E4CC"/>
+  <!-- Queue de la bulle -->
+  <path d="M130 310 L90 390 L200 320" fill="#F5E4CC"/>
+  <!-- Points à l'intérieur -->
+  <circle cx="165" cy="215" r="20" fill="#384657"/>
+  <circle cx="225" cy="215" r="20" fill="#384657"/>
+  <circle cx="285" cy="215" r="20" fill="#384657"/>
+</svg>
