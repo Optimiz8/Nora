@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026 — V2.8
+> Dernière mise à jour : mars 2026 — V2.9
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -93,15 +93,15 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 
 ### Nouvelles fonctionnalités confirmées V3
 
-#### Export sélectif des crises
-Permettre à l'utilisatrice de choisir quelles crises exporter (filtre par date, contexte, etc.) au lieu d'un export global.
+#### Export sélectif des crises ✅ *livré en V2.9*
+Filtre par période (Ce mois / 3 mois / Cette année / Personnalisé) et par contexte, compteur live. Export en PDF, partage, JSON ou CSV.
 
 #### Bibliothèque de scripts sociaux
 Phrases types à réutiliser dans des situations sociales courantes (refus, demande d'aide, signalement de surcharge…).
 À définir : format, catégories, possibilité de personnalisation.
 
-#### Mini stats — exercices de respiration
-Suivi du temps passé sur les exercices de respiration : durée totale, nombre de sessions, programme le plus utilisé, évolution sur les dernières semaines. Accessible depuis la page respiration ou les statistiques.
+#### Mini stats — exercices de respiration ✅ *livré en V2.9*
+Modale de fin d'exercice enrichie : stats Ce mois-ci / Au total, animation de félicitations, paliers/badges (sessions et temps).
 
 #### FAQ — début et fin d'une crise autistique
 Ajouter dans `faq.html` une entrée : *"Comment déterminer le début et la fin d'une crise autistique ?"* — question fréquente qui a un impact direct sur la qualité des données enregistrées dans le journal.

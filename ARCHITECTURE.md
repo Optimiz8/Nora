@@ -123,6 +123,8 @@ Toutes les données sont stockées localement, jamais envoyées à un serveur.
 
 Export/import géré dans `parametres.html` (version du format : `'2.5'`).
 
+**Export filtré du journal** (V2.9, `journal.html`) : la modale d'export embarque ses propres filtres (période + contexte). Toutes les fonctions d'export (`exportPDF`, `exportJSON`, `shareJournal`, `exportCSV`) acceptent un tableau en paramètre et sont appelées par `doExport()` avec le résultat de `getExportFilteredJournal()`. Le CSV utilise le séparateur `;` et un BOM UTF-8 pour la compatibilité Excel France.
+
 ---
 
 ## Animations Lottie

@@ -1,7 +1,7 @@
 # Nora — Vision & Stratégie Produit
 
 > **Document vivant.** À mettre à jour à chaque évolution significative : nouvelle fonctionnalité aboutie, décision de déploiement, changement de cap. Demander à Claude Code de le mettre à jour en fin de session si nécessaire.
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9
 
 ---
 
@@ -243,7 +243,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 ## 7. Roadmap globale
 
-### ✅ Fait (V1 → V2.8)
+### ✅ Fait (V1 → V2.9)
 
 **Fonctionnel**
 - [x] Toutes les pages de l'app (voir section 4)
@@ -252,6 +252,8 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 - [x] Profil de crise (`profil-crise.html`) — synthèse en phrases, patterns, partage
 - [x] Export / partage des rapports de crise (graphique + CSV + PDF)
 - [x] Export / Import global des données (journal, profil, cartes, sons, playlist)
+- [x] **Export journal filtré** — filtre période + contexte, compteur live, formats PDF / partage / JSON / CSV (V2.9)
+- [x] **Mini stats respiration** — suivi sessions + temps, badges/paliers, modale de fin enrichie (V2.9)
 - [x] Tutoriel guidé en 7 étapes
 - [x] FAQ + Politique de confidentialité
 - [x] Installation PWA (manifest, raccourcis app shortcuts avec icônes SVG)

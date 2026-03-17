@@ -16,20 +16,20 @@
 
 .main {
   height: calc(100vh - var(--header-height) - var(--footer-height));
-  padding: 6px 16px 10px;
+  padding: 10px 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   overflow: hidden;
 }
 
 /* ---------- SECTION TITLES ---------- */
 h2 {
-  font-size: 15px;
+  font-size: 17px;
   text-transform: uppercase;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   color: var(--accent);
-  margin: 0 0 4px 2px;
+  margin: 0 0 8px 2px;
   text-align: left;
 }
 
@@ -38,7 +38,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 4px 2px;
+  margin: 0 0 8px 2px;
 }
 
 .section-header h2 {
@@ -69,7 +69,7 @@ h2 {
 }
 
 .prog-btn {
-  padding: 8px 6px;
+  padding: 7px 5px;
   border-radius: 14px;
   background: rgba(245,228,204,0.07);
   border: 1.5px solid rgba(245,228,204,0.12);
@@ -119,35 +119,7 @@ h2 {
   color: rgba(46,58,89,0.55);
 }
 
-/* ---------- ANIMATION TABS ---------- */
-.anim-tabs {
-  display: flex;
-  gap: 4px;
-  background: rgba(245,228,204,0.07);
-  border-radius: 10px;
-  padding: 3px;
-}
-
-.anim-tab {
-  flex: 1;
-  padding: 7px 0;
-  text-align: center;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  color: rgba(245,228,204,0.5);
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.anim-tab.active {
-  background: var(--light);
-  color: var(--dark);
-}
+/* ---------- ANIMATION TABS → suppr., utilise .son-toggle-row + .toggle-btn ---------- */
 
 /* ---------- TOGGLE BTN (son) ---------- */
 .toggle-btn {
@@ -177,11 +149,11 @@ h2 {
 .preview-section {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .preview-main {
-  height: 80px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,11 +161,11 @@ h2 {
 }
 
 .preview-circle {
-  width: min(110px, 28vw);
-  height: min(110px, 28vw);
+  width: min(60px, 16vw);
+  height: min(60px, 16vw);
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(247,184,156,.9), rgba(247,184,156,.3));
-  box-shadow: 0 0 50px rgba(247,184,156,0.4), 0 0 100px rgba(247,184,156,0.1);
+  box-shadow: 0 0 30px rgba(247,184,156,0.4), 0 0 60px rgba(247,184,156,0.1);
   animation: previewPulse 5s ease-in-out infinite;
 }
 
@@ -203,8 +175,8 @@ h2 {
 }
 
 .preview-oval {
-  width: min(46px, 12vw);
-  height: min(112px, 28vw);
+  width: min(28px, 7.5vw);
+  height: min(60px, 16vw);
   border-radius: 9999px;
   border: 2px solid rgba(245,228,204,.2);
   background: rgba(245,228,204,.05);
@@ -246,7 +218,7 @@ h2 {
 .stepper-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .stepper {
@@ -256,8 +228,8 @@ h2 {
 }
 
 .stepper-btn {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 14px;
   border: 1.5px solid rgba(245,228,204,0.15);
   background: rgba(245,228,204,0.07);
@@ -372,6 +344,39 @@ h2 {
 .start-btn:active {
   transform: translateY(2px);
   box-shadow: 0 2px 8px rgba(247,184,156,0.2);
+}
+
+/* ---------- STATS SETUP ---------- */
+.setup-stats {
+  font-size: 13px;
+  color: rgba(245,228,204,0.45);
+  text-align: center;
+  line-height: 1.5;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.setup-stats-link {
+  color: var(--accent);
+  opacity: 0.7;
+  margin-left: 4px;
+  font-size: 12px;
+}
+.stats-hist-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(245,228,204,0.07);
+  font-size: 15px;
+  color: var(--light);
+}
+.stats-hist-row:last-child { border-bottom: none; }
+.stats-hist-label { opacity: 0.65; font-size: 14px; }
+.stats-hist-prog {
+  margin-top: 14px;
+  font-size: 13px;
+  color: rgba(245,228,204,0.5);
+  text-align: center;
 }
 
 /* ---------- MODAL ---------- */
@@ -602,31 +607,30 @@ h2 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px 20px 20px;
-  padding-top: calc(var(--header-height) * 0.6);
-  gap: 28px;
+  padding: 16px 20px 20px;
+  gap: 20px;
   width: 100%;
 }
 
 .visual {
-  width: min(280px, 82vw);
-  height: min(360px, 52vh);
+  width: min(260px, 76vw);
+  height: min(280px, 40vh);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .circle {
-  width: min(160px, 44vw);
-  height: min(160px, 44vw);
+  width: min(130px, 36vw);
+  height: min(130px, 36vw);
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(247,184,156,1), rgba(247,184,156,.35));
   box-shadow: 0 0 60px rgba(247,184,156,0.4), 0 0 120px rgba(247,184,156,0.12);
 }
 
 .oval {
-  width: min(130px, 38vw);
-  height: min(340px, 50vh);
+  width: min(110px, 30vw);
+  height: min(260px, 38vh);
   border-radius: 9999px;
   border: 2px solid rgba(245,228,204,.18);
   background: rgba(245,228,204,.05);
@@ -637,8 +641,8 @@ h2 {
 }
 
 .bubble {
-  width: min(130px, 38vw);
-  height: min(130px, 38vw);
+  width: min(110px, 30vw);
+  height: min(110px, 30vw);
   border-radius: 50%;
   background: linear-gradient(to top, rgba(247,184,156,.4), rgba(247,184,156,.85));
   box-shadow: 0 0 40px rgba(247,184,156,0.3);
@@ -725,9 +729,9 @@ h2 {
   <!-- Animations + Prévisualisation -->
   <div class="preview-section">
     <h2>Animations</h2>
-    <div class="anim-tabs">
-      <button class="anim-tab active" id="animCircle">Cercle</button>
-      <button class="anim-tab" id="animOval">Bulle</button>
+    <div class="son-toggle-row">
+      <button class="toggle-btn active" id="animCircle">Cercle</button>
+      <button class="toggle-btn" id="animOval">Bulle</button>
     </div>
     <div class="preview-main" id="previewContainer">
       <div class="preview-circle"></div>
@@ -756,6 +760,8 @@ h2 {
     </div>
     <div class="stepper-dots" id="stepperDots"></div>
   </div>
+
+  <div class="setup-stats" id="setupStats" onclick="openStatsModal()"></div>
 
 </div>
 
@@ -854,6 +860,15 @@ h2 {
   </div>
 </div>
 
+<!-- MODALE HISTORIQUE STATS -->
+<div class="modal-overlay" id="statsModal" role="dialog" aria-modal="true" aria-label="Mes sessions de respiration" onclick="closeStatsModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-close" onclick="closeStatsModal()" role="button" aria-label="Fermer">✕</div>
+    <div class="modal-title">Mes sessions</div>
+    <div id="statsModalBody"></div>
+  </div>
+</div>
+
 <script>
 /* ---------- STATE ---------- */
 let inhale = 5;
@@ -883,6 +898,72 @@ function loadCustomProgram() {
 }
 
 loadCustomProgram();
+
+/* ---------- STATS SETUP ---------- */
+function fmtMin(m) {
+  if (!m) return '0 min';
+  return m < 60 ? m + ' min' : Math.floor(m/60) + 'h' + (m%60 ? ' ' + m%60 + 'min' : '');
+}
+
+function renderSetupStats() {
+  const el = document.getElementById('setupStats');
+  if (!el) return;
+  const sessions = JSON.parse(localStorage.getItem('breathingSessions') || '[]');
+  if (sessions.length === 0) { el.innerHTML = ''; return; }
+  const now = new Date();
+  const month = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  let ms = 0, mm = 0;
+  sessions.forEach(s => {
+    if (s.date && s.date.startsWith(month)) { ms++; mm += s.dureeMin || 0; }
+  });
+  const ts = sessions.length, tm = sessions.reduce((a, s) => a + (s.dureeMin || 0), 0);
+  el.innerHTML =
+    `Ce mois-ci : ${ms} session${ms>1?'s':''} · ${fmtMin(mm)} &nbsp;·&nbsp; Total : ${ts} · ${fmtMin(tm)}` +
+    ` <span class="setup-stats-link">↗ voir</span>`;
+}
+renderSetupStats();
+
+function openStatsModal() {
+  const sessions = JSON.parse(localStorage.getItem('breathingSessions') || '[]');
+  if (!sessions.length) return;
+
+  const f = fmtMin;
+  const pl = n => n > 1 ? 's' : '';
+
+  // 3 derniers mois
+  const now = new Date();
+  const months = [];
+  for (let i = 0; i < 3; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    const label = d.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    months.push({ key, label });
+  }
+
+  let rows = '';
+  months.forEach(({ key, label }) => {
+    let n = 0, m = 0;
+    sessions.forEach(s => { if (s.date && s.date.startsWith(key)) { n++; m += s.dureeMin || 0; } });
+    if (n > 0) rows += `<div class="stats-hist-row"><span class="stats-hist-label">${label}</span><span>${n} session${pl(n)} · ${f(m)}</span></div>`;
+  });
+  if (!rows) rows = '<div class="stats-hist-row" style="opacity:.5;justify-content:center;">Aucune session ce trimestre</div>';
+
+  // Programme le plus utilisé
+  const progCount = {};
+  sessions.forEach(s => { if (s.programme) progCount[s.programme] = (progCount[s.programme] || 0) + 1; });
+  const topProg = Object.entries(progCount).sort((a, b) => b[1] - a[1])[0];
+  const progNames = { coherence: 'Cohérence cardiaque', apaisement: 'Apaisement', custom: 'Personnalisé' };
+  const progLine = topProg ? `Programme favori : ${progNames[topProg[0]] || topProg[0]}` : '';
+
+  document.getElementById('statsModalBody').innerHTML =
+    rows + (progLine ? `<div class="stats-hist-prog">${progLine}</div>` : '');
+
+  document.getElementById('statsModal').classList.add('visible');
+}
+
+function closeStatsModal() {
+  document.getElementById('statsModal').classList.remove('visible');
+}
 
 /* ---------- AUDIO ---------- */
 function initAudio() {
@@ -1178,7 +1259,7 @@ const END_MESSAGES = {
 };
 
 const SESSION_MILESTONES = [
-  { n: 1,   label: "Première session — c'est parti !" },
+  { n: 1,   label: "Première session complétée !" },
   { n: 5,   label: "5 sessions réalisées" },
   { n: 10,  label: "10 sessions — tu prends soin de toi" },
   { n: 25,  label: "25 sessions — pratique régulière" },
@@ -1284,6 +1365,7 @@ function endExercise() {
   document.getElementById('endModal').classList.remove('visible');
   releaseWakeLock();
   back();
+  renderSetupStats();
 }
 
 function breathe(type) {
@@ -1391,7 +1473,7 @@ document.getElementById('breathing').addEventListener('click', (e) => {
 });
 </script>
 
-    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCustomModal(); closeInfoModal(); } });</script>
+    <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeCustomModal(); closeInfoModal(); closeStatsModal(); } });</script>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>

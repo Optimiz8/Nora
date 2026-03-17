@@ -14,6 +14,8 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 ## [2.9] — mars 2026
 
 ### Ajouté
+- **Export journal filtré** (`journal.html`) : nouvelle modale d'export avec filtres période (Tout / Ce mois / 3 mois / Cette année / Personnalisé) et contexte — compteur live "X crises sélectionnées"
+- **Export CSV** : nouveau format tableur (séparateur `;`, BOM UTF-8, compatible Excel), 16 colonnes (date, heure, contexte, origine, type, intensité, durée, énergie, CM, CS, déclencheurs, besoins, états, capacités impossibles, difficiles, remarques)
 - **Mini stats respiration** (`coherence.html`) : chaque session complète est enregistrée en localStorage (`breathingSessions`)
 - Modale de fin d'exercice enrichie : animation de félicitations (anneaux + ✓), stats "Ce mois-ci" et "Au total" (sessions + minutes)
 - Messages d'encouragement variés selon le programme : Cohérence cardiaque (focus régulation/VFC), Apaisement (focus nerf vague), Personnalisé

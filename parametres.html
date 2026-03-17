@@ -555,7 +555,7 @@
             }
 
             const data = {
-                version: '2.5',
+                version: '2.9',
                 dateExport: new Date().toISOString(),
                 prenom: localStorage.getItem('userPrenom') || '',
                 nom: localStorage.getItem('userNom') || '',
@@ -588,10 +588,19 @@
                 mixerPresets: JSON.parse(localStorage.getItem('mixerPresets') || '[]'),
                 mixerVolumes: mixerVolumes,
                 playlistName: localStorage.getItem('playlistName') || '',
-                lienPlaylist: localStorage.getItem('lienPlaylist') || ''
+                lienPlaylist: localStorage.getItem('lienPlaylist') || '',
+                breathingSessions: JSON.parse(localStorage.getItem('breathingSessions') || '[]'),
+                customInhale: localStorage.getItem('customInhale') || '',
+                customExhale: localStorage.getItem('customExhale') || '',
+                listeConseils: JSON.parse(localStorage.getItem('listeConseils') || 'null'),
+                timerLastDuration: localStorage.getItem('timerLastDuration') || '',
+                timerSonMode: localStorage.getItem('timerSonMode') || '',
+                timerFinMode: localStorage.getItem('timerFinMode') || '',
+                timerStyle: localStorage.getItem('timerStyle') || ''
             };
 
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -599,7 +608,8 @@
             a.click();
             URL.revokeObjectURL(url);
 
-            showToast('✅ Données exportées avec succès !');
+            const sizeKo = (blob.size / 1024).toFixed(1);
+            showToast(`✅ Données exportées — ${sizeKo} Ko`);
         }
 
         // Import des données
@@ -694,6 +704,20 @@
                         // Playlist
                         if (data.playlistName) localStorage.setItem('playlistName', data.playlistName);
                         if (data.lienPlaylist) localStorage.setItem('lienPlaylist', data.lienPlaylist);
+
+                        // Cohérence cardiaque
+                        if (data.breathingSessions) localStorage.setItem('breathingSessions', JSON.stringify(data.breathingSessions));
+                        if (data.customInhale) localStorage.setItem('customInhale', data.customInhale);
+                        if (data.customExhale) localStorage.setItem('customExhale', data.customExhale);
+
+                        // Conseils personnalisés
+                        if (data.listeConseils) localStorage.setItem('listeConseils', JSON.stringify(data.listeConseils));
+
+                        // Préférences timer
+                        if (data.timerLastDuration) localStorage.setItem('timerLastDuration', data.timerLastDuration);
+                        if (data.timerSonMode) localStorage.setItem('timerSonMode', data.timerSonMode);
+                        if (data.timerFinMode) localStorage.setItem('timerFinMode', data.timerFinMode);
+                        if (data.timerStyle) localStorage.setItem('timerStyle', data.timerStyle);
 
                         // Garantir que les 4 contextes par défaut existent
                         ensureDefaultContextes();

@@ -991,7 +991,7 @@
         <span class="ctrl-label">Reset</span>
       </button>
       <button class="ctrl-btn play-btn" id="btnPlay" onclick="togglePause()">
-        <span class="ctrl-icon" id="playIcon">▶</span>
+        <span class="ctrl-icon" id="playIcon"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="7,4 20,12 7,20"/></svg></span>
       </button>
     </div>
 
@@ -1688,12 +1688,12 @@
       const btn  = document.getElementById('btnPlay');
       const icon = document.getElementById('playIcon');
       const cfg = {
-        idle:    { i: '▶', bg: 'var(--accent)',          color: 'var(--dark)',  disabled: false },
-        running: { i: '⏸', bg: 'rgba(245,228,204,0.2)',  color: 'var(--light)', disabled: false },
-        paused:  { i: '▶', bg: 'var(--accent)',          color: 'var(--dark)',  disabled: false },
-        alarm:   { i: '⏸', bg: 'rgba(245,228,204,0.1)',  color: 'var(--light)', disabled: true  }
+        idle:    { i: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="7,4 20,12 7,20"/></svg>',                                                           bg: 'var(--accent)',          color: 'var(--dark)',  disabled: false },
+        running: { i: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>', bg: 'rgba(245,228,204,0.2)',  color: 'var(--light)', disabled: false },
+        paused:  { i: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="7,4 20,12 7,20"/></svg>',                                                           bg: 'var(--accent)',          color: 'var(--dark)',  disabled: false },
+        alarm:   { i: '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>', bg: 'rgba(245,228,204,0.1)',  color: 'var(--light)', disabled: true  }
       }[state];
-      icon.textContent     = cfg.i;
+      icon.innerHTML       = cfg.i;
       btn.style.background = cfg.bg;
       btn.style.color      = cfg.color;
       btn.disabled         = cfg.disabled;
