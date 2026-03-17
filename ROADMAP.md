@@ -155,8 +155,25 @@ Phrases types pour situations courantes : refus, demande d'aide, signalement de 
 À définir : format (liste simple ou par catégorie), possibilité de personnalisation, lien avec les cartes de communication.
 
 #### 7. Mini stats — exercices de respiration
-Suivi du temps passé sur les exercices : durée totale, nombre de sessions, programme le plus utilisé.
-À définir : où afficher ces stats (page respiration ? section stats globale ?).
+Suivi du temps passé sur les exercices de respiration.
+
+**Phase 1 — Stats de base :**
+- À chaque fin de session complète : enregistrer en localStorage la date, le programme et la durée
+- Affichage dans la **modale de fin d'exercice** : "Ce mois-ci : X sessions · Y min" + "Au total : X sessions · Y min"
+- Ton : encourageant, chaleureux — pas de pression quotidienne
+- Pas de toggle semaine/mois/total : trop de décisions sous stress. Mois + total suffisent.
+
+**Phase 2 — Paliers et badges :**
+- Paliers session : 5, 10, 25, 50 sessions
+- Paliers temps : 30 min, 1h, 5h au total
+- Message spécial dans la modale si palier franchi ce jour-là (surprise, pas de barre de progression visible)
+- Aucune pression : les badges n'apparaissent qu'au moment du franchissement
+
+**Info scientifique à ajouter (Phase 1) :**
+- Ajouter dans le petit "ℹ️" des programmes : *"Les effets d'une session de cohérence cardiaque de 5 min durent environ 3 à 6 heures."*
+- Source : HeartMath Institute / David O'Hare (*365*). La formule "X minutes de vie gagnées" n'est pas validée scientifiquement — ne pas l'utiliser.
+
+**Clé localStorage :** `breathingSessions` — tableau d'objets `{date, programme, dureeMin}`
 
 #### 6. App Shortcuts V2
 Enrichissement si de nouvelles fonctionnalités le justifient.

@@ -979,6 +979,72 @@
             line-height: 1.4;
         }
 
+        /* ---------- EXPORT FILTRES ---------- */
+        .export-filter-section { margin-bottom: 16px; }
+        .export-filter-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: rgba(245,228,204,0.55);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 8px;
+        }
+        .export-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .export-chip {
+            padding: 6px 13px;
+            border-radius: 20px;
+            border: 1.5px solid rgba(245,228,204,0.18);
+            background: rgba(245,228,204,0.07);
+            color: var(--light);
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .export-chip.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--dark);
+            font-weight: 700;
+        }
+        .export-date-range {
+            display: none;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .export-date-range.visible { display: flex; }
+        .export-date-input {
+            flex: 1;
+            background: rgba(245,228,204,0.08);
+            border: 1.5px solid rgba(245,228,204,0.2);
+            color: var(--light);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .export-counter {
+            font-size: 15px;
+            color: var(--accent);
+            font-weight: 700;
+            margin: 14px 0 12px;
+            text-align: center;
+        }
+        .export-formats { display: flex; flex-direction: column; gap: 8px; }
+        .export-format-btn {
+            padding: 13px 16px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(245,228,204,0.15);
+            background: rgba(245,228,204,0.08);
+            color: var(--light);
+            font-size: 15px;
+            cursor: pointer;
+            text-align: left;
+            font-family: inherit;
+            transition: background 0.15s;
+        }
+        .export-format-btn:active { background: rgba(245,228,204,0.18); transform: scale(0.98); }
+
         /* ---------- SECTION OPTIONNELLE (pendant crise) ---------- */
         .form-block-optional {
             background: rgba(46, 58, 89, 0.04);
@@ -1356,27 +1422,35 @@
                 <button class="close-button" onclick="closeModal(null, 'exportModal')" aria-label="Fermer">×</button>
             </div>
 
-            <div class="export-options">
-                <div class="export-option" onclick="exportPDF()">
-                    <div class="export-option-title">📄 Export PDF / Impression</div>
-                    <div class="export-option-desc">
-                        Ouvre une vue lisible de toutes tes crises. Utilise le bouton "Imprimer" ou "Enregistrer en PDF" de ton navigateur. Idéal pour partager avec un professionnel de santé.
-                    </div>
+            <div class="export-filter-section">
+                <div class="export-filter-label">Période</div>
+                <div class="export-chips" id="exportPeriodChips">
+                    <button class="export-chip active" data-period="all" onclick="selectExportPeriod(this)">Tout</button>
+                    <button class="export-chip" data-period="month" onclick="selectExportPeriod(this)">Ce mois</button>
+                    <button class="export-chip" data-period="3months" onclick="selectExportPeriod(this)">3 mois</button>
+                    <button class="export-chip" data-period="year" onclick="selectExportPeriod(this)">Cette année</button>
+                    <button class="export-chip" data-period="custom" onclick="selectExportPeriod(this)">Personnalisé…</button>
                 </div>
+                <div class="export-date-range" id="exportDateRange">
+                    <input type="date" class="export-date-input" id="exportDateFrom" oninput="updateExportCount()">
+                    <input type="date" class="export-date-input" id="exportDateTo" oninput="updateExportCount()">
+                </div>
+            </div>
 
-                <div class="export-option" onclick="shareJournal()">
-                    <div class="export-option-title">↗️ Partager le journal</div>
-                    <div class="export-option-desc">
-                        Partage un résumé textuel de tes crises via l'application de ton choix (messagerie, e-mail…). Idéal pour un envoi rapide à un professionnel.
-                    </div>
+            <div class="export-filter-section">
+                <div class="export-filter-label">Contexte</div>
+                <div class="export-chips" id="exportContextChips">
+                    <button class="export-chip active" data-context="all" onclick="selectExportContext(this)">Tous</button>
                 </div>
+            </div>
 
-                <div class="export-option" onclick="exportJSON()">
-                    <div class="export-option-title">💾 Export JSON</div>
-                    <div class="export-option-desc">
-                        Format de sauvegarde technique. Permet de réimporter tes données ou de les transférer sur un autre appareil en conservant toutes les informations.
-                    </div>
-                </div>
+            <div class="export-counter" id="exportCounter"></div>
+
+            <div class="export-formats">
+                <button class="export-format-btn" onclick="doExport('pdf')">📄 PDF / Impression</button>
+                <button class="export-format-btn" onclick="doExport('share')">↗️ Partager</button>
+                <button class="export-format-btn" onclick="doExport('json')">💾 JSON (sauvegarde)</button>
+                <button class="export-format-btn" onclick="doExport('csv')">📊 CSV (tableur Excel)</button>
             </div>
         </div>
     </div>
@@ -2159,17 +2233,159 @@ function handleTriggerChange(checkbox) {
             loadJournal();
         }
 
+        /* ---------- EXPORT FILTRÉ ---------- */
+
+        var _exportPeriod = 'all';
+        var _exportContext = 'all';
+
         function showExportOptions() {
+            _exportPeriod = 'all';
+            _exportContext = 'all';
+
+            // Reset chips période
+            document.querySelectorAll('#exportPeriodChips .export-chip').forEach(function(c) {
+                c.classList.toggle('active', c.dataset.period === 'all');
+            });
+            document.getElementById('exportDateRange').classList.remove('visible');
+
+            // Peupler les contextes présents dans le journal
+            var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            var usedContexts = [];
+            journal.forEach(function(e) { if (e.profil && !usedContexts.includes(e.profil)) usedContexts.push(e.profil); });
+            var chipsEl = document.getElementById('exportContextChips');
+            chipsEl.innerHTML = '<button class="export-chip active" data-context="all" onclick="selectExportContext(this)">Tous</button>';
+            usedContexts.forEach(function(ctx) {
+                var p = PROFILES[ctx] || { icon: '📍', name: ctx };
+                var btn = document.createElement('button');
+                btn.className = 'export-chip';
+                btn.dataset.context = ctx;
+                btn.textContent = p.icon + ' ' + p.name;
+                btn.setAttribute('onclick', 'selectExportContext(this)');
+                chipsEl.appendChild(btn);
+            });
+
+            updateExportCount();
             history.pushState({ noraModal: true }, '');
             document.getElementById('exportModal').classList.add('visible');
         }
 
-        function exportJSON() {
-            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            if (journal.length === 0) {
-                alert('Aucune crise à exporter');
-                return;
+        function selectExportPeriod(el) {
+            _exportPeriod = el.dataset.period;
+            document.querySelectorAll('#exportPeriodChips .export-chip').forEach(function(c) { c.classList.remove('active'); });
+            el.classList.add('active');
+            document.getElementById('exportDateRange').classList.toggle('visible', _exportPeriod === 'custom');
+            updateExportCount();
+        }
+
+        function selectExportContext(el) {
+            _exportContext = el.dataset.context;
+            document.querySelectorAll('#exportContextChips .export-chip').forEach(function(c) { c.classList.remove('active'); });
+            el.classList.add('active');
+            updateExportCount();
+        }
+
+        function getExportFilteredJournal() {
+            var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            var now = new Date();
+
+            // Filtre période
+            if (_exportPeriod !== 'all') {
+                var cutoff = null;
+                if (_exportPeriod === 'month') {
+                    cutoff = new Date(now.getFullYear(), now.getMonth(), 1);
+                } else if (_exportPeriod === '3months') {
+                    cutoff = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                } else if (_exportPeriod === 'year') {
+                    cutoff = new Date(now.getFullYear(), 0, 1);
+                } else if (_exportPeriod === 'custom') {
+                    var fromVal = document.getElementById('exportDateFrom').value;
+                    var toVal = document.getElementById('exportDateTo').value;
+                    var from = fromVal ? new Date(fromVal) : null;
+                    var to = toVal ? new Date(toVal + 'T23:59:59') : null;
+                    journal = journal.filter(function(e) {
+                        var d = new Date(e.horodatage);
+                        return (!from || d >= from) && (!to || d <= to);
+                    });
+                    cutoff = null;
+                }
+                if (cutoff) {
+                    journal = journal.filter(function(e) { return new Date(e.horodatage) >= cutoff; });
+                }
             }
+
+            // Filtre contexte
+            if (_exportContext !== 'all') {
+                journal = journal.filter(function(e) { return e.profil === _exportContext; });
+            }
+
+            return journal;
+        }
+
+        function updateExportCount() {
+            var n = getExportFilteredJournal().length;
+            document.getElementById('exportCounter').textContent = n + ' crise' + (n > 1 ? 's' : '') + ' sélectionnée' + (n > 1 ? 's' : '');
+        }
+
+        function doExport(format) {
+            var journal = getExportFilteredJournal();
+            if (journal.length === 0) { alert('Aucune crise à exporter avec ces filtres.'); return; }
+            if (format === 'pdf') exportPDF(journal);
+            else if (format === 'share') shareJournal(journal);
+            else if (format === 'json') exportJSON(journal);
+            else if (format === 'csv') exportCSV(journal);
+        }
+
+        function exportCSV(journal) {
+            journal = journal || getExportFilteredJournal();
+            var BOM = '\uFEFF';
+            var headers = ['Date', 'Heure', 'Contexte', 'Origine', 'Type', 'Intensité', 'Durée', 'Énergie', 'Charge mentale', 'Charge sociale', 'Déclencheurs', 'Besoins', 'États', 'Cap. impossibles', 'Cap. difficiles', 'Remarques'];
+
+            function csvCell(v) {
+                if (v === null || v === undefined) return '';
+                v = String(v);
+                if (v.includes(';') || v.includes('"') || v.includes('\n')) return '"' + v.replace(/"/g, '""') + '"';
+                return v;
+            }
+
+            var rows = [headers.join(';')];
+            journal.sort(function(a, b) { return new Date(b.horodatage) - new Date(a.horodatage); });
+            journal.forEach(function(entry) {
+                var d = new Date(entry.horodatage);
+                var date = d.toLocaleDateString('fr-FR');
+                var heure = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                var ctx = (PROFILES[entry.profil] || { name: entry.profil || '' }).name;
+                var ener = normalizeEnergie(entry);
+                var chM = normalizeChargeMentale(entry);
+                var chS = normalizeChargeSociale(entry);
+                var decl = entry.declencheurs && entry.declencheurs.length
+                    ? normalizeDeclencheurs(entry.declencheurs).map(function(d) { return d.intensite ? d.nom + ' (' + d.intensite + '/10)' : d.nom; }).join(', ')
+                    : '';
+                var besoins = entry.besoins && entry.besoins.length ? entry.besoins.map(function(b) { return b.label || b; }).join(', ') : '';
+                var etats = entry.etats && entry.etats.length ? entry.etats.map(function(e) { return e.label || e; }).join(', ') : '';
+                var capImp = entry.capacites && entry.capacites.impossible ? entry.capacites.impossible.join(', ') : '';
+                var capDiff = entry.capacites && entry.capacites.difficile ? entry.capacites.difficile.join(', ') : '';
+                rows.push([date, heure, ctx, entry.typeCrise || '', entry.typeManifestation || '',
+                    entry.intensite !== undefined && entry.intensite !== '' ? entry.intensite : '',
+                    entry.duree || '',
+                    ener !== null ? ener : '', chM !== null ? chM : '', chS !== null ? chS : '',
+                    decl, besoins, etats, capImp, capDiff, entry.remarques || ''
+                ].map(csvCell).join(';'));
+            });
+
+            var content = BOM + rows.join('\n');
+            var blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'journal-crises-' + new Date().toISOString().split('T')[0] + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            closeModal(null, 'exportModal');
+        }
+
+        function exportJSON(journal) {
+            journal = journal || JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            if (journal.length === 0) { alert('Aucune crise à exporter'); return; }
 
             const data = JSON.stringify(journal, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
@@ -2179,16 +2395,12 @@ function handleTriggerChange(checkbox) {
             a.download = `journal-crises-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            
             closeModal(null, 'exportModal');
         }
 
-        function exportPDF() {
-            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            if (journal.length === 0) {
-                alert('Aucune crise à exporter');
-                return;
-            }
+        function exportPDF(journal) {
+            journal = journal || JSON.parse(localStorage.getItem('journalCrises') || '[]');
+            if (journal.length === 0) { alert('Aucune crise à exporter'); return; }
 
             const prenom = localStorage.getItem('userPrenom') || '';
             const nom = localStorage.getItem('userNom') || '';
@@ -2287,8 +2499,8 @@ ${entriesHtml}
             closeModal(null, 'exportModal');
         }
 
-        function shareJournal() {
-            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+        function shareJournal(journal) {
+            journal = journal || JSON.parse(localStorage.getItem('journalCrises') || '[]');
             if (!journal.length) { alert('Aucune crise à partager.'); return; }
 
             const prenom = localStorage.getItem('userPrenom') || '';

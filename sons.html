@@ -564,6 +564,7 @@ input[type=range] {
   background: #1e293b;
   border-radius: 6px;
   outline: none;
+  touch-action: pan-x;
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -1102,10 +1103,6 @@ function initMixer() {
       a.volume = initialVolume / 100;
     }
 
-    // Gestion tactile — approche "restore" : n'activer que sur drag horizontal
-    let _savedVal = parseInt(slider.value);
-    let _touchStartX = 0, _touchStartY = 0, _isScrolling = null;
-
     function applySliderVolume(val) {
       const volume = val / 100;
       a.volume = volume;
@@ -1122,26 +1119,7 @@ function initMixer() {
       }
     }
 
-    slider.addEventListener('touchstart', (e) => {
-      _touchStartX = e.touches[0].clientX;
-      _touchStartY = e.touches[0].clientY;
-      _isScrolling = null;
-      _savedVal = parseInt(slider.value);
-    }, { passive: true });
-
-    slider.addEventListener('touchmove', (e) => {
-      if (_isScrolling === null) {
-        const dx = Math.abs(e.touches[0].clientX - _touchStartX);
-        const dy = Math.abs(e.touches[0].clientY - _touchStartY);
-        if (dx > 5 || dy > 5) _isScrolling = dy > dx;
-      }
-      if (_isScrolling) slider.value = _savedVal;
-    }, { passive: true });
-
-    slider.addEventListener('touchend', () => { _isScrolling = null; }, { passive: true });
-
     slider.addEventListener('input', (e) => {
-      if (_isScrolling === null || _isScrolling) { slider.value = _savedVal; return; }
       applySliderVolume(parseInt(e.target.value));
     });
 
@@ -1264,6 +1242,16 @@ document.getElementById("closeTimer").onclick = (e) => {
 // ===== INITIALISATION =====
 initMixer();
 updateTimerDisplay();
+
+// Cache tous les fichiers audio en arrière-plan dès l'ouverture de la page
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.ready.then(registration => {
+    if (registration.active) {
+      const audioUrls = mixSounds.map(name => `assets/audio/${name.toLowerCase()}.mp3`);
+      registration.active.postMessage({ type: 'CACHE_AUDIO', urls: audioUrls });
+    }
+  });
+}
 
 // Fermer les modales en cliquant sur le fond
 playerModal.onclick = (e) => {

@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,21 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.9] — mars 2026
+
+### Ajouté
+- **Mini stats respiration** (`coherence.html`) : chaque session complète est enregistrée en localStorage (`breathingSessions`)
+- Modale de fin d'exercice enrichie : animation de félicitations (anneaux + ✓), stats "Ce mois-ci" et "Au total" (sessions + minutes)
+- Messages d'encouragement variés selon le programme : Cohérence cardiaque (focus régulation/VFC), Apaisement (focus nerf vague), Personnalisé
+- **Paliers/badges** : 6 paliers de sessions (1, 5, 10, 25, 50, 100) et 4 paliers de temps (30 min, 1h, 5h, 10h) — banderole dans la modale au franchissement uniquement
+- Info modale programmes : ajout "Les effets d'une session durent environ 3 à 6 heures" dans la description Cohérence cardiaque
+
+### Corrigé
+- **sons.html** — bug slider anti-scroll : remplacé l'heuristique JS fragile (détection d'angle) par `touch-action: pan-x` sur les sliders du mixeur, qui délègue la discrimination horizontal/vertical au navigateur de façon fiable
+- **sons.html** — sons silencieux hors-ligne : au chargement de la page, tous les fichiers audio sont maintenant mis en cache en arrière-plan via le Service Worker (`CACHE_AUDIO`), ce qui garantit leur disponibilité lors de la prochaine utilisation hors-ligne
 
 ---
 

@@ -66,16 +66,27 @@ Les docs doivent être mis à jour **en fin de session**, juste avant de signale
 L'ordre : 1) `a-propos.html` (version), 2) `CHANGELOG.md`, 3) `ROADMAP.md` si nécessaire, 4) `ARCHITECTURE.md` si modification technique, 5) `PRODUCT-OVERVIEW.md` si nouvelle fonctionnalité majeure.
 
 ## Commits et versioning
-Quand une session de travail représente une avancée significative (nouvelle fonctionnalité, refonte d'une page, lot de corrections), signaler proactivement qu'il serait bon de faire un commit.
 
-Avant de le signaler :
-1. Mettre à jour le numéro de version dans `a-propos.html`
-2. Indiquer clairement ce qui a changé et quel numéro de version a été appliqué
-3. Préciser à Marine de faire le commit et le push elle-même depuis VS Code
+### Commandes de commit (mots-clés déclencheurs)
 
-Schéma de versioning suggéré :
-- `1.x` → nouvelle fonctionnalité ou changement UI significatif
-- `1.x.y` → correction de bug ou ajustement visuel mineur
+Ces mots-clés ne fonctionnent que si le message ne contient **que** le mot-clé (éventuellement avec un numéro de version), pas dans une phrase ordinaire. Tous les mots-clés sont **insensibles à la casse** (`#commit`, `#Commit`, `#COMMIT` sont équivalents).
+
+**`#commit`** (ou **`#1`**) — Phase 1 : proposer
+→ Répondre uniquement avec :
+1. Le numéro de version proposé (selon le schéma ci-dessous)
+2. Un message de commit court, prêt à copier-coller
+Ne pas lister les docs à mettre à jour à cette étape.
+
+**`#ok`** / **`#go`** (ou **`#2`**, insensible à la casse) — Phase 2 : valider
+→ Mettre à jour uniquement le numéro de version dans `a-propos.html`.
+→ Confirmer, puis préciser à Marine de faire le commit et le push depuis VS Code.
+
+**`#MAJ`** — Mise à jour complète
+→ Mettre à jour tous les docs de support du projet dans l'ordre : `a-propos.html`, `CHANGELOG.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `PRODUCT-OVERVIEW.md`.
+
+### Schéma de versioning
+- `x.y` → nouvelle fonctionnalité ou changement UI significatif
+- `x.y.z` → correction de bug ou ajustement visuel mineur
 
 ## Branches Git
 Marine travaille directement sur `main` (seule développeuse, déploiement GitHub Pages automatique au push).

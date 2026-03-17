@@ -16,20 +16,20 @@
 
 .main {
   height: calc(100vh - var(--header-height) - var(--footer-height));
-  padding: 8px 16px 12px;
+  padding: 6px 16px 10px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
   overflow: hidden;
 }
 
 /* ---------- SECTION TITLES ---------- */
 h2 {
-  font-size: 13px;
+  font-size: 15px;
   text-transform: uppercase;
   letter-spacing: .1em;
   color: var(--accent);
-  margin: 0 0 6px 2px;
+  margin: 0 0 4px 2px;
   text-align: left;
 }
 
@@ -38,7 +38,7 @@ h2 {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 6px 2px;
+  margin: 0 0 4px 2px;
 }
 
 .section-header h2 {
@@ -80,7 +80,7 @@ h2 {
   gap: 3px;
   cursor: pointer;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   text-align: center;
   line-height: 1.35;
@@ -137,7 +137,7 @@ h2 {
   background: transparent;
   color: rgba(245,228,204,0.5);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s;
@@ -157,7 +157,7 @@ h2 {
   border: 1.5px solid rgba(245,228,204,0.12);
   color: rgba(245,228,204,0.6);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   text-align: center;
@@ -175,16 +175,13 @@ h2 {
 
 /* ---------- PRÉVISUALISATION ---------- */
 .preview-section {
-  flex: 1;
-  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .preview-main {
-  flex: 1;
-  min-height: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -500,6 +497,97 @@ h2 {
   margin-top: 4px;
 }
 
+/* ---------- END MODAL ANIMATION ---------- */
+.end-anim-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.end-anim-ring {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(247,184,156,0.7);
+  animation: endRing 0.9s ease-out forwards;
+}
+
+.end-anim-ring-2 {
+  animation-delay: 0.18s;
+}
+
+@keyframes endRing {
+  0%   { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.end-anim-check {
+  font-size: 26px;
+  color: var(--accent);
+  opacity: 0;
+  animation: endCheck 0.35s 0.1s ease-out forwards;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes endCheck {
+  0%   { transform: scale(0.3); opacity: 0; }
+  65%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- END BADGE ---------- */
+.end-badge {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--dark);
+  background: linear-gradient(135deg, var(--accent), rgba(247,184,156,0.7));
+  border-radius: 20px;
+  padding: 6px 14px;
+  margin-bottom: 8px;
+  animation: badgeIn 0.4s 0.5s ease-out both;
+}
+
+@keyframes badgeIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  70%  { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ---------- END MODAL STATS ---------- */
+.end-stats-block {
+  background: rgba(245,228,204,0.07);
+  border: 1px solid rgba(245,228,204,0.1);
+  border-radius: 14px;
+  padding: 10px 16px;
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.end-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.end-stat-label {
+  font-size: 13px;
+  color: rgba(245,228,204,0.5);
+}
+
+.end-stat-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--light);
+}
+
 /* ---------- BREATHING SCREEN ---------- */
 #breathing {
   display: none;
@@ -687,10 +775,12 @@ h2 {
 <!-- MODAL FIN D'EXERCICE -->
 <div class="modal-overlay" id="endModal" role="dialog" aria-modal="true" aria-label="Exercice terminé">
   <div class="modal-content">
+    <div class="end-anim-wrap" id="endAnimWrap"></div>
+    <div class="end-badge" id="endBadge" style="display:none;"></div>
     <div class="modal-title">Bien joué !</div>
     <p class="end-modal-message" id="endMessage"></p>
-    <p class="end-modal-note">Chaque exercice compte.</p>
-    <div class="modal-buttons" style="margin-top:24px;">
+    <div class="end-stats-block" id="endStats"></div>
+    <div class="modal-buttons" style="margin-top:20px;">
       <button class="modal-btn modal-btn-primary" onclick="restartExercise()">Recommencer</button>
       <button class="modal-btn modal-btn-secondary" onclick="endExercise()">Terminer</button>
     </div>
@@ -705,7 +795,7 @@ h2 {
     <div style="display:flex; flex-direction:column; gap:18px; color:var(--light);">
       <div>
         <div style="font-weight:700; font-size:15px; margin-bottom:6px; color:var(--accent);">Cohérence cardiaque — 5s / 5s</div>
-        <p style="font-size:14px; line-height:1.65; margin:0; opacity:0.85;">À 6 respirations par minute, ce rythme correspond à la fréquence de résonance du système cardiovasculaire. Il maximise la variabilité de la fréquence cardiaque (VFC), un indicateur clé de la régulation du système nerveux. Utilisé dans des protocoles thérapeutiques validés contre le stress et l'anxiété, ses effets se perçoivent dès quelques minutes de pratique régulière.</p>
+        <p style="font-size:14px; line-height:1.65; margin:0; opacity:0.85;">À 6 respirations par minute, ce rythme correspond à la fréquence de résonance du système cardiovasculaire. Il maximise la variabilité de la fréquence cardiaque (VFC), un indicateur clé de la régulation du système nerveux. Utilisé dans des protocoles thérapeutiques validés contre le stress et l'anxiété, ses effets se perçoivent dès quelques minutes de pratique régulière. <strong style="opacity:1;">Les effets d'une session durent environ 3 à 6 heures.</strong></p>
       </div>
       <div>
         <div style="font-weight:700; font-size:15px; margin-bottom:6px; color:var(--accent);">Apaisement — 4s / 8s</div>
@@ -1066,10 +1156,111 @@ function buildVisual() {
   }
 }
 
+/* ---------- BREATHING STATS ---------- */
+const END_MESSAGES = {
+  coherence: [
+    "6 respirations par minute. Ton système nerveux vient d'être régulé.",
+    "Chaque session renforce ta variabilité cardiaque sur le long terme.",
+    "C'est fait. Les effets durent environ 3 à 6 heures.",
+    "Tu viens de synchroniser ton cœur et ton cerveau. Bien.",
+  ],
+  apaisement: [
+    "L'expiration longue a activé ton frein naturel.",
+    "Le nerf vague a reçu le signal. Le niveau d'alerte redescend.",
+    "Tu as abaissé ton niveau d'alerte. Prends le temps de le sentir.",
+    "Bien fait. Ton corps sait maintenant que c'est calme.",
+  ],
+  custom: [
+    "Session terminée. Prends un instant pour sentir la différence.",
+    "C'est fait. Bien joué.",
+    "Tu as pris ce temps pour toi.",
+  ]
+};
+
+const SESSION_MILESTONES = [
+  { n: 1,   label: "Première session — c'est parti !" },
+  { n: 5,   label: "5 sessions réalisées" },
+  { n: 10,  label: "10 sessions — tu prends soin de toi" },
+  { n: 25,  label: "25 sessions — pratique régulière" },
+  { n: 50,  label: "50 sessions — c'est ancré" },
+  { n: 100, label: "100 sessions — remarquable" },
+];
+
+const MINUTE_MILESTONES = [
+  { n: 30,  label: "30 minutes de respiration au total" },
+  { n: 60,  label: "1 heure de respiration au total" },
+  { n: 300, label: "5 heures de respiration au total" },
+  { n: 600, label: "10 heures de respiration au total" },
+];
+
+function checkMilestone(prevTotal, newTotal, prevMin, newMin) {
+  for (const m of SESSION_MILESTONES) {
+    if (prevTotal < m.n && newTotal >= m.n) return m.label;
+  }
+  for (const m of MINUTE_MILESTONES) {
+    if (prevMin < m.n && newMin >= m.n) return m.label;
+  }
+  return null;
+}
+
+function saveBreathingSession(programme, dureeMin) {
+  const sessions = JSON.parse(localStorage.getItem('breathingSessions') || '[]');
+  sessions.push({ date: new Date().toISOString().slice(0, 10), programme, dureeMin });
+  localStorage.setItem('breathingSessions', JSON.stringify(sessions));
+}
+
+function getBreathingStats() {
+  const sessions = JSON.parse(localStorage.getItem('breathingSessions') || '[]');
+  const now = new Date();
+  const month = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  let monthSessions = 0, monthMin = 0, totalSessions = 0, totalMin = 0;
+  sessions.forEach(s => {
+    totalSessions++;
+    totalMin += s.dureeMin || 0;
+    if (s.date && s.date.startsWith(month)) {
+      monthSessions++;
+      monthMin += s.dureeMin || 0;
+    }
+  });
+  return { monthSessions, monthMin, totalSessions, totalMin };
+}
+
+function formatMin(min) {
+  if (min < 60) return min + ' min';
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return m > 0 ? `${h}h ${m}min` : `${h}h`;
+}
+
 function showEndModal() {
-  const durationText = minutes <= 1 ? '1 minute' : `${minutes} minutes`;
-  document.getElementById('endMessage').textContent =
-    `Tu viens de faire ${durationText} de respiration. Prends un instant pour sentir la différence.`;
+  const statsBefore = getBreathingStats();
+  saveBreathingSession(currentProgram, minutes);
+  const statsAfter = getBreathingStats();
+
+  // Animation — reset à chaque ouverture
+  const animWrap = document.getElementById('endAnimWrap');
+  animWrap.innerHTML = '<div class="end-anim-ring"></div><div class="end-anim-ring end-anim-ring-2"></div><span class="end-anim-check">✓</span>';
+
+  // Badge palier
+  const badge = document.getElementById('endBadge');
+  const milestone = checkMilestone(statsBefore.totalSessions, statsAfter.totalSessions, statsBefore.totalMin, statsAfter.totalMin);
+  if (milestone) {
+    badge.textContent = milestone;
+    badge.style.display = 'block';
+  } else {
+    badge.style.display = 'none';
+  }
+
+  // Message varié par programme
+  const msgs = END_MESSAGES[currentProgram] || END_MESSAGES.custom;
+  document.getElementById('endMessage').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+
+  // Stats
+  const pl = n => n > 1 ? 's' : '';
+  document.getElementById('endStats').innerHTML =
+    `<div class="end-stat-row"><span class="end-stat-label">Ce mois-ci</span><span class="end-stat-value">${statsAfter.monthSessions} session${pl(statsAfter.monthSessions)} · ${formatMin(statsAfter.monthMin)}</span></div>` +
+    `<div class="end-stat-row"><span class="end-stat-label">Au total</span><span class="end-stat-value">${statsAfter.totalSessions} session${pl(statsAfter.totalSessions)} · ${formatMin(statsAfter.totalMin)}</span></div>`;
+
   document.getElementById('progress').style.width = '100%';
   document.getElementById('endModal').classList.add('visible');
   wakeLockReleaseTimer = setTimeout(() => releaseWakeLock(), 35000);

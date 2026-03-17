@@ -2,7 +2,7 @@
 
 > Document de référence pour comprendre les choix d'implémentation qui ne se lisent pas directement dans le code.
 > À mettre à jour à chaque décision technique significative.
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9
 
 ---
 
@@ -48,8 +48,7 @@ Nora est utilisée en situation de crise, potentiellement sans réseau (sous-sol
 
 **Hors-ligne :**
 - Tout fonctionne normalement : toutes les pages, le CSS, les images
-- Les sons **déjà joués** au moins une fois (et donc mis en cache) fonctionnent aussi
-- Les sons **jamais joués** et pas dans un préréglage ne sont pas disponibles
+- Les sons fonctionnent tous : au chargement de `sons.html`, tous les fichiers audio sont mis en cache en arrière-plan (voir ci-dessous)
 
 ### Stratégies de cache par type de ressource
 
@@ -97,8 +96,12 @@ Structure des préréglages dans localStorage (`mixerPresets`) :
 Au chargement de n'importe quelle page, `sw-register.js` :
 1. Lit `mixerPresets` dans localStorage
 2. Collecte tous les sons avec `volume > 0`
-3. Envoie `{ type: 'CACHE_AUDIO', urls: ['./assets/audio/pluie sur la fenêtre.mp3', ...] }` au SW
+3. Envoie `{ type: 'CACHE_AUDIO', urls: [...] }` au SW
 4. Le SW les télécharge et les met en cache dans `AUDIO_CACHE`
+
+### Cas particulier : pre-cache complet depuis sons.html (v2.9)
+
+Au chargement de `sons.html`, tous les fichiers audio (28 sons) sont envoyés au SW via le même message `CACHE_AUDIO`. Cela garantit que tous les sons sont disponibles hors-ligne après une première visite en ligne, même s'ils n'ont jamais été joués.
 
 ---
 
@@ -152,7 +155,7 @@ Claude Code n'a pas de mémoire entre deux sessions. À chaque nouvelle conversa
 
 Chaque doc de support contient une ligne de ce type :
 ```
-> Dernière mise à jour : mars 2026 — couvre jusqu'au commit `0a5a00a` (v2.8.0)
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9
 ```
 
 Ce marqueur indique jusqu'à quel commit le doc a été mis à jour.
