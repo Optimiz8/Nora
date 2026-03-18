@@ -9,7 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Aperçu</title>
     <style>
         body {
@@ -332,7 +332,7 @@
     </div>
 
     <div class="header">
-        <button class="back-btn" onclick="fermerApercu()">
+        <button class="back-btn" id="btnFermerApercu">
             <span>×</span>
             <span>Fermer l'aperçu</span>
         </button>
@@ -351,7 +351,7 @@
 
         <!-- Section Capacités -->
         <div class="collapsible-section" id="capacitesSection">
-            <button class="section-header" onclick="toggleSection(this)">
+            <button class="section-header">
                 <span>Mes capacités actuelles</span>
                 <span class="chevron">▼</span>
             </button>
@@ -364,7 +364,7 @@
 
         <!-- Section Besoins -->
         <div class="collapsible-section" id="besoinsSection">
-            <button class="section-header" onclick="toggleSection(this)">
+            <button class="section-header">
                 <span>Ce qui va m'aider</span>
                 <span class="chevron">▼</span>
             </button>
@@ -377,7 +377,7 @@
 
         <!-- Section États -->
         <div class="collapsible-section" id="etatsSection">
-            <button class="section-header" onclick="toggleSection(this)">
+            <button class="section-header">
                 <span>Comment je me sens</span>
                 <span class="chevron">▼</span>
             </button>
@@ -390,7 +390,7 @@
 
         <!-- Section Contact d'urgence -->
         <div class="collapsible-section" id="contactSection">
-            <button class="section-header" onclick="toggleSection(this)">
+            <button class="section-header">
                 <span>📞 Contact d'urgence</span>
                 <span class="chevron">▼</span>
             </button>
@@ -403,7 +403,7 @@
 
         <!-- Section Informations médicales -->
         <div class="collapsible-section" id="medicalSection">
-            <button class="section-header" onclick="toggleSection(this)">
+            <button class="section-header">
                 <span>🚑 Informations médicales (pour les secours)</span>
                 <span class="chevron">▼</span>
             </button>
@@ -417,12 +417,21 @@
 
     <!-- Footer simplifié -->
     <div class="footer">
-        <button class="footer-btn" onclick="fermerApercu()">
+        <button class="footer-btn" id="btnFermerApercuFooter">
             ✓ Fermer l'aperçu
         </button>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        function showToast(msg, duration) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, duration || 3000);
+        }
+
         function toggleSection(button) {
             const content = button.nextElementSibling;
             const chevron = button.querySelector('.chevron');
@@ -439,7 +448,7 @@
             const exempleDonnees = localStorage.getItem('exempleCrise');
             
             if (!exempleDonnees) {
-                alert('❌ Aucune donnée d\'exemple trouvée');
+                showToast('❌ Aucune donnée d\'exemple trouvée');
                 return;
             }
 
@@ -469,7 +478,7 @@
                 
             } catch (error) {
                 console.error('Erreur chargement exemple:', error);
-                alert('❌ Erreur lors du chargement de l\'exemple');
+                showToast('❌ Erreur lors du chargement de l\'exemple');
             }
         }
 
@@ -610,11 +619,11 @@
                         ${remarque}
                         ${contact.telephone ? `<p style="margin-bottom: 12px; color: var(--dark);">📞 ${contact.telephone}</p>` : ''}
                         <div class="contact-buttons">
-                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                            <button class="contact-btn btn-apercu-disabled">
                                 <span>📞</span>
                                 <span>Appeler</span>
                             </button>
-                            <button class="contact-btn" onclick="alert('Fonction désactivée en mode aperçu')">
+                            <button class="contact-btn btn-apercu-disabled">
                                 <span>💬</span>
                                 <span>Message</span>
                             </button>
@@ -710,7 +719,21 @@
         }
 
         // Chargement au démarrage
-        document.addEventListener('DOMContentLoaded', loadExempleData);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadExempleData();
+
+            document.getElementById('btnFermerApercu').addEventListener('click', fermerApercu);
+            document.getElementById('btnFermerApercuFooter').addEventListener('click', fermerApercu);
+
+            document.querySelectorAll('.section-header').forEach(function(btn) {
+                btn.addEventListener('click', function() { toggleSection(this); });
+            });
+
+            document.getElementById('contactContent').addEventListener('click', function(e) {
+                var btn = e.target.closest('.btn-apercu-disabled');
+                if (btn) showToast('Fonction désactivée en mode aperçu');
+            });
+        });
     </script>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>

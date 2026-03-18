@@ -48,6 +48,7 @@ const STATIC_ASSETS = [
   './nora-scroll.js',
   './sw-register.js',
   './manifest.webmanifest',
+  './assets/js/qrcode.min.js',
   // Images
   './assets/images/logo.png',
   './assets/images/favicone.png',
@@ -158,7 +159,7 @@ async function staleWhileRevalidate(request, cacheName) {
       if (response && response.ok) cache.put(request, response.clone());
       return response;
     })
-    .catch(() => cached);
+    .catch(async () => cached || await cache.match('./404.html'));
 
   return cached || fetchPromise;
 }

@@ -119,20 +119,20 @@
   </head>
   <body>
     <header class="header">
-      <button class="back-button" onclick="location.href = 'fidgets.html'" aria-label="Retour">⬅️</button>
+      <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
       <h1 class="page-title">Pop-it</h1>
     </header>
 
     <main class="grid" id="g"></main>
 
     <footer class="footer">
-      <button id="sTgl" class="footer-button btn-f active" onclick="tglSound()">
+      <button id="sTgl" class="footer-button btn-f active">
         <span id="sIcon">🔊</span><small>SON</small>
       </button>
-      <button id="mTgl" class="footer-button btn-f" onclick="cycleMode()">
+      <button id="mTgl" class="footer-button btn-f">
         <span id="mIcon">🔄</span><small id="mText">MANUEL</small>
       </button>
-      <button id="cTgl" class="footer-button btn-f" onclick="cycleTheme()">
+      <button id="cTgl" class="footer-button btn-f">
         <span id="cIcon">☀️</span><small id="cText">JOUR</small>
       </button>
     </footer>
@@ -143,6 +143,11 @@
       let themeIndex = 0,
         currentTarget = null;
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      document.getElementById('btnRetour').addEventListener('click', function() { location.href = 'fidgets.html'; });
+      document.getElementById('sTgl').addEventListener('click', tglSound);
+      document.getElementById('mTgl').addEventListener('click', cycleMode);
+      document.getElementById('cTgl').addEventListener('click', cycleTheme);
 
       const themes = [
         { i: "☀️", l: "Jour" },

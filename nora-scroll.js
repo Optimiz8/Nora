@@ -1,3 +1,27 @@
+// ---------- QUOTA GUARD ----------
+(function() {
+  var _orig = Storage.prototype.setItem;
+  var _toastShown = false;
+
+  Storage.prototype.setItem = function(key, value) {
+    try {
+      _orig.call(this, key, value);
+    } catch(e) {
+      if (e.name === 'QuotaExceededError' || e.code === 22 || e.code === 1014) {
+        if (_toastShown) return;
+        _toastShown = true;
+        var t = document.createElement('div');
+        t.setAttribute('role', 'alert');
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(255,70,70,0.92);color:#F5E4CC;padding:14px 20px;border-radius:14px;font-size:15px;font-family:inherit;z-index:9999;text-align:center;max-width:320px;width:calc(100% - 40px);line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,0.3)';
+        t.textContent = '⚠️ Stockage plein — Cette donnée n\'a pas pu être sauvegardée. Libère de l\'espace dans Paramètres → Réinitialiser.';
+        document.body.appendChild(t);
+        setTimeout(function() { t.remove(); _toastShown = false; }, 7000);
+      }
+    }
+  };
+})();
+
+// ---------- SCROLL INDICATOR ----------
 (function() {
   document.addEventListener('DOMContentLoaded', function() {
     var indicator = document.createElement('div');

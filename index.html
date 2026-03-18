@@ -7,10 +7,11 @@
     <meta name="theme-color" content="#384657">
     <script>if (!localStorage.getItem('onboardingDone') && !localStorage.getItem('onboardingSkipped')) { location.replace('tutoriel.html'); }</script>
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="icon" href="assets/images/favicone.png" type="image/png">
-    <link rel="apple-touch-icon" href="assets/images/logo.png">
+    <link rel="icon" href="assets/images/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="assets/images/favicone.png" sizes="1024x1024" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icon-180.png">
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Nora – Accueil</title>
 
     <style>
@@ -715,7 +716,7 @@
 
     <div class="modal" id="contextModal" role="dialog" aria-modal="true" aria-label="Choix du contexte">
         <div class="modal-content">
-            <div class="modal-close" onclick="closeContextModal()">×</div>
+            <div class="modal-close" id="btnCloseContextModal">×</div>
             <div class="modal-title">Où es-tu&nbsp;?</div>
             <div class="context-grid" id="contextGrid">
                 <!-- Généré dynamiquement -->
@@ -745,12 +746,12 @@
                 Une crise semble être en cours.<br>Est-elle terminée ?
             </div>
             <div class="crisis-modal-actions">
-                <button class="crisis-btn primary" onclick="crisisIsOver()">Oui, elle est terminée</button>
-                <button class="crisis-btn secondary" onclick="goToRecap()">
+                <button class="crisis-btn primary" id="btnCrisisOver">Oui, elle est terminée</button>
+                <button class="crisis-btn secondary" id="btnGoToRecap">
                     Non, voir mon récapitulatif
                     <div class="crisis-btn-desc">Retourner à l'écran de crise</div>
                 </button>
-                <button class="crisis-btn secondary" onclick="goToCalm()">
+                <button class="crisis-btn secondary" id="btnGoToCalm">
                     Non, m'apaiser
                     <div class="crisis-btn-desc">Accéder aux outils d'apaisement</div>
                 </button>
@@ -770,19 +771,19 @@
                 Souhaites-tu enregistrer cette crise dans ton journal ?
             </div>
             <div class="crisis-modal-actions">
-                <button class="crisis-btn primary" onclick="registerCrisisNow()">
+                <button class="crisis-btn primary" id="btnRegisterNow">
                     Enregistrer maintenant
                     <div class="crisis-btn-desc">Ajouter au journal avec les données de la crise</div>
                 </button>
-                <button class="crisis-btn secondary" onclick="registerCrisisLater()">
+                <button class="crisis-btn secondary" id="btnRegisterLater">
                     Plus tard
                     <div class="crisis-btn-desc">On te redemandera demain</div>
                 </button>
-                <button class="crisis-btn secondary" onclick="enableAutoRegister()">
+                <button class="crisis-btn secondary" id="btnAutoRegister">
                     Toujours enregistrer automatiquement
                     <div class="crisis-btn-desc">Les prochaines crises seront ajoutées au journal sans demander</div>
                 </button>
-                <button class="crisis-btn dismiss" onclick="dismissCrisis()">
+                <button class="crisis-btn dismiss" id="btnDismissCrisis">
                     Non, je ne souhaite pas
                 </button>
             </div>
@@ -794,7 +795,7 @@
         <div class="modal-content">
             <div class="pcm-header">
                 <div class="pcm-header-title">Enregistrer la crise</div>
-                <button class="pcm-close" onclick="closePcm()" aria-label="Fermer">×</button>
+                <button class="pcm-close" id="btnClosePcm" aria-label="Fermer">×</button>
             </div>
 
             <div class="pcm-block pcm-block-avant">
@@ -805,7 +806,7 @@
                         <span class="pcm-slider-label">⚡ Énergie</span>
                         <span class="pcm-slider-value null-state" id="pcmEnergieDisplay">— /10</span>
                     </div>
-                    <input type="range" class="pcm-slider null-state" id="pcmEnergie" min="0" max="10" value="5" oninput="activatePcmSlider('energie')">
+                    <input type="range" class="pcm-slider null-state" id="pcmEnergie" min="0" max="10" value="5">
                     <div class="pcm-slider-hints"><span>épuisé</span><span>en forme</span></div>
                 </div>
 
@@ -814,7 +815,7 @@
                         <span class="pcm-slider-label">🧠 Charge mentale</span>
                         <span class="pcm-slider-value null-state" id="pcmMentaleDisplay">— /10</span>
                     </div>
-                    <input type="range" class="pcm-slider null-state" id="pcmMentale" min="0" max="10" value="5" oninput="activatePcmSlider('mentale')">
+                    <input type="range" class="pcm-slider null-state" id="pcmMentale" min="0" max="10" value="5">
                     <div class="pcm-slider-hints"><span>légère</span><span>saturée</span></div>
                 </div>
 
@@ -823,7 +824,7 @@
                         <span class="pcm-slider-label">👥 Charge sociale</span>
                         <span class="pcm-slider-value null-state" id="pcmSocialeDisplay">— /10</span>
                     </div>
-                    <input type="range" class="pcm-slider null-state" id="pcmSociale" min="0" max="10" value="5" oninput="activatePcmSlider('sociale')">
+                    <input type="range" class="pcm-slider null-state" id="pcmSociale" min="0" max="10" value="5">
                     <div class="pcm-slider-hints"><span>légère</span><span>saturée</span></div>
                 </div>
             </div>
@@ -849,16 +850,16 @@
                     <label class="pcm-label">Durée estimée</label>
                     <div class="pcm-dur-carousel">
                         <div class="pcm-dur-col">
-                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('h',1)">▲</button>
+                            <button type="button" class="pcm-dur-arrow" id="btnDurHUp">▲</button>
                             <div class="pcm-dur-value" id="pcmDurH">0</div>
-                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('h',-1)">▼</button>
+                            <button type="button" class="pcm-dur-arrow" id="btnDurHDown">▼</button>
                             <div class="pcm-dur-unit">heure</div>
                         </div>
                         <div class="pcm-dur-sep">:</div>
                         <div class="pcm-dur-col">
-                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('m',1)">▲</button>
+                            <button type="button" class="pcm-dur-arrow" id="btnDurMUp">▲</button>
                             <div class="pcm-dur-value" id="pcmDurM">00</div>
-                            <button type="button" class="pcm-dur-arrow" onclick="adjustPcmDur('m',-1)">▼</button>
+                            <button type="button" class="pcm-dur-arrow" id="btnDurMDown">▼</button>
                             <div class="pcm-dur-unit">min</div>
                         </div>
                     </div>
@@ -892,7 +893,7 @@
                         <span class="pcm-slider-label">Intensité</span>
                         <span class="pcm-slider-value null-state" id="pcmIntensiteDisplay">— /10</span>
                     </div>
-                    <input type="range" class="pcm-slider null-state" id="pcmIntensite" min="0" max="10" value="5" oninput="activatePcmSlider('intensite')">
+                    <input type="range" class="pcm-slider null-state" id="pcmIntensite" min="0" max="10" value="5">
                     <div class="pcm-slider-hints"><span>légère</span><span>très intense</span></div>
                 </div>
 
@@ -905,30 +906,30 @@
             <div class="pcm-block" style="background:rgba(245,228,204,0.04);">
                 <div class="pcm-block-title">DÉCLENCHEURS</div>
                 <p class="pcm-label" style="font-weight:400;font-style:italic;opacity:0.7;margin-bottom:10px;">Une crise peut avoir plusieurs déclencheurs.<br>Prends quelques secondes pour repenser à ce qui s'est accumulé.</p>
-                <button type="button" class="pcm-triggers-btn" onclick="openPcmTriggersModal()">＋ Sélectionner les déclencheurs</button>
+                <button type="button" class="pcm-triggers-btn" id="btnOpenTriggers">＋ Sélectionner les déclencheurs</button>
                 <div id="pcmTriggersPreview" class="pcm-triggers-preview">Aucun déclencheur sélectionné</div>
             </div>
 
             <div class="pcm-actions">
-                <button class="pcm-btn secondary" onclick="skipPrecrisis()">Passer</button>
-                <button class="pcm-btn primary" onclick="saveWithPrecrisis()">💾 Enregistrer</button>
+                <button class="pcm-btn secondary" id="btnSkipPrecrisis">Passer</button>
+                <button class="pcm-btn primary" id="btnSavePrecrisis">💾 Enregistrer</button>
             </div>
         </div>
     </div>
 
-    <div class="timer-fab" id="timerFab" onclick="location.href='timer.html'"></div>
+    <div class="timer-fab" id="timerFab"></div>
 
     <!-- Sous-modale sélection déclencheurs (depuis precrisisModal) -->
     <div class="modal" id="pcmTriggersModal" role="dialog" aria-modal="true" aria-label="Déclencheurs">
         <div class="modal-content">
             <div class="pcm-header">
                 <div class="pcm-header-title">Sélectionner les déclencheurs</div>
-                <button class="pcm-close" onclick="closePcmTriggersModal()" aria-label="Fermer">×</button>
+                <button class="pcm-close" id="btnCloseTriggersModal" aria-label="Fermer">×</button>
             </div>
             <p class="triggers-info" style="margin:12px 16px 0;font-style:italic;font-size:15px;">Une crise peut avoir plusieurs déclencheurs.<br>Prends quelques secondes pour repenser à ce qui s'est accumulé.</p>
             <div id="pcmTriggersContent" class="pcm-triggers-content"></div>
             <div class="pcm-actions">
-                <button class="pcm-btn primary" onclick="validatePcmTriggers()">✅ Valider</button>
+                <button class="pcm-btn primary" id="btnValidatePcmTriggers">✅ Valider</button>
             </div>
         </div>
     </div>
@@ -936,6 +937,34 @@
     <div class="crisis-toast" id="crisisToast"></div>
 
     <script>
+    function trapFocus(modal) {
+        if (modal._trapHandler) {
+            modal.removeEventListener('keydown', modal._trapHandler);
+            delete modal._trapHandler;
+        }
+        var sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        var focusables = Array.prototype.slice.call(modal.querySelectorAll(sel));
+        if (!focusables.length) return;
+        focusables[0].focus();
+        function handler(e) {
+            if (e.key !== 'Tab') return;
+            var idx = focusables.indexOf(document.activeElement);
+            if (e.shiftKey) {
+                if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+            } else {
+                if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+            }
+        }
+        modal._trapHandler = handler;
+        modal.addEventListener('keydown', handler);
+    }
+    function releaseTrap(modal) {
+        if (modal._trapHandler) {
+            modal.removeEventListener('keydown', modal._trapHandler);
+            delete modal._trapHandler;
+        }
+    }
+
     function showCrisisToast(message) {
         var toast = document.getElementById('crisisToast');
         toast.textContent = message;
@@ -997,27 +1026,36 @@
         }
 
         // Afficher la modale
-        document.getElementById('crisisEndModal').classList.add('visible');
+        var cem = document.getElementById('crisisEndModal');
+        cem.classList.add('visible');
+        trapFocus(cem);
     }
 
     function crisisNotOver() {
         localStorage.setItem('lastCrisisCheck', getTodayStr());
-        document.getElementById('crisisEndModal').classList.remove('visible');
+        var m = document.getElementById('crisisEndModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
     }
 
     function goToRecap() {
         localStorage.setItem('lastCrisisCheck', getTodayStr());
+        releaseTrap(document.getElementById('crisisEndModal'));
         document.getElementById('crisisEndModal').classList.remove('visible');
         location.href = 'recap.html';
     }
 
     function goToCalm() {
         localStorage.setItem('lastCrisisCheck', getTodayStr());
+        releaseTrap(document.getElementById('crisisEndModal'));
         document.getElementById('crisisEndModal').classList.remove('visible');
-        document.getElementById('calmModal').classList.add('visible');
+        var cm = document.getElementById('calmModal');
+        cm.classList.add('visible');
+        trapFocus(cm);
     }
 
     function crisisIsOver() {
+        releaseTrap(document.getElementById('crisisEndModal'));
         document.getElementById('crisisEndModal').classList.remove('visible');
 
         // Si enregistrement automatique activé, skip la modale de choix
@@ -1028,7 +1066,9 @@
             return;
         }
 
-        document.getElementById('crisisRegisterModal').classList.add('visible');
+        var crm = document.getElementById('crisisRegisterModal');
+        crm.classList.add('visible');
+        trapFocus(crm);
     }
 
     var selectedPcmTriggers = [];
@@ -1043,7 +1083,7 @@
                 return selectedPcmTriggers.indexOf(cat.key + ' \u2014 ' + trigger.name) !== -1;
             });
             html += '<div class="trigger-category' + (hasSelected ? ' open' : '') + '">';
-            html += '<div class="trigger-category-title" onclick="togglePcmTriggerCategory(this)">' +
+            html += '<div class="trigger-category-title">' +
                 '<span>' + cat.label + '</span>' +
                 '<span class="trigger-category-chevron">\u25ba</span></div>';
             html += '<div class="trigger-category-items">';
@@ -1058,7 +1098,7 @@
                     (isChecked ? 'checked' : '') + ' id="' + uniqueId + '" data-trigger-name="' +
                     storedName.replace(/"/g, '&quot;') + '"' +
                     (trigger.custom ? ' data-custom="true"' : '') +
-                    ' onchange="handlePcmTriggerChange(this)"><label class="trigger-label" for="' + uniqueId + '">' +
+                    '><label class="trigger-label" for="' + uniqueId + '">' +
                     '<span class="trigger-name">' + trigger.name + '</span>' + descHtml + '</label></div>';
                 if (trigger.custom) {
                     var existing = selectedPcmTriggers.find(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; });
@@ -1070,11 +1110,15 @@
             html += '</div></div>';
         });
         content.innerHTML = html;
-        document.getElementById('pcmTriggersModal').classList.add('visible');
+        var ptm = document.getElementById('pcmTriggersModal');
+        ptm.classList.add('visible');
+        trapFocus(ptm);
     }
 
     function closePcmTriggersModal() {
-        document.getElementById('pcmTriggersModal').classList.remove('visible');
+        var m = document.getElementById('pcmTriggersModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
     }
 
     function togglePcmTriggerCategory(titleEl) {
@@ -1177,27 +1221,34 @@
         }
         updatePcmDurDisplay();
 
-        document.getElementById('precrisisModal').classList.add('visible');
+        var pcm = document.getElementById('precrisisModal');
+        pcm.classList.add('visible');
+        trapFocus(pcm);
     }
 
     function registerCrisisLater() {
         localStorage.setItem('lastCrisisCheck', getTodayStr());
-        // Marquer comme "à traiter" pour ne pas perdre les données
         localStorage.setItem('criseATraiter', 'true');
-        document.getElementById('crisisRegisterModal').classList.remove('visible');
+        var m = document.getElementById('crisisRegisterModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
     }
 
     function dismissCrisis() {
         localStorage.setItem('lastCrisisCheck', getTodayStr());
         cleanupCrisisData();
-        document.getElementById('crisisRegisterModal').classList.remove('visible');
+        var m = document.getElementById('crisisRegisterModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
     }
 
     function enableAutoRegister() {
         localStorage.setItem('autoRegisterCrise', 'true');
         createJournalEntry();
         cleanupCrisisData();
-        document.getElementById('crisisRegisterModal').classList.remove('visible');
+        var m = document.getElementById('crisisRegisterModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
         showCrisisToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
     }
 
@@ -1259,7 +1310,9 @@
     }
 
     function closePcm() {
-        document.getElementById('precrisisModal').classList.remove('visible');
+        var m = document.getElementById('precrisisModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
     }
 
     function saveWithPrecrisis() {
@@ -1299,14 +1352,18 @@
             remarques: document.getElementById('pcmRemarks').value,
             declencheurs: selectedPcmTriggers.map(function(t) { return { nom: t, intensite: pcmTriggerIntensities[t] || null }; })
         };
-        document.getElementById('precrisisModal').classList.remove('visible');
+        var pcm2 = document.getElementById('precrisisModal');
+        releaseTrap(pcm2);
+        pcm2.classList.remove('visible');
         createJournalEntry(precrisisData);
         cleanupCrisisData();
         showCrisisToast('✅ Crise enregistrée dans le journal !');
     }
 
     function skipPrecrisis() {
-        document.getElementById('precrisisModal').classList.remove('visible');
+        var m = document.getElementById('precrisisModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
         createJournalEntry(null);
         cleanupCrisisData();
         showCrisisToast('✅ Crise enregistrée dans le journal !');
@@ -1389,8 +1446,8 @@
     document.addEventListener('DOMContentLoaded', () => {
         initTimerFab();
 
-        const open = id => document.getElementById(id).classList.add('visible');
-        const close = id => document.getElementById(id).classList.remove('visible');
+        const open = id => { const m = document.getElementById(id); m.classList.add('visible'); trapFocus(m); };
+        const close = id => { const m = document.getElementById(id); releaseTrap(m); m.classList.remove('visible'); };
 
         // Ouvrir automatiquement la modale si hash présent
         if (location.hash === '#calm') {
@@ -1445,7 +1502,9 @@
         document.querySelectorAll('[data-close-crisis]').forEach(el =>
             el.onclick = () => {
                 const modalId = el.getAttribute('data-close-crisis');
-                document.getElementById(modalId).classList.remove('visible');
+                const m = document.getElementById(modalId);
+                releaseTrap(m);
+                m.classList.remove('visible');
                 // Si on ferme sans répondre, on repose la question demain
                 localStorage.setItem('lastCrisisCheck', getTodayStr());
             }
@@ -1457,9 +1516,9 @@
             banner.classList.add('visible');
             if (localStorage.getItem('criseATraiter') === 'true') {
                 document.getElementById('crisisBannerText').textContent = 'Crise à enregistrer';
-                banner.onclick = function() { document.getElementById('crisisRegisterModal').classList.add('visible'); };
+                banner.onclick = function() { var m = document.getElementById('crisisRegisterModal'); m.classList.add('visible'); trapFocus(m); };
             } else {
-                banner.onclick = function() { document.getElementById('crisisEndModal').classList.add('visible'); };
+                banner.onclick = function() { var m = document.getElementById('crisisEndModal'); m.classList.add('visible'); trapFocus(m); };
             }
         }
 
@@ -1472,6 +1531,18 @@
 
         // Vérifier fin de crise après un court délai (laisser la page se charger)
         setTimeout(checkCrisisEnd, 500);
+
+        document.getElementById('btnValidatePcmTriggers').addEventListener('click', validatePcmTriggers);
+
+        var pcmTriggersContent = document.getElementById('pcmTriggersContent');
+        pcmTriggersContent.addEventListener('click', function(e) {
+            var title = e.target.closest('.trigger-category-title');
+            if (title) togglePcmTriggerCategory(title);
+        });
+        pcmTriggersContent.addEventListener('change', function(e) {
+            var cb = e.target.closest('.trigger-checkbox');
+            if (cb) handlePcmTriggerChange(cb);
+        });
     });
     </script>
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".modal.visible").forEach(m => m.classList.remove("visible")); });</script>

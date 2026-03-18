@@ -78,7 +78,7 @@
     <p class="title">Oups, cette page est introuvable</p>
     <p class="subtitle">Il semble que cette page n'existe pas ou a été déplacée.</p>
 
-    <button class="btn-home" onclick="window.location.href='index.html'">Retour à l'accueil</button>
+    <button class="btn-home" id="btnHome">Retour à l'accueil</button>
 
     <script>
         var anim = document.getElementById('anim');
@@ -96,7 +96,10 @@
         setTimeout(function() {
             if (anim.readyState === 0) showFallback();
         }, 3000);
+
+        document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
     </script>
+<script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>
 </html>

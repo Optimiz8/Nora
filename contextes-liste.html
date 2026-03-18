@@ -9,7 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Nora – Paramètres des contextes</title>
     <style>
         body {
@@ -125,7 +125,7 @@
 
         .config-commun-button:active {
             transform: scale(0.98);
-            background-color: #f5a584;
+            filter: brightness(0.88);
         }
 
         .config-commun-button.hidden {
@@ -392,9 +392,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Paramètres des contextes</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnHome" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -413,7 +413,7 @@
                     <div class="toggle-label">
                         Utiliser le même contenu pour toutes les situations
                     </div>
-                    <div class="toggle-switch" id="toggleSimple" onclick="toggleModeSimple()">
+                    <div class="toggle-switch" id="toggleSimple">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -422,7 +422,7 @@
                 </div>
             </div>
 
-            <button class="config-commun-button hidden" id="btnConfigCommun" onclick="goToConfigCommun()">
+            <button class="config-commun-button hidden" id="btnConfigCommun">
                 ⚙️ Configurer mon profil commun
             </button>
         </section>
@@ -440,7 +440,7 @@
                 <!-- Les contextes seront générés en JS -->
             </div>
 
-            <button class="add-button" id="btnAddContexte" onclick="openAddContexteModal()">
+            <button class="add-button" id="btnAddContexte">
                 ➕ Ajouter un contexte
             </button>
 
@@ -461,7 +461,7 @@
             <div class="modal-input-group">
                 <label class="modal-label">Emoji</label>
                 <div class="emoji-input-wrapper">
-                    <div class="emoji-display" id="emojiDisplay" onclick="focusEmojiInput()">
+                    <div class="emoji-display" id="emojiDisplay">
                         📍
                     </div>
                     <input type="text" 
@@ -471,18 +471,18 @@
                            oninput="updateEmojiDisplay()">
                 </div>
                 <div class="emoji-suggestions">
-                    <div class="emoji-suggestion" onclick="selectEmoji('🏠')">🏠</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('🌍')">🌍</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('💼')">💼</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('🚑')">🚑</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('🎯')">🎯</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('📍')">📍</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('🔔')">🔔</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('⚡')">⚡</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('🎧')">🎧</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('💡')">💡</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('✨')">✨</div>
-                    <div class="emoji-suggestion" onclick="selectEmoji('🌙')">🌙</div>
+                    <div class="emoji-suggestion" data-emoji="🏠">🏠</div>
+                    <div class="emoji-suggestion" data-emoji="🌍">🌍</div>
+                    <div class="emoji-suggestion" data-emoji="💼">💼</div>
+                    <div class="emoji-suggestion" data-emoji="🚑">🚑</div>
+                    <div class="emoji-suggestion" data-emoji="🎯">🎯</div>
+                    <div class="emoji-suggestion" data-emoji="📍">📍</div>
+                    <div class="emoji-suggestion" data-emoji="🔔">🔔</div>
+                    <div class="emoji-suggestion" data-emoji="⚡">⚡</div>
+                    <div class="emoji-suggestion" data-emoji="🎧">🎧</div>
+                    <div class="emoji-suggestion" data-emoji="💡">💡</div>
+                    <div class="emoji-suggestion" data-emoji="✨">✨</div>
+                    <div class="emoji-suggestion" data-emoji="🌙">🌙</div>
                 </div>
             </div>
 
@@ -496,13 +496,22 @@
             </div>
 
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeAddContexteModal()">Annuler</button>
-                <button class="modal-button primary" onclick="addContexte()">Ajouter</button>
+                <button class="modal-button secondary" id="btnCloseAddModal">Annuler</button>
+                <button class="modal-button primary" id="btnAddContexteConfirm">Ajouter</button>
             </div>
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        function showToast(msg, duration) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, duration || 3000);
+        }
+
         // DEFAULT_CONTEXTES est défini dans nora-data.js
 
         const MAX_CONTEXTES = 6;
@@ -525,13 +534,13 @@
 
         // RENDER CONTEXTES
         function renderContextes() {
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             const grid = document.getElementById('contextesGrid');
             const modeSimple = localStorage.getItem('contexte_messageUnique') === 'true';
 
             grid.innerHTML = contextes.map(ctx => `
-                <div class="contexte-card ${modeSimple ? 'disabled' : ''}" 
-                     onclick="${modeSimple ? '' : `goToContexte('${ctx.id}')`}">
+                <div class="contexte-card ${modeSimple ? 'disabled' : ''}"
+                     data-ctx-id="${ctx.id}">
                     <div class="contexte-emoji">${ctx.emoji}</div>
                     <div class="contexte-name">${ctx.nom}</div>
                     <div class="contexte-arrow">›</div>
@@ -569,20 +578,47 @@
             window.location.href = `contexte-detail.html?id=${id}`;
         }
 
+        function trapFocus(modal) {
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+        }
+
         // MODAL AJOUT
         function openAddContexteModal() {
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             if (contextes.length >= MAX_CONTEXTES) return;
 
-            document.getElementById('addContexteModal').classList.add('visible');
+            const m = document.getElementById('addContexteModal');
+            m.classList.add('visible');
             document.getElementById('emojiDisplay').textContent = '📍';
             document.getElementById('emojiInput').value = '📍';
             document.getElementById('contexteNameInput').value = '';
-            document.getElementById('contexteNameInput').focus();
+            trapFocus(m);
         }
 
         function closeAddContexteModal() {
-            document.getElementById('addContexteModal').classList.remove('visible');
+            const m = document.getElementById('addContexteModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         // GESTION EMOJI
@@ -607,14 +643,14 @@
             const nom = document.getElementById('contexteNameInput').value.trim();
 
             if (!nom) {
-                alert('⚠️ Veuillez entrer un nom pour le contexte');
+                showToast('⚠️ Veuillez entrer un nom pour le contexte');
                 return;
             }
 
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
-            
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
+
             if (contextes.length >= MAX_CONTEXTES) {
-                alert('⚠️ Nombre maximum de contextes atteint (6)');
+                showToast('⚠️ Nombre maximum de contextes atteint (6)');
                 return;
             }
 
@@ -672,7 +708,7 @@
 
         // UPDATE BOUTON AJOUTER
         function updateAddButton() {
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             const btn = document.getElementById('btnAddContexte');
             const message = document.getElementById('maxContextesMessage');
 
@@ -688,7 +724,30 @@
         }
 
         // INIT AU CHARGEMENT
-        window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', function() {
+            init();
+
+            document.getElementById('btnBack').addEventListener('click', goBack);
+            document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+            document.getElementById('toggleSimple').addEventListener('click', toggleModeSimple);
+            document.getElementById('btnConfigCommun').addEventListener('click', goToConfigCommun);
+            document.getElementById('btnAddContexte').addEventListener('click', openAddContexteModal);
+            document.getElementById('emojiDisplay').addEventListener('click', focusEmojiInput);
+            document.getElementById('btnCloseAddModal').addEventListener('click', closeAddContexteModal);
+            document.getElementById('btnAddContexteConfirm').addEventListener('click', addContexte);
+
+            document.querySelector('.emoji-suggestions').addEventListener('click', function(e) {
+                var el = e.target.closest('.emoji-suggestion');
+                if (el && el.dataset.emoji) selectEmoji(el.dataset.emoji);
+            });
+
+            document.getElementById('contextesGrid').addEventListener('click', function(e) {
+                var card = e.target.closest('.contexte-card');
+                if (card && !card.classList.contains('disabled') && card.dataset.ctxId) {
+                    goToContexte(card.dataset.ctxId);
+                }
+            });
+        });
     </script>
     <script>        document.addEventListener("keydown", e => { if (e.key === "Escape") closeAddContexteModal(); });</script>
     <script src="nora-scroll.js"></script>

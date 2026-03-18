@@ -220,9 +220,9 @@
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
+  <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
   <h1 class="page-title">Ma playlist apaisante</h1>
-  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
+  <button class="header-icon" id="btnAccueil" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>
 
 <main class="main">
@@ -246,10 +246,10 @@
     </div>
 
     <div class="button-group">
-      <button class="btn btn-primary" onclick="openPlaylist()">
+      <button class="btn btn-primary" id="btnOpen">
         🎧 Ouvrir ma playlist
       </button>
-      <button class="btn btn-secondary" onclick="editPlaylist()">
+      <button class="btn btn-secondary" id="btnEdit">
         ✏️ Modifier
       </button>
     </div>
@@ -259,7 +259,7 @@
   <div id="noPlaylist" class="no-playlist" style="display: none;">
     <div class="no-playlist-icon">🎵</div>
     <p>Aucune playlist configurée pour le moment.</p>
-    <button class="btn btn-primary" onclick="showForm()">
+    <button class="btn btn-primary" id="btnAdd">
       ➕ Ajouter ma playlist
     </button>
   </div>
@@ -321,7 +321,7 @@
         <button type="submit" class="btn btn-primary">
           💾 Enregistrer
         </button>
-        <button type="button" class="btn btn-secondary" onclick="cancelForm()">
+        <button type="button" class="btn btn-secondary" id="btnCancel">
           ✕ Annuler
         </button>
       </div>
@@ -335,6 +335,20 @@
 </main>
 
 <script>
+document.getElementById('btnRetour').addEventListener('click', function() {
+  if (localStorage.getItem('calmSource') === 'recap') {
+    localStorage.removeItem('calmSource');
+    location.href = 'recap.html';
+  } else {
+    location.href = 'index.html#calm';
+  }
+});
+document.getElementById('btnAccueil').addEventListener('click', function() { location.href = 'index.html'; });
+document.getElementById('btnOpen').addEventListener('click', openPlaylist);
+document.getElementById('btnEdit').addEventListener('click', editPlaylist);
+document.getElementById('btnAdd').addEventListener('click', showForm);
+document.getElementById('btnCancel').addEventListener('click', cancelForm);
+
 // Charger l'état au démarrage
 document.addEventListener('DOMContentLoaded', () => {
   updateDisplay();

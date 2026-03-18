@@ -97,7 +97,7 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="location.href='fidgets.html'" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title">Cliqueur</h1>
     </header>
 
@@ -107,16 +107,16 @@
     </main>
 
     <div class="floating-controls">
-        <button id="vTgl" class="tgl-btn active" onclick="tgl('vibrate')">
+        <button id="vTgl" class="tgl-btn active">
             <span>📳</span> Vibreur
         </button>
-        <button id="sTgl" class="tgl-btn active" onclick="tgl('sound')">
+        <button id="sTgl" class="tgl-btn active">
             <span>🔊</span> Son
         </button>
     </div>
 
     <footer class="footer">
-        <button class="footer-button center" onclick="resetCount()">Réinitialiser le compteur</button>
+        <button class="footer-button center" id="btnReset">Réinitialiser le compteur</button>
     </footer>
 
     <script>
@@ -150,6 +150,11 @@
             o.start(); 
             o.stop(ctx.currentTime + 0.1);
         }
+
+        document.getElementById('btnRetour').addEventListener('click', function() { location.href = 'fidgets.html'; });
+        document.getElementById('vTgl').addEventListener('click', function() { tgl('vibrate'); });
+        document.getElementById('sTgl').addEventListener('click', function() { tgl('sound'); });
+        document.getElementById('btnReset').addEventListener('click', resetCount);
 
         const target = document.getElementById('target');
         target.onpointerdown = (e) => {

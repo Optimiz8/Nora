@@ -9,7 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Nora – Paramètres</title>
     <style>
         body {
@@ -250,9 +250,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goHome()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Paramètres</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnHome" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -262,7 +262,7 @@
             <h2 class="section-title">👤 Mon profil</h2>
             <p class="section-description">Informations personnelles utilisées dans l'application</p>
 
-            <div class="settings-card" onclick="goToPage('mon-profil.html')">
+            <div class="settings-card" data-page="mon-profil.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">✏️</div>
                     <div class="settings-text">
@@ -273,7 +273,7 @@
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="goToPage('contacts-urgence.html')">
+            <div class="settings-card" data-page="contacts-urgence.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">📞</div>
                     <div class="settings-text">
@@ -284,7 +284,7 @@
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="goToPage('infos-medicales.html')">
+            <div class="settings-card" data-page="infos-medicales.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">🚑</div>
                     <div class="settings-text">
@@ -295,7 +295,7 @@
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="goToPage('carte-config.html')">
+            <div class="settings-card" data-page="carte-config.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">🪪</div>
                     <div class="settings-text">
@@ -312,7 +312,7 @@
             <h2 class="section-title">🌍 Paramètres des contextes</h2>
             <p class="section-description">Personnalise ce qui s'affiche selon la situation</p>
 
-            <div class="settings-card" onclick="goToPage('contextes-liste.html')">
+            <div class="settings-card" data-page="contextes-liste.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">⚙️</div>
                     <div class="settings-text">
@@ -329,7 +329,7 @@
             <h2 class="section-title">💬 Cartes de communication</h2>
             <p class="section-description">Messages à montrer à ton interlocuteur quand la parole est difficile</p>
 
-            <div class="settings-card" onclick="goToPage('cartes-com-config.html')">
+            <div class="settings-card" data-page="cartes-com-config.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">💬</div>
                     <div class="settings-text">
@@ -346,7 +346,7 @@
             <h2 class="section-title">📔 Journal de crises</h2>
             <p class="section-description">Options d'enregistrement des crises</p>
 
-            <div class="settings-card" style="cursor: default;" onclick="event.stopPropagation()">
+            <div class="settings-card" style="cursor: default;">
                 <div class="settings-card-content">
                     <div class="settings-icon">⚡</div>
                     <div class="settings-text">
@@ -354,7 +354,7 @@
                         <div class="settings-sublabel">Ajouter les crises au journal sans demander</div>
                     </div>
                 </div>
-                <div class="toggle-switch" id="toggleAutoRegister" onclick="toggleAutoRegister()">
+                <div class="toggle-switch" id="toggleAutoRegister">
                     <div class="toggle-knob"></div>
                 </div>
             </div>
@@ -365,7 +365,7 @@
             <h2 class="section-title">📁 Données</h2>
             <p class="section-description">Sauvegarder ou restaurer tes réglages</p>
 
-            <div class="settings-card" onclick="confirmExport()">
+            <div class="settings-card" id="cardExport">
                 <div class="settings-card-content">
                     <div class="settings-icon">📤</div>
                     <div class="settings-text">
@@ -376,7 +376,7 @@
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="confirmImport()">
+            <div class="settings-card" id="cardImport">
                 <div class="settings-card-content">
                     <div class="settings-icon">📥</div>
                     <div class="settings-text">
@@ -392,7 +392,7 @@
         <section class="section">
             <h2 class="section-title">ℹ️ À propos</h2>
 
-            <div class="settings-card" onclick="goToPage('a-propos.html')">
+            <div class="settings-card" data-page="a-propos.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">📖</div>
                     <div class="settings-text">
@@ -403,7 +403,7 @@
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="goToPage('faq.html')">
+            <div class="settings-card" data-page="faq.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">❓</div>
                     <div class="settings-text">
@@ -414,7 +414,7 @@
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="goToPage('tutoriel.html')">
+            <div class="settings-card" data-page="tutoriel.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">🎓</div>
                     <div class="settings-text">
@@ -425,7 +425,7 @@
                 <div class="settings-arrow">›</div>
             </div>
 
-            <div class="settings-card" onclick="goToPage('confidentialite.html')">
+            <div class="settings-card" data-page="confidentialite.html">
                 <div class="settings-card-content">
                     <div class="settings-icon">🔒</div>
                     <div class="settings-text">
@@ -440,7 +440,7 @@
         <!-- 5) ZONE DE DANGER -->
         <section class="section danger-section">
             <h2 class="section-title" style="color: rgba(255, 120, 120, 1);">⚠️ Zone de danger</h2>
-            <button class="danger-button" onclick="confirmReset()">
+            <button class="danger-button" id="btnConfirmReset">
                 🗑️ Réinitialiser toutes les données
             </button>
         </section>
@@ -465,12 +465,12 @@
                 </ul>
                 <strong>Cette action est irréversible.</strong><br><br>
                 <div style="background:rgba(245,228,204,0.08);border-radius:10px;padding:10px 12px;font-size:0.85rem;">
-                    💡 Tu peux d'abord <button onclick="closeResetModal(); confirmExport();" style="background:none;border:none;color:var(--accent);font-weight:700;cursor:pointer;padding:0;font-size:inherit;font-family:inherit;text-decoration:underline;">sauvegarder tes données</button> sur ton appareil avant de continuer.
+                    💡 Tu peux d'abord <button id="btnSaveBeforeReset" style="background:none;border:none;color:var(--accent);font-weight:700;cursor:pointer;padding:0;font-size:inherit;font-family:inherit;text-decoration:underline;">sauvegarder tes données</button> sur ton appareil avant de continuer.
                 </div>
             </div>
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeResetModal()">Annuler</button>
-                <button class="modal-button danger" onclick="resetAllData()">Tout supprimer</button>
+                <button class="modal-button secondary" id="btnCloseResetModal">Annuler</button>
+                <button class="modal-button danger" id="btnResetAllData">Tout supprimer</button>
             </div>
         </div>
     </div>
@@ -492,8 +492,8 @@
                 <strong>Tes données restent intactes sur cet appareil.</strong>
             </div>
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeExportModal()">Annuler</button>
-                <button class="modal-button" style="background:var(--accent);color:var(--dark);" onclick="closeExportModal(); exportData()">📥 Télécharger</button>
+                <button class="modal-button secondary" id="btnCloseExportModal">Annuler</button>
+                <button class="modal-button" id="btnDoExport" style="background:var(--accent);color:var(--dark);">📥 Télécharger</button>
             </div>
         </div>
     </div>
@@ -510,8 +510,8 @@
                 Assure-toi d'importer un fichier exporté depuis Nora.
             </div>
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeImportModal()">Annuler</button>
-                <button class="modal-button danger" onclick="closeImportModal(); importData()">Continuer</button>
+                <button class="modal-button secondary" id="btnCloseImportModal">Annuler</button>
+                <button class="modal-button danger" id="btnDoImport">Continuer</button>
             </div>
         </div>
     </div>
@@ -632,36 +632,41 @@
                             return;
                         }
 
+                        const str  = v => typeof v === 'string' ? v.replace(/<[^>]*>/g, '') : '';
+                        const arr  = v => Array.isArray(v) ? v : [];
+                        const obj  = v => (v !== null && typeof v === 'object' && !Array.isArray(v)) ? v : {};
+                        const bool = v => (v === 'true' || v === 'false') ? v : 'false';
+
                         // Profil
-                        localStorage.setItem('userPrenom', data.prenom || '');
-                        localStorage.setItem('userNom', data.nom || '');
-                        localStorage.setItem('contactsUrgence', JSON.stringify(data.contacts || []));
-                        localStorage.setItem('carteContacts', JSON.stringify(data.carteContacts || []));
-                        if (data.carteConsignes) localStorage.setItem('carteConsignes', data.carteConsignes);
-                        if (data.carteInformations) localStorage.setItem('carteInformations', data.carteInformations);
-                        if (data.carteRemarques) localStorage.setItem('carteRemarques', data.carteRemarques);
-                        if (data.cartePresentation) localStorage.setItem('cartePresentation', data.cartePresentation);
-                        if (data.carteShowIdentity) localStorage.setItem('carteShowIdentity', data.carteShowIdentity);
-                        if (data.carteShowPresentation) localStorage.setItem('carteShowPresentation', data.carteShowPresentation);
-                        if (data.carteShowConsignes) localStorage.setItem('carteShowConsignes', data.carteShowConsignes);
-                        if (data.carteShowInformations) localStorage.setItem('carteShowInformations', data.carteShowInformations);
-                        if (data.carteShowContacts) localStorage.setItem('carteShowContacts', data.carteShowContacts);
-                        if (data.carteShowRemarques) localStorage.setItem('carteShowRemarques', data.carteShowRemarques);
-                        if (data.carteMedical) localStorage.setItem('carteMedical', data.carteMedical);
-                        if (data.carteContactsInitialized) localStorage.setItem('carteContactsInitialized', data.carteContactsInitialized);
-                        if (data.carteContactsNote !== undefined) localStorage.setItem('carteContactsNote', data.carteContactsNote);
-                        localStorage.setItem('infosMedicales', JSON.stringify(data.infosMedicales || {}));
+                        localStorage.setItem('userPrenom', str(data.prenom));
+                        localStorage.setItem('userNom', str(data.nom));
+                        localStorage.setItem('contactsUrgence', JSON.stringify(arr(data.contacts)));
+                        localStorage.setItem('carteContacts', JSON.stringify(arr(data.carteContacts)));
+                        if (data.carteConsignes) localStorage.setItem('carteConsignes', str(data.carteConsignes));
+                        if (data.carteInformations) localStorage.setItem('carteInformations', str(data.carteInformations));
+                        if (data.carteRemarques) localStorage.setItem('carteRemarques', str(data.carteRemarques));
+                        if (data.cartePresentation) localStorage.setItem('cartePresentation', str(data.cartePresentation));
+                        if (data.carteShowIdentity) localStorage.setItem('carteShowIdentity', bool(data.carteShowIdentity));
+                        if (data.carteShowPresentation) localStorage.setItem('carteShowPresentation', bool(data.carteShowPresentation));
+                        if (data.carteShowConsignes) localStorage.setItem('carteShowConsignes', bool(data.carteShowConsignes));
+                        if (data.carteShowInformations) localStorage.setItem('carteShowInformations', bool(data.carteShowInformations));
+                        if (data.carteShowContacts) localStorage.setItem('carteShowContacts', bool(data.carteShowContacts));
+                        if (data.carteShowRemarques) localStorage.setItem('carteShowRemarques', bool(data.carteShowRemarques));
+                        if (data.carteMedical) localStorage.setItem('carteMedical', str(data.carteMedical));
+                        if (data.carteContactsInitialized) localStorage.setItem('carteContactsInitialized', bool(data.carteContactsInitialized));
+                        if (data.carteContactsNote !== undefined) localStorage.setItem('carteContactsNote', str(data.carteContactsNote));
+                        localStorage.setItem('infosMedicales', JSON.stringify(obj(data.infosMedicales)));
 
                         // Contextes
-                        if (data.contextes) {
+                        if (data.contextes && typeof data.contextes === 'object') {
                             localStorage.setItem('contexte_messageUnique', data.contextes.messageUnique ? 'true' : 'false');
 
                             if (data.version === '2.0') {
                                 // Nouveau format v2
-                                localStorage.setItem('contextes', JSON.stringify(data.contextes.liste || []));
-                                localStorage.setItem('contexte_commun', JSON.stringify(data.contextes.commun || {}));
+                                localStorage.setItem('contextes', JSON.stringify(arr(data.contextes.liste)));
+                                localStorage.setItem('contexte_commun', JSON.stringify(obj(data.contextes.commun)));
                                 // Configs individuelles
-                                const configs = data.contextes.configs || {};
+                                const configs = obj(data.contextes.configs);
                                 Object.keys(configs).forEach(id => {
                                     localStorage.setItem(`contexte_${id}`, JSON.stringify(configs[id]));
                                 });
@@ -676,48 +681,51 @@
                             }
                         }
 
-                        localStorage.setItem('journalCrises', JSON.stringify(data.journalCrises || []));
+                        localStorage.setItem('journalCrises', JSON.stringify(arr(data.journalCrises)));
 
                         if (data.autoRegisterCrise) {
-                            localStorage.setItem('autoRegisterCrise', data.autoRegisterCrise);
+                            localStorage.setItem('autoRegisterCrise', bool(data.autoRegisterCrise));
                         }
 
                         if (data.cartesCommunication) {
-                            localStorage.setItem('cartesCommunication', JSON.stringify(data.cartesCommunication));
+                            localStorage.setItem('cartesCommunication', JSON.stringify(arr(data.cartesCommunication)));
                         }
                         if (data.cartesShowIcons) {
-                            localStorage.setItem('cartesShowIcons', data.cartesShowIcons);
+                            localStorage.setItem('cartesShowIcons', bool(data.cartesShowIcons));
                         }
 
                         // Ambiances sonores du mixeur
                         if (data.mixerPresets) {
-                            localStorage.setItem('mixerPresets', JSON.stringify(data.mixerPresets));
+                            localStorage.setItem('mixerPresets', JSON.stringify(arr(data.mixerPresets)));
                         }
                         if (data.mixerVolumes && typeof data.mixerVolumes === 'object') {
                             Object.keys(data.mixerVolumes).forEach(key => {
                                 if (key.startsWith('mixer_')) {
-                                    localStorage.setItem(key, data.mixerVolumes[key]);
+                                    const vol = parseFloat(data.mixerVolumes[key]);
+                                    if (!isNaN(vol) && vol >= 0 && vol <= 1) {
+                                        localStorage.setItem(key, vol);
+                                    }
                                 }
                             });
                         }
 
                         // Playlist
-                        if (data.playlistName) localStorage.setItem('playlistName', data.playlistName);
-                        if (data.lienPlaylist) localStorage.setItem('lienPlaylist', data.lienPlaylist);
+                        if (data.playlistName) localStorage.setItem('playlistName', str(data.playlistName));
+                        if (data.lienPlaylist) localStorage.setItem('lienPlaylist', str(data.lienPlaylist));
 
                         // Cohérence cardiaque
-                        if (data.breathingSessions) localStorage.setItem('breathingSessions', JSON.stringify(data.breathingSessions));
-                        if (data.customInhale) localStorage.setItem('customInhale', data.customInhale);
-                        if (data.customExhale) localStorage.setItem('customExhale', data.customExhale);
+                        if (data.breathingSessions) localStorage.setItem('breathingSessions', JSON.stringify(arr(data.breathingSessions)));
+                        if (data.customInhale) localStorage.setItem('customInhale', str(data.customInhale));
+                        if (data.customExhale) localStorage.setItem('customExhale', str(data.customExhale));
 
                         // Conseils personnalisés
-                        if (data.listeConseils) localStorage.setItem('listeConseils', JSON.stringify(data.listeConseils));
+                        if (data.listeConseils) localStorage.setItem('listeConseils', JSON.stringify(arr(data.listeConseils)));
 
                         // Préférences timer
-                        if (data.timerLastDuration) localStorage.setItem('timerLastDuration', data.timerLastDuration);
-                        if (data.timerSonMode) localStorage.setItem('timerSonMode', data.timerSonMode);
-                        if (data.timerFinMode) localStorage.setItem('timerFinMode', data.timerFinMode);
-                        if (data.timerStyle) localStorage.setItem('timerStyle', data.timerStyle);
+                        if (data.timerLastDuration) localStorage.setItem('timerLastDuration', str(data.timerLastDuration));
+                        if (data.timerSonMode) localStorage.setItem('timerSonMode', str(data.timerSonMode));
+                        if (data.timerFinMode) localStorage.setItem('timerFinMode', str(data.timerFinMode));
+                        if (data.timerStyle) localStorage.setItem('timerStyle', str(data.timerStyle));
 
                         // Garantir que les 4 contextes par défaut existent
                         ensureDefaultContextes();
@@ -735,13 +743,41 @@
             input.click();
         }
 
+        function trapFocus(modal) {
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+        }
+
         // Réinitialisation
         function confirmReset() {
-            document.getElementById('resetModal').classList.add('visible');
+            const m = document.getElementById('resetModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeResetModal() {
-            document.getElementById('resetModal').classList.remove('visible');
+            const m = document.getElementById('resetModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function resetAllData() {
@@ -768,19 +804,27 @@
         }
 
         function confirmExport() {
-            document.getElementById('exportModal').classList.add('visible');
+            const m = document.getElementById('exportModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeExportModal() {
-            document.getElementById('exportModal').classList.remove('visible');
+            const m = document.getElementById('exportModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function confirmImport() {
-            document.getElementById('importModal').classList.add('visible');
+            const m = document.getElementById('importModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeImportModal() {
-            document.getElementById('importModal').classList.remove('visible');
+            const m = document.getElementById('importModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         // Initialiser le toggle au chargement
@@ -788,6 +832,25 @@
             if (localStorage.getItem('autoRegisterCrise') === 'true') {
                 document.getElementById('toggleAutoRegister').classList.add('active');
             }
+
+            document.getElementById('btnBack').addEventListener('click', goHome);
+            document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+            document.getElementById('toggleAutoRegister').addEventListener('click', toggleAutoRegister);
+            document.getElementById('cardExport').addEventListener('click', confirmExport);
+            document.getElementById('cardImport').addEventListener('click', confirmImport);
+            document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);
+            document.getElementById('btnSaveBeforeReset').addEventListener('click', function() { closeResetModal(); confirmExport(); });
+            document.getElementById('btnCloseResetModal').addEventListener('click', closeResetModal);
+            document.getElementById('btnResetAllData').addEventListener('click', resetAllData);
+            document.getElementById('btnCloseExportModal').addEventListener('click', closeExportModal);
+            document.getElementById('btnDoExport').addEventListener('click', function() { closeExportModal(); exportData(); });
+            document.getElementById('btnCloseImportModal').addEventListener('click', closeImportModal);
+            document.getElementById('btnDoImport').addEventListener('click', function() { closeImportModal(); importData(); });
+
+            document.querySelector('.main-content').addEventListener('click', function(e) {
+                var card = e.target.closest('.settings-card[data-page]');
+                if (card) goToPage(card.dataset.page);
+            });
         });
     </script>
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeResetModal(); closeExportModal(); closeImportModal(); } });</script>

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.webmanifest">
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Nora – Mon profil de crise</title>
     <style>
         body {
@@ -109,7 +110,7 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="history.back()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title">Mon profil de crise</h1>
     </header>
 
@@ -117,11 +118,20 @@
     </main>
 
     <div class="profile-footer" id="profileFooter" style="display:none">
-        <button class="profile-btn primary" onclick="shareProfile()">✉️ Partager ce profil</button>
-        <button class="profile-btn secondary" onclick="exportProfile()">📥 Exporter ce profil</button>
+        <button class="profile-btn primary" id="btnShare">✉️ Partager ce profil</button>
+        <button class="profile-btn secondary" id="btnExport">📥 Exporter ce profil</button>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        function showToast(msg, duration) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, duration || 3000);
+        }
+
         /* ---------- UTILITAIRES ---------- */
 
         function getJournal() {
@@ -164,19 +174,19 @@
         function normEnergie(e) {
             if (e.energie) return parseFloat(e.energie);
             if (e.precrisis && e.precrisis.energie !== undefined) return Math.max(1, Math.min(10, Math.round(e.precrisis.energie / 10)));
-            return NaN;
+            return null;
         }
 
         function normChargeMentale(e) {
             if (e.chargeMentale) return parseFloat(e.chargeMentale);
             if (e.precrisis && e.precrisis.chargeMentale !== undefined) return Math.max(1, Math.min(10, Math.round(e.precrisis.chargeMentale / 10)));
-            return NaN;
+            return null;
         }
 
         function normChargeSociale(e) {
             if (e.chargeSociale) return parseFloat(e.chargeSociale);
             if (e.precrisis && e.precrisis.chargeSociale !== undefined) return Math.max(1, Math.min(10, Math.round(e.precrisis.chargeSociale / 10)));
-            return NaN;
+            return null;
         }
 
         function countFreq(arr) {
@@ -200,9 +210,9 @@
             for (var k = 0; k < journal.length; k++) {
                 var e = journal[k];
                 var iv = parseFloat(e.intensite); if (!isNaN(iv)) intensities.push(iv);
-                var en = normEnergie(e); if (!isNaN(en)) energies.push(en);
-                var cm = normChargeMentale(e); if (!isNaN(cm)) chargesMentales.push(cm);
-                var cs = normChargeSociale(e); if (!isNaN(cs)) chargesSociales.push(cs);
+                var en = normEnergie(e); if (en !== null) energies.push(en);
+                var cm = normChargeMentale(e); if (cm !== null) chargesMentales.push(cm);
+                var cs = normChargeSociale(e); if (cs !== null) chargesSociales.push(cs);
                 if (e.typeManifestation === 'Meltdown') meltdownCount++;
                 else if (e.typeManifestation === 'Shutdown') shutdownCount++;
                 var decl = normDeclencheurs(e.declencheurs);
@@ -360,7 +370,7 @@
             if (navigator.share) {
                 navigator.share({ title: 'Mon profil de crise — Nora', text: text }).catch(function() {});
             } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(function() { alert('Profil copié !'); }).catch(function() {});
+                navigator.clipboard.writeText(text).then(function() { showToast('Profil copié !'); }).catch(function() {});
             }
         }
 
@@ -379,6 +389,10 @@
 
         /* ---------- INIT ---------- */
 
+        document.getElementById('btnRetour').addEventListener('click', function() { if (history.length > 1) { history.back(); } else { location.href = 'index.html'; } });
+        document.getElementById('btnShare').addEventListener('click', shareProfile);
+        document.getElementById('btnExport').addEventListener('click', exportProfile);
+
         var ps = computeProfileStats();
         var content = document.getElementById('profileContent');
         if (ps) {
@@ -393,6 +407,7 @@
                 '</div>';
         }
     </script>
+<script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>
 </html>

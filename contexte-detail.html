@@ -8,7 +8,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <title>TSA App - Configuration contexte</title>
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <style>
         :root {
             --dark-rgb: 46, 58, 89;
@@ -566,13 +566,23 @@
             margin-bottom: 8px;
             font-weight: 600;
         }
+
+        /* ---------- MODALE CONFIRM ---------- */
+        #confirmModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+        #confirmModal.visible { display: flex; }
+        #confirmModal .confirm-box { background: var(--bg); border-radius: 16px; padding: 24px; max-width: 320px; width: 100%; }
+        #confirmModal .confirm-msg { color: var(--light); font-size: 16px; margin-bottom: 20px; line-height: 1.5; }
+        #confirmModal .confirm-actions { display: flex; gap: 12px; }
+        #confirmModal .confirm-actions button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; }
+        #confirmModal .btn-confirm-cancel { background: rgba(245,228,204,0.15); color: var(--light); }
+        #confirmModal .btn-confirm-ok { background: var(--accent); color: var(--dark); }
     </style>
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
         <h1 class="page-title" id="pageTitle">Configuration</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnHome" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -583,7 +593,7 @@
             <div class="section-card">
                 <div class="identity-row">
                     <div class="identity-label">Emoji :</div>
-                    <div class="emoji-picker" id="emojiPicker" onclick="openEmojiModal()">🏠</div>
+                    <div class="emoji-picker" id="emojiPicker">🏠</div>
                 </div>
                 <div class="identity-row">
                     <div class="identity-label">Nom :</div>
@@ -596,11 +606,11 @@
                 </div>
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher ce contexte à l'accueil</div>
-                    <div class="toggle-switch active" id="toggleVisible" onclick="toggleVisibility()">
+                    <div class="toggle-switch active" id="toggleVisible">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="delete-button" id="deleteButton" onclick="confirmDelete()">
+                <button class="delete-button" id="deleteButton">
                     🗑️ Supprimer ce contexte
                 </button>
             </div>
@@ -618,7 +628,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher la présentation</div>
-                    <div class="toggle-switch active" id="togglePresentation" onclick="toggleSection('presentation')">
+                    <div class="toggle-switch active" id="togglePresentation" data-toggle-section="presentation">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -627,8 +637,8 @@
                           placeholder="Ton texte de présentation..."
                           oninput="markAsModified()"></textarea>
                 <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: center;">
-                    <button onclick="insertDefaultPresentation()" style="background:rgba(var(--dark-rgb),0.18);border:1px solid rgba(var(--dark-rgb),0.3);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
-                    <button onclick="clearPresentation()" style="background:rgba(var(--dark-rgb),0.18);border:1px solid rgba(var(--dark-rgb),0.3);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
+                    <button id="btnInsertDefaultPresentation" style="background:rgba(var(--dark-rgb),0.18);border:1px solid rgba(var(--dark-rgb),0.3);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
+                    <button id="btnClearPresentation" style="background:rgba(var(--dark-rgb),0.18);border:1px solid rgba(var(--dark-rgb),0.3);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
                 </div>
             </div>
         </section>
@@ -640,25 +650,25 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les capacités</div>
-                    <div class="toggle-switch active" id="toggleCapacites" onclick="toggleSection('capacites')">
+                    <div class="toggle-switch active" id="toggleCapacites" data-toggle-section="capacites">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" id="btnCapacites" onclick="toggleExpandable('capacites')">
+                <button class="manage-button" id="btnCapacites" data-expandable="capacites">
                     <span class="manage-button-text">Gérer les capacités</span>
                     <span class="manage-button-count" id="countCapacites">(0/18)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listCapacites">
                     <div class="select-buttons" id="selectCapacites">
-                        <button class="select-btn" onclick="selectAll('capacites')">✅ Tout afficher</button>
-                        <button class="select-btn" onclick="deselectAll('capacites')">⚪ Tout masquer</button>
+                        <button class="select-btn" data-select-all="capacites">✅ Tout afficher</button>
+                        <button class="select-btn" data-deselect-all="capacites">⚪ Tout masquer</button>
                     </div>
                     <div id="capacitesItems">
                         <!-- Liste générée en JS -->
                     </div>
                 </div>
-                <button class="add-item-button" onclick="openAddItemModal('capacite')">
+                <button class="add-item-button" data-add-item="capacite">
                     ➕ Ajouter une capacité personnalisée
                 </button>
             </div>
@@ -671,25 +681,25 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les besoins</div>
-                    <div class="toggle-switch active" id="toggleBesoins" onclick="toggleSection('besoins')">
+                    <div class="toggle-switch active" id="toggleBesoins" data-toggle-section="besoins">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" id="btnBesoins" onclick="toggleExpandable('besoins')">
+                <button class="manage-button" id="btnBesoins" data-expandable="besoins">
                     <span class="manage-button-text">Gérer les besoins</span>
                     <span class="manage-button-count" id="countBesoins">(0/21)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listBesoins">
                     <div class="select-buttons" id="selectBesoins">
-                        <button class="select-btn" onclick="selectAll('besoins')">✅ Tout afficher</button>
-                        <button class="select-btn" onclick="deselectAll('besoins')">⚪ Tout masquer</button>
+                        <button class="select-btn" data-select-all="besoins">✅ Tout afficher</button>
+                        <button class="select-btn" data-deselect-all="besoins">⚪ Tout masquer</button>
                     </div>
                     <div id="besoinsItems">
                         <!-- Liste générée en JS -->
                     </div>
                 </div>
-                <button class="add-item-button" onclick="openAddItemModal('besoin')">
+                <button class="add-item-button" data-add-item="besoin">
                     ➕ Ajouter un besoin personnalisé
                 </button>
             </div>
@@ -702,25 +712,25 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les états</div>
-                    <div class="toggle-switch active" id="toggleEtats" onclick="toggleSection('etats')">
+                    <div class="toggle-switch active" id="toggleEtats" data-toggle-section="etats">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" id="btnEtats" onclick="toggleExpandable('etats')">
+                <button class="manage-button" id="btnEtats" data-expandable="etats">
                     <span class="manage-button-text">Gérer les états</span>
                     <span class="manage-button-count" id="countEtats">(0/16)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listEtats">
                     <div class="select-buttons" id="selectEtats">
-                        <button class="select-btn" onclick="selectAll('etats')">✅ Tout afficher</button>
-                        <button class="select-btn" onclick="deselectAll('etats')">⚪ Tout masquer</button>
+                        <button class="select-btn" data-select-all="etats">✅ Tout afficher</button>
+                        <button class="select-btn" data-deselect-all="etats">⚪ Tout masquer</button>
                     </div>
                     <div id="etatsItems">
                         <!-- Liste générée en JS -->
                     </div>
                 </div>
-                <button class="add-item-button" onclick="openAddItemModal('etat')">
+                <button class="add-item-button" data-add-item="etat">
                     ➕ Ajouter un état personnalisé
                 </button>
             </div>
@@ -733,7 +743,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les contacts</div>
-                    <div class="toggle-switch active" id="toggleContacts" onclick="toggleSection('contacts')">
+                    <div class="toggle-switch active" id="toggleContacts" data-toggle-section="contacts">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -750,11 +760,11 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les infos médicales</div>
-                    <div class="toggle-switch active" id="toggleMedical" onclick="toggleSection('medical')">
+                    <div class="toggle-switch active" id="toggleMedical" data-toggle-section="medical">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" style="margin-top: 12px;" onclick="goToInfosMedicales()">
+                <button class="manage-button" id="btnGoToInfosMedicales" style="margin-top: 12px;">
                     <span class="manage-button-text">Modifier les informations médicales</span>
                     <span class="manage-button-arrow">›</span>
                 </button>
@@ -776,17 +786,17 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-        " onclick="confirmReset()">
+        " id="btnConfirmReset">
             ↻ Réinitialiser les paramètres
         </button>
     </div>
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button footer-back" onclick="afficherExemple()">
+        <button class="footer-button footer-back" id="btnAfficherExemple">
             👁️ Voir l'exemple
         </button>
-        <button class="footer-button footer-save" onclick="saveData()">
+        <button class="footer-button footer-save" id="btnSaveData">
             💾 Enregistrer
         </button>
     </footer>
@@ -798,19 +808,19 @@
     <div class="modal" id="emojiModal" role="dialog" aria-modal="true" aria-label="Choisir un emoji">
         <div class="modal-content">
             <h2 class="modal-title">Choisir un emoji</h2>
-            <div class="emoji-suggestions">
-                <div class="emoji-suggestion" onclick="selectEmoji('🏠')">🏠</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('🌍')">🌍</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('💼')">💼</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('🚑')">🚑</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('🎯')">🎯</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('📍')">📍</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('🔔')">🔔</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('⚡')">⚡</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('🎧')">🎧</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('💡')">💡</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('✨')">✨</div>
-                <div class="emoji-suggestion" onclick="selectEmoji('🌙')">🌙</div>
+            <div class="emoji-suggestions" id="emojiSuggestions">
+                <div class="emoji-suggestion" data-emoji="🏠">🏠</div>
+                <div class="emoji-suggestion" data-emoji="🌍">🌍</div>
+                <div class="emoji-suggestion" data-emoji="💼">💼</div>
+                <div class="emoji-suggestion" data-emoji="🚑">🚑</div>
+                <div class="emoji-suggestion" data-emoji="🎯">🎯</div>
+                <div class="emoji-suggestion" data-emoji="📍">📍</div>
+                <div class="emoji-suggestion" data-emoji="🔔">🔔</div>
+                <div class="emoji-suggestion" data-emoji="⚡">⚡</div>
+                <div class="emoji-suggestion" data-emoji="🎧">🎧</div>
+                <div class="emoji-suggestion" data-emoji="💡">💡</div>
+                <div class="emoji-suggestion" data-emoji="✨">✨</div>
+                <div class="emoji-suggestion" data-emoji="🌙">🌙</div>
             </div>
             <div class="emoji-input-label">Ou tapez directement :</div>
             <input type="text" 
@@ -819,8 +829,8 @@
                    placeholder="🏠"
                    maxlength="2">
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeEmojiModal()">Annuler</button>
-                <button class="modal-button primary" onclick="saveEmoji()">Valider</button>
+                <button class="modal-button secondary" id="btnCloseEmojiModal">Annuler</button>
+                <button class="modal-button primary" id="btnSaveEmoji">Valider</button>
             </div>
         </div>
     </div>
@@ -832,13 +842,13 @@
             
             <div style="margin-bottom: 16px;">
                 <div style="font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 8px;">Emoji</div>
-                <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px;">
-                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🎯')">🎯</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🤲')">🤲</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('😶')">😶</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('💪')">💪</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🧠')">🧠</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('❤️')">❤️</div>
+                <div id="itemEmojiPicker" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px;">
+                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" data-item-emoji="🎯">🎯</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" data-item-emoji="🤲">🤲</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" data-item-emoji="😶">😶</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" data-item-emoji="💪">💪</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" data-item-emoji="🧠">🧠</div>
+                    <div style="font-size: 24px; padding: 6px; background-color: var(--light); border: 2px solid rgba(var(--dark-rgb), 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" data-item-emoji="❤️">❤️</div>
                 </div>
                 <div style="font-size: 15px; color: var(--dark); margin-bottom: 8px;">Ou tapez directement :</div>
                 <input type="text"
@@ -854,8 +864,8 @@
                    maxlength="50"
                    style="margin-bottom: 20px;">
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeAddItemModal()">Annuler</button>
-                <button class="modal-button primary" onclick="addCustomItem()">Ajouter</button>
+                <button class="modal-button secondary" id="btnCloseAddItemModal">Annuler</button>
+                <button class="modal-button primary" id="btnAddCustomItem">Ajouter</button>
             </div>
         </div>
     </div>
@@ -868,8 +878,8 @@
                 Cette action est définitive. Toutes les données de ce contexte seront perdues.
             </p>
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeDeleteModal()">Annuler</button>
-                <button class="modal-button danger" onclick="deleteContexte()">Supprimer</button>
+                <button class="modal-button secondary" id="btnCloseDeleteModal">Annuler</button>
+                <button class="modal-button danger" id="btnDeleteContexte">Supprimer</button>
             </div>
         </div>
     </div>
@@ -893,7 +903,7 @@
             currentContexteId = getContexteIdFromURL();
             
             if (!currentContexteId) {
-                alert('❌ Erreur : contexte non spécifié');
+                showToast('❌ Erreur : contexte non spécifié');
                 window.location.href = 'contextes-liste.html';
                 return;
             }
@@ -905,15 +915,81 @@
             renderEtats();
             renderContacts();
             updateCounts();
+
+            /* ---------- LISTENERS ---------- */
+            document.getElementById('btnBack').addEventListener('click', goBack);
+            document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+            document.getElementById('emojiPicker').addEventListener('click', openEmojiModal);
+            document.getElementById('toggleVisible').addEventListener('click', toggleVisibility);
+            document.getElementById('deleteButton').addEventListener('click', confirmDelete);
+
+            document.getElementById('togglePresentation').addEventListener('click', function() { toggleSection('presentation'); });
+            document.getElementById('btnInsertDefaultPresentation').addEventListener('click', insertDefaultPresentation);
+            document.getElementById('btnClearPresentation').addEventListener('click', clearPresentation);
+
+            document.getElementById('toggleCapacites').addEventListener('click', function() { toggleSection('capacites'); });
+            document.getElementById('btnCapacites').addEventListener('click', function() { toggleExpandable('capacites'); });
+            document.getElementById('toggleBesoins').addEventListener('click', function() { toggleSection('besoins'); });
+            document.getElementById('btnBesoins').addEventListener('click', function() { toggleExpandable('besoins'); });
+            document.getElementById('toggleEtats').addEventListener('click', function() { toggleSection('etats'); });
+            document.getElementById('btnEtats').addEventListener('click', function() { toggleExpandable('etats'); });
+            document.getElementById('toggleContacts').addEventListener('click', function() { toggleSection('contacts'); });
+            document.getElementById('toggleMedical').addEventListener('click', function() { toggleSection('medical'); });
+            document.getElementById('btnGoToInfosMedicales').addEventListener('click', goToInfosMedicales);
+
+            document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);
+            document.getElementById('btnAfficherExemple').addEventListener('click', afficherExemple);
+            document.getElementById('btnSaveData').addEventListener('click', saveData);
+
+            document.querySelectorAll('[data-select-all]').forEach(function(btn) {
+                btn.addEventListener('click', function() { selectAll(btn.dataset.selectAll); });
+            });
+            document.querySelectorAll('[data-deselect-all]').forEach(function(btn) {
+                btn.addEventListener('click', function() { deselectAll(btn.dataset.deselectAll); });
+            });
+            document.querySelectorAll('[data-add-item]').forEach(function(btn) {
+                btn.addEventListener('click', function() { openAddItemModal(btn.dataset.addItem); });
+            });
+
+            document.getElementById('emojiSuggestions').addEventListener('click', function(e) {
+                var el = e.target.closest('[data-emoji]');
+                if (el) selectEmoji(el.dataset.emoji);
+            });
+            document.getElementById('btnCloseEmojiModal').addEventListener('click', closeEmojiModal);
+            document.getElementById('btnSaveEmoji').addEventListener('click', saveEmoji);
+
+            document.getElementById('itemEmojiPicker').addEventListener('click', function(e) {
+                var el = e.target.closest('[data-item-emoji]');
+                if (el) selectItemEmoji(el.dataset.itemEmoji);
+            });
+            document.getElementById('btnCloseAddItemModal').addEventListener('click', closeAddItemModal);
+            document.getElementById('btnAddCustomItem').addEventListener('click', addCustomItem);
+
+            document.getElementById('btnCloseDeleteModal').addEventListener('click', closeDeleteModal);
+            document.getElementById('btnDeleteContexte').addEventListener('click', deleteContexte);
+
+            ['capacitesItems', 'besoinsItems', 'etatsItems'].forEach(function(containerId) {
+                document.getElementById(containerId).addEventListener('click', function(e) {
+                    var row = e.target.closest('[data-item-type]');
+                    if (!row) return;
+                    var type = row.dataset.itemType;
+                    var id = row.dataset.itemId;
+                    if (e.target.closest('.item-delete')) {
+                        deleteCustomItem(type, id);
+                    } else if (e.target.closest('.item-toggle')) {
+                        toggleItem(type, id);
+                    }
+                });
+            });
         }
 
         // CHARGER INFOS DU CONTEXTE (emoji, nom, visible)
         function loadContexteInfo() {
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             const ctx = contextes.find(c => c.id === currentContexteId);
             
             if (!ctx) {
-                alert('❌ Contexte introuvable');
+                showToast('❌ Contexte introuvable');
                 window.location.href = 'contextes-liste.html';
                 return;
             }
@@ -1093,7 +1169,7 @@
             const isActive = toggle.classList.toggle('active');
             
             // Mettre à jour dans la liste des contextes
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             const ctx = contextes.find(c => c.id === currentContexteId);
             if (ctx) {
                 ctx.visible = isActive;
@@ -1147,13 +1223,13 @@
                 const isCustom = item.custom || false;
 
                 return `
-                    <div class="item-row">
-                        <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
+                    <div class="item-row" data-item-type="capacites" data-item-id="${item.id}">
+                        <div class="item-checkbox item-toggle">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji" onclick="toggleItem('capacites', '${item.id}')">${item.emoji || ''}</div>
-                        <div class="item-text" onclick="toggleItem('capacites', '${item.id}')">${item.nom}</div>
-                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('capacites', '${item.id}')">
+                        <div class="item-emoji item-toggle">${item.emoji || ''}</div>
+                        <div class="item-text item-toggle">${escapeHtml(item.nom)}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'}">
                             🗑️
                         </div>
                     </div>
@@ -1170,13 +1246,13 @@
                 const isCustom = item.custom || false;
 
                 return `
-                    <div class="item-row">
-                        <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
+                    <div class="item-row" data-item-type="besoins" data-item-id="${item.id}">
+                        <div class="item-checkbox item-toggle">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji" onclick="toggleItem('besoins', '${item.id}')">${item.emoji || ''}</div>
-                        <div class="item-text" onclick="toggleItem('besoins', '${item.id}')">${item.nom}</div>
-                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('besoins', '${item.id}')">
+                        <div class="item-emoji item-toggle">${item.emoji || ''}</div>
+                        <div class="item-text item-toggle">${escapeHtml(item.nom)}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'}">
                             🗑️
                         </div>
                     </div>
@@ -1193,13 +1269,13 @@
                 const isCustom = item.custom || false;
 
                 return `
-                    <div class="item-row">
-                        <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
+                    <div class="item-row" data-item-type="etats" data-item-id="${item.id}">
+                        <div class="item-checkbox item-toggle">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji" onclick="toggleItem('etats', '${item.id}')">${item.emoji || ''}</div>
-                        <div class="item-text" onclick="toggleItem('etats', '${item.id}')">${item.nom}</div>
-                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('etats', '${item.id}')">
+                        <div class="item-emoji item-toggle">${item.emoji || ''}</div>
+                        <div class="item-text item-toggle">${escapeHtml(item.nom)}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'}">
                             🗑️
                         </div>
                     </div>
@@ -1295,7 +1371,7 @@
             } else {
                 // Limite de 3 contacts
                 if (contextData.contacts.selection.length >= 3) {
-                    alert('⚠️ Tu ne peux sélectionner que 3 contacts maximum');
+                    showToast('⚠️ Tu ne peux sélectionner que 3 contacts maximum');
                     return;
                 }
                 contextData.contacts.selection.push(contactId);
@@ -1320,14 +1396,46 @@
             document.getElementById('countEtats').textContent = `(${etaCount}/${etaTotal})`;
         }
 
+        function trapFocus(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+        }
+
         // MODAL EMOJI
         function openEmojiModal() {
             document.getElementById('emojiInputField').value = document.getElementById('emojiPicker').textContent;
-            document.getElementById('emojiModal').classList.add('visible');
+            const m = document.getElementById('emojiModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeEmojiModal() {
-            document.getElementById('emojiModal').classList.remove('visible');
+            const m = document.getElementById('emojiModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function selectEmoji(emoji) {
@@ -1339,7 +1447,7 @@
             document.getElementById('emojiPicker').textContent = emoji;
             
             // Mettre à jour dans la liste des contextes
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             const ctx = contextes.find(c => c.id === currentContexteId);
             if (ctx) {
                 ctx.emoji = emoji;
@@ -1368,8 +1476,9 @@
             document.getElementById('modalTitle').textContent = titles[type];
             document.getElementById('itemNameInput').value = '';
             document.getElementById('itemEmojiInput').value = defaultEmojis[type];
-            document.getElementById('addItemModal').classList.add('visible');
-            document.getElementById('itemNameInput').focus();
+            const m = document.getElementById('addItemModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function selectItemEmoji(emoji) {
@@ -1377,7 +1486,9 @@
         }
 
         function closeAddItemModal() {
-            document.getElementById('addItemModal').classList.remove('visible');
+            const m = document.getElementById('addItemModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function addCustomItem() {
@@ -1385,7 +1496,7 @@
             const emoji = document.getElementById('itemEmojiInput').value.trim() || '🎯';
 
             if (!name) {
-                alert('⚠️ Veuillez entrer un nom');
+                showToast('⚠️ Veuillez entrer un nom');
                 return;
             }
 
@@ -1420,37 +1531,29 @@
             // Fermer la modale
             closeAddItemModal();
 
-            // Afficher un toast de confirmation
-            const toast = document.getElementById('toast');
-            const oldText = toast.textContent;
-            toast.textContent = '✅ Item ajouté';
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-                toast.textContent = oldText;
-            }, 1500);
+            showToast('✅ Item ajouté', 1500);
         }
 
         // SUPPRIMER ITEM PERSONNALISÉ
         function deleteCustomItem(type, id) {
-            if (!confirm('Supprimer cet item personnalisé ?')) return;
+            showConfirm('Supprimer cet item personnalisé ?', function() {
+                const index = contextData[type].personnalisees.findIndex(item => item.id === id);
+                if (index > -1) {
+                    contextData[type].personnalisees.splice(index, 1);
+                }
 
-            const index = contextData[type].personnalisees.findIndex(item => item.id === id);
-            if (index > -1) {
-                contextData[type].personnalisees.splice(index, 1);
-            }
+                const visIndex = contextData[type].visibles.indexOf(id);
+                if (visIndex > -1) {
+                    contextData[type].visibles.splice(visIndex, 1);
+                }
 
-            const visIndex = contextData[type].visibles.indexOf(id);
-            if (visIndex > -1) {
-                contextData[type].visibles.splice(visIndex, 1);
-            }
+                if (type === 'capacites') renderCapacites();
+                if (type === 'besoins') renderBesoins();
+                if (type === 'etats') renderEtats();
 
-            if (type === 'capacites') renderCapacites();
-            if (type === 'besoins') renderBesoins();
-            if (type === 'etats') renderEtats();
-
-            updateCounts();
-            markAsModified();
+                updateCounts();
+                markAsModified();
+            });
         }
 
         // MODIFIER NOM DU CONTEXTE
@@ -1458,7 +1561,7 @@
             const newName = document.getElementById('nameInput').value.trim();
             if (!newName) return;
 
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             const ctx = contextes.find(c => c.id === currentContexteId);
             if (ctx) {
                 ctx.nom = newName;
@@ -1469,11 +1572,15 @@
 
         // SUPPRESSION DU CONTEXTE
         function confirmDelete() {
-            document.getElementById('deleteModal').classList.add('visible');
+            const m = document.getElementById('deleteModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('visible');
+            const m = document.getElementById('deleteModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function deleteContexte() {
@@ -1481,11 +1588,11 @@
             localStorage.removeItem(`contexte_${currentContexteId}`);
             
             // Supprimer de la liste
-            let contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            let contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             contextes = contextes.filter(c => c.id !== currentContexteId);
             localStorage.setItem('contextes', JSON.stringify(contextes));
             
-            alert('✅ Contexte supprimé');
+            showToast('✅ Contexte supprimé');
             window.location.href = 'contextes-liste.html';
         }
 
@@ -1514,29 +1621,28 @@
             showToast();
         }
 
-        function showToast() {
+        function showToast(msg, duration) {
             const toast = document.getElementById('toast');
+            if (msg) toast.textContent = msg;
             toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 2000);
+            setTimeout(() => { toast.classList.remove('visible'); }, duration || 3000);
         }
 
         // NAVIGATION
         function goBack() {
             if (hasUnsavedChanges) {
-                if (confirm('⚠️ Modifications non enregistrées\n\nTu as des modifications non enregistrées. Quitter sans enregistrer ?')) {
+                showConfirm('Tu as des modifications non enregistrées. Quitter sans enregistrer ?', function() {
                     window.location.href = 'contextes-liste.html';
-                }
+                });
             } else {
                 window.location.href = 'contextes-liste.html';
             }
         }
 
         function confirmReset() {
-            if (confirm('⚠️ Réinitialiser ce contexte ?\n\nToutes les modifications seront perdues et les paramètres par défaut seront restaurés.')) {
+            showConfirm('Réinitialiser ce contexte ? Toutes les modifications seront perdues et les paramètres par défaut seront restaurés.', function() {
                 resetToDefaults();
-            }
+            });
         }
 
         function resetToDefaults() {
@@ -1577,7 +1683,7 @@
             };
 
             // Mettre à jour aussi la liste des contextes pour l'emoji et le nom
-            const contextes = JSON.parse(localStorage.getItem('contextes')) || [];
+            const contextes = (function(){ try { return JSON.parse(localStorage.getItem('contextes')) || []; } catch(e) { return []; } })();
             const ctxIndex = contextes.findIndex(c => c.id === currentContexteId);
             if (ctxIndex > -1) {
                 contextes[ctxIndex].emoji = defaultEmoji;
@@ -1700,8 +1806,32 @@
                 return ''; // Pour les anciens navigateurs
             }
         });
+
+        var _confirmCb = null;
+        function showConfirm(msg, onOk) {
+            document.getElementById('confirmMsg').textContent = msg;
+            _confirmCb = onOk;
+            document.getElementById('confirmModal').classList.add('visible');
+        }
+        document.getElementById('confirmCancel').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            _confirmCb = null;
+        });
+        document.getElementById('confirmOk').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            if (_confirmCb) { _confirmCb(); _confirmCb = null; }
+        });
     </script>
     <script>        document.addEventListener("keydown", e => { if (e.key === "Escape") { closeEmojiModal(); closeAddItemModal(); closeDeleteModal(); } });</script>
+    <div id="confirmModal" role="dialog" aria-modal="true">
+        <div class="confirm-box">
+            <p class="confirm-msg" id="confirmMsg"></p>
+            <div class="confirm-actions">
+                <button class="btn-confirm-cancel" id="confirmCancel">Annuler</button>
+                <button class="btn-confirm-ok" id="confirmOk">Confirmer</button>
+            </div>
+        </div>
+    </div>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>

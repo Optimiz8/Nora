@@ -93,7 +93,7 @@
   </head>
   <body>
     <header class="header">
-      <button class="back-button" onclick="location.href = 'fidgets.html'" aria-label="Retour">⬅️</button>
+      <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
       <span class="page-title">Slider</span>
     </header>
 
@@ -105,9 +105,9 @@
     </main>
 
     <footer class="footer">
-      <button id="vTgl" class="footer-button equal active" onclick="tgl('vibrate')">📳 Vibreur</button>
-      <button id="mBtn" class="footer-button equal mode-active" onclick="nextMode()">⚪ Neutre</button>
-      <button id="sTgl" class="footer-button equal active" onclick="tgl('sound')">🔊 Son</button>
+      <button id="vTgl" class="footer-button equal active">📳 Vibreur</button>
+      <button id="mBtn" class="footer-button equal mode-active">⚪ Neutre</button>
+      <button id="sTgl" class="footer-button equal active">🔊 Son</button>
     </footer>
 
     <script>
@@ -115,8 +115,13 @@
       let modes = ['neutral', 'color', 'trail'];
       let currentModeIndex = 0;
       let dragging = false;
-      
+
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      document.getElementById('btnRetour').addEventListener('click', function() { location.href = 'fidgets.html'; });
+      document.getElementById('vTgl').addEventListener('click', function() { tgl('vibrate'); });
+      document.getElementById('mBtn').addEventListener('click', nextMode);
+      document.getElementById('sTgl').addEventListener('click', function() { tgl('sound'); });
       const hd = document.getElementById("hd");
       const tr = document.getElementById("tr");
       const fill = document.getElementById("fill");

@@ -55,15 +55,15 @@
 
   <body>
     <header class="header">
-      <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
+      <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
       <h1 class="page-title">Fidgets</h1>
-      <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
+      <button class="header-icon" id="btnAccueil" style="margin-left: auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
       <h2 class="section-title" style="text-align:center;margin-bottom:24px;">Choisis un outil</h2>
 
-      <button class="fidget-option" onclick="location.href = 'cliqueur.html'">
+      <button class="fidget-option" id="btnCliqueur">
         <div class="fidget-icon">🔘</div>
         <div class="fidget-text">
           <b>Le Cliqueur</b>
@@ -71,7 +71,7 @@
         </div>
       </button>
 
-      <button class="fidget-option" onclick="location.href = 'Slider.html'">
+      <button class="fidget-option" id="btnSlider">
         <div class="fidget-icon">↕️</div>
         <div class="fidget-text">
           <b>Le Slider</b>
@@ -79,7 +79,7 @@
         </div>
       </button>
 
-      <button class="fidget-option" onclick="location.href = 'Pop-it.html'">
+      <button class="fidget-option" id="btnPopit">
         <div class="fidget-icon">🌈</div>
         <div class="fidget-text">
           <b>Le Pop-it</b>
@@ -88,6 +88,20 @@
       </button>
 
     </main>
+    <script>
+      document.getElementById('btnRetour').addEventListener('click', function() {
+        if (localStorage.getItem('calmSource') === 'recap') {
+          localStorage.removeItem('calmSource');
+          location.href = 'recap.html';
+        } else {
+          location.href = 'index.html#calm';
+        }
+      });
+      document.getElementById('btnAccueil').addEventListener('click', function() { location.href = 'index.html'; });
+      document.getElementById('btnCliqueur').addEventListener('click', function() { location.href = 'cliqueur.html'; });
+      document.getElementById('btnSlider').addEventListener('click', function() { location.href = 'Slider.html'; });
+      document.getElementById('btnPopit').addEventListener('click', function() { location.href = 'Pop-it.html'; });
+    </script>
       <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>

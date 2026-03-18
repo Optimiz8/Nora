@@ -75,9 +75,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title">Harmonie visuelle</h1>
-        <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
+        <button class="header-icon" id="btnAccueil" style="margin-left: auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-f">
@@ -86,15 +86,27 @@
     </main>
 
     <footer class="footer">
-        <button id="modeBtn" class="footer-button center" onclick="nextMode()">Mode 1</button>
-        <button class="footer-button center" onclick="changeSpeed()">Vitesse : <span id="speedTxt">1x</span></button>
+        <button id="modeBtn" class="footer-button center">Mode 1</button>
+        <button id="btnSpeed" class="footer-button center">Vitesse : <span id="speedTxt">1x</span></button>
     </footer>
 
     <script>
         const container = document.getElementById('barContainer');
         const modeBtn = document.getElementById('modeBtn');
         const speedTxt = document.getElementById('speedTxt');
-        const count = 18; 
+        const count = 18;
+
+        document.getElementById('btnRetour').addEventListener('click', function() {
+            if (localStorage.getItem('calmSource') === 'recap') {
+                localStorage.removeItem('calmSource');
+                location.href = 'recap.html';
+            } else {
+                location.href = 'index.html#calm';
+            }
+        });
+        document.getElementById('btnAccueil').addEventListener('click', function() { location.href = 'index.html'; });
+        document.getElementById('modeBtn').addEventListener('click', nextMode);
+        document.getElementById('btnSpeed').addEventListener('click', changeSpeed);
         
         // RECALIBRAGE : 0.9 est la nouvelle base "1x" (équivalent à l'ancien 1.5x)
         const levels = [0.15, 0.45, 0.9, 1.35, 1.8];
@@ -336,6 +348,7 @@
         requestWakeLock();
     </script>
 
+<script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>
 </html>

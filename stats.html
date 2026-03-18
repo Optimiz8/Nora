@@ -1109,28 +1109,28 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="window.location.href='journal.html'" aria-label="Retour au journal">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour au journal">⬅️</button>
         <h1 class="page-title">Statistiques</h1>
-        <button class="header-icon" onclick="location.replace('index.html')" style="margin-left:auto" aria-label="Accueil">🏠</button>
+        <button class="header-icon" id="btnHome" style="margin-left:auto" aria-label="Accueil">🏠</button>
     </header>
 
     <div class="page-tabs">
         <button class="page-tab active">Vue d'ensemble</button>
-        <button class="page-tab" onclick="goToAnalyse()">Analyse</button>
+        <button class="page-tab" id="btnTabAnalyse">Analyse</button>
     </div>
 
     <div class="filter-bar">
-        <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel()">
+        <button class="filter-btn" id="filterBtn">
             ⚙️ Filtres avancés <span class="filter-badge" id="filterBadge" style="display:none">0</span>
         </button>
     </div>
 
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
     <div class="period-bar">
-        <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
-        <button class="period-btn" data-days="30" onclick="selectPeriod(30)">30 j</button>
-        <button class="period-btn" data-days="365" onclick="selectPeriod(365)">1 an</button>
-        <button class="period-btn" data-days="0" onclick="selectPeriod(0)">Dates</button>
+        <button class="period-btn active" data-days="7">7 j</button>
+        <button class="period-btn" data-days="30">30 j</button>
+        <button class="period-btn" data-days="365">1 an</button>
+        <button class="period-btn" data-days="0">Dates</button>
     </div>
     <div class="date-range-panel" id="dateRangePanel">
         <div class="date-range-row">
@@ -1144,7 +1144,7 @@
     </div>
 
 
-<div class="filter-overlay" id="filterOverlay" onclick="closeFilterPanel()"></div>
+<div class="filter-overlay" id="filterOverlay"></div>
     <div class="filter-panel" id="filterPanel">
         <div class="filter-panel-title">Filtres avancés</div>
 
@@ -1156,18 +1156,18 @@
         <div class="filter-group">
             <div class="filter-group-label">Origine</div>
             <div class="filter-chips" id="filterOrigine">
-                <button class="filter-chip" data-val="Anticipatoire" onclick="toggleFilterChip(this)">Anticipatoire</button>
-                <button class="filter-chip" data-val="Réactionnelle" onclick="toggleFilterChip(this)">Réactionnelle</button>
-                <button class="filter-chip" data-val="Mixte" onclick="toggleFilterChip(this)">Mixte</button>
+                <button class="filter-chip" data-val="Anticipatoire">Anticipatoire</button>
+                <button class="filter-chip" data-val="Réactionnelle">Réactionnelle</button>
+                <button class="filter-chip" data-val="Mixte">Mixte</button>
             </div>
         </div>
 
         <div class="filter-group">
             <div class="filter-group-label">Type de crise</div>
             <div class="filter-chips" id="filterType">
-                <button class="filter-chip" data-val="Meltdown" onclick="toggleFilterChip(this)">Meltdown</button>
-                <button class="filter-chip" data-val="Shutdown" onclick="toggleFilterChip(this)">Shutdown</button>
-                <button class="filter-chip" data-val="Mixte" onclick="toggleFilterChip(this)">Mixte</button>
+                <button class="filter-chip" data-val="Meltdown">Meltdown</button>
+                <button class="filter-chip" data-val="Shutdown">Shutdown</button>
+                <button class="filter-chip" data-val="Mixte">Mixte</button>
             </div>
         </div>
 
@@ -1185,43 +1185,43 @@
         <div class="filter-group">
             <div class="filter-group-label">Moment de la journée</div>
             <div class="filter-chips" id="filterMoment">
-                <button class="filter-chip" data-val="nuit" onclick="toggleFilterChip(this)">Nuit</button>
-                <button class="filter-chip" data-val="matin" onclick="toggleFilterChip(this)">Matin</button>
-                <button class="filter-chip" data-val="aprem" onclick="toggleFilterChip(this)">Après-midi</button>
-                <button class="filter-chip" data-val="soir" onclick="toggleFilterChip(this)">Soir</button>
+                <button class="filter-chip" data-val="nuit">Nuit</button>
+                <button class="filter-chip" data-val="matin">Matin</button>
+                <button class="filter-chip" data-val="aprem">Après-midi</button>
+                <button class="filter-chip" data-val="soir">Soir</button>
             </div>
         </div>
 
         <div class="filter-actions">
-            <button class="filter-reset-btn" onclick="resetFilters()">Réinitialiser</button>
-            <button class="filter-apply-btn" onclick="applyFilters()">Appliquer</button>
+            <button class="filter-reset-btn" id="btnResetFilters">Réinitialiser</button>
+            <button class="filter-apply-btn" id="btnApplyFilters">Appliquer</button>
         </div>
     </div>
 
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">✉️ Partager</button>
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">📥 Exporter</button>
+        <button class="export-stats-btn icon-btn" id="btnShare">✉️ Partager</button>
+        <button class="export-stats-btn icon-btn" id="btnExport">📥 Exporter</button>
     </div>
 
     <!-- Modale export/partage -->
-    <div class="modal-overlay" id="exportModalOverlay" onclick="closeExportModal()"></div>
+    <div class="modal-overlay" id="exportModalOverlay"></div>
     <div class="export-modal" id="exportModal">
         <div class="export-modal-title" id="exportModalTitle">Partager</div>
         <div id="shareOptions">
-            <button class="export-option-btn" onclick="doShareExport('overview')">Vue d'ensemble</button>
-            <button class="export-option-btn" onclick="doShareExport('analysis')">Analyse approfondie</button>
-            <button class="export-option-btn primary" onclick="doShareExport('both')">Les deux</button>
+            <button class="export-option-btn" id="btnShareOverview">Vue d'ensemble</button>
+            <button class="export-option-btn" id="btnShareAnalysis">Analyse approfondie</button>
+            <button class="export-option-btn primary" id="btnShareBoth">Les deux</button>
         </div>
         <div id="exportOptions" style="display:none">
-            <button class="export-option-btn" onclick="exportCSV()">📊 Télécharger en CSV</button>
-            <button class="export-option-btn primary" onclick="exportPrint()">🖨️ Imprimer / PDF</button>
+            <button class="export-option-btn" id="btnExportCSV">📊 Télécharger en CSV</button>
+            <button class="export-option-btn primary" id="btnExportPrint">🖨️ Imprimer / PDF</button>
         </div>
-        <button class="export-cancel-btn" onclick="closeExportModal()">Annuler</button>
+        <button class="export-cancel-btn" id="btnCloseExportModal">Annuler</button>
     </div>
 
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <script>
         var currentDays = 7;
         var customFrom = null;
@@ -1311,17 +1311,17 @@
         function normEnergie(entry) {
             if (entry.energie) return parseFloat(entry.energie);
             if (entry.precrisis && entry.precrisis.energie !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.energie / 10)));
-            return NaN;
+            return null;
         }
         function normChargeMentale(entry) {
             if (entry.chargeMentale) return parseFloat(entry.chargeMentale);
             if (entry.precrisis && entry.precrisis.chargeMentale !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.chargeMentale / 10)));
-            return NaN;
+            return null;
         }
         function normChargeSociale(entry) {
             if (entry.chargeSociale) return parseFloat(entry.chargeSociale);
             if (entry.precrisis && entry.precrisis.chargeSociale !== undefined) return Math.max(1, Math.min(10, Math.round(entry.precrisis.chargeSociale / 10)));
-            return NaN;
+            return null;
         }
         function hasTrigger(entry, name) {
             var d = normDeclencheurs(entry.declencheurs);
@@ -1337,9 +1337,9 @@
                 if (!isNaN(v)) ints.push(v);
                 var d = parseDuration(prevEntries[i].duree);
                 if (d !== null) durs.push(d);
-                var en = normEnergie(prevEntries[i]); if (!isNaN(en)) ens.push(en);
-                var cm = normChargeMentale(prevEntries[i]); if (!isNaN(cm)) cms.push(cm);
-                var cs = normChargeSociale(prevEntries[i]); if (!isNaN(cs)) css.push(cs);
+                var en = normEnergie(prevEntries[i]); if (en !== null) ens.push(en);
+                var cm = normChargeMentale(prevEntries[i]); if (cm !== null) cms.push(cm);
+                var cs = normChargeSociale(prevEntries[i]); if (cs !== null) css.push(cs);
             }
             var profileArr = [];
             for (var j = 0; j < prevEntries.length; j++) profileArr.push(prevEntries[j].profil || 'commun');
@@ -1413,11 +1413,11 @@
                 var dur = parseDuration(e.duree);
                 if (dur !== null) durations.push(dur);
                 var en = normEnergie(e);
-                if (!isNaN(en)) energies.push(en);
+                if (en !== null) energies.push(en);
                 var cm = normChargeMentale(e);
-                if (!isNaN(cm)) chargesMentales.push(cm);
+                if (cm !== null) chargesMentales.push(cm);
                 var cs = normChargeSociale(e);
-                if (!isNaN(cs)) chargesSociales.push(cs);
+                if (cs !== null) chargesSociales.push(cs);
 
                 profileArr.push(e.profil || 'commun');
                 if (e.typeCrise) {
@@ -1645,7 +1645,7 @@
                 for (var se = 0; se < entries.length; se++) {
                     var sv = normFns[field](entries[se]);
                     var si2 = parseFloat(entries[se].intensite);
-                    if (isNaN(sv) || isNaN(si2)) continue;
+                    if (sv === null || isNaN(si2)) continue;
                     var bIdx = sv <= 3 ? 0 : sv <= 6 ? 1 : 2;
                     buckets[bIdx].push(si2);
                 }
@@ -1662,7 +1662,7 @@
                 timelineEntries.push({
                     date: entries[tl].horodatage,
                     intensite: parseFloat(entries[tl].intensite) || null,
-                    energie: isNaN(tlEn) ? null : tlEn
+                    energie: tlEn
                 });
             }
 
@@ -1879,7 +1879,7 @@
 
                 if (rest.length > 0) {
                     var accId = 'acc_' + id;
-                    inner += '<button class="accordion-toggle" onclick="toggleAccordion(\'' + accId + '\', this)">';
+                    inner += '<button class="accordion-toggle" data-acc-id="' + accId + '">';
                     inner += '<span>Voir les ' + rest.length + ' autre' + (rest.length > 1 ? 's' : '') + '</span>';
                     inner += '<span id="arr_' + accId + '">▾</span></button>';
                     inner += '<div class="accordion-body" id="' + accId + '"><div class="all-rank-list">';
@@ -1898,8 +1898,8 @@
                 '<div class="stat-card" style="padding:12px 12px 6px">' +
                 '<div class="section-header" style="display:flex;justify-content:flex-end;margin-bottom:8px">' +
                 '<div class="view-toggle">' +
-                '<button class="view-toggle-btn ' + (!isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'rapide\')">Rapide</button>' +
-                '<button class="view-toggle-btn ' + (isDetail ? 'active' : '') + '" onclick="setView(\'' + id + '\', \'detail\')">Détail</button>' +
+                '<button class="view-toggle-btn ' + (!isDetail ? 'active' : '') + '" data-view-id="' + id + '" data-view-mode="rapide">Rapide</button>' +
+                '<button class="view-toggle-btn ' + (isDetail ? 'active' : '') + '" data-view-id="' + id + '" data-view-mode="detail">Détail</button>' +
                 '</div></div>' +
                 inner +
                 '</div>';
@@ -2511,9 +2511,9 @@
                     e.profil || 'commun',
                     e.typeManifestation || '',
                     e.typeOrigine || '',
-                    !isNaN(normEnergie(e)) ? normEnergie(e) : '',
-                    !isNaN(normChargeMentale(e)) ? normChargeMentale(e) : '',
-                    !isNaN(normChargeSociale(e)) ? normChargeSociale(e) : '',
+                    normEnergie(e) !== null ? normEnergie(e) : '',
+                    normChargeMentale(e) !== null ? normChargeMentale(e) : '',
+                    normChargeSociale(e) !== null ? normChargeSociale(e) : '',
                     '"' + declStr.replace(/"/g, '""') + '"',
                     '"' + besoins.replace(/"/g, '""') + '"',
                     '"' + etats.replace(/"/g, '""') + '"',
@@ -2526,7 +2526,7 @@
         function exportCSV() {
             closeExportModal();
             var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats || !stats.entries.length) { alert('Aucune donnée sur cette période.'); return; }
+            if (!stats || !stats.entries.length) { showToast('Aucune donnée sur cette période.'); return; }
             var csv = buildCSV(stats.entries);
             var bom = '\uFEFF';
             var blob = new Blob([bom + csv], { type: 'text/csv;charset=utf-8' });
@@ -2605,7 +2605,7 @@
         function doShareExport(which) {
             closeExportModal();
             var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée sur cette période.'); return; }
+            if (!stats) { showToast('Aucune donnée sur cette période.'); return; }
             var text = which === 'overview' ? buildSummaryText(stats)
                      : which === 'analysis' ? buildAnalysisText(stats)
                      : buildSummaryText(stats) + '\n\n---\n\n' + buildAnalysisText(stats);
@@ -2613,11 +2613,11 @@
                 if (navigator.share) {
                     navigator.share({ title: 'Statistiques Nora', text: text }).catch(function() {});
                 } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(function() { alert('Résumé copié !'); }).catch(function() { downloadText(text); });
+                    navigator.clipboard.writeText(text).then(function() { showToast('Résumé copié !'); }).catch(function() { downloadText(text); });
                 } else { downloadText(text); }
             } else {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(function() { alert('Données copiées !'); }).catch(function() { downloadText(text); });
+                    navigator.clipboard.writeText(text).then(function() { showToast('Données copiées !'); }).catch(function() { downloadText(text); });
                 } else { downloadText(text); }
             }
         }
@@ -2756,8 +2756,8 @@
             html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
                 '<div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--dark);opacity:0.45">Déclencheurs</div>' +
                 '<div class="view-toggle">' +
-                '<button class="view-toggle-btn ' + (isFreq ? 'active' : '') + '" onclick="setView(\'triggers\', \'freq\')">Fréquence</button>' +
-                '<button class="view-toggle-btn ' + (!isFreq ? 'active' : '') + '" onclick="setView(\'triggers\', \'intensity\')">Intensité</button>' +
+                '<button class="view-toggle-btn ' + (isFreq ? 'active' : '') + '" data-view-id="triggers" data-view-mode="freq">Fréquence</button>' +
+                '<button class="view-toggle-btn ' + (!isFreq ? 'active' : '') + '" data-view-id="triggers" data-view-mode="intensity">Intensité</button>' +
                 '</div></div>';
 
             var sorted = stats.triggerStats.slice();
@@ -2790,7 +2790,7 @@
                 var maxAll = isFreq ? sorted[0].count : 10;
                 var accId = 'acc_triggers';
                 var accOpen = viewModes.triggersAccOpen;
-                html += '<button class="accordion-toggle" onclick="toggleAccordion(\'' + accId + '\', this)">' +
+                html += '<button class="accordion-toggle" data-acc-id="' + accId + '">' +
                     '<span>Voir les ' + rest.length + ' autre' + (rest.length > 1 ? 's' : '') + '</span>' +
                     '<span id="arr_' + accId + '">' + (accOpen ? '▴' : '▾') + '</span></button>';
                 html += '<div class="accordion-body' + (accOpen ? ' open' : '') + '" id="' + accId + '"><div class="all-rank-list">';
@@ -2874,8 +2874,8 @@
         function applyCustomRange() {
             var from = document.getElementById('dateFrom').value;
             var to = document.getElementById('dateTo').value;
-            if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
-            if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
+            if (!from || !to) { showToast('Choisis une date de début et une date de fin.'); return; }
+            if (from > to) { showToast('La date de début doit être avant la date de fin.'); return; }
             customFrom = from; customTo = to;
             saveNav();
             renderCurrent();
@@ -3141,6 +3141,38 @@
         renderCurrent();
         window.addEventListener('pagehide', saveNav);
 
+        document.getElementById('btnBack').addEventListener('click', function() { window.location.href = 'journal.html'; });
+        document.getElementById('btnHome').addEventListener('click', function() { location.replace('index.html'); });
+        document.getElementById('btnTabAnalyse').addEventListener('click', goToAnalyse);
+        document.getElementById('filterBtn').addEventListener('click', toggleFilterPanel);
+        document.getElementById('filterOverlay').addEventListener('click', closeFilterPanel);
+        document.getElementById('btnResetFilters').addEventListener('click', resetFilters);
+        document.getElementById('btnApplyFilters').addEventListener('click', applyFilters);
+        document.getElementById('btnShare').addEventListener('click', function() { openShareExportModal('share'); });
+        document.getElementById('btnExport').addEventListener('click', function() { openShareExportModal('export'); });
+        document.getElementById('exportModalOverlay').addEventListener('click', closeExportModal);
+        document.getElementById('btnShareOverview').addEventListener('click', function() { doShareExport('overview'); });
+        document.getElementById('btnShareAnalysis').addEventListener('click', function() { doShareExport('analysis'); });
+        document.getElementById('btnShareBoth').addEventListener('click', function() { doShareExport('both'); });
+        document.getElementById('btnExportCSV').addEventListener('click', exportCSV);
+        document.getElementById('btnExportPrint').addEventListener('click', exportPrint);
+        document.getElementById('btnCloseExportModal').addEventListener('click', closeExportModal);
+
+        document.querySelector('.period-bar').addEventListener('click', function(e) {
+            var btn = e.target.closest('.period-btn[data-days]');
+            if (btn) selectPeriod(Number(btn.dataset.days));
+        });
+        document.getElementById('filterPanel').addEventListener('click', function(e) {
+            var chip = e.target.closest('.filter-chip');
+            if (chip) toggleFilterChip(chip);
+        });
+        document.getElementById('mainContent').addEventListener('click', function(e) {
+            var accBtn = e.target.closest('.accordion-toggle[data-acc-id]');
+            if (accBtn) { toggleAccordion(accBtn.dataset.accId, accBtn); return; }
+            var viewBtn = e.target.closest('.view-toggle-btn[data-view-id]');
+            if (viewBtn) setView(viewBtn.dataset.viewId, viewBtn.dataset.viewMode);
+        });
+
         (function() {
             var startX, startY;
             document.addEventListener('touchstart', function(e) {
@@ -3157,7 +3189,15 @@
                 startX = undefined;
             }, { passive: true });
         })();
+
+        function showToast(msg, duration) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, duration || 3000);
+        }
     </script>
+    <div class="toast" id="toast"></div>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>

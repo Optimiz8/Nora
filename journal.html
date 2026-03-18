@@ -1183,25 +1183,28 @@
                 padding: 8px 6px;
             }
         }
+/* ---------- TOAST ---------- */
+.toast { position: fixed; bottom: calc(var(--footer-height) + 16px); left: 20px; right: 20px; background: var(--accent); color: var(--dark); padding: 14px 16px; border-radius: 12px; text-align: center; font-weight: 600; font-size: 15px; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.toast.visible { opacity: 1; }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-left" style="flex:1">
-            <button class="back-button" onclick="goHome()" aria-label="Retour">⬅️</button>
+            <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
             <h1 class="page-title">Journal de crises</h1>
         </div>
-        <button class="back-button" onclick="window.location.href='index.html'">🏠</button>
+        <button class="back-button" id="btnHome">🏠</button>
     </header>
 
     <main class="main-content">
-        <button class="add-button" onclick="openFormModal('create')">
+        <button class="add-button" id="btnOpenFormModal">
             ➕ Ajouter une crise manuellement
         </button>
 
         <div class="data-actions">
-            <button class="data-action-btn" onclick="window.location.href='stats.html'">📊 Statistiques</button>
-            <button class="data-action-btn" onclick="showExportOptions()">📤 Exporter</button>
+            <button class="data-action-btn" id="btnStats">📊 Statistiques</button>
+            <button class="data-action-btn" id="btnShowExportOptions">📤 Exporter</button>
         </div>
 
         <div class="table-container" id="tableContainer">
@@ -1235,17 +1238,17 @@
         </div>
     </main>
 
-    <div class="modal" id="detailModal" onclick="closeModal(event, 'detailModal')" role="dialog" aria-modal="true" aria-label="Détail de la crise">
-        <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-label="Détail de la crise">
+        <div class="modal-content" id="detailModalContent">
             <div class="modal-header">
                 <h2 class="modal-title">Détail de la crise</h2>
-                <button class="close-button" onclick="closeModal(null, 'detailModal')" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseDetailModal" aria-label="Fermer">×</button>
             </div>
             <div id="detailContent"></div>
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="editFromDetail()">✏️ Modifier</button>
-                <button class="modal-button danger" onclick="confirmDelete()">🗑️ Supprimer</button>
-                <button class="modal-button primary" onclick="closeModal(null, 'detailModal')">Fermer</button>
+                <button class="modal-button secondary" id="btnEditFromDetail">✏️ Modifier</button>
+                <button class="modal-button danger" id="btnConfirmDelete">🗑️ Supprimer</button>
+                <button class="modal-button primary" id="btnCloseDetailModalFooter">Fermer</button>
             </div>
         </div>
     </div>
@@ -1254,7 +1257,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="formModalTitle">Ajouter une crise</h2>
-                <button class="close-button" onclick="closeModal(null, 'formModal')" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseFormModal" aria-label="Fermer">×</button>
             </div>
 
             <div class="form-block form-block-avant">
@@ -1289,7 +1292,7 @@
 
                 <div class="form-group">
                     <label class="form-label">Déclencheurs identifiés</label>
-                    <button type="button" class="triggers-button" onclick="openTriggersModal()">
+                    <button type="button" class="triggers-button" id="btnOpenTriggersModal">
                         <span>🎯</span>
                         <span>Sélectionner les déclencheurs</span>
                     </button>
@@ -1345,16 +1348,16 @@
                     <label class="form-label">Durée estimée</label>
                     <div class="duration-carousel">
                         <div class="dur-col">
-                            <button type="button" class="dur-arrow" onclick="adjustDur('h',1)">▲</button>
-                            <input type="number" class="dur-value dur-input" id="durH" min="0" max="12" value="0" inputmode="numeric" onclick="this.select()" onchange="onDurInputChange('h', this.value)">
-                            <button type="button" class="dur-arrow" onclick="adjustDur('h',-1)">▼</button>
+                            <button type="button" class="dur-arrow" data-dur-unit="h" data-dur-dir="1">▲</button>
+                            <input type="number" class="dur-value dur-input" id="durH" min="0" max="12" value="0" inputmode="numeric">
+                            <button type="button" class="dur-arrow" data-dur-unit="h" data-dur-dir="-1">▼</button>
                             <div class="dur-unit">heure</div>
                         </div>
                         <div class="dur-sep">:</div>
                         <div class="dur-col">
-                            <button type="button" class="dur-arrow" onclick="adjustDur('m',1)">▲</button>
-                            <input type="number" class="dur-value dur-input" id="durM" min="0" max="45" step="15" value="0" inputmode="numeric" onclick="this.select()" onchange="onDurInputChange('m', this.value)">
-                            <button type="button" class="dur-arrow" onclick="adjustDur('m',-1)">▼</button>
+                            <button type="button" class="dur-arrow" data-dur-unit="m" data-dur-dir="1">▲</button>
+                            <input type="number" class="dur-value dur-input" id="durM" min="0" max="45" step="15" value="0" inputmode="numeric">
+                            <button type="button" class="dur-arrow" data-dur-unit="m" data-dur-dir="-1">▼</button>
                             <div class="dur-unit">min</div>
                         </div>
                     </div>
@@ -1372,7 +1375,7 @@
 
                 <div class="form-group">
                     <label class="form-label">🎯 Capacités</label>
-                    <button type="button" class="triggers-button" onclick="openJCapsModal()">
+                    <button type="button" class="triggers-button" id="btnOpenJCapsModal">
                         <span>Renseigner mes capacités</span>
                     </button>
                     <div class="triggers-preview" id="capsFormPreview">Non renseigné</div>
@@ -1380,7 +1383,7 @@
 
                 <div class="form-group">
                     <label class="form-label">🤲 Besoins</label>
-                    <button type="button" class="triggers-button" onclick="openJBesModal()">
+                    <button type="button" class="triggers-button" id="btnOpenJBesModal">
                         <span>Sélectionner mes besoins</span>
                     </button>
                     <div class="triggers-preview" id="besoisFormPreview">Non renseigné</div>
@@ -1388,7 +1391,7 @@
 
                 <div class="form-group" style="margin-bottom:0">
                     <label class="form-label">💭 États</label>
-                    <button type="button" class="triggers-button" onclick="openJEtatsModal()">
+                    <button type="button" class="triggers-button" id="btnOpenJEtatsModal">
                         <span>Sélectionner mes états</span>
                     </button>
                     <div class="triggers-preview" id="etatsFormPreview">Non renseigné</div>
@@ -1396,43 +1399,43 @@
             </div>
 
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeModal(null, 'formModal')">Annuler</button>
-                <button class="modal-button primary" onclick="saveForm()">💾 Enregistrer</button>
+                <button class="modal-button secondary" id="btnCancelForm">Annuler</button>
+                <button class="modal-button primary" id="btnSaveForm">💾 Enregistrer</button>
             </div>
         </div>
     </div>
 
-    <div class="modal triggers-modal" id="triggersModal" onclick="closeModal(event, 'triggersModal')" role="dialog" aria-modal="true" aria-label="Déclencheurs">
-        <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal triggers-modal" id="triggersModal" role="dialog" aria-modal="true" aria-label="Déclencheurs">
+        <div class="modal-content" id="triggersModalContent">
             <div class="modal-header">
                 <h2 class="modal-title">Sélectionner les déclencheurs</h2>
-                <button class="close-button" onclick="closeModal(null, 'triggersModal')" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseTriggersModal" aria-label="Fermer">×</button>
             </div>
             <p class="triggers-info">Une crise peut avoir plusieurs déclencheurs.<br>Prends quelques secondes pour repenser à ce qui s'est accumulé.</p>
 
             <div id="triggersContent"></div>
 
             <div class="modal-actions">
-                <button class="modal-button primary" onclick="validateTriggers()">✅ Valider</button>
+                <button class="modal-button primary" id="btnValidateTriggers">✅ Valider</button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="exportModal" onclick="closeModal(event, 'exportModal')" role="dialog" aria-modal="true" aria-label="Exporter">
-        <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal" id="exportModal" role="dialog" aria-modal="true" aria-label="Exporter">
+        <div class="modal-content" id="exportModalContent">
             <div class="modal-header">
                 <h2 class="modal-title">Exporter le journal</h2>
-                <button class="close-button" onclick="closeModal(null, 'exportModal')" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseExportModal" aria-label="Fermer">×</button>
             </div>
 
             <div class="export-filter-section">
                 <div class="export-filter-label">Période</div>
                 <div class="export-chips" id="exportPeriodChips">
-                    <button class="export-chip active" data-period="all" onclick="selectExportPeriod(this)">Tout</button>
-                    <button class="export-chip" data-period="month" onclick="selectExportPeriod(this)">Ce mois</button>
-                    <button class="export-chip" data-period="3months" onclick="selectExportPeriod(this)">3 mois</button>
-                    <button class="export-chip" data-period="year" onclick="selectExportPeriod(this)">Cette année</button>
-                    <button class="export-chip" data-period="custom" onclick="selectExportPeriod(this)">Personnalisé…</button>
+                    <button class="export-chip active" data-period="all">Tout</button>
+                    <button class="export-chip" data-period="month">Ce mois</button>
+                    <button class="export-chip" data-period="3months">3 mois</button>
+                    <button class="export-chip" data-period="year">Cette année</button>
+                    <button class="export-chip" data-period="custom">Personnalisé…</button>
                 </div>
                 <div class="export-date-range" id="exportDateRange">
                     <input type="date" class="export-date-input" id="exportDateFrom" oninput="updateExportCount()">
@@ -1443,73 +1446,73 @@
             <div class="export-filter-section">
                 <div class="export-filter-label">Contexte</div>
                 <div class="export-chips" id="exportContextChips">
-                    <button class="export-chip active" data-context="all" onclick="selectExportContext(this)">Tous</button>
+                    <button class="export-chip active" data-context="all">Tous</button>
                 </div>
             </div>
 
             <div class="export-counter" id="exportCounter"></div>
 
             <div class="export-formats">
-                <button class="export-format-btn" onclick="doExport('pdf')">📄 PDF / Impression</button>
-                <button class="export-format-btn" onclick="doExport('share')">↗️ Partager</button>
-                <button class="export-format-btn" onclick="doExport('json')">💾 JSON (sauvegarde)</button>
-                <button class="export-format-btn" onclick="doExport('csv')">📊 CSV (tableur Excel)</button>
+                <button class="export-format-btn" data-export-format="pdf">📄 PDF / Impression</button>
+                <button class="export-format-btn" data-export-format="share">↗️ Partager</button>
+                <button class="export-format-btn" data-export-format="json">💾 JSON (sauvegarde)</button>
+                <button class="export-format-btn" data-export-format="csv">📊 CSV (tableur Excel)</button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="deleteModal" onclick="closeModal(event, 'deleteModal')" role="dialog" aria-modal="true" aria-label="Confirmer la suppression">
-        <div class="modal-content" onclick="event.stopPropagation()" style="max-width:320px">
+    <div class="modal" id="deleteModal" role="dialog" aria-modal="true" aria-label="Confirmer la suppression">
+        <div class="modal-content" id="deleteModalContent" style="max-width:320px">
             <div class="modal-header">
                 <h2 class="modal-title">Supprimer cette crise ?</h2>
-                <button class="close-button" onclick="closeModal(null, 'deleteModal')" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseDeleteModal" aria-label="Fermer">×</button>
             </div>
             <p class="modal-text" style="margin-bottom:4px">Cette action est irréversible.</p>
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeModal(null, 'deleteModal')">Annuler</button>
-                <button class="modal-button danger" onclick="confirmDeleteModal()">🗑️ Supprimer</button>
+                <button class="modal-button secondary" id="btnCancelDelete">Annuler</button>
+                <button class="modal-button danger" id="btnConfirmDeleteModal">🗑️ Supprimer</button>
             </div>
         </div>
     </div>
 
     <div class="modal j-sub-modal" id="jBesModal" role="dialog" aria-modal="true" aria-label="Besoins">
-        <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-content" id="jBesModalContent">
             <div class="modal-header">
                 <h2 class="modal-title">🤲 Mes besoins</h2>
-                <button class="close-button" onclick="closeJBesModal()" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseJBesModal" aria-label="Fermer">×</button>
             </div>
             <p class="triggers-info">Appuie pour sélectionner. Plusieurs sélections possibles.</p>
             <div id="jBesContent"></div>
             <div class="modal-actions">
-                <button class="modal-button primary" onclick="validerJBes()">✅ Valider</button>
+                <button class="modal-button primary" id="btnValiderJBes">✅ Valider</button>
             </div>
         </div>
     </div>
 
     <div class="modal j-sub-modal" id="jEtatsModal" role="dialog" aria-modal="true" aria-label="États">
-        <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-content" id="jEtatsModalContent">
             <div class="modal-header">
                 <h2 class="modal-title">💭 Comment je me sens</h2>
-                <button class="close-button" onclick="closeJEtatsModal()" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseJEtatsModal" aria-label="Fermer">×</button>
             </div>
             <p class="triggers-info">Appuie pour sélectionner. Plusieurs sélections possibles.</p>
             <div id="jEtatsContent"></div>
             <div class="modal-actions">
-                <button class="modal-button primary" onclick="validerJEtats()">✅ Valider</button>
+                <button class="modal-button primary" id="btnValiderJEtats">✅ Valider</button>
             </div>
         </div>
     </div>
 
     <div class="modal j-sub-modal" id="jCapsModal" role="dialog" aria-modal="true" aria-label="Capacités">
-        <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-content" id="jCapsModalContent">
             <div class="modal-header">
                 <h2 class="modal-title">🎯 Mes capacités</h2>
-                <button class="close-button" onclick="closeJCapsModal()" aria-label="Fermer">×</button>
+                <button class="close-button" id="btnCloseJCapsModal" aria-label="Fermer">×</button>
             </div>
             <p class="triggers-info">Appuie pour changer l'état. Appui long pour remettre à zéro.</p>
             <div id="jCapsContent"></div>
             <div class="modal-actions">
-                <button class="modal-button primary" onclick="validerJCaps()">✅ Valider</button>
+                <button class="modal-button primary" id="btnValiderJCaps">✅ Valider</button>
             </div>
         </div>
     </div>
@@ -1756,20 +1759,20 @@
             row.innerHTML = `
                 <td class="date-cell">${dateStr}<br>${timeStr}</td>
                 <td style="white-space: nowrap;"><div class="profile-cell">${profile.icon} ${profile.name}</div></td>
-                <td>${entry.typeCrise || '-'}</td>
-                <td>${entry.typeManifestation || '-'}</td>
+                <td>${escapeHtml(entry.typeCrise || '-')}</td>
+                <td>${escapeHtml(entry.typeManifestation || '-')}</td>
                 <td>${intensityDisplay}</td>
                 <td>${entry.duree || '-'}</td>
                 <td style="min-width: 220px; max-width: 260px;">${triggersDisplay}</td>
                 <td style="min-width: 130px; font-size: 13px; color: var(--dark); opacity: 0.8;">${catsDisplay}</td>
-                <td>${capsCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'caps')">${capsCount}</span>` : '—'}</td>
-                <td>${needsCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'besoins')">${needsCount}</span>` : '—'}</td>
-                <td>${statesCount > 0 ? `<span class="count-badge" onclick="event.stopPropagation(); openBadgeModal(this, ${index}, 'etats')">${statesCount}</span>` : '—'}</td>
+                <td>${capsCount > 0 ? `<span class="count-badge" data-badge-type="caps" data-badge-index="${index}">${capsCount}</span>` : '—'}</td>
+                <td>${needsCount > 0 ? `<span class="count-badge" data-badge-type="besoins" data-badge-index="${index}">${needsCount}</span>` : '—'}</td>
+                <td>${statesCount > 0 ? `<span class="count-badge" data-badge-type="etats" data-badge-index="${index}">${statesCount}</span>` : '—'}</td>
                 ${precrisisCell}
-                <td class="col-remarks">${entry.remarques ? `<div class="remarks-clamp">${entry.remarques}</div>` : '—'}</td>
+                <td class="col-remarks">${entry.remarques ? `<div class="remarks-clamp">${escapeHtml(entry.remarques)}</div>` : '—'}</td>
                 <td class="actions-cell" style="white-space: nowrap;">
-                    <button class="action-btn" onclick="event.stopPropagation(); openFormModal('edit', ${index})" title="Modifier">✏️</button>
-                    <button class="action-btn" onclick="event.stopPropagation(); deleteEntry(${index})" title="Supprimer">🗑️</button>
+                    <button class="action-btn btn-edit-entry" data-entry-index="${index}" title="Modifier">✏️</button>
+                    <button class="action-btn btn-delete-entry" data-entry-index="${index}" title="Supprimer">🗑️</button>
                 </td>
             `;
             
@@ -1810,7 +1813,7 @@
                 html += `<div class="modal-section"><div class="modal-section-title">🎯 Déclencheurs</div>`;
                 decl.forEach(function(d) {
                     var intLabel = d.intensite !== null && d.intensite !== undefined ? ` — ${d.intensite}/10` : '';
-                    html += `<div class="modal-text">• ${d.nom}${intLabel}</div>`;
+                    html += `<div class="modal-text">• ${escapeHtml(d.nom)}${intLabel}</div>`;
                 });
                 html += `</div>`;
             }
@@ -1820,11 +1823,11 @@
                 <div class="modal-section">
                     <div class="modal-section-title">⚡ La crise</div>
                     <div class="modal-text"><strong>Date :</strong> ${dateStr} à ${timeStr}</div>
-                    <div class="modal-text"><strong>Contexte :</strong> ${profile.icon} ${profile.name}</div>
-                    ${entry.typeCrise ? `<div class="modal-text"><strong>Origine :</strong> ${entry.typeCrise}</div>` : ''}
-                    ${entry.typeManifestation ? `<div class="modal-text"><strong>Type :</strong> ${entry.typeManifestation}</div>` : ''}
+                    <div class="modal-text"><strong>Contexte :</strong> ${profile.icon} ${escapeHtml(profile.name)}</div>
+                    ${entry.typeCrise ? `<div class="modal-text"><strong>Origine :</strong> ${escapeHtml(entry.typeCrise)}</div>` : ''}
+                    ${entry.typeManifestation ? `<div class="modal-text"><strong>Type :</strong> ${escapeHtml(entry.typeManifestation)}</div>` : ''}
                     ${entry.intensite !== undefined && entry.intensite !== '' ? `<div class="modal-text"><strong>Intensité :</strong> ${entry.intensite}/10</div>` : ''}
-                    ${entry.duree ? `<div class="modal-text"><strong>Durée :</strong> ${entry.duree}</div>` : ''}
+                    ${entry.duree ? `<div class="modal-text"><strong>Durée :</strong> ${escapeHtml(entry.duree)}</div>` : ''}
                 </div>
             `;
 
@@ -1833,10 +1836,10 @@
                 html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div><div class="modal-text">—</div></div>`;
             } else {
                 var capLines = [];
-                if (entry.capacites.impossible && entry.capacites.impossible.length) capLines.push('<strong>Impossible :</strong> ' + entry.capacites.impossible.join(', '));
-                if (entry.capacites.difficile && entry.capacites.difficile.length) capLines.push('<strong>Difficile :</strong> ' + entry.capacites.difficile.join(', '));
-                if (entry.capacites.possible && entry.capacites.possible.length) capLines.push('<strong>Possible :</strong> ' + entry.capacites.possible.join(', '));
-                if (entry.capacites.incertain && entry.capacites.incertain.length) capLines.push('<strong>Incertain :</strong> ' + entry.capacites.incertain.join(', '));
+                if (entry.capacites.impossible && entry.capacites.impossible.length) capLines.push('<strong>Impossible :</strong> ' + entry.capacites.impossible.map(escapeHtml).join(', '));
+                if (entry.capacites.difficile && entry.capacites.difficile.length) capLines.push('<strong>Difficile :</strong> ' + entry.capacites.difficile.map(escapeHtml).join(', '));
+                if (entry.capacites.possible && entry.capacites.possible.length) capLines.push('<strong>Possible :</strong> ' + entry.capacites.possible.map(escapeHtml).join(', '));
+                if (entry.capacites.incertain && entry.capacites.incertain.length) capLines.push('<strong>Incertain :</strong> ' + entry.capacites.incertain.map(escapeHtml).join(', '));
                 if (capLines.length > 0) {
                     html += `<div class="modal-section"><div class="modal-section-title">🎯 Capacités</div>`;
                     capLines.forEach(function(l) { html += `<div class="modal-text">${l}</div>`; });
@@ -1850,7 +1853,7 @@
             } else if (entry.besoins.length > 0) {
                 var besoinsLabels = entry.besoins.map(function(b) { return b.label || b; });
                 html += `<div class="modal-section"><div class="modal-section-title">🤲 Besoins</div>`;
-                html += `<div class="modal-text">${besoinsLabels.join(', ')}</div></div>`;
+                html += `<div class="modal-text">${besoinsLabels.map(escapeHtml).join(', ')}</div></div>`;
             }
 
             // États
@@ -1859,18 +1862,20 @@
             } else if (entry.etats.length > 0) {
                 var etatsLabels = entry.etats.map(function(e) { return e.label || e; });
                 html += `<div class="modal-section"><div class="modal-section-title">💭 États</div>`;
-                html += `<div class="modal-text">${etatsLabels.join(', ')}</div></div>`;
+                html += `<div class="modal-text">${etatsLabels.map(escapeHtml).join(', ')}</div></div>`;
             }
 
             // Remarques
             if (entry.remarques) {
                 html += `<div class="modal-section"><div class="modal-section-title">📝 Remarques</div>`;
-                html += `<div class="modal-text">${entry.remarques}</div></div>`;
+                html += `<div class="modal-text">${escapeHtml(entry.remarques)}</div></div>`;
             }
 
             document.getElementById('detailContent').innerHTML = html;
             history.pushState({ noraModal: true }, '');
-            document.getElementById('detailModal').classList.add('visible');
+            const dm = document.getElementById('detailModal');
+            dm.classList.add('visible');
+            trapFocus(dm);
         }
 
         function openFormModal(mode, index = null) {
@@ -1953,6 +1958,7 @@
             var fm = document.getElementById('formModal');
             fm.classList.add('visible');
             fm.scrollTop = 0;
+            trapFocus(fm);
         }
 
         function openTriggersModal() {
@@ -1965,7 +1971,7 @@
                     return selectedTriggers.includes(cat.key + ' \u2014 ' + trigger.name);
                 });
                 html += `<div class="trigger-category${hasSelected ? ' open' : ''}">`;
-                html += `<div class="trigger-category-title" onclick="toggleTriggerCategory(this)">
+                html += `<div class="trigger-category-title">
                     <span>${cat.label}</span>
                     <span class="trigger-category-chevron">▶</span>
                 </div>`;
@@ -1987,7 +1993,7 @@
                                    id="${uniqueId}"
                                    data-trigger-name="${storedName.replace(/"/g, '&quot;')}"
                                    ${trigger.custom ? 'data-custom="true"' : ''}
-                                   onchange="handleTriggerChange(this)">
+>
                             <label class="trigger-label" for="${uniqueId}">
                                 <span class="trigger-name">${trigger.name}</span>${descHtml}
                             </label>
@@ -2007,7 +2013,9 @@
 
             content.innerHTML = html;
             history.pushState({ noraModal: true }, '');
-            document.getElementById('triggersModal').classList.add('visible');
+            const tm = document.getElementById('triggersModal');
+            tm.classList.add('visible');
+            trapFocus(tm);
         }
 
         function toggleTriggerCategory(titleEl) {
@@ -2108,7 +2116,7 @@ function handleTriggerChange(checkbox) {
             if (formMode === 'create') {
                 const dateInput = document.getElementById('formDate').value;
                 if (!dateInput) {
-                    alert('La date est obligatoire');
+                    showToast('La date est obligatoire');
                     return;
                 }
                 
@@ -2133,7 +2141,7 @@ function handleTriggerChange(checkbox) {
                 tomorrow.setHours(0, 0, 0, 0);
                 
                 if (crisisDate.getTime() > tomorrow.getTime()) {
-                    alert('Tu ne peux pas créer une crise dans le futur.');
+                    showToast('Tu ne peux pas créer une crise dans le futur.');
                     return;
                 }
                 
@@ -2155,13 +2163,16 @@ function handleTriggerChange(checkbox) {
                     manual: true
                 };
 
-                const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
-                journal.push(entry);
-                localStorage.setItem('journalCrises', JSON.stringify(journal));
-
-                closeModal(null, 'formModal');
-                loadJournal();
-                alert('Crise ajoutée !');
+                try {
+                    const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+                    journal.push(entry);
+                    localStorage.setItem('journalCrises', JSON.stringify(journal));
+                    closeModal(null, 'formModal');
+                    loadJournal();
+                    showToast('Crise ajoutée !');
+                } catch(e) {
+                    showToast('Erreur lors de l\'enregistrement (stockage plein ?)');
+                }
             } else {
                 const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
                 const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
@@ -2195,10 +2206,14 @@ function handleTriggerChange(checkbox) {
                 if (jFormCaps !== null) sorted[currentEntryIndex].capacites = jFormCaps;
                 delete sorted[currentEntryIndex].precrisis;
 
-                localStorage.setItem('journalCrises', JSON.stringify(sorted));
-                closeModal(null, 'formModal');
-                loadJournal();
-                alert('Modifications enregistrées !');
+                try {
+                    localStorage.setItem('journalCrises', JSON.stringify(sorted));
+                    closeModal(null, 'formModal');
+                    loadJournal();
+                    showToast('Modifications enregistrées !');
+                } catch(e) {
+                    showToast('Erreur lors de l\'enregistrement (stockage plein ?)');
+                }
             }
         }
 
@@ -2218,7 +2233,9 @@ function handleTriggerChange(checkbox) {
         function openDeleteModal(index, fromDetail) {
             deleteTargetIndex = index;
             deleteFromDetail = !!fromDetail;
-            document.getElementById('deleteModal').classList.add('visible');
+            const delM = document.getElementById('deleteModal');
+            delM.classList.add('visible');
+            trapFocus(delM);
         }
 
         function confirmDeleteModal() {
@@ -2229,11 +2246,15 @@ function handleTriggerChange(checkbox) {
         }
 
         function doDeleteEntry(index) {
-            const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
-            sorted.splice(index, 1);
-            localStorage.setItem('journalCrises', JSON.stringify(sorted));
-            loadJournal();
+            try {
+                const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+                const sorted = journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
+                sorted.splice(index, 1);
+                localStorage.setItem('journalCrises', JSON.stringify(sorted));
+                loadJournal();
+            } catch(e) {
+                showToast('Erreur lors de la suppression (stockage plein ?)');
+            }
         }
 
         /* ---------- EXPORT FILTRÉ ---------- */
@@ -2256,20 +2277,21 @@ function handleTriggerChange(checkbox) {
             var usedContexts = [];
             journal.forEach(function(e) { if (e.profil && !usedContexts.includes(e.profil)) usedContexts.push(e.profil); });
             var chipsEl = document.getElementById('exportContextChips');
-            chipsEl.innerHTML = '<button class="export-chip active" data-context="all" onclick="selectExportContext(this)">Tous</button>';
+            chipsEl.innerHTML = '<button class="export-chip active" data-context="all">Tous</button>';
             usedContexts.forEach(function(ctx) {
                 var p = PROFILES[ctx] || { icon: '📍', name: ctx };
                 var btn = document.createElement('button');
                 btn.className = 'export-chip';
                 btn.dataset.context = ctx;
                 btn.textContent = p.icon + ' ' + p.name;
-                btn.setAttribute('onclick', 'selectExportContext(this)');
                 chipsEl.appendChild(btn);
             });
 
             updateExportCount();
             history.pushState({ noraModal: true }, '');
-            document.getElementById('exportModal').classList.add('visible');
+            const em = document.getElementById('exportModal');
+            em.classList.add('visible');
+            trapFocus(em);
         }
 
         function selectExportPeriod(el) {
@@ -2331,7 +2353,7 @@ function handleTriggerChange(checkbox) {
 
         function doExport(format) {
             var journal = getExportFilteredJournal();
-            if (journal.length === 0) { alert('Aucune crise à exporter avec ces filtres.'); return; }
+            if (journal.length === 0) { showToast('Aucune crise à exporter avec ces filtres.'); return; }
             if (format === 'pdf') exportPDF(journal);
             else if (format === 'share') shareJournal(journal);
             else if (format === 'json') exportJSON(journal);
@@ -2388,7 +2410,7 @@ function handleTriggerChange(checkbox) {
 
         function exportJSON(journal) {
             journal = journal || JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            if (journal.length === 0) { alert('Aucune crise à exporter'); return; }
+            if (journal.length === 0) { showToast('Aucune crise à exporter'); return; }
 
             const data = JSON.stringify(journal, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
@@ -2403,7 +2425,7 @@ function handleTriggerChange(checkbox) {
 
         function exportPDF(journal) {
             journal = journal || JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            if (journal.length === 0) { alert('Aucune crise à exporter'); return; }
+            if (journal.length === 0) { showToast('Aucune crise à exporter'); return; }
 
             const prenom = localStorage.getItem('userPrenom') || '';
             const nom = localStorage.getItem('userNom') || '';
@@ -2497,14 +2519,14 @@ ${entriesHtml}
                 win.document.write(html);
                 win.document.close();
             } else {
-                alert('Le navigateur a bloqué l\'ouverture de la fenêtre. Autorise les popups pour ce site.');
+                showToast('Le navigateur a bloqué l\'ouverture de la fenêtre. Autorise les popups pour ce site.');
             }
             closeModal(null, 'exportModal');
         }
 
         function shareJournal(journal) {
             journal = journal || JSON.parse(localStorage.getItem('journalCrises') || '[]');
-            if (!journal.length) { alert('Aucune crise à partager.'); return; }
+            if (!journal.length) { showToast('Aucune crise à partager.'); return; }
 
             const prenom = localStorage.getItem('userPrenom') || '';
             const nom = localStorage.getItem('userNom') || '';
@@ -2549,7 +2571,7 @@ ${entriesHtml}
                     text: text
                 }).catch(function() {});
             } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(function() { alert('Journal copié dans le presse-papier.'); });
+                navigator.clipboard.writeText(text).then(function() { showToast('Journal copié dans le presse-papier.'); });
             } else {
                 const blob = new Blob([text], { type: 'text/plain' });
                 const url = URL.createObjectURL(blob);
@@ -2588,7 +2610,7 @@ ${entriesHtml}
             const tooltip = document.getElementById('badgeTooltip');
             tooltip.innerHTML = items.length === 0
                 ? `<strong>${title}</strong><br><span style="opacity:0.5">Aucun élément</span>`
-                : `<strong>${title}</strong><br>` + items.map(i => `• ${i}`).join('<br>');
+                : `<strong>${title}</strong><br>` + items.map(i => `• ${escapeHtml(i)}`).join('<br>');
             tooltip.style.display = 'block';
             const rect = el.getBoundingClientRect();
             let left = rect.left;
@@ -2608,9 +2630,39 @@ ${entriesHtml}
             }
         });
 
+        function trapFocus(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+        }
+
         function closeModal(event, modalId) {
             if (event && event.target !== event.currentTarget) return;
-            document.getElementById(modalId).classList.remove('visible');
+            const m = document.getElementById(modalId);
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function goHome() {
@@ -2666,18 +2718,21 @@ ${entriesHtml}
             var items = allItems.filter(function(i) { return visibles.includes(i.id); });
             document.getElementById('jBesContent').innerHTML = items.map(function(item) {
                 var active = jFormBes && jFormBes.some(function(b) { return b.label === item.nom; });
-                return '<div class="j-item' + (active ? ' active' : '') + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" data-icon="' + item.emoji + '" onclick="toggleJItem(this)">' +
+                return '<div class="j-item' + (active ? ' active' : '') + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" data-icon="' + item.emoji + '">' +
                     '<div class="j-item-icon">' + item.emoji + '</div>' +
-                    '<div class="j-item-text">' + item.nom + '</div></div>';
+                    '<div class="j-item-text">' + escapeHtml(item.nom) + '</div></div>';
             }).join('');
             history.pushState({ noraModal: true }, '');
             var m = document.getElementById('jBesModal');
             m.classList.add('visible');
             m.scrollTop = 0;
+            trapFocus(m);
         }
 
         function closeJBesModal() {
-            document.getElementById('jBesModal').classList.remove('visible');
+            const m = document.getElementById('jBesModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function validerJBes() {
@@ -2694,18 +2749,21 @@ ${entriesHtml}
             var items = allItems.filter(function(i) { return visibles.includes(i.id); });
             document.getElementById('jEtatsContent').innerHTML = items.map(function(item) {
                 var active = jFormEtats && jFormEtats.some(function(e) { return e.label === item.nom; });
-                return '<div class="j-item' + (active ? ' active' : '') + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" data-icon="' + item.emoji + '" onclick="toggleJItem(this)">' +
+                return '<div class="j-item' + (active ? ' active' : '') + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" data-icon="' + item.emoji + '">' +
                     '<div class="j-item-icon">' + item.emoji + '</div>' +
-                    '<div class="j-item-text">' + item.nom + '</div></div>';
+                    '<div class="j-item-text">' + escapeHtml(item.nom) + '</div></div>';
             }).join('');
             history.pushState({ noraModal: true }, '');
             var m = document.getElementById('jEtatsModal');
             m.classList.add('visible');
             m.scrollTop = 0;
+            trapFocus(m);
         }
 
         function closeJEtatsModal() {
-            document.getElementById('jEtatsModal').classList.remove('visible');
+            const m = document.getElementById('jEtatsModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function validerJEtats() {
@@ -2743,19 +2801,22 @@ ${entriesHtml}
                     else if (jFormCaps.possible && jFormCaps.possible.includes(item.nom)) state = 'possible';
                     else if (jFormCaps.incertain && jFormCaps.incertain.includes(item.nom)) state = 'unknown';
                 }
-                return '<div class="j-cap-item" data-state="' + state + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '" onclick="cycleJCapState(this)">' +
+                return '<div class="j-cap-item" data-state="' + state + '" data-label="' + item.nom.replace(/"/g, '&quot;') + '">' +
                     '<div class="j-cap-state">' + J_CAP_STATES[state].emoji + '</div>' +
                     '<div class="j-cap-icon">' + item.emoji + '</div>' +
-                    '<div class="j-cap-text">' + item.nom + '</div></div>';
+                    '<div class="j-cap-text">' + escapeHtml(item.nom) + '</div></div>';
             }).join('');
             history.pushState({ noraModal: true }, '');
             var m = document.getElementById('jCapsModal');
             m.classList.add('visible');
             m.scrollTop = 0;
+            trapFocus(m);
         }
 
         function closeJCapsModal() {
-            document.getElementById('jCapsModal').classList.remove('visible');
+            const m = document.getElementById('jCapsModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function validerJCaps() {
@@ -2776,6 +2837,107 @@ ${entriesHtml}
         document.querySelectorAll('.intensity-slider').forEach(function(el) { attachSliderScrollGuard(el); });
 
         loadJournal();
+
+        /* ---------- LISTENERS ---------- */
+        document.getElementById('btnBack').addEventListener('click', goHome);
+        document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+        document.getElementById('btnOpenFormModal').addEventListener('click', function() { openFormModal('create'); });
+        document.getElementById('btnStats').addEventListener('click', function() { window.location.href = 'stats.html'; });
+        document.getElementById('btnShowExportOptions').addEventListener('click', showExportOptions);
+
+        document.getElementById('detailModal').addEventListener('click', function(e) { closeModal(e, 'detailModal'); });
+        document.getElementById('detailModalContent').addEventListener('click', function(e) { e.stopPropagation(); });
+        document.getElementById('btnCloseDetailModal').addEventListener('click', function() { closeModal(null, 'detailModal'); });
+        document.getElementById('btnEditFromDetail').addEventListener('click', editFromDetail);
+        document.getElementById('btnConfirmDelete').addEventListener('click', confirmDelete);
+        document.getElementById('btnCloseDetailModalFooter').addEventListener('click', function() { closeModal(null, 'detailModal'); });
+
+        document.getElementById('btnCloseFormModal').addEventListener('click', function() { closeModal(null, 'formModal'); });
+        document.getElementById('btnOpenTriggersModal').addEventListener('click', openTriggersModal);
+        document.getElementById('btnOpenJCapsModal').addEventListener('click', openJCapsModal);
+        document.getElementById('btnOpenJBesModal').addEventListener('click', openJBesModal);
+        document.getElementById('btnOpenJEtatsModal').addEventListener('click', openJEtatsModal);
+        document.getElementById('btnCancelForm').addEventListener('click', function() { closeModal(null, 'formModal'); });
+        document.getElementById('btnSaveForm').addEventListener('click', saveForm);
+        document.getElementById('durH').addEventListener('click', function() { this.select(); });
+        document.getElementById('durH').addEventListener('change', function() { onDurInputChange('h', this.value); });
+        document.getElementById('durM').addEventListener('click', function() { this.select(); });
+        document.getElementById('durM').addEventListener('change', function() { onDurInputChange('m', this.value); });
+        document.querySelector('.duration-carousel').addEventListener('click', function(e) {
+            var btn = e.target.closest('[data-dur-unit]');
+            if (btn) adjustDur(btn.dataset.durUnit, parseInt(btn.dataset.durDir, 10));
+        });
+
+        document.getElementById('triggersModal').addEventListener('click', function(e) { closeModal(e, 'triggersModal'); });
+        document.getElementById('triggersModalContent').addEventListener('click', function(e) { e.stopPropagation(); });
+        document.getElementById('btnCloseTriggersModal').addEventListener('click', function() { closeModal(null, 'triggersModal'); });
+        document.getElementById('btnValidateTriggers').addEventListener('click', validateTriggers);
+        document.getElementById('triggersContent').addEventListener('click', function(e) {
+            var title = e.target.closest('.trigger-category-title');
+            if (title) toggleTriggerCategory(title);
+        });
+        document.getElementById('triggersContent').addEventListener('change', function(e) {
+            if (e.target.classList.contains('trigger-checkbox')) handleTriggerChange(e.target);
+        });
+
+        document.getElementById('exportModal').addEventListener('click', function(e) { closeModal(e, 'exportModal'); });
+        document.getElementById('exportModalContent').addEventListener('click', function(e) { e.stopPropagation(); });
+        document.getElementById('btnCloseExportModal').addEventListener('click', function() { closeModal(null, 'exportModal'); });
+        document.getElementById('exportPeriodChips').addEventListener('click', function(e) {
+            var btn = e.target.closest('.export-chip');
+            if (btn) selectExportPeriod(btn);
+        });
+        document.getElementById('exportContextChips').addEventListener('click', function(e) {
+            var btn = e.target.closest('.export-chip');
+            if (btn) selectExportContext(btn);
+        });
+        document.querySelector('.export-formats').addEventListener('click', function(e) {
+            var btn = e.target.closest('[data-export-format]');
+            if (btn) doExport(btn.dataset.exportFormat);
+        });
+
+        document.getElementById('deleteModal').addEventListener('click', function(e) { closeModal(e, 'deleteModal'); });
+        document.getElementById('deleteModalContent').addEventListener('click', function(e) { e.stopPropagation(); });
+        document.getElementById('btnCloseDeleteModal').addEventListener('click', function() { closeModal(null, 'deleteModal'); });
+        document.getElementById('btnCancelDelete').addEventListener('click', function() { closeModal(null, 'deleteModal'); });
+        document.getElementById('btnConfirmDeleteModal').addEventListener('click', confirmDeleteModal);
+
+        document.getElementById('btnCloseJBesModal').addEventListener('click', closeJBesModal);
+        document.getElementById('btnValiderJBes').addEventListener('click', validerJBes);
+        document.getElementById('jBesContent').addEventListener('click', function(e) {
+            var item = e.target.closest('.j-item');
+            if (item) toggleJItem(item);
+        });
+
+        document.getElementById('btnCloseJEtatsModal').addEventListener('click', closeJEtatsModal);
+        document.getElementById('btnValiderJEtats').addEventListener('click', validerJEtats);
+        document.getElementById('jEtatsContent').addEventListener('click', function(e) {
+            var item = e.target.closest('.j-item');
+            if (item) toggleJItem(item);
+        });
+
+        document.getElementById('btnCloseJCapsModal').addEventListener('click', closeJCapsModal);
+        document.getElementById('btnValiderJCaps').addEventListener('click', validerJCaps);
+        document.getElementById('jCapsContent').addEventListener('click', function(e) {
+            var item = e.target.closest('.j-cap-item');
+            if (item) cycleJCapState(item);
+        });
+
+        document.getElementById('journalTableBody').addEventListener('click', function(e) {
+            var badge = e.target.closest('[data-badge-type]');
+            if (badge) { e.stopPropagation(); openBadgeModal(badge, parseInt(badge.dataset.badgeIndex, 10), badge.dataset.badgeType); return; }
+            var editBtn = e.target.closest('.btn-edit-entry');
+            if (editBtn) { e.stopPropagation(); openFormModal('edit', parseInt(editBtn.dataset.entryIndex, 10)); return; }
+            var delBtn = e.target.closest('.btn-delete-entry');
+            if (delBtn) { e.stopPropagation(); deleteEntry(parseInt(delBtn.dataset.entryIndex, 10)); return; }
+        });
+
+        function showToast(msg, duration) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, duration || 3000);
+        }
     </script>
 
     <script>
@@ -2792,6 +2954,7 @@ ${entriesHtml}
             }
         });
     </script>
+    <div class="toast" id="toast"></div>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>

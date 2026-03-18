@@ -590,9 +590,9 @@ input[type=range]::-moz-range-thumb {
 <body>
 
 <header class="header">
-  <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
+  <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
   <h1 class="page-title">Sons relaxants</h1>
-  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
+  <button class="header-icon" id="btnAccueil" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>
 
 <div class="mix-cta" id="openMixer">
@@ -652,15 +652,15 @@ input[type=range]::-moz-range-thumb {
     </div>
     <div class="mixer-center">
       <div class="mixer-time" id="mixTime">⏱️ 10:00</div>
-      <button id="mixPlay"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:block"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg></button>
-      <button id="mixReset" style="font-size: 32px;">↻</button>
+      <button id="mixPlay" aria-label="Lecture / Pause"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:block"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg></button>
+      <button id="mixReset" style="font-size: 32px;" aria-label="Réinitialiser le mixeur">↻</button>
     </div>
 
     <!-- PRÉRÉGLAGES -->
     <div class="presets-section">
       <div class="presets-header">
         <span class="presets-label">Mes préréglages</span>
-        <button class="save-preset-btn" id="savePresetBtn" onclick="openSavePresetModal()">💾 Enregistrer ce mix</button>
+        <button class="save-preset-btn" id="savePresetBtn">💾 Enregistrer ce mix</button>
       </div>
       <div class="presets-chips" id="presetsChips"></div>
     </div>
@@ -670,30 +670,33 @@ input[type=range]::-moz-range-thumb {
 </div>
 
 <!-- MODALE CONFIRMATION SUPPRESSION PRÉRÉGLAGE -->
-<div class="delete-confirm-modal" id="deleteConfirmModal">
+<div class="delete-confirm-modal" id="deleteConfirmModal" role="dialog" aria-modal="true" aria-label="Supprimer ce préréglage">
   <div class="delete-confirm-box">
     <div class="delete-confirm-title">Supprimer ce préréglage ?</div>
     <div class="delete-confirm-name" id="deleteConfirmName"></div>
     <div class="delete-confirm-actions">
-      <button class="cancel-btn" onclick="cancelDeletePreset()">Annuler</button>
-      <button class="delete-btn" onclick="confirmDeletePreset()">Supprimer</button>
+      <button class="cancel-btn" id="btnCancelDelete">Annuler</button>
+      <button class="delete-btn" id="btnConfirmDelete">Supprimer</button>
     </div>
   </div>
 </div>
 
 <!-- MODALE NOMMAGE PRÉRÉGLAGE -->
-<div class="preset-name-modal" id="presetNameModal">
+<div class="preset-name-modal" id="presetNameModal" role="dialog" aria-modal="true" aria-label="Nommer ce mix">
   <div class="preset-name-box">
     <div class="preset-name-title">Nommer ce mix</div>
     <input type="text" id="presetNameInput" maxlength="24" placeholder="Ex : Soirée calme...">
     <div class="preset-name-actions">
-      <button class="cancel-btn" onclick="cancelSavePreset()">Annuler</button>
-      <button class="confirm-btn" onclick="confirmSavePreset()">💾 Enregistrer</button>
+      <button class="cancel-btn" id="btnCancelSave">Annuler</button>
+      <button class="confirm-btn" id="btnConfirmSave">💾 Enregistrer</button>
     </div>
   </div>
 </div>
 
 <script>
+const _a = new Audio();
+const AUDIO_EXT = _a.canPlayType('audio/ogg; codecs=opus') !== '' ? 'opus' : 'mp3';
+
 // ===== DONNÉES ET VARIABLES GLOBALES =====
 const soundsData = [
   "pluie sur la fenêtre",
@@ -880,8 +883,8 @@ function renderPresets() {
   } else {
     container.innerHTML = presets.map(p => `
       <div class="preset-chip" data-id="${p.id}">
-        <span class="preset-chip-name" onclick="loadPreset('${p.id}')">${p.name}</span>
-        <span class="preset-chip-delete" onclick="deletePreset('${p.id}')">✕</span>
+        <span class="preset-chip-name" data-preset-id="${p.id}">${p.name}</span>
+        <span class="preset-chip-delete" data-preset-id="${p.id}">✕</span>
       </div>
     `).join('');
   }
@@ -918,25 +921,55 @@ function loadPreset(id) {
 
 let _presetToDelete = null;
 
+function trapFocus(modal) {
+  const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const focusables = [...modal.querySelectorAll(sel)];
+  if (!focusables.length) return;
+  focusables[0].focus();
+  function handler(e) {
+    if (e.key !== 'Tab') return;
+    const idx = focusables.indexOf(document.activeElement);
+    if (e.shiftKey) {
+      if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+    } else {
+      if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+    }
+  }
+  modal._trapHandler = handler;
+  modal.addEventListener('keydown', handler);
+}
+function releaseTrap(modal) {
+  if (modal._trapHandler) {
+    modal.removeEventListener('keydown', modal._trapHandler);
+    delete modal._trapHandler;
+  }
+}
+
 function deletePreset(id) {
   const presets = getPresets();
   const preset = presets.find(p => p.id === id);
   if (!preset) return;
   _presetToDelete = id;
   document.getElementById('deleteConfirmName').textContent = `"${preset.name}"`;
-  document.getElementById('deleteConfirmModal').classList.add('active');
+  const m = document.getElementById('deleteConfirmModal');
+  m.classList.add('active');
+  trapFocus(m);
 }
 
 function cancelDeletePreset() {
   _presetToDelete = null;
-  document.getElementById('deleteConfirmModal').classList.remove('active');
+  const m = document.getElementById('deleteConfirmModal');
+  releaseTrap(m);
+  m.classList.remove('active');
 }
 
 function confirmDeletePreset() {
   if (!_presetToDelete) return;
   setPresets(getPresets().filter(p => p.id !== _presetToDelete));
   _presetToDelete = null;
-  document.getElementById('deleteConfirmModal').classList.remove('active');
+  const m = document.getElementById('deleteConfirmModal');
+  releaseTrap(m);
+  m.classList.remove('active');
   renderPresets();
 }
 
@@ -947,12 +980,15 @@ function openSavePresetModal() {
     return;
   }
   document.getElementById('presetNameInput').value = '';
-  document.getElementById('presetNameModal').classList.add('active');
-  setTimeout(() => document.getElementById('presetNameInput').focus(), 100);
+  const m = document.getElementById('presetNameModal');
+  m.classList.add('active');
+  trapFocus(m);
 }
 
 function cancelSavePreset() {
-  document.getElementById('presetNameModal').classList.remove('active');
+  const m = document.getElementById('presetNameModal');
+  releaseTrap(m);
+  m.classList.remove('active');
 }
 
 function confirmSavePreset() {
@@ -970,7 +1006,9 @@ function confirmSavePreset() {
   presets.push({ id: Date.now().toString(), name, volumes });
   setPresets(presets);
   renderPresets();
-  document.getElementById('presetNameModal').classList.remove('active');
+  const pm = document.getElementById('presetNameModal');
+  releaseTrap(pm);
+  pm.classList.remove('active');
 }
 
 // Valider avec Entrée dans le champ nom
@@ -1001,7 +1039,7 @@ soundsData.forEach(name => {
   }
   
   card.innerHTML = `
-    <img src="assets/images/${fileName}.jpg" alt="${displayName}" loading="lazy">
+    <img src="assets/images/${fileName}.jpg" alt="${displayName}" loading="lazy" width="200" height="100">
     <div class="card-title">${displayName}</div>
   `;
   
@@ -1020,19 +1058,21 @@ function openPlayer(fileName, displayName) {
   document.getElementById("playerImage").src = `assets/images/${fileName}.jpg`;
   document.getElementById("playerTitle").textContent = displayName;
   
-  audio.src = `assets/audio/${fileName}.mp3`;
+  audio.src = `assets/audio/${fileName}.${AUDIO_EXT}`;
   audio.loop = true;
   audio.play();
   
   playPauseBtn.innerHTML = SVG_PAUSE;
   playerModal.classList.add("active");
-  
+  trapFocus(playerModal);
+
   startTimer('simple');
 }
 
 function closePlayer() {
   audio.pause();
   pauseTimer();
+  releaseTrap(playerModal);
   playerModal.classList.remove("active");
 }
 
@@ -1052,6 +1092,7 @@ playPauseBtn.onclick = () => {
 // Ouvrir mini-modale timer depuis lecteur simple
 timerDisplay.onclick = () => {
   timerModal.classList.add("active");
+  trapFocus(timerModal);
 };
 
 // Fermer lecteur simple
@@ -1078,7 +1119,7 @@ function initMixer() {
     }
     
     // Créer l'élément audio
-    const a = new Audio(`assets/audio/${fileName}.mp3`);
+    const a = new Audio(`assets/audio/${fileName}.${AUDIO_EXT}`);
     a.loop = true;
     a.volume = 0;
     audioMap[name] = a;
@@ -1091,7 +1132,7 @@ function initMixer() {
     const div = document.createElement("div");
     div.className = "mixer-item";
     div.innerHTML = `
-      <img src="assets/images/${fileName}.jpg" alt="${displayName}" loading="lazy">
+      <img src="assets/images/${fileName}.jpg" alt="${displayName}" loading="lazy" width="46" height="46">
       <div class="mixer-item-content">
         <div class="mixer-item-name">${displayName}</div>
         <input type="range" min="0" max="100" value="${initialVolume}">
@@ -1182,6 +1223,7 @@ function openMixer() {
   }
 
   mixerModal.classList.add("active");
+  trapFocus(mixerModal);
   currentMode = 'mixer';
   renderPresets();
 
@@ -1192,6 +1234,7 @@ function openMixer() {
 
 function closeMixer() {
   Object.values(audioMap).forEach(a => a.pause());
+  releaseTrap(mixerModal);
   mixerModal.classList.remove("active");
   pauseTimer();
   mixerTimerStarted = false;
@@ -1224,6 +1267,7 @@ mixPlayBtn.onclick = () => {
 // Ouvrir mini-modale timer depuis mixeur
 mixTime.onclick = () => {
   timerModal.classList.add("active");
+  trapFocus(timerModal);
 };
 
 // Fermer mixeur
@@ -1248,6 +1292,7 @@ document.getElementById("resetTimerBtn").onclick = resetTimer;
 
 document.getElementById("closeTimer").onclick = (e) => {
   e.stopPropagation();
+  releaseTrap(timerModal);
   timerModal.classList.remove("active");
 };
 
@@ -1259,7 +1304,7 @@ updateTimerDisplay();
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.ready.then(registration => {
     if (registration.active) {
-      const audioUrls = mixSounds.map(name => `assets/audio/${name.toLowerCase()}.mp3`);
+      const audioUrls = mixSounds.map(name => `assets/audio/${name.toLowerCase()}.${AUDIO_EXT}`);
       registration.active.postMessage({ type: 'CACHE_AUDIO', urls: audioUrls });
     }
   });
@@ -1283,6 +1328,27 @@ timerModal.onclick = (e) => {
     timerModal.classList.remove("active");
   }
 };
+
+document.getElementById('btnRetour').addEventListener('click', function() {
+  if (localStorage.getItem('calmSource') === 'recap') {
+    localStorage.removeItem('calmSource');
+    location.href = 'recap.html';
+  } else {
+    location.href = 'index.html#calm';
+  }
+});
+document.getElementById('btnAccueil').addEventListener('click', function() { location.href = 'index.html'; });
+document.getElementById('savePresetBtn').addEventListener('click', openSavePresetModal);
+document.getElementById('btnCancelDelete').addEventListener('click', cancelDeletePreset);
+document.getElementById('btnConfirmDelete').addEventListener('click', confirmDeletePreset);
+document.getElementById('btnCancelSave').addEventListener('click', cancelSavePreset);
+document.getElementById('btnConfirmSave').addEventListener('click', confirmSavePreset);
+document.getElementById('presetsChips').addEventListener('click', function(e) {
+  var nameEl = e.target.closest('.preset-chip-name');
+  var deleteEl = e.target.closest('.preset-chip-delete');
+  if (nameEl) loadPreset(nameEl.dataset.presetId);
+  if (deleteEl) deletePreset(deleteEl.dataset.presetId);
+});
 </script>
 
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closePlayer(); closeMixer(); document.getElementById('timerModal').classList.remove('active'); cancelSavePreset(); cancelDeletePreset(); } });</script>

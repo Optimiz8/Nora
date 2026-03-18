@@ -117,7 +117,9 @@ Ajouter dans `faq.html` une entrée : *"Comment déterminer le début et la fin 
 1. Tests à faire avant de continuer
    - Tester App Shortcuts Android (raccourcis appui long)
    - Tester import / export / sauvegarde des données complètes
-2. Tutoriel V2                               [🔜 PROCHAIN CHANTIER — améliorations à définir]
+   - Tester sons sur Safari iOS < 17 (fallback MP3)
+2. Audit qualité ✅                          [livré en V2.9.1 — sécurité, performance, compat]
+3. Tutoriel V2                               [🔜 PROCHAIN CHANTIER — améliorations à définir]
 3. Service Worker / offline garanti ✅       [livré en V2.8 — prérequis pour Capacitor]
 4. FAQ — début et fin d'une crise autistique
 5. Export sélectif des crises

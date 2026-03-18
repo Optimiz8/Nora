@@ -366,9 +366,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Cartes de communication</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -377,7 +377,7 @@
         <!-- Toggle icônes -->
         <div class="icons-toggle-row">
             <div class="icons-toggle-label">Afficher les icônes</div>
-            <div class="toggle-switch" id="iconsToggle" onclick="toggleIcons()">
+            <div class="toggle-switch" id="iconsToggle">
                 <div class="toggle-knob"></div>
             </div>
         </div>
@@ -386,12 +386,12 @@
     </main>
 
     <footer class="footer">
-        <button class="footer-button center" onclick="openModal()">+ Ajouter une carte</button>
+        <button class="footer-button center" id="btnAddCard">+ Ajouter une carte</button>
     </footer>
 
     <!-- Modal ajout carte -->
-    <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
-        <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-label="Nouvelle carte">
+        <div class="modal-sheet" id="modalSheet">
             <div class="modal-title">Nouvelle carte</div>
 
             <label class="modal-label">Emoji
@@ -400,7 +400,7 @@
             <div class="emoji-picker-row">
                 <div class="emoji-preview" id="emojiPreview">💬</div>
                 <div class="emoji-input-wrap">
-                    <input type="text" class="emoji-input" id="emojiInput" maxlength="4" placeholder="💬" oninput="updateEmojiPreview()">
+                    <input type="text" class="emoji-input" id="emojiInput" maxlength="4" placeholder="💬">
                 </div>
             </div>
 
@@ -411,15 +411,15 @@
             <textarea class="modal-input modal-textarea" id="sousTexteInput" placeholder="Ex : Ne me touchez pas, même pour aider. Merci." maxlength="200"></textarea>
 
             <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal()">Annuler</button>
-                <button class="btn-save" onclick="saveCard()">Enregistrer</button>
+                <button class="btn-cancel" id="btnModalCancel">Annuler</button>
+                <button class="btn-save" id="btnModalSave">Enregistrer</button>
             </div>
         </div>
     </div>
 
     <!-- Fullscreen overlay -->
-    <div class="fullscreen-overlay" id="fullscreenOverlay" onclick="closeOverlay()">
-        <button class="overlay-close" onclick="event.stopPropagation(); closeOverlay();" aria-label="Fermer">×</button>
+    <div class="fullscreen-overlay" id="fullscreenOverlay" role="dialog" aria-modal="true" aria-label="Carte de communication">
+        <button class="overlay-close" id="btnCloseOverlay" aria-label="Fermer">×</button>
         <div class="overlay-icon-small" id="overlayIcon"></div>
         <div class="overlay-text" id="overlayText"></div>
         <div class="overlay-subtext" id="overlaySubtext"></div>
@@ -428,6 +428,10 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        function escapeHtml(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
         const DEFAULT_CARDS = [
             { id: '1', emoji: '🚫', text: 'Ne me touchez pas', sousTexte: 'Ne me touchez pas, même pour aider. Merci.' },
             { id: '2', emoji: '🤫', text: 'Je ne peux pas parler', sousTexte: 'Je suis temporairement mutique. Je vous entends mais je ne peux pas répondre verbalement. C\'est involontaire' },
@@ -499,7 +503,8 @@
         /* ---------- FORMAT ---------- */
         function formatSubtext(text) {
             if (!text) return '';
-            return text.replace(/\. /g, '.<br>').replace(/\? /g, '?<br>');
+            const safe = escapeHtml(text);
+            return safe.replace(/\. /g, '.<br>').replace(/\? /g, '?<br>');
         }
 
         /* ---------- RENDER ---------- */
@@ -519,13 +524,41 @@
             }
 
             grid.innerHTML = cards.map(card => `
-                <div class="com-card" onclick="openCard('${card.id}')" role="button" aria-label="${card.text}">
+                <div class="com-card" data-card-id="${card.id}" role="button" aria-label="${escapeHtml(card.text)}">
                     ${iconsOn ? `<div class="card-emoji-small">${card.emoji}</div>` : ''}
-                    <div class="card-text">${card.text}</div>
+                    <div class="card-text">${escapeHtml(card.text)}</div>
                 </div>
             `).join('');
 
             adjustCardFonts();
+        }
+
+        function trapFocus(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
         }
 
         /* ---------- OPEN CARD ---------- */
@@ -551,11 +584,15 @@
                 subEl.style.display = 'none';
             }
 
-            document.getElementById('fullscreenOverlay').classList.add('visible');
+            const ov = document.getElementById('fullscreenOverlay');
+            ov.classList.add('visible');
+            trapFocus(ov);
         }
 
         function closeOverlay() {
-            document.getElementById('fullscreenOverlay').classList.remove('visible');
+            const ov = document.getElementById('fullscreenOverlay');
+            releaseTrap(ov);
+            ov.classList.remove('visible');
         }
 
         /* ---------- MODAL ---------- */
@@ -564,12 +601,15 @@
             document.getElementById('emojiPreview').textContent = '💬';
             document.getElementById('textInput').value = '';
             document.getElementById('sousTexteInput').value = '';
-            document.getElementById('modalBackdrop').classList.add('visible');
-            setTimeout(() => document.getElementById('textInput').focus(), 100);
+            const m = document.getElementById('modalBackdrop');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeModal() {
-            document.getElementById('modalBackdrop').classList.remove('visible');
+            const m = document.getElementById('modalBackdrop');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function handleBackdropClick(e) {
@@ -611,7 +651,23 @@
             }
         });
 
-        function goBack() { history.back(); }
+        function goBack() { if (history.length > 1) { history.back(); } else { location.href = 'index.html'; } }
+
+        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
+        document.getElementById('iconsToggle').addEventListener('click', toggleIcons);
+        document.getElementById('btnAddCard').addEventListener('click', openModal);
+        document.getElementById('modalBackdrop').addEventListener('click', handleBackdropClick);
+        document.getElementById('modalSheet').addEventListener('click', function(e) { e.stopPropagation(); });
+        document.getElementById('btnModalCancel').addEventListener('click', closeModal);
+        document.getElementById('btnModalSave').addEventListener('click', saveCard);
+        document.getElementById('fullscreenOverlay').addEventListener('click', closeOverlay);
+        document.getElementById('btnCloseOverlay').addEventListener('click', function(e) { e.stopPropagation(); closeOverlay(); });
+        document.getElementById('emojiInput').addEventListener('input', updateEmojiPreview);
+        document.getElementById('cardsGrid').addEventListener('click', function(e) {
+            var card = e.target.closest('.com-card');
+            if (card) openCard(card.dataset.cardId);
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             initToggle();

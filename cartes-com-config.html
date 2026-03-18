@@ -130,8 +130,8 @@
         }
 
         .btn-icon {
-            width: 34px;
-            height: 34px;
+            width: 44px;
+            height: 44px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
@@ -402,13 +402,23 @@
 
         .empty-icon { font-size: 40px; margin-bottom: 12px; }
         .empty-text { font-size: 15px; }
+
+        /* ---------- MODALE CONFIRM ---------- */
+        #confirmModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+        #confirmModal.visible { display: flex; }
+        #confirmModal .confirm-box { background: var(--bg); border-radius: 16px; padding: 24px; max-width: 320px; width: 100%; }
+        #confirmModal .confirm-msg { color: var(--light); font-size: 16px; margin-bottom: 20px; line-height: 1.5; }
+        #confirmModal .confirm-actions { display: flex; gap: 12px; }
+        #confirmModal .confirm-actions button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; }
+        #confirmModal .btn-confirm-cancel { background: rgba(245,228,204,0.15); color: var(--light); }
+        #confirmModal .btn-confirm-ok { background: var(--accent); color: var(--dark); }
     </style>
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Cartes de communication</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -420,19 +430,19 @@
                 <div class="setting-label">Afficher les icônes</div>
                 <div class="setting-sub">Petite icône en haut à gauche de chaque carte</div>
             </div>
-            <div class="toggle-switch" id="iconsToggle" onclick="toggleIcons()">
+            <div class="toggle-switch" id="iconsToggle">
                 <div class="toggle-knob"></div>
             </div>
         </div>
 
         <div class="cards-list" id="cardsList"></div>
-        <button class="add-card-btn" onclick="openModal(null)">+ Ajouter une carte</button>
-        <button class="reset-btn" onclick="confirmReset()">Réinitialiser les cartes par défaut</button>
+        <button class="add-card-btn" id="btnAddCard">+ Ajouter une carte</button>
+        <button class="reset-btn" id="btnReset">Réinitialiser les cartes par défaut</button>
     </main>
 
     <!-- Modal ajout / modification -->
-    <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
-        <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-label="Carte de communication">
+        <div class="modal-sheet" id="modalSheet">
             <div class="modal-title" id="modalTitle">Nouvelle carte</div>
 
             <label class="modal-label">Emoji
@@ -441,12 +451,12 @@
             <div class="emoji-picker-row">
                 <div class="emoji-preview" id="emojiPreview">💬</div>
                 <div class="emoji-input-wrap">
-                    <input type="text" class="emoji-input" id="emojiInput" maxlength="4" placeholder="💬" oninput="updateEmojiPreview()">
+                    <input type="text" class="emoji-input" id="emojiInput" maxlength="4" placeholder="💬">
                 </div>
             </div>
 
             <label class="modal-label" for="textInput">Texte principal</label>
-            <input type="text" class="modal-input" id="textInput" placeholder="Ex : Ne me touchez pas" maxlength="60" oninput="updateCardPreview()">
+            <input type="text" class="modal-input" id="textInput" placeholder="Ex : Ne me touchez pas" maxlength="60">
 
             <div class="card-preview-wrap">
                 <div class="card-preview-label">Aperçu de la carte</div>
@@ -460,13 +470,23 @@
             <textarea class="modal-input modal-textarea" id="sousTexteInput" placeholder="Ex : Ne me touchez pas, même pour aider. Merci." maxlength="200"></textarea>
 
             <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeModal()">Annuler</button>
-                <button class="btn-save" onclick="saveCard()">Enregistrer</button>
+                <button class="btn-cancel" id="btnModalCancel">Annuler</button>
+                <button class="btn-save" id="btnModalSave">Enregistrer</button>
             </div>
         </div>
     </div>
 
     <div class="toast" id="toast"></div>
+
+    <div id="confirmModal" role="dialog" aria-modal="true">
+        <div class="confirm-box">
+            <p class="confirm-msg" id="confirmMsg"></p>
+            <div class="confirm-actions">
+                <button class="btn-confirm-cancel" id="confirmCancel">Annuler</button>
+                <button class="btn-confirm-ok" id="confirmOk">Confirmer</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const DEFAULT_CARDS = [
@@ -537,10 +557,10 @@
                         ${card.sousTexte ? `<div class="card-row-sub">${card.sousTexte}</div>` : ''}
                     </div>
                     <div class="card-row-actions">
-                        <button class="btn-icon btn-move" onclick="moveCard('${card.id}', 'up')" aria-label="Monter" ${index === 0 ? 'disabled' : ''}>▲</button>
-                        <button class="btn-icon btn-move" onclick="moveCard('${card.id}', 'down')" aria-label="Descendre" ${index === cards.length - 1 ? 'disabled' : ''}>▼</button>
-                        <button class="btn-icon btn-edit" onclick="openModal('${card.id}')" aria-label="Modifier">✏️</button>
-                        <button class="btn-icon btn-delete" onclick="deleteCard('${card.id}')" aria-label="Supprimer">🗑️</button>
+                        <button class="btn-icon btn-move btn-move-up" data-card-id="${card.id}" aria-label="Monter" ${index === 0 ? 'disabled' : ''}>▲</button>
+                        <button class="btn-icon btn-move btn-move-down" data-card-id="${card.id}" aria-label="Descendre" ${index === cards.length - 1 ? 'disabled' : ''}>▼</button>
+                        <button class="btn-icon btn-edit btn-edit-card" data-card-id="${card.id}" aria-label="Modifier">✏️</button>
+                        <button class="btn-icon btn-delete btn-delete-card" data-card-id="${card.id}" aria-label="Supprimer">🗑️</button>
                     </div>
                 </div>
             `).join('');
@@ -557,6 +577,34 @@
             }
             saveCards(cards);
             renderCards();
+        }
+
+        function trapFocus(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
         }
 
         /* ---------- MODAL ---------- */
@@ -581,12 +629,15 @@
             }
 
             updateCardPreview();
-            document.getElementById('modalBackdrop').classList.add('visible');
-            setTimeout(() => document.getElementById('textInput').focus(), 100);
+            const m = document.getElementById('modalBackdrop');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeModal() {
-            document.getElementById('modalBackdrop').classList.remove('visible');
+            const m = document.getElementById('modalBackdrop');
+            releaseTrap(m);
+            m.classList.remove('visible');
             editingId = null;
         }
 
@@ -652,18 +703,20 @@
 
         /* ---------- DELETE ---------- */
         function deleteCard(id) {
-            if (!confirm('Supprimer cette carte ?')) return;
-            saveCards(getCards().filter(c => c.id !== id));
-            renderCards();
-            showToast('Carte supprimée');
+            showConfirm('Supprimer cette carte ?', function() {
+                saveCards(getCards().filter(c => c.id !== id));
+                renderCards();
+                showToast('Carte supprimée');
+            });
         }
 
         /* ---------- RESET ---------- */
         function confirmReset() {
-            if (!confirm('Remettre toutes les cartes par défaut ? Tes modifications seront perdues.')) return;
-            localStorage.setItem('cartesCommunication', JSON.stringify(DEFAULT_CARDS));
-            renderCards();
-            showToast('Cartes réinitialisées');
+            showConfirm('Remettre toutes les cartes par défaut ? Tes modifications seront perdues.', function() {
+                localStorage.setItem('cartesCommunication', JSON.stringify(DEFAULT_CARDS));
+                renderCards();
+                showToast('Cartes réinitialisées');
+            });
         }
 
         /* ---------- TOAST ---------- */
@@ -680,12 +733,48 @@
             else { window.location.href = 'parametres.html'; }
         }
 
+        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
+        document.getElementById('iconsToggle').addEventListener('click', toggleIcons);
+        document.getElementById('btnAddCard').addEventListener('click', function() { openModal(null); });
+        document.getElementById('btnReset').addEventListener('click', confirmReset);
+        document.getElementById('modalBackdrop').addEventListener('click', handleBackdropClick);
+        document.getElementById('modalSheet').addEventListener('click', function(e) { e.stopPropagation(); });
+        document.getElementById('emojiInput').addEventListener('input', updateEmojiPreview);
+        document.getElementById('textInput').addEventListener('input', updateCardPreview);
+        document.getElementById('btnModalCancel').addEventListener('click', closeModal);
+        document.getElementById('btnModalSave').addEventListener('click', saveCard);
+        document.getElementById('cardsList').addEventListener('click', function(e) {
+            var upBtn = e.target.closest('.btn-move-up');
+            var downBtn = e.target.closest('.btn-move-down');
+            var editBtn = e.target.closest('.btn-edit-card');
+            var deleteBtn = e.target.closest('.btn-delete-card');
+            if (upBtn) moveCard(upBtn.dataset.cardId, 'up');
+            if (downBtn) moveCard(downBtn.dataset.cardId, 'down');
+            if (editBtn) openModal(editBtn.dataset.cardId);
+            if (deleteBtn) deleteCard(deleteBtn.dataset.cardId);
+        });
+
         window.addEventListener('DOMContentLoaded', () => {
             initToggle();
             renderCards();
         });
 
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+        var _confirmCb = null;
+        function showConfirm(msg, onOk) {
+            document.getElementById('confirmMsg').textContent = msg;
+            _confirmCb = onOk;
+            document.getElementById('confirmModal').classList.add('visible');
+        }
+        document.getElementById('confirmCancel').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            _confirmCb = null;
+        });
+        document.getElementById('confirmOk').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            if (_confirmCb) { _confirmCb(); _confirmCb = null; }
+        });
     </script>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>

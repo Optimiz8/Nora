@@ -388,6 +388,7 @@ h2 {
   align-items: center;
   justify-content: center;
   z-index: 2000;
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
 
@@ -696,9 +697,9 @@ h2 {
 <body>
 
 <header class="header">
-  <button class="back-button" id="headerBackBtn" onclick="handleHeaderBack()" aria-label="Retour">⬅️</button>
+  <button class="back-button" id="headerBackBtn" aria-label="Retour">⬅️</button>
   <h1 class="page-title">Exercices de respiration</h1>
-  <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
+  <button class="header-icon" id="btnHome" style="margin-left: auto;" aria-label="Accueil">🏠</button>
 </header>
 
 <div class="main" id="setup">
@@ -707,7 +708,7 @@ h2 {
   <div>
     <div class="section-header">
       <h2>Programmes</h2>
-      <button class="info-btn" onclick="openInfoModal()" aria-label="En savoir plus sur les programmes">ⓘ</button>
+      <button class="info-btn" id="btnInfoModal" aria-label="En savoir plus sur les programmes">ⓘ</button>
     </div>
     <div class="prog-grid">
       <button class="prog-btn active" id="progCoherence">
@@ -751,22 +752,22 @@ h2 {
   <div class="stepper-section">
     <h2>Durée</h2>
     <div class="stepper">
-      <button class="stepper-btn" id="stepperMinus" onclick="stepDuration(-1)">−</button>
+      <button class="stepper-btn" id="stepperMinus">−</button>
       <div class="stepper-display">
         <span class="stepper-value" id="stepperValue">2</span>
         <span class="stepper-unit">minutes</span>
       </div>
-      <button class="stepper-btn" id="stepperPlus" onclick="stepDuration(1)">+</button>
+      <button class="stepper-btn" id="stepperPlus">+</button>
     </div>
     <div class="stepper-dots" id="stepperDots"></div>
   </div>
 
-  <div class="setup-stats" id="setupStats" onclick="openStatsModal()"></div>
+  <div class="setup-stats" id="setupStats"></div>
 
 </div>
 
 <footer class="start-footer" id="startFooter">
-  <button class="start-btn" onclick="start()">Commencer</button>
+  <button class="start-btn" id="btnStart">Commencer</button>
 </footer>
 
 <div id="breathing">
@@ -774,7 +775,7 @@ h2 {
     <div class="visual" id="visual"></div>
     <div class="text" id="label">Prêt</div>
     <div class="progress-bar"><div class="progress" id="progress"></div></div>
-    <button class="back-btn" onclick="back()">⬅️ Retour</button>
+    <button class="back-btn" id="btnBackBreathing">⬅️ Retour</button>
   </div>
 </div>
 
@@ -787,8 +788,8 @@ h2 {
     <p class="end-modal-message" id="endMessage"></p>
     <div class="end-stats-block" id="endStats"></div>
     <div class="modal-buttons" style="margin-top:20px;">
-      <button class="modal-btn modal-btn-primary" onclick="restartExercise()">Recommencer</button>
-      <button class="modal-btn modal-btn-secondary" onclick="endExercise()">Terminer</button>
+      <button class="modal-btn modal-btn-primary" id="btnRestartExercise">Recommencer</button>
+      <button class="modal-btn modal-btn-secondary" id="btnEndExercise">Terminer</button>
     </div>
   </div>
 </div>
@@ -796,7 +797,7 @@ h2 {
 <!-- MODAL INFO PROGRAMMES -->
 <div class="modal-overlay" id="infoModal" role="dialog" aria-modal="true" aria-label="À propos des programmes">
   <div class="modal-content">
-    <div class="modal-close" onclick="closeInfoModal()" role="button" aria-label="Fermer">✕</div>
+    <div class="modal-close" id="btnCloseInfoModal" role="button" aria-label="Fermer">✕</div>
     <div class="modal-title">Les programmes</div>
     <div style="display:flex; flex-direction:column; gap:18px; color:var(--light);">
       <div>
@@ -809,7 +810,7 @@ h2 {
       </div>
     </div>
     <div class="modal-buttons" style="margin-top:24px;">
-      <button class="modal-btn modal-btn-primary" onclick="closeInfoModal()">Compris</button>
+      <button class="modal-btn modal-btn-primary" id="btnCloseInfoModalBtn">Compris</button>
     </div>
   </div>
 </div>
@@ -817,7 +818,7 @@ h2 {
 <!-- MODAL PERSONNALISATION -->
 <div class="modal-overlay" id="customModal" role="dialog" aria-modal="true" aria-label="Programme personnalisé">
   <div class="modal-content">
-    <div class="modal-close" onclick="closeCustomModal()" role="button" aria-label="Fermer">✕</div>
+    <div class="modal-close" id="btnCloseCustomModalX" role="button" aria-label="Fermer">✕</div>
     <div class="modal-title">Programme personnalisé</div>
     <div class="modal-form">
       <div class="form-group">
@@ -853,17 +854,17 @@ h2 {
         </select>
       </div>
       <div class="modal-buttons">
-        <button class="modal-btn modal-btn-primary" onclick="saveCustomProgram()">Valider</button>
-        <button class="modal-btn modal-btn-secondary" onclick="closeCustomModal()">Annuler</button>
+        <button class="modal-btn modal-btn-primary" id="btnSaveCustomProgram">Valider</button>
+        <button class="modal-btn modal-btn-secondary" id="btnCloseCustomModal">Annuler</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- MODALE HISTORIQUE STATS -->
-<div class="modal-overlay" id="statsModal" role="dialog" aria-modal="true" aria-label="Mes sessions de respiration" onclick="closeStatsModal()">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <div class="modal-close" onclick="closeStatsModal()" role="button" aria-label="Fermer">✕</div>
+<div class="modal-overlay" id="statsModal" role="dialog" aria-modal="true" aria-label="Mes sessions de respiration">
+  <div class="modal-content" id="statsModalContent">
+    <div class="modal-close" id="btnCloseStatsModal" role="button" aria-label="Fermer">✕</div>
     <div class="modal-title">Mes sessions</div>
     <div id="statsModalBody"></div>
   </div>
@@ -958,11 +959,15 @@ function openStatsModal() {
   document.getElementById('statsModalBody').innerHTML =
     rows + (progLine ? `<div class="stats-hist-prog">${progLine}</div>` : '');
 
-  document.getElementById('statsModal').classList.add('visible');
+  const sm = document.getElementById('statsModal');
+  sm.classList.add('visible');
+  trapFocus(sm);
 }
 
 function closeStatsModal() {
-  document.getElementById('statsModal').classList.remove('visible');
+  const sm = document.getElementById('statsModal');
+  releaseTrap(sm);
+  sm.classList.remove('visible');
 }
 
 /* ---------- AUDIO ---------- */
@@ -1139,24 +1144,57 @@ function handleHeaderBack() {
   }
 }
 
+/* ---------- FOCUS TRAP ---------- */
+function trapFocus(modal) {
+  const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const focusables = [...modal.querySelectorAll(sel)];
+  if (!focusables.length) return;
+  focusables[0].focus();
+  function handler(e) {
+    if (e.key !== 'Tab') return;
+    const idx = focusables.indexOf(document.activeElement);
+    if (e.shiftKey) {
+      if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+    } else {
+      if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+    }
+  }
+  modal._trapHandler = handler;
+  modal.addEventListener('keydown', handler);
+}
+function releaseTrap(modal) {
+  if (modal._trapHandler) {
+    modal.removeEventListener('keydown', modal._trapHandler);
+    delete modal._trapHandler;
+  }
+}
+
 /* ---------- INFO MODAL ---------- */
 function openInfoModal() {
-  document.getElementById('infoModal').classList.add('visible');
+  const m = document.getElementById('infoModal');
+  m.classList.add('visible');
+  trapFocus(m);
 }
 
 function closeInfoModal() {
-  document.getElementById('infoModal').classList.remove('visible');
+  const m = document.getElementById('infoModal');
+  releaseTrap(m);
+  m.classList.remove('visible');
 }
 
 /* ---------- CUSTOM MODAL ---------- */
 function openCustomModal() {
   document.getElementById('customInhale').value = localStorage.getItem('customInhale') || '5';
   document.getElementById('customExhale').value = localStorage.getItem('customExhale') || '5';
-  document.getElementById('customModal').classList.add('visible');
+  const m = document.getElementById('customModal');
+  m.classList.add('visible');
+  trapFocus(m);
 }
 
 function closeCustomModal() {
-  document.getElementById('customModal').classList.remove('visible');
+  const m = document.getElementById('customModal');
+  releaseTrap(m);
+  m.classList.remove('visible');
 }
 
 function saveCustomProgram() {
@@ -1343,12 +1381,16 @@ function showEndModal() {
     `<div class="end-stat-row"><span class="end-stat-label">Au total</span><span class="end-stat-value">${statsAfter.totalSessions} session${pl(statsAfter.totalSessions)} · ${formatMin(statsAfter.totalMin)}</span></div>`;
 
   document.getElementById('progress').style.width = '100%';
-  document.getElementById('endModal').classList.add('visible');
+  const em = document.getElementById('endModal');
+  em.classList.add('visible');
+  trapFocus(em);
   wakeLockReleaseTimer = setTimeout(() => releaseWakeLock(), 35000);
 }
 
 function restartExercise() {
-  document.getElementById('endModal').classList.remove('visible');
+  const em = document.getElementById('endModal');
+  releaseTrap(em);
+  em.classList.remove('visible');
   clearTimeout(wakeLockReleaseTimer);
   requestWakeLock();
   remaining = minutes * 60;
@@ -1362,6 +1404,7 @@ function restartExercise() {
 }
 
 function endExercise() {
+  releaseTrap(document.getElementById('endModal'));
   document.getElementById('endModal').classList.remove('visible');
   releaseWakeLock();
   back();
@@ -1470,6 +1513,26 @@ document.getElementById('breathing').addEventListener('click', (e) => {
       updateProgressContinuous();
     }
   }
+
+  document.getElementById('headerBackBtn').addEventListener('click', handleHeaderBack);
+  document.getElementById('btnHome').addEventListener('click', function() { location.href = 'index.html'; });
+  document.getElementById('btnInfoModal').addEventListener('click', openInfoModal);
+  document.getElementById('stepperMinus').addEventListener('click', function() { stepDuration(-1); });
+  document.getElementById('stepperPlus').addEventListener('click', function() { stepDuration(1); });
+  document.getElementById('setupStats').addEventListener('click', openStatsModal);
+  document.getElementById('btnStart').addEventListener('click', start);
+  document.getElementById('btnBackBreathing').addEventListener('click', back);
+  document.getElementById('btnRestartExercise').addEventListener('click', restartExercise);
+  document.getElementById('btnEndExercise').addEventListener('click', endExercise);
+  document.getElementById('btnCloseInfoModal').addEventListener('click', closeInfoModal);
+  document.getElementById('btnCloseInfoModalBtn').addEventListener('click', closeInfoModal);
+  document.getElementById('btnCloseCustomModalX').addEventListener('click', closeCustomModal);
+  document.getElementById('btnSaveCustomProgram').addEventListener('click', saveCustomProgram);
+  document.getElementById('btnCloseCustomModal').addEventListener('click', closeCustomModal);
+  document.getElementById('statsModal').addEventListener('click', function(e) {
+    if (!document.getElementById('statsModalContent').contains(e.target)) closeStatsModal();
+  });
+  document.getElementById('btnCloseStatsModal').addEventListener('click', closeStatsModal);
 });
 </script>
 

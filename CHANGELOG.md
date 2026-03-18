@@ -26,6 +26,17 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - **sons.html** — bug slider anti-scroll : remplacé l'heuristique JS fragile (détection d'angle) par `touch-action: pan-x` sur les sliders du mixeur, qui délègue la discrimination horizontal/vertical au navigateur de façon fiable
 - **sons.html** — sons silencieux hors-ligne : au chargement de la page, tous les fichiers audio sont maintenant mis en cache en arrière-plan via le Service Worker (`CACHE_AUDIO`), ce qui garantit leur disponibilité lors de la prochaine utilisation hors-ligne
 
+### Corrigé — Audit sécurité & performance
+- **Manifest PWA** : icône 192×192 ajoutée (obligatoire pour l'installation Android), tailles corrigées (1024 déclarées au lieu de 512), `apple-touch-icon` 180×180, favicon 32×32 desktop
+- **XSS** (`contacts-urgence.html`) : `escapeHtml()` appliquée sur `nom`, `lien`, `téléphone` et `remarque` des contacts
+- **Dépendance CDN supprimée** : `qrcodejs` téléchargé localement (`assets/js/qrcode.min.js`) — la carte QR fonctionne désormais hors-ligne
+- **Performance** : `defer` ajouté sur `<script src="nora-data.js">` dans les 16 pages qui l'incluent — le rendu n'est plus bloqué
+- **Audio MP3 → Opus** : tous les fichiers audio convertis au format Opus (−70% de taille, 233 Mo → 69 Mo), avec détection automatique et fallback MP3 pour Safari iOS < 17
+- **CLS** (`sons.html`) : attributs `width`/`height` ajoutés sur les images des cartes sons et du mixeur
+- **Compatibilité Safari** (`coherence.html`) : `-webkit-backdrop-filter` ajouté
+- **Manifest** (`profil-crise.html`) : lien `manifest.webmanifest` manquant ajouté
+- **Confidentialité** : mention explicite dans `confidentialite.html` que les données en localStorage sont lisibles par toute personne ayant accès au navigateur déverrouillé
+
 ---
 
 ## [2.8.0] — mars 2026

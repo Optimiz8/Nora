@@ -87,9 +87,9 @@
         </head>
         <body>
         <header class="header">
-            <button class="back-button" onclick="if(localStorage.getItem('calmSource')==='recap'){localStorage.removeItem('calmSource');location.href='recap.html'}else{location.href='index.html#calm'}" aria-label="Retour">⬅️</button>
+            <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
             <h1 class="page-title">Conseils</h1>
-            <button class="header-icon" onclick="location.href='index.html'" style="margin-left: auto;" aria-label="Accueil">🏠</button>
+            <button class="header-icon" id="btnAccueil" style="margin-left: auto;" aria-label="Accueil">🏠</button>
         </header>
 
         <main class="main-content">
@@ -103,7 +103,7 @@
 
             <p class="note">
                 Prenez le temps de respirer <img src="assets/images/shortcut-coherence.svg" alt="" style="width:20px;height:20px;border-radius:4px;vertical-align:middle"><br>
-                <a onclick="openBreathing()">Exercices de respiration</a>
+                <a id="linkBreathing">Exercices de respiration</a>
             </p>
         </main>
 
@@ -141,6 +141,17 @@
         function openBreathing() {
             window.location.href = 'coherence.html';
         }
+
+        document.getElementById('btnRetour').addEventListener('click', function() {
+            if (localStorage.getItem('calmSource') === 'recap') {
+                localStorage.removeItem('calmSource');
+                location.href = 'recap.html';
+            } else {
+                location.href = 'index.html#calm';
+            }
+        });
+        document.getElementById('btnAccueil').addEventListener('click', function() { location.href = 'index.html'; });
+        document.getElementById('linkBreathing').addEventListener('click', openBreathing);
 
         // Initialisation
         loadAdvice();

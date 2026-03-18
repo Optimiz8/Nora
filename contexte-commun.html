@@ -9,7 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Nora – Profil commun</title>
     <style>
         body {
@@ -440,13 +440,23 @@
             border: 2px solid rgba(244, 67, 54, 0.3) !important;
             font-size: 15px;
         }
+
+        /* ---------- MODALE CONFIRM ---------- */
+        #confirmModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+        #confirmModal.visible { display: flex; }
+        #confirmModal .confirm-box { background: var(--bg); border-radius: 16px; padding: 24px; max-width: 320px; width: 100%; }
+        #confirmModal .confirm-msg { color: var(--light); font-size: 16px; margin-bottom: 20px; line-height: 1.5; }
+        #confirmModal .confirm-actions { display: flex; gap: 12px; }
+        #confirmModal .confirm-actions button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; }
+        #confirmModal .btn-confirm-cancel { background: rgba(245,228,204,0.15); color: var(--light); }
+        #confirmModal .btn-confirm-ok { background: var(--accent); color: var(--dark); }
     </style>
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
         <h1 class="page-title">Profil commun</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnHome" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -458,7 +468,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher la présentation</div>
-                    <div class="toggle-switch active" id="togglePresentation" onclick="toggleSection('presentation')">
+                    <div class="toggle-switch active" id="togglePresentation" data-toggle-section="presentation">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -467,8 +477,8 @@
                           placeholder="Ton texte de présentation..."
                           oninput="markAsModified()"></textarea>
                 <div style="display: flex; gap: 8px; margin-top: 8px; justify-content: center;">
-                    <button onclick="insertDefaultPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
-                    <button onclick="clearPresentation()" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
+                    <button id="btnInsertDefaultPresentation" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">📝 Message par défaut</button>
+                    <button id="btnClearPresentation" style="background:rgba(46,58,89,0.08);border:1px solid rgba(46,58,89,0.15);color:var(--dark);font-size:13px;cursor:pointer;padding:6px 12px;border-radius:8px;display:flex;align-items:center;gap:4px;">🗑️ Effacer</button>
                 </div>
             </div>
         </section>
@@ -480,25 +490,25 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les capacités</div>
-                    <div class="toggle-switch active" id="toggleCapacites" onclick="toggleSection('capacites')">
+                    <div class="toggle-switch active" id="toggleCapacites" data-toggle-section="capacites">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" id="btnCapacites" onclick="toggleExpandable('capacites')">
+                <button class="manage-button" id="btnCapacites" data-expandable="capacites">
                     <span class="manage-button-text">Gérer les capacités</span>
                     <span class="manage-button-count" id="countCapacites">(0/18)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listCapacites">
                     <div class="select-buttons" id="selectCapacites">
-                        <button class="select-btn" onclick="selectAll('capacites')">✅ Tout afficher</button>
-                        <button class="select-btn" onclick="deselectAll('capacites')">⚪ Tout masquer</button>
+                        <button class="select-btn" data-select-all="capacites">✅ Tout afficher</button>
+                        <button class="select-btn" data-deselect-all="capacites">⚪ Tout masquer</button>
                     </div>
                     <div id="capacitesItems">
                         <!-- Liste générée en JS -->
                     </div>
                 </div>
-                <button class="add-item-button" onclick="openAddItemModal('capacite')">
+                <button class="add-item-button" data-add-item="capacite">
                     ➕ Ajouter une capacité personnalisée
                 </button>
             </div>
@@ -511,25 +521,25 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les besoins</div>
-                    <div class="toggle-switch active" id="toggleBesoins" onclick="toggleSection('besoins')">
+                    <div class="toggle-switch active" id="toggleBesoins" data-toggle-section="besoins">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" id="btnBesoins" onclick="toggleExpandable('besoins')">
+                <button class="manage-button" id="btnBesoins" data-expandable="besoins">
                     <span class="manage-button-text">Gérer les besoins</span>
                     <span class="manage-button-count" id="countBesoins">(0/21)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listBesoins">
                     <div class="select-buttons" id="selectBesoins">
-                        <button class="select-btn" onclick="selectAll('besoins')">✅ Tout afficher</button>
-                        <button class="select-btn" onclick="deselectAll('besoins')">⚪ Tout masquer</button>
+                        <button class="select-btn" data-select-all="besoins">✅ Tout afficher</button>
+                        <button class="select-btn" data-deselect-all="besoins">⚪ Tout masquer</button>
                     </div>
                     <div id="besoinsItems">
                         <!-- Liste générée en JS -->
                     </div>
                 </div>
-                <button class="add-item-button" onclick="openAddItemModal('besoin')">
+                <button class="add-item-button" data-add-item="besoin">
                     ➕ Ajouter un besoin personnalisé
                 </button>
             </div>
@@ -542,25 +552,25 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les états</div>
-                    <div class="toggle-switch active" id="toggleEtats" onclick="toggleSection('etats')">
+                    <div class="toggle-switch active" id="toggleEtats" data-toggle-section="etats">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" id="btnEtats" onclick="toggleExpandable('etats')">
+                <button class="manage-button" id="btnEtats" data-expandable="etats">
                     <span class="manage-button-text">Gérer les états</span>
                     <span class="manage-button-count" id="countEtats">(0/16)</span>
                     <span class="manage-button-arrow">▼</span>
                 </button>
                 <div class="expandable-list hidden" id="listEtats">
                     <div class="select-buttons" id="selectEtats">
-                        <button class="select-btn" onclick="selectAll('etats')">✅ Tout afficher</button>
-                        <button class="select-btn" onclick="deselectAll('etats')">⚪ Tout masquer</button>
+                        <button class="select-btn" data-select-all="etats">✅ Tout afficher</button>
+                        <button class="select-btn" data-deselect-all="etats">⚪ Tout masquer</button>
                     </div>
                     <div id="etatsItems">
                         <!-- Liste générée en JS -->
                     </div>
                 </div>
-                <button class="add-item-button" onclick="openAddItemModal('etat')">
+                <button class="add-item-button" data-add-item="etat">
                     ➕ Ajouter un état personnalisé
                 </button>
             </div>
@@ -573,7 +583,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Inclure les contacts</div>
-                    <div class="toggle-switch active" id="toggleContacts" onclick="toggleSection('contacts')">
+                    <div class="toggle-switch active" id="toggleContacts" data-toggle-section="contacts">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -590,11 +600,11 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les infos médicales</div>
-                    <div class="toggle-switch active" id="toggleMedical" onclick="toggleSection('medical')">
+                    <div class="toggle-switch active" id="toggleMedical" data-toggle-section="medical">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" style="margin-top: 12px;" onclick="goToInfosMedicales()">
+                <button class="manage-button" id="btnGoInfosMedicales" style="margin-top: 12px;">
                     <span class="manage-button-text">Modifier les informations médicales</span>
                     <span class="manage-button-arrow">›</span>
                 </button>
@@ -616,17 +626,17 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-        " onclick="confirmReset()">
+        " id="btnConfirmReset">
             ↻ Réinitialiser les paramètres
         </button>
     </div>
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button" style="flex:1;background:rgba(245,228,204,0.1);color:var(--light);" onclick="afficherExemple()">
+        <button class="footer-button" id="btnAfficherExemple" style="flex:1;background:rgba(245,228,204,0.1);color:var(--light);">
             👁️ Voir l'exemple
         </button>
-        <button class="footer-button footer-save" onclick="saveData()">
+        <button class="footer-button footer-save" id="btnSaveData">
             💾 Enregistrer
         </button>
     </footer>
@@ -642,12 +652,12 @@
             <div style="margin-bottom: 16px;">
                 <div style="font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 8px;">Emoji</div>
                 <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 12px;">
-                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🎯')">🎯</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🤲')">🤲</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('😶')">😶</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('💪')">💪</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('🧠')">🧠</div>
-                    <div style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;" onclick="selectItemEmoji('❤️')">❤️</div>
+                    <div class="emoji-pick-item" data-emoji="🎯" style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;">🎯</div>
+                    <div class="emoji-pick-item" data-emoji="🤲" style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;">🤲</div>
+                    <div class="emoji-pick-item" data-emoji="😶" style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;">😶</div>
+                    <div class="emoji-pick-item" data-emoji="💪" style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;">💪</div>
+                    <div class="emoji-pick-item" data-emoji="🧠" style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;">🧠</div>
+                    <div class="emoji-pick-item" data-emoji="❤️" style="font-size: 24px; padding: 6px; background-color: white; border: 2px solid rgba(46, 58, 89, 0.1); border-radius: 8px; cursor: pointer; text-align: center; overflow: hidden;">❤️</div>
                 </div>
                 <div style="font-size: 15px; color: var(--dark); margin-bottom: 8px;">Ou tapez directement :</div>
                 <input type="text"
@@ -663,8 +673,18 @@
                    maxlength="50"
                    style="margin-bottom: 20px;">
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeAddItemModal()">Annuler</button>
-                <button class="modal-button primary" onclick="addCustomItem()">Ajouter</button>
+                <button class="modal-button secondary" id="btnCloseAddItemModal">Annuler</button>
+                <button class="modal-button primary" id="btnAddCustomItem">Ajouter</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" role="dialog" aria-modal="true">
+        <div class="confirm-box">
+            <p class="confirm-msg" id="confirmMsg"></p>
+            <div class="confirm-actions">
+                <button class="btn-confirm-cancel" id="confirmCancel">Annuler</button>
+                <button class="btn-confirm-ok" id="confirmOk">Confirmer</button>
             </div>
         </div>
     </div>
@@ -867,13 +887,13 @@
                 const isCustom = item.custom || false;
 
                 return `
-                    <div class="item-row">
-                        <div class="item-checkbox" onclick="toggleItem('capacites', '${item.id}')">
+                    <div class="item-row" data-item-type="capacites" data-item-id="${item.id}">
+                        <div class="item-checkbox item-toggle">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji" onclick="toggleItem('capacites', '${item.id}')">${item.emoji || ''}</div>
-                        <div class="item-text" onclick="toggleItem('capacites', '${item.id}')">${item.nom}</div>
-                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('capacites', '${item.id}')">
+                        <div class="item-emoji item-toggle">${item.emoji || ''}</div>
+                        <div class="item-text item-toggle">${item.nom}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'} item-del">
                             🗑️
                         </div>
                     </div>
@@ -891,13 +911,13 @@
                 const isCustom = item.custom || false;
 
                 return `
-                    <div class="item-row">
-                        <div class="item-checkbox" onclick="toggleItem('besoins', '${item.id}')">
+                    <div class="item-row" data-item-type="besoins" data-item-id="${item.id}">
+                        <div class="item-checkbox item-toggle">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji" onclick="toggleItem('besoins', '${item.id}')">${item.emoji || ''}</div>
-                        <div class="item-text" onclick="toggleItem('besoins', '${item.id}')">${item.nom}</div>
-                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('besoins', '${item.id}')">
+                        <div class="item-emoji item-toggle">${item.emoji || ''}</div>
+                        <div class="item-text item-toggle">${item.nom}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'} item-del">
                             🗑️
                         </div>
                     </div>
@@ -914,13 +934,13 @@
                 const isCustom = item.custom || false;
 
                 return `
-                    <div class="item-row">
-                        <div class="item-checkbox" onclick="toggleItem('etats', '${item.id}')">
+                    <div class="item-row" data-item-type="etats" data-item-id="${item.id}">
+                        <div class="item-checkbox item-toggle">
                             ${isChecked ? '✅' : '⚪'}
                         </div>
-                        <div class="item-emoji" onclick="toggleItem('etats', '${item.id}')">${item.emoji || ''}</div>
-                        <div class="item-text" onclick="toggleItem('etats', '${item.id}')">${item.nom}</div>
-                        <div class="item-delete ${isCustom ? '' : 'hidden'}" onclick="deleteCustomItem('etats', '${item.id}')">
+                        <div class="item-emoji item-toggle">${item.emoji || ''}</div>
+                        <div class="item-text item-toggle">${item.nom}</div>
+                        <div class="item-delete ${isCustom ? '' : 'hidden'} item-del">
                             🗑️
                         </div>
                     </div>
@@ -1047,7 +1067,7 @@
             } else {
                 // Limite de 3 contacts
                 if (contextData.contacts.selection.length >= 3) {
-                    alert('⚠️ Tu ne peux sélectionner que 3 contacts maximum');
+                    showToast('3 contacts maximum');
                     return;
                 }
                 contextData.contacts.selection.push(contactId);
@@ -1072,6 +1092,34 @@
             document.getElementById('countEtats').textContent = `(${etaCount}/${etaTotal})`;
         }
 
+        function trapFocus(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+        }
+
         // MODAL AJOUT ITEM
         function openAddItemModal(type) {
             currentItemType = type;
@@ -1090,8 +1138,9 @@
             document.getElementById('modalTitle').textContent = titles[type];
             document.getElementById('itemNameInput').value = '';
             document.getElementById('itemEmojiInput').value = defaultEmojis[type];
-            document.getElementById('addItemModal').classList.add('visible');
-            document.getElementById('itemNameInput').focus();
+            const m = document.getElementById('addItemModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function selectItemEmoji(emoji) {
@@ -1099,7 +1148,9 @@
         }
 
         function closeAddItemModal() {
-            document.getElementById('addItemModal').classList.remove('visible');
+            const m = document.getElementById('addItemModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function addCustomItem() {
@@ -1107,7 +1158,7 @@
             const emoji = document.getElementById('itemEmojiInput').value.trim() || '🎯';
 
             if (!name) {
-                alert('⚠️ Veuillez entrer un nom');
+                showToast('Veuillez entrer un nom');
                 return;
             }
 
@@ -1155,24 +1206,24 @@
 
         // SUPPRIMER ITEM PERSONNALISÉ
         function deleteCustomItem(type, id) {
-            if (!confirm('Supprimer cet item personnalisé ?')) return;
+            showConfirm('Supprimer cet item personnalisé ?', function() {
+                const index = contextData[type].personnalisees.findIndex(item => item.id === id);
+                if (index > -1) {
+                    contextData[type].personnalisees.splice(index, 1);
+                }
 
-            const index = contextData[type].personnalisees.findIndex(item => item.id === id);
-            if (index > -1) {
-                contextData[type].personnalisees.splice(index, 1);
-            }
+                const visIndex = contextData[type].visibles.indexOf(id);
+                if (visIndex > -1) {
+                    contextData[type].visibles.splice(visIndex, 1);
+                }
 
-            const visIndex = contextData[type].visibles.indexOf(id);
-            if (visIndex > -1) {
-                contextData[type].visibles.splice(visIndex, 1);
-            }
+                if (type === 'capacites') renderCapacites();
+                if (type === 'besoins') renderBesoins();
+                if (type === 'etats') renderEtats();
 
-            if (type === 'capacites') renderCapacites();
-            if (type === 'besoins') renderBesoins();
-            if (type === 'etats') renderEtats();
-
-            updateCounts();
-            markAsModified();
+                updateCounts();
+                markAsModified();
+            });
         }
 
         // Compare le texte au texte par défaut pour ne pas sauvegarder le défaut comme "personnalisé"
@@ -1197,19 +1248,18 @@
             showToast();
         }
 
-        function showToast() {
+        function showToast(msg, duration) {
             const toast = document.getElementById('toast');
+            if (msg) toast.textContent = msg;
             toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 2000);
+            setTimeout(() => { toast.classList.remove('visible'); }, duration || 3000);
         }
 
         // RÉINITIALISER
         function confirmReset() {
-            if (confirm('⚠️ Réinitialiser le profil commun ?\n\nToutes les modifications seront perdues et les paramètres par défaut seront restaurés.')) {
+            showConfirm('Réinitialiser le profil commun ? Toutes les modifications seront perdues et les paramètres par défaut seront restaurés.', function() {
                 resetToDefaults();
-            }
+            });
         }
 
         function resetToDefaults() {
@@ -1253,9 +1303,9 @@
         // NAVIGATION
         function goBack() {
             if (hasUnsavedChanges) {
-                if (confirm('⚠️ Modifications non enregistrées\n\nQuitter sans enregistrer ?')) {
+                showConfirm('Modifications non enregistrées. Quitter sans enregistrer ?', function() {
                     window.location.href = 'contextes-liste.html';
-                }
+                });
             } else {
                 window.location.href = 'contextes-liste.html';
             }
@@ -1337,7 +1387,53 @@
         }
 
         // INIT
-        window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('DOMContentLoaded', function() {
+            init();
+
+            document.getElementById('btnBack').addEventListener('click', goBack);
+            document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+            document.getElementById('btnInsertDefaultPresentation').addEventListener('click', insertDefaultPresentation);
+            document.getElementById('btnClearPresentation').addEventListener('click', clearPresentation);
+            document.getElementById('btnGoInfosMedicales').addEventListener('click', goToInfosMedicales);
+            document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);
+            document.getElementById('btnAfficherExemple').addEventListener('click', afficherExemple);
+            document.getElementById('btnSaveData').addEventListener('click', saveData);
+            document.getElementById('btnCloseAddItemModal').addEventListener('click', closeAddItemModal);
+            document.getElementById('btnAddCustomItem').addEventListener('click', addCustomItem);
+
+            document.querySelector('.main-content').addEventListener('click', function(e) {
+                var toggleEl = e.target.closest('[data-toggle-section]');
+                if (toggleEl) { toggleSection(toggleEl.dataset.toggleSection); return; }
+
+                var expandableBtn = e.target.closest('[data-expandable]');
+                if (expandableBtn) { toggleExpandable(expandableBtn.dataset.expandable); return; }
+
+                var selectAllBtn = e.target.closest('[data-select-all]');
+                if (selectAllBtn) { selectAll(selectAllBtn.dataset.selectAll); return; }
+
+                var deselectAllBtn = e.target.closest('[data-deselect-all]');
+                if (deselectAllBtn) { deselectAll(deselectAllBtn.dataset.deselectAll); return; }
+
+                var addItemBtn = e.target.closest('[data-add-item]');
+                if (addItemBtn) { openAddItemModal(addItemBtn.dataset.addItem); return; }
+
+                var itemToggle = e.target.closest('.item-toggle');
+                if (itemToggle) {
+                    var row = itemToggle.closest('.item-row[data-item-type][data-item-id]');
+                    if (row) { toggleItem(row.dataset.itemType, row.dataset.itemId); return; }
+                }
+                var itemDel = e.target.closest('.item-del');
+                if (itemDel) {
+                    var row = itemDel.closest('.item-row[data-item-type][data-item-id]');
+                    if (row) deleteCustomItem(row.dataset.itemType, row.dataset.itemId);
+                }
+            });
+
+            document.querySelector('#addItemModal').addEventListener('click', function(e) {
+                var emojiItem = e.target.closest('.emoji-pick-item[data-emoji]');
+                if (emojiItem) selectItemEmoji(emojiItem.dataset.emoji);
+            });
+        });
 
         // Confirmation avant fermeture si modifications non enregistrées
         window.addEventListener('beforeunload', (e) => {
@@ -1346,8 +1442,25 @@
                 e.returnValue = '';
             }
         });
+
+        var _confirmCb = null;
+        function showConfirm(msg, onOk) {
+            document.getElementById('confirmMsg').textContent = msg;
+            _confirmCb = onOk;
+            document.getElementById('confirmModal').classList.add('visible');
+        }
     </script>
-    <script>        document.addEventListener("keydown", e => { if (e.key === "Escape") closeAddItemModal(); });</script>
+    <script>
+        document.addEventListener("keydown", e => { if (e.key === "Escape") closeAddItemModal(); });
+        document.getElementById('confirmCancel').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            _confirmCb = null;
+        });
+        document.getElementById('confirmOk').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            if (_confirmCb) { _confirmCb(); _confirmCb = null; }
+        });
+    </script>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>

@@ -9,7 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <link rel="stylesheet" href="nora-common.css">
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Carte d'urgence numérique</title>
     <style>
         body {
@@ -432,13 +432,23 @@
             text-decoration: underline;
         }
 
+        /* ---------- MODALE CONFIRM ---------- */
+        #confirmModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+        #confirmModal.visible { display: flex; }
+        #confirmModal .confirm-box { background: var(--bg); border-radius: 16px; padding: 24px; max-width: 320px; width: 100%; }
+        #confirmModal .confirm-msg { color: var(--light); font-size: 16px; margin-bottom: 20px; line-height: 1.5; }
+        #confirmModal .confirm-actions { display: flex; gap: 12px; }
+        #confirmModal .confirm-actions button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; }
+        #confirmModal .btn-confirm-cancel { background: rgba(245,228,204,0.15); color: var(--light); }
+        #confirmModal .btn-confirm-ok { background: var(--accent); color: var(--dark); }
+
     </style>
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Carte d'urgence numérique</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnHome" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -447,7 +457,7 @@
             Configure ici le support qui parle pour toi quand cela devient trop difficile. Sélectionne tes informations clés pour disposer d'un outil d'aide à la communication prête à l'emploi.
         </p>
 
-        <button class="conseils-btn" onclick="openConseils()">
+        <button class="conseils-btn" id="btnConseils">
             💡 Quelques conseils pour bien remplir cette carte
         </button>
 
@@ -458,7 +468,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher mon identité</div>
-                    <div class="toggle-switch active" id="toggleIdentity" onclick="toggleIdentity()">
+                    <div class="toggle-switch active" id="toggleIdentity">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -472,7 +482,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher la présentation</div>
-                    <div class="toggle-switch active" id="togglePresentation" onclick="togglePresentation()">
+                    <div class="toggle-switch active" id="togglePresentation">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -482,8 +492,8 @@
                     </div>
                     <textarea class="text-field" id="presentationField" placeholder="Ton texte de présentation..." oninput="markAsModified()"></textarea>
                     <div class="text-actions">
-                        <button class="text-action-btn" onclick="insertDefault()">📝 Message par défaut</button>
-                        <button class="text-action-btn" onclick="clearField()">🗑️ Effacer</button>
+                        <button class="text-action-btn" id="btnInsertDefault">📝 Message par défaut</button>
+                        <button class="text-action-btn" id="btnClearField">🗑️ Effacer</button>
                     </div>
                 </div>
             </div>
@@ -496,7 +506,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les consignes</div>
-                    <div class="toggle-switch active" id="toggleConsignes" onclick="toggleConsignes()">
+                    <div class="toggle-switch active" id="toggleConsignes">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -506,8 +516,8 @@
                     </div>
                     <textarea class="text-field" id="consignesField" placeholder="Ex : NE PAS ME TOUCHER&#10;METTEZ-MOI AU CALME..." oninput="markAsModified()"></textarea>
                     <div class="text-actions">
-                        <button class="text-action-btn" onclick="insertDefaultConsignes()">📝 Message par défaut</button>
-                        <button class="text-action-btn" onclick="clearConsignes()">🗑️ Effacer</button>
+                        <button class="text-action-btn" id="btnInsertDefaultConsignes">📝 Message par défaut</button>
+                        <button class="text-action-btn" id="btnClearConsignes">🗑️ Effacer</button>
                     </div>
                 </div>
             </div>
@@ -520,7 +530,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les informations</div>
-                    <div class="toggle-switch active" id="toggleInformations" onclick="toggleInformations()">
+                    <div class="toggle-switch active" id="toggleInformations">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -530,8 +540,8 @@
                     </div>
                     <textarea class="text-field" id="informationsField" placeholder="Ex : Je ne suis pas dangereuse...&#10;Normalement, je vous entends et comprends." oninput="markAsModified()"></textarea>
                     <div class="text-actions">
-                        <button class="text-action-btn" onclick="insertDefaultInformations()">📝 Message par défaut</button>
-                        <button class="text-action-btn" onclick="clearInformations()">🗑️ Effacer</button>
+                        <button class="text-action-btn" id="btnInsertDefaultInformations">📝 Message par défaut</button>
+                        <button class="text-action-btn" id="btnClearInformations">🗑️ Effacer</button>
                     </div>
                 </div>
             </div>
@@ -544,7 +554,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les contacts</div>
-                    <div class="toggle-switch active" id="toggleContacts" onclick="toggleContacts()">
+                    <div class="toggle-switch active" id="toggleContacts">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -559,8 +569,8 @@
                         <div class="section-help" style="margin-bottom: 10px;">Ce texte apparaît juste au-dessus de tes contacts (laisse vide pour ne rien afficher).</div>
                         <textarea class="text-field" id="contactsNoteField" style="min-height: 70px;" placeholder="Ex : Si il y a une urgence ou si je vous le demande, contacter :" oninput="markAsModified()"></textarea>
                         <div class="text-actions">
-                            <button class="text-action-btn" onclick="insertDefaultContactsNote()">📝 Texte par défaut</button>
-                            <button class="text-action-btn" onclick="clearContactsNote()">🗑️ Effacer</button>
+                            <button class="text-action-btn" id="btnInsertDefaultContactsNote">📝 Texte par défaut</button>
+                            <button class="text-action-btn" id="btnClearContactsNote">🗑️ Effacer</button>
                         </div>
                     </div>
                 </div>
@@ -574,11 +584,11 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les infos médicales</div>
-                    <div class="toggle-switch active" id="toggleMedical" onclick="toggleMedical()">
+                    <div class="toggle-switch active" id="toggleMedical">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
-                <button class="manage-button" id="btnMedical" onclick="goToInfosMedicales()">
+                <button class="manage-button" id="btnMedical">
                     <span class="manage-button-text">Modifier les informations médicales</span>
                     <span class="manage-button-arrow">›</span>
                 </button>
@@ -592,7 +602,7 @@
             <div class="section-card">
                 <div class="toggle-row">
                     <div class="toggle-label">Afficher les remarques</div>
-                    <div class="toggle-switch active" id="toggleRemarques" onclick="toggleRemarques()">
+                    <div class="toggle-switch active" id="toggleRemarques">
                         <div class="toggle-slider"></div>
                     </div>
                 </div>
@@ -610,9 +620,9 @@
     </main>
 
     <!-- MODALE CONSEILS -->
-    <div class="modal" id="conseilsModal" role="dialog" aria-modal="true">
+    <div class="modal" id="conseilsModal" role="dialog" aria-modal="true" aria-label="Conseils pour remplir ta carte">
         <div class="modal-inner">
-            <button class="modal-close" onclick="closeConseils()" aria-label="Fermer">×</button>
+            <button class="modal-close" id="btnCloseConseils" aria-label="Fermer">×</button>
             <div class="modal-title">💡 Conseils pour bien remplir ta carte</div>
 
             <div class="conseil-item">
@@ -640,7 +650,7 @@
                 <span>Sélectionne des contacts joignables à toute heure et qui connaissent bien ta situation.</span>
             </div>
 
-            <button onclick="closeConseils()" style="background:var(--accent);color:var(--dark);border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-top:8px;">
+            <button id="btnCloseConseilsBtn" style="background:var(--accent);color:var(--dark);border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:600;cursor:pointer;width:100%;margin-top:8px;">
                 Compris !
             </button>
         </div>
@@ -648,15 +658,25 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-        <button class="footer-button footer-preview" onclick="saveData(); window.location.href='carte.html'">
+        <button class="footer-button footer-preview" id="btnPreview">
             🪪 Voir ma carte
         </button>
-        <button class="footer-button footer-save" onclick="saveData()">
+        <button class="footer-button footer-save" id="btnSave">
             💾 Enregistrer
         </button>
     </footer>
 
-    <div class="toast" id="toast">✅ Enregistré !</div>
+    <div class="toast" id="toast"></div>
+
+    <div id="confirmModal" role="dialog" aria-modal="true">
+        <div class="confirm-box">
+            <p class="confirm-msg" id="confirmMsg"></p>
+            <div class="confirm-actions">
+                <button class="btn-confirm-cancel" id="confirmCancel">Annuler</button>
+                <button class="btn-confirm-ok" id="confirmOk">Confirmer</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const MAX_CARTE_CONTACTS = 3;
@@ -690,6 +710,37 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
             loadData();
             renderContacts();
             updateContactsTitle();
+
+            document.getElementById('btnBack').addEventListener('click', goBack);
+            document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+            document.getElementById('btnConseils').addEventListener('click', openConseils);
+            document.getElementById('toggleIdentity').addEventListener('click', toggleIdentity);
+            document.getElementById('togglePresentation').addEventListener('click', togglePresentation);
+            document.getElementById('btnInsertDefault').addEventListener('click', insertDefault);
+            document.getElementById('btnClearField').addEventListener('click', clearField);
+            document.getElementById('toggleConsignes').addEventListener('click', toggleConsignes);
+            document.getElementById('btnInsertDefaultConsignes').addEventListener('click', insertDefaultConsignes);
+            document.getElementById('btnClearConsignes').addEventListener('click', clearConsignes);
+            document.getElementById('toggleInformations').addEventListener('click', toggleInformations);
+            document.getElementById('btnInsertDefaultInformations').addEventListener('click', insertDefaultInformations);
+            document.getElementById('btnClearInformations').addEventListener('click', clearInformations);
+            document.getElementById('toggleContacts').addEventListener('click', toggleContacts);
+            document.getElementById('btnInsertDefaultContactsNote').addEventListener('click', insertDefaultContactsNote);
+            document.getElementById('btnClearContactsNote').addEventListener('click', clearContactsNote);
+            document.getElementById('toggleMedical').addEventListener('click', toggleMedical);
+            document.getElementById('btnMedical').addEventListener('click', goToInfosMedicales);
+            document.getElementById('toggleRemarques').addEventListener('click', toggleRemarques);
+            document.getElementById('btnCloseConseils').addEventListener('click', closeConseils);
+            document.getElementById('btnCloseConseilsBtn').addEventListener('click', closeConseils);
+            document.getElementById('btnPreview').addEventListener('click', function() { saveData(); window.location.href = 'carte.html'; });
+            document.getElementById('btnSave').addEventListener('click', saveData);
+
+            document.getElementById('contactsList').addEventListener('click', function(e) {
+                var btn = e.target.closest('.btn-go-contacts');
+                if (btn) { goToContacts(); return; }
+                var item = e.target.closest('.contact-item[data-contact-id]');
+                if (item) toggleContact(item.dataset.contactId);
+            });
         });
 
         function loadData() {
@@ -775,7 +826,7 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
             if (allContacts.length === 0) {
                 container.innerHTML = `
                     <div class="no-contacts-msg">Aucun contact d'urgence enregistré.</div>
-                    <button class="add-contacts-btn" onclick="goToContacts()">
+                    <button class="add-contacts-btn btn-go-contacts">
                         ➕ Ajouter des contacts d'urgence
                     </button>
                 `;
@@ -787,7 +838,7 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
                 const isSelected = carteContacts.includes(contact.id);
                 const lien = contact.lien ? ` (${contact.lien})` : '';
                 return `
-                    <div class="contact-item ${isSelected ? 'selected' : ''}" onclick="toggleContact('${contact.id}')">
+                    <div class="contact-item ${isSelected ? 'selected' : ''}" data-contact-id="${contact.id}">
                         <div class="contact-check">${isSelected ? '✅' : '⚪'}</div>
                         <div class="contact-info">
                             <div class="contact-name">${contact.nom}${lien}</div>
@@ -806,7 +857,7 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
                 carteContacts.splice(idx, 1);
             } else {
                 if (carteContacts.length >= MAX_CARTE_CONTACTS) {
-                    alert(`Tu ne peux sélectionner que ${MAX_CARTE_CONTACTS} contacts maximum.`);
+                    showToast(`Tu ne peux sélectionner que ${MAX_CARTE_CONTACTS} contacts maximum.`);
                     return;
                 }
                 carteContacts.push(contactId);
@@ -987,22 +1038,55 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
             markAsModified();
         }
 
+        function trapFocus(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+        }
+
         function openConseils() {
-            document.getElementById('conseilsModal').classList.add('visible');
+            const m = document.getElementById('conseilsModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function closeConseils() {
-            document.getElementById('conseilsModal').classList.remove('visible');
+            const m = document.getElementById('conseilsModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape') closeConseils();
         });
 
-        function showToast() {
+        function showToast(msg, duration) {
             const toast = document.getElementById('toast');
+            toast.textContent = msg || '✅ Enregistré !';
             toast.classList.add('visible');
-            setTimeout(() => toast.classList.remove('visible'), 2800);
+            setTimeout(() => toast.classList.remove('visible'), duration || 2800);
         }
 
         function goToContacts() {
@@ -1020,9 +1104,9 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
             var dest = tutorielRetour ? 'tutoriel.html' : 'parametres.html';
             if (tutorielRetour) localStorage.removeItem('tutorielRetour');
             if (hasUnsavedChanges) {
-                if (confirm('⚠️ Modifications non enregistrées\n\nQuitter sans enregistrer ?')) {
+                showConfirm('Modifications non enregistrées\n\nQuitter sans enregistrer ?', function() {
                     window.location.href = dest;
-                }
+                });
             } else {
                 window.location.href = dest;
             }
@@ -1034,6 +1118,21 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
                 e.preventDefault();
                 e.returnValue = '';
             }
+        });
+
+        var _confirmCb = null;
+        function showConfirm(msg, onOk) {
+            document.getElementById('confirmMsg').textContent = msg;
+            _confirmCb = onOk;
+            document.getElementById('confirmModal').classList.add('visible');
+        }
+        document.getElementById('confirmCancel').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            _confirmCb = null;
+        });
+        document.getElementById('confirmOk').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.remove('visible');
+            if (_confirmCb) { _confirmCb(); _confirmCb = null; }
         });
     </script>
     <script src="nora-scroll.js"></script>

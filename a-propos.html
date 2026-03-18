@@ -187,9 +187,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">À propos</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -237,6 +237,9 @@
         function goBack() {
             window.location.href = 'parametres.html';
         }
+
+        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
     </script>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>

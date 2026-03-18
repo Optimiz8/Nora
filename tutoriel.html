@@ -486,7 +486,7 @@
 
     <!-- Header onboarding -->
     <div class="onboarding-header">
-        <button class="back-link" id="backBtn" onclick="goBack()" style="display:none">⬅️</button>
+        <button class="back-link" id="backBtn" style="display:none">⬅️</button>
         <div class="progress-dots" id="progressDots" style="visibility:hidden">
             <span class="dot" id="dot-2"></span>
             <span class="dot" id="dot-3"></span>
@@ -495,7 +495,7 @@
             <span class="dot" id="dot-6"></span>
             <span class="dot" id="dot-7"></span>
         </div>
-        <button class="skip-link" id="skipLink" onclick="skipOnboarding()" style="visibility:hidden">Passer ›</button>
+        <button class="skip-link" id="skipLink" style="visibility:hidden">Passer ›</button>
     </div>
 
     <!-- ÉTAPE 1 : Bienvenue -->
@@ -540,7 +540,7 @@
                 <div class="pilier-title">J'ai besoin d'aide et de communiquer</div>
             </div>
             <div class="pilier-items">
-                <div class="pilier-item" onclick="previewFeature('carte.html')">
+                <div class="pilier-item" data-preview="carte.html">
                     <span class="pilier-item-icon">🪪</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Carte d'urgence</div>
@@ -548,7 +548,7 @@
                     </div>
                     <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" onclick="previewFeature('contextes-liste.html')">
+                <div class="pilier-item" data-preview="contextes-liste.html">
                     <span class="pilier-item-icon">🧭</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Fiches de contexte</div>
@@ -556,7 +556,7 @@
                     </div>
                     <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" onclick="previewFeature('cartes-communication.html')">
+                <div class="pilier-item" data-preview="cartes-communication.html">
                     <span class="pilier-item-icon">💬</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Cartes de communication</div>
@@ -564,7 +564,7 @@
                     </div>
                     <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" onclick="previewFeature('timer.html')">
+                <div class="pilier-item" data-preview="timer.html">
                     <span class="pilier-item-icon">⏱️</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Timer visuel</div>
@@ -586,7 +586,7 @@
                 <div class="pilier-title">J'ai besoin de m'apaiser</div>
             </div>
             <div class="pilier-items">
-                <div class="pilier-item" onclick="previewFeature('coherence.html')">
+                <div class="pilier-item" data-preview="coherence.html">
                     <span class="pilier-item-icon"><img src="assets/images/shortcut-coherence.svg" alt="" style="width:18px;height:18px;border-radius:4px;vertical-align:middle"></span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Cohérence cardiaque</div>
@@ -594,7 +594,7 @@
                     </div>
                     <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" onclick="previewFeature('sons.html')">
+                <div class="pilier-item" data-preview="sons.html">
                     <span class="pilier-item-icon">🎧</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Sons relaxants</div>
@@ -602,7 +602,7 @@
                     </div>
                     <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" onclick="previewFeature('fidgets.html')">
+                <div class="pilier-item" data-preview="fidgets.html">
                     <span class="pilier-item-icon">🧩</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Fidget numérique</div>
@@ -610,7 +610,7 @@
                     </div>
                     <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" onclick="previewFeature('harmonie-visuelle.html')">
+                <div class="pilier-item" data-preview="harmonie-visuelle.html">
                     <span class="pilier-item-icon">☁️</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Harmonie visuelle</div>
@@ -618,7 +618,7 @@
                     </div>
                     <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" onclick="previewFeature('conseils.html')">
+                <div class="pilier-item" data-preview="conseils.html">
                     <span class="pilier-item-icon">✓</span>
                     <div style="flex:1">
                         <div class="pilier-item-label">Conseils</div>
@@ -772,25 +772,25 @@
             var el = document.getElementById('footerActions');
             if (n === 1) {
                 el.innerHTML =
-                    '<button class="btn-primary" onclick="goToStep(2)">Commencer\u00a0›</button>' +
-                    '<button class="btn-ghost" onclick="skipOnboarding()">Explorer d\'abord</button>';
+                    '<button class="btn-primary" data-action="goToStep" data-step="2">Commencer\u00a0›</button>' +
+                    '<button class="btn-ghost" data-action="skipOnboarding">Explorer d\'abord</button>';
             } else if (n === 2) {
-                el.innerHTML = '<button class="btn-primary" onclick="savePrenomAndContinue()">Continuer\u00a0›</button>';
+                el.innerHTML = '<button class="btn-primary" data-action="savePrenomAndContinue">Continuer\u00a0›</button>';
             } else if (n === 3 || n === 4) {
-                el.innerHTML = '<button class="btn-primary" onclick="goToStep(' + (n + 1) + ')">Continuer\u00a0›</button>';
+                el.innerHTML = '<button class="btn-primary" data-action="goToStep" data-step="' + (n + 1) + '">Continuer\u00a0›</button>';
             } else if (n === 5) {
                 el.innerHTML =
-                    '<button class="btn-primary" onclick="goToCarteConfig()">✏️ Configurer ma carte</button>' +
-                    '<button class="btn-ghost" onclick="goToStep(6)">Configurer plus tard — disponible dans Paramètres</button>';
+                    '<button class="btn-primary" data-action="goToCarteConfig">✏️ Configurer ma carte</button>' +
+                    '<button class="btn-ghost" data-action="goToStep" data-step="6">Configurer plus tard — disponible dans Paramètres</button>';
             } else if (n === 6) {
                 el.innerHTML =
-                    '<button class="btn-primary" onclick="goToCartesCom()">💬 Voir mes cartes de communication</button>' +
-                    '<button class="btn-ghost" onclick="goToStep(7)">Passer pour l\'instant</button>';
+                    '<button class="btn-primary" data-action="goToCartesCom">💬 Voir mes cartes de communication</button>' +
+                    '<button class="btn-ghost" data-action="goToStep" data-step="7">Passer pour l\'instant</button>';
             } else if (n === 7) {
                 var pwaHtml = deferredInstallPrompt
-                    ? '<button class="pwa-btn" onclick="installPWA()">📲 Ajouter à mon écran d\'accueil</button>'
+                    ? '<button class="pwa-btn" data-action="installPWA">📲 Ajouter à mon écran d\'accueil</button>'
                     : '';
-                el.innerHTML = pwaHtml + '<button class="btn-primary" onclick="finishOnboarding()">Aller à l\'accueil</button>';
+                el.innerHTML = pwaHtml + '<button class="btn-primary" data-action="finishOnboarding">Aller à l\'accueil</button>';
             }
         }
 
@@ -890,19 +890,19 @@
             var cartesOk = cartes.length > 0;
 
             document.getElementById('summaryList').innerHTML =
-                '<div class="summary-item" onclick="' + (carteOk ? 'location.href=\'carte.html\'' : 'goToStep(5)') + '">' +
+                '<div class="summary-item" data-href="' + (carteOk ? 'carte.html' : '') + '" data-action="' + (carteOk ? '' : 'goToStep5') + '">' +
                     '<span class="summary-item-label">🪪 Carte d\'urgence</span>' +
                     '<span class="summary-item-status">' + (carteOk ? '✅' : '⚠️ Configurer') + '</span>' +
                 '</div>' +
-                '<div class="summary-item" onclick="location.href=\'cartes-communication.html\'">' +
+                '<div class="summary-item" data-href="cartes-communication.html">' +
                     '<span class="summary-item-label">💬 Cartes de communication</span>' +
                     '<span class="summary-item-status">' + (cartesOk ? '✅' : '⚠️ Configurer') + '</span>' +
                 '</div>' +
-                '<div class="summary-item" onclick="location.href=\'timer.html\'">' +
+                '<div class="summary-item" data-href="timer.html">' +
                     '<span class="summary-item-label">⏱️ Timer visuel</span>' +
                     '<span class="summary-item-status">›</span>' +
                 '</div>' +
-                '<div class="summary-item" onclick="location.href=\'coherence.html\'">' +
+                '<div class="summary-item" data-href="coherence.html">' +
                     '<span class="summary-item-label"><img src="assets/images/shortcut-coherence.svg" alt="" style="width:18px;height:18px;border-radius:4px;vertical-align:middle"> Cohérence cardiaque</span>' +
                     '<span class="summary-item-status">›</span>' +
                 '</div>';
@@ -935,6 +935,33 @@
             if (prenom) document.getElementById('prenomInput').value = prenom;
             var nom = localStorage.getItem('userNom') || '';
             if (nom) document.getElementById('nomInput').value = nom;
+
+            document.getElementById('backBtn').addEventListener('click', goBack);
+            document.getElementById('skipLink').addEventListener('click', skipOnboarding);
+
+            document.addEventListener('click', function(e) {
+                var item = e.target.closest('.pilier-item[data-preview]');
+                if (item) { previewFeature(item.dataset.preview); return; }
+
+                var footerBtn = e.target.closest('#footerActions [data-action]');
+                if (footerBtn) {
+                    var action = footerBtn.dataset.action;
+                    if (action === 'goToStep') goToStep(Number(footerBtn.dataset.step));
+                    else if (action === 'skipOnboarding') skipOnboarding();
+                    else if (action === 'savePrenomAndContinue') savePrenomAndContinue();
+                    else if (action === 'goToCarteConfig') goToCarteConfig();
+                    else if (action === 'goToCartesCom') goToCartesCom();
+                    else if (action === 'installPWA') installPWA();
+                    else if (action === 'finishOnboarding') finishOnboarding();
+                    return;
+                }
+
+                var summaryItem = e.target.closest('#summaryList .summary-item');
+                if (summaryItem) {
+                    if (summaryItem.dataset.action === 'goToStep5') { goToStep(5); return; }
+                    if (summaryItem.dataset.href) { location.href = summaryItem.dataset.href; return; }
+                }
+            });
         });
     </script>
     <script src="nora-scroll.js"></script>

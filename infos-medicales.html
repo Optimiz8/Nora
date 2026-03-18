@@ -88,12 +88,15 @@
             font-size: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             z-index: 1000;
-            display: none;
-            animation: slideUp 0.3s ease-out;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
         .success-toast.visible {
-            display: block;
+            opacity: 1;
+            pointer-events: auto;
+            animation: slideUp 0.3s ease-out;
         }
 
         @keyframes slideUp {
@@ -110,9 +113,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Informations médicales</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnHome" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -189,7 +192,7 @@
     </main>
 
     <footer class="footer">
-        <button class="footer-button center" onclick="saveInfos()">
+        <button class="footer-button center" id="btnSave">
             💾 Enregistrer
         </button>
     </footer>
@@ -238,6 +241,10 @@
                 toast.classList.remove('visible');
             }, 2500);
         }
+
+        document.getElementById('btnBack').addEventListener('click', goBack);
+        document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+        document.getElementById('btnSave').addEventListener('click', saveInfos);
 
         function goBack() {
             const returnTo = localStorage.getItem('returnTo');

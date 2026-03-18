@@ -91,7 +91,9 @@
             border: none;
             cursor: pointer;
             font-size: 20px;
-            padding: 4px;
+            padding: 10px;
+            min-width: 44px;
+            min-height: 44px;
             transition: all 0.2s;
         }
 
@@ -253,9 +255,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Contacts d'urgence</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -263,7 +265,7 @@
             Ces contacts pourront être sélectionnés selon le contexte (Maison, Extérieur, Travail, Secours). Tu peux en ajouter jusqu'à 10.
         </p>
 
-        <button class="add-contact-btn" onclick="openAddModal()">
+        <button class="add-contact-btn" id="btnAddContact">
             Ajouter un contact
         </button>
 
@@ -296,7 +298,6 @@
                 class="import-contact-btn"
                 id="importContactBtn"
                 type="button"
-                onclick="importFromContacts()"
                 style="display: none;"
             >
                 📱 Importer depuis les contacts
@@ -334,13 +335,26 @@
             </div>
 
             <div class="modal-actions">
-                <button class="modal-button secondary" onclick="closeModal()">Annuler</button>
-                <button class="modal-button primary" onclick="saveContact()">Enregistrer</button>
+                <button class="modal-button secondary" id="btnModalCancel">Annuler</button>
+                <button class="modal-button primary" id="btnModalSave">Enregistrer</button>
             </div>
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
     <script>
+        function escapeHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        function showToast(msg, duration) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, duration || 3000);
+        }
+
         let contacts = [];
         let editingIndex = null;
         const MAX_CONTACTS = 10;
@@ -365,7 +379,7 @@
         // Importer un contact depuis le téléphone
         async function importFromContacts() {
             if (!('contacts' in navigator)) {
-                alert('Cette fonctionnalité n\'est pas disponible sur votre navigateur');
+                showToast('Cette fonctionnalité n\'est pas disponible sur votre navigateur');
                 return;
             }
 
@@ -394,7 +408,7 @@
                 // L'utilisateur a annulé ou une erreur s'est produite
                 if (error.name !== 'AbortError') {
                     console.error('Erreur lors de l\'import du contact:', error);
-                    alert('Impossible d\'importer le contact');
+                    showToast('Impossible d\'importer le contact');
                 }
             }
         }
@@ -446,18 +460,19 @@
                 card.className = 'contact-card';
 
                 // Format : Nom (Lien) - Téléphone
-                const nomComplet = contact.nom || 'Contact';
-                const lien = contact.lien ? ` (${contact.lien})` : '';
-                const telephone = contact.telephone ? ` - ${contact.telephone}` : '';
+                const nomComplet = escapeHtml(contact.nom || 'Contact');
+                const lien = contact.lien ? ` (${escapeHtml(contact.lien)})` : '';
+                const telephone = contact.telephone ? escapeHtml(contact.telephone) : '';
 
                 let remarque = '';
                 if (contact.remarque) {
                     let fmtR;
+                    const safeRemarque = escapeHtml(contact.remarque);
                     try {
                         var eRx = new RegExp('(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})', 'gu');
-                        fmtR = '<span class="remark-text">' + contact.remarque.replace(eRx, '</span>$1<span class="remark-text">') + '</span>';
+                        fmtR = '<span class="remark-text">' + safeRemarque.replace(eRx, '</span>$1<span class="remark-text">') + '</span>';
                     } catch(e) {
-                        fmtR = '<span class="remark-text">' + contact.remarque + '</span>';
+                        fmtR = '<span class="remark-text">' + safeRemarque + '</span>';
                     }
                     remarque = '<div class="contact-remarque">' + fmtR + '</div>';
                 }
@@ -466,13 +481,13 @@
                     <div class="contact-header">
                         <div class="contact-number">Contact ${index + 1}</div>
                         <div class="contact-actions">
-                            <button class="action-btn" onclick="editContact(${index})" title="Modifier">✏️</button>
-                            <button class="action-btn" onclick="deleteContact(${index})" title="Supprimer">🗑️</button>
+                            <button class="action-btn btn-edit-contact" data-index="${index}" title="Modifier">✏️</button>
+                            <button class="action-btn btn-delete-contact" data-index="${index}" title="Supprimer">🗑️</button>
                         </div>
                     </div>
                     <div class="contact-info">
                         <div class="contact-main">${nomComplet}${lien}</div>
-                        <div class="contact-phone">${telephone.replace(' - ', '')}</div>
+                        <div class="contact-phone">${telephone}</div>
                         ${remarque}
                     </div>
                 `;
@@ -491,7 +506,9 @@
             document.getElementById('inputLien').value = '';
             document.getElementById('inputTelephone').value = '';
             document.getElementById('inputRemarque').value = '';
-            document.getElementById('contactModal').classList.add('visible');
+            const m = document.getElementById('contactModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function editContact(index) {
@@ -502,7 +519,9 @@
             document.getElementById('inputLien').value = contact.lien || '';
             document.getElementById('inputTelephone').value = contact.telephone || '';
             document.getElementById('inputRemarque').value = contact.remarque || '';
-            document.getElementById('contactModal').classList.add('visible');
+            const m = document.getElementById('contactModal');
+            m.classList.add('visible');
+            trapFocus(m);
         }
 
         function deleteContact(index) {
@@ -522,12 +541,12 @@
 
             // Validation : Nom/Prénom ET Téléphone obligatoires
             if (!nom) {
-                alert('Veuillez renseigner un nom ou un prénom');
+                showToast('Veuillez renseigner un nom ou un prénom');
                 return;
             }
 
             if (!telephone) {
-                alert('Veuillez renseigner un numéro de téléphone');
+                showToast('Veuillez renseigner un numéro de téléphone');
                 return;
             }
 
@@ -542,16 +561,16 @@
             // Pour un numéro français normal : exactement 10 chiffres
             if (!isInternational && digitsOnly.length !== 10) {
                 if (digitsOnly.length < 10) {
-                    alert('Le numéro de téléphone est incomplet. Un numéro français doit contenir exactement 10 chiffres. Tu as saisi ' + digitsOnly.length + ' chiffres.');
+                    showToast('Le numéro de téléphone est incomplet. Un numéro français doit contenir exactement 10 chiffres. Tu as saisi ' + digitsOnly.length + ' chiffres.');
                 } else {
-                    alert('Le numéro de téléphone est trop long. Un numéro français doit contenir exactement 10 chiffres. Tu as saisi ' + digitsOnly.length + ' chiffres.');
+                    showToast('Le numéro de téléphone est trop long. Un numéro français doit contenir exactement 10 chiffres. Tu as saisi ' + digitsOnly.length + ' chiffres.');
                 }
                 return;
             }
 
             // Pour un numéro international : au moins 10 chiffres (après 00 ou +33)
             if (isInternational && digitsOnly.length < 10) {
-                alert('Le numéro de téléphone international est incomplet. Tu as saisi ' + digitsOnly.length + ' chiffres.');
+                showToast('Le numéro de téléphone international est incomplet. Tu as saisi ' + digitsOnly.length + ' chiffres.');
                 return;
             }
 
@@ -580,8 +599,34 @@
             closeModal();
         }
 
+        function trapFocus(modal) {
+            const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+            const focusables = [...modal.querySelectorAll(sel)];
+            if (!focusables.length) return;
+            focusables[0].focus();
+            function handler(e) {
+                if (e.key !== 'Tab') return;
+                const idx = focusables.indexOf(document.activeElement);
+                if (e.shiftKey) {
+                    if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+                } else {
+                    if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+                }
+            }
+            modal._trapHandler = handler;
+            modal.addEventListener('keydown', handler);
+        }
+        function releaseTrap(modal) {
+            if (modal._trapHandler) {
+                modal.removeEventListener('keydown', modal._trapHandler);
+                delete modal._trapHandler;
+            }
+        }
+
         function closeModal() {
-            document.getElementById('contactModal').classList.remove('visible');
+            const m = document.getElementById('contactModal');
+            releaseTrap(m);
+            m.classList.remove('visible');
         }
 
         function goBack() {
@@ -594,6 +639,19 @@
                 window.location.href = 'parametres.html';
             }
         }
+
+        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
+        document.getElementById('btnAddContact').addEventListener('click', openAddModal);
+        document.getElementById('importContactBtn').addEventListener('click', importFromContacts);
+        document.getElementById('btnModalCancel').addEventListener('click', closeModal);
+        document.getElementById('btnModalSave').addEventListener('click', saveContact);
+        document.getElementById('contactsList').addEventListener('click', function(e) {
+            var editBtn = e.target.closest('.btn-edit-contact');
+            var deleteBtn = e.target.closest('.btn-delete-contact');
+            if (editBtn) editContact(Number(editBtn.dataset.index));
+            if (deleteBtn) deleteContact(Number(deleteBtn.dataset.index));
+        });
     </script>
     <script>        document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });</script>
     <script src="nora-scroll.js"></script>

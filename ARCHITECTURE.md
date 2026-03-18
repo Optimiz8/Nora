@@ -37,7 +37,7 @@ Nora est utilisée en situation de crise, potentiellement sans réseau (sous-sol
    - **Total : ~15 Mo**
 3. Si l'utilisatrice a des **préréglages enregistrés dans le mixeur**, `sw-register.js` lit le localStorage, extrait les sons utilisés dans ces préréglages et les envoie au SW via `postMessage` — ils sont mis en cache silencieusement
 
-> **Les sons ne sont PAS pré-cachés en bloc** : les fichiers audio font jusqu'à 42 Mo chacun (233 Mo au total). Les pré-cacher tous au premier lancement bloquerait l'installation plusieurs minutes et userait le stockage téléphone.
+> **Les sons ne sont PAS pré-cachés en bloc** : les fichiers audio font jusqu'à ~11 Mo chacun (69 Mo au total en Opus). Les pré-cacher tous au premier lancement bloquerait l'installation et userait le stockage téléphone.
 
 ### Ce qui se passe lors des utilisations suivantes
 
@@ -101,7 +101,15 @@ Au chargement de n'importe quelle page, `sw-register.js` :
 
 ### Cas particulier : pre-cache complet depuis sons.html (v2.9)
 
-Au chargement de `sons.html`, tous les fichiers audio (28 sons) sont envoyés au SW via le même message `CACHE_AUDIO`. Cela garantit que tous les sons sont disponibles hors-ligne après une première visite en ligne, même s'ils n'ont jamais été joués.
+Au chargement de `sons.html`, tous les fichiers audio (31 sons) sont envoyés au SW via le même message `CACHE_AUDIO`. Cela garantit que tous les sons sont disponibles hors-ligne après une première visite en ligne, même s'ils n'ont jamais été joués.
+
+### Format audio — Opus avec fallback MP3
+
+Les sons sont stockés en deux formats :
+- **Opus** (`.opus`) — format principal, ~70% plus léger que MP3 — supporté par Chrome, Firefox, Safari iOS 17+
+- **MP3** (`.mp3`) — fallback pour Safari iOS < 17
+
+Au démarrage de `sons.html`, une détection `canPlayType('audio/ogg; codecs=opus')` détermine l'extension à utiliser (`AUDIO_EXT`). Tous les chargements audio utilisent cette variable — aucun fichier en dur.
 
 ---
 

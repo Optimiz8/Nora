@@ -9,7 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
 <link rel="stylesheet" href="nora-common.css">
-<script src="nora-data.js"></script>
+<script src="nora-data.js" defer></script>
 <title>Nora – Capacités</title>
 
 <style>
@@ -145,7 +145,7 @@ body{
 
 <header class="header">
   <h1 class="header-context-name" id="headerContextName" style="flex:1">Contexte</h1>
-  <button onclick="window.location.href='index.html'" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🏠</button>
+  <button id="btnHome" style="background:none;border:none;font-size:20px;cursor:pointer;padding:4px;">🏠</button>
 </header>
 
 <main class="main-content">
@@ -155,7 +155,7 @@ body{
     <h2 class="page-title">Mes capacités actuelles</h2>
     <p class="instruction-text">Appuyez pour changer l'état.<br>Appui long pour remettre à zéro.</p>
   </div>
-  <button class="reset-btn" onclick="resetAllCapacities()" aria-label="Réinitialiser">
+  <button class="reset-btn" id="btnReset" aria-label="Réinitialiser">
     <span class="reset-icon">↻</span>
     <span class="reset-label">Réinit.</span>
   </button>
@@ -168,9 +168,9 @@ body{
 </main>
 
 <footer class="footer">
-  <button class="footer-button icon" onclick="goBack()" aria-label="Précédent">⬅️</button>
-  <button class="footer-button center" onclick="finish()">Voir le récapitulatif</button>
-  <button class="footer-button icon" onclick="goNext()" aria-label="Suivant">➡️</button>
+  <button class="footer-button icon" id="btnGoBack" aria-label="Précédent">⬅️</button>
+  <button class="footer-button center" id="btnFinish">Voir le récapitulatif</button>
+  <button class="footer-button icon" id="btnGoNext" aria-label="Suivant">➡️</button>
 </footer>
 
 <div class="confirm-overlay" id="confirmOverlay">
@@ -178,8 +178,8 @@ body{
     <h2>Réinitialiser ?</h2>
     <p>Toutes les capacités seront effacées.</p>
     <div class="confirm-buttons">
-      <button class="confirm-btn cancel" onclick="hideConfirm()">Annuler</button>
-      <button class="confirm-btn confirm" onclick="confirmReset()">OK</button>
+      <button class="confirm-btn cancel" id="btnHideConfirm">Annuler</button>
+      <button class="confirm-btn confirm" id="btnConfirmReset">OK</button>
     </div>
   </div>
 </div>
@@ -254,7 +254,7 @@ function buildCapacityItems(){
   const visibleItems = allItems.filter(item => visibles.includes(item.id));
 
   container.innerHTML = visibleItems.map(item =>
-    `<div class="capacity-item" data-state="empty" data-label="${item.nom}" onclick="cycleState(this)">
+    `<div class="capacity-item" data-state="empty" data-label="${item.nom}">
       <div class="capacity-state"></div>
       <div class="capacity-icon">${item.emoji}</div>
       <div class="capacity-text">${item.nom}</div>
@@ -333,6 +333,19 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!localStorage.getItem('crisisStartTime')) {
     localStorage.setItem('crisisStartTime', Date.now().toString());
   }
+
+  document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+  document.getElementById('btnReset').addEventListener('click', resetAllCapacities);
+  document.getElementById('btnGoBack').addEventListener('click', goBack);
+  document.getElementById('btnFinish').addEventListener('click', finish);
+  document.getElementById('btnGoNext').addEventListener('click', goNext);
+  document.getElementById('btnHideConfirm').addEventListener('click', hideConfirm);
+  document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);
+
+  document.getElementById('capacitiesContainer').addEventListener('click', function(e) {
+    var item = e.target.closest('.capacity-item');
+    if (item) cycleState(item);
+  });
 });
 </script>
 

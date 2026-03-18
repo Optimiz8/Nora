@@ -10,6 +10,10 @@
  * À inclure dans les pages avec : <script src="nora-data.js"></script>
  */
 
+function escapeHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 const NORA_DATA = {
     // CAPACITÉS PAR DÉFAUT (18 items)
     CAPACITES: [
@@ -220,7 +224,7 @@ function getIdentiteLine() {
     const nom = localStorage.getItem('userNom') || '';
     const prenomAffiche = prenom || '[Prénom]';
     const nomAffiche = nom || '[Nom]';
-    return `Bonjour,<br>Je m'appelle ${prenomAffiche} ${nomAffiche}.`;
+    return `Bonjour,<br>Je m'appelle ${escapeHtml(prenomAffiche)} ${escapeHtml(nomAffiche)}.`;
 }
 
 // Retourne la page suivante dans le flux (ou null)

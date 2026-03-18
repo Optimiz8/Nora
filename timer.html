@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="only light">
   <meta name="theme-color" content="#384657">
   <link rel="manifest" href="manifest.webmanifest">
@@ -897,14 +897,14 @@
   <div id="pageBgNebula"></div>
 
   <header class="header">
-    <button class="back-button" onclick="onBack()" aria-label="Retour">⬅️</button>
+    <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
     <h1 class="page-title">Timer visuel</h1>
   </header>
 
   <main class="timer-main">
 
     <!-- Style 1 : Cercle -->
-    <div class="circle-wrap" id="circleWrap" onclick="onCircleTap()" role="button">
+    <div class="circle-wrap" id="circleWrap" role="button" aria-label="Appuyer pour démarrer ou arrêter">
       <svg viewBox="0 0 100 100" aria-hidden="true">
         <circle class="track" cx="50" cy="50" r="42"/>
         <circle class="progress" id="progressArc" cx="50" cy="50" r="42"
@@ -912,42 +912,42 @@
           transform="rotate(-90 50 50)"/>
       </svg>
       <div class="circle-center">
-        <div class="time-display" id="timeDisplay1" onclick="onTimeTap(event)">15:00</div>
+        <div class="time-display" id="timeDisplay1">15:00</div>
         <div class="time-hint" id="timeHint1">Appuie pour régler</div>
       </div>
     </div>
 
     <!-- Style 2 : Barre -->
     <div class="bar-outer" id="barOuter">
-      <div class="bar-wrap" id="barWrap" onclick="onCircleTap()">
+      <div class="bar-wrap" id="barWrap">
         <div class="bar-fill" id="barFill" style="height:0%"></div>
       </div>
       <div class="bar-time">
-        <div class="time-display" id="timeDisplay2" onclick="onTimeTap(event)">15:00</div>
+        <div class="time-display" id="timeDisplay2">15:00</div>
         <div class="time-hint" id="timeHint2">Appuie pour régler</div>
       </div>
     </div>
 
     <!-- Style 3 : Segments -->
-    <div class="segments-wrap" id="segmentsWrap" onclick="onCircleTap()">
+    <div class="segments-wrap" id="segmentsWrap">
       <div class="seg-center">
-        <div class="time-display" id="timeDisplay3" onclick="onTimeTap(event)">15:00</div>
+        <div class="time-display" id="timeDisplay3">15:00</div>
         <div class="time-hint" id="timeHint3">Appuie pour régler</div>
       </div>
       <div class="seg-pills" id="segPills"></div>
     </div>
 
     <!-- Style 4 : Pixels -->
-    <div class="pixels-wrap" id="pixelsWrap" onclick="onCircleTap()">
+    <div class="pixels-wrap" id="pixelsWrap">
       <canvas class="pixels-canvas" id="pixelsCanvas"></canvas>
     </div>
     <div class="pixels-time" id="pixelsTimeRow">
-      <div class="time-display" id="timeDisplay4" onclick="onTimeTap(event)" style="text-shadow:0 0 16px rgba(0,0,0,0.8)">15:00</div>
+      <div class="time-display" id="timeDisplay4" style="text-shadow:0 0 16px rgba(0,0,0,0.8)">15:00</div>
       <div class="time-hint" id="timeHint4">Appuie pour régler</div>
     </div>
 
     <!-- Style 5 : Kawaii -->
-    <div class="kawaii-wrap" id="kawaiiWrap" onclick="onCircleTap()">
+    <div class="kawaii-wrap" id="kawaiiWrap">
       <div class="kawaii-bg" id="kawaiiBg"></div>
       <div class="kawaii-stickers" id="kawaiiStickers"></div>
       <div class="kawaii-arc">
@@ -960,13 +960,13 @@
         </svg>
       </div>
       <div class="kawaii-center">
-        <div class="time-display" id="timeDisplay5" onclick="onTimeTap(event)" style="color:#fff;text-shadow:0 0 12px rgba(255,100,200,0.6)">15:00</div>
+        <div class="time-display" id="timeDisplay5" style="color:#fff;text-shadow:0 0 12px rgba(255,100,200,0.6)">15:00</div>
         <div class="time-hint" id="timeHint5" style="color:rgba(255,255,255,0.9);text-shadow:0 1px 6px rgba(0,0,0,0.7)">Appuie pour régler</div>
       </div>
     </div>
 
     <!-- Style 6 : Espace -->
-    <div class="space-wrap" id="spaceWrap" onclick="onCircleTap()">
+    <div class="space-wrap" id="spaceWrap">
       <div class="space-nebula"></div>
       <canvas class="space-stars" id="spaceStarsCanvas" width="270" height="270"></canvas>
       <div class="space-arc">
@@ -979,18 +979,18 @@
         </svg>
       </div>
       <div class="space-center">
-        <div class="time-display" id="timeDisplay6" onclick="onTimeTap(event)" style="color:#c4d8ff;text-shadow:0 0 16px rgba(100,150,255,0.7)">15:00</div>
+        <div class="time-display" id="timeDisplay6" style="color:#c4d8ff;text-shadow:0 0 16px rgba(100,150,255,0.7)">15:00</div>
         <div class="time-hint" id="timeHint6" style="color:rgba(180,210,255,0.45)">Appuie pour régler</div>
       </div>
     </div>
 
     <!-- Contrôles Play/Reset -->
     <div class="timer-controls">
-      <button class="ctrl-btn reset-btn" id="btnReset" onclick="resetTimer()">
+      <button class="ctrl-btn reset-btn" id="btnReset">
         <span class="ctrl-icon">↺</span>
         <span class="ctrl-label">Reset</span>
       </button>
-      <button class="ctrl-btn play-btn" id="btnPlay" onclick="togglePause()">
+      <button class="ctrl-btn play-btn" id="btnPlay">
         <span class="ctrl-icon" id="playIcon"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><polygon points="7,4 20,12 7,20"/></svg></span>
       </button>
     </div>
@@ -999,17 +999,17 @@
 
   <!-- Footer 3 boutons -->
   <footer class="timer-footer">
-    <button class="t-btn active" id="btnSon" onclick="cycleSon()">
+    <button class="t-btn active" id="btnSon">
       <span class="btn-cat">Alertes</span>
       <span class="btn-icon" id="sonIcon">🔔</span>
       <small id="sonLabel">BIP</small>
     </button>
-    <button class="t-btn active" id="btnFin" onclick="cycleFin()">
+    <button class="t-btn active" id="btnFin">
       <span class="btn-cat">Fin du timer</span>
       <span class="btn-icon" id="finIcon">⚡</span>
       <small id="finLabel">FLASH</small>
     </button>
-    <button class="t-btn" id="btnStyle" onclick="openStyleSheet()">
+    <button class="t-btn" id="btnStyle">
       <span class="btn-cat">Visuel</span>
       <span class="btn-icon" id="styleIcon">🔵</span>
       <small id="styleLabel">CERCLE</small>
@@ -1020,10 +1020,10 @@
   <div class="timer-toast" id="timerToast"></div>
 
   <!-- Duration picker -->
-  <div class="sheet-backdrop" id="durationSheet" onclick="onBackdropClick(event,'durationSheet')">
+  <div class="sheet-backdrop" id="durationSheet">
     <div class="sheet-box">
       <div class="sheet-handle"></div>
-      <div class="sheet-close" onclick="closeDurationSheet()">✕</div>
+      <div class="sheet-close" id="btnCloseDurationSheet">✕</div>
       <strong class="sheet-title">Durée du timer</strong>
 
       <div class="carousel-wrap">
@@ -1052,18 +1052,18 @@
         </div>
       </div>
 
-      <div class="sheet-adjusters">
-        <button onclick="adjustDuration(-600)">−10 min</button>
-        <button onclick="adjustDuration(-60)">−1 min</button>
-        <button onclick="adjustDuration(60)">+1 min</button>
-        <button onclick="adjustDuration(120)">+2 min</button>
-        <button onclick="adjustDuration(300)">+5 min</button>
-        <button onclick="adjustDuration(600)">+10 min</button>
-        <button onclick="adjustDuration(1800)">+30 min</button>
-        <button onclick="adjustDuration(3600)">+1 h</button>
+      <div class="sheet-adjusters" id="durationAdjusters">
+        <button data-amount="-600">−10 min</button>
+        <button data-amount="-60">−1 min</button>
+        <button data-amount="60">+1 min</button>
+        <button data-amount="120">+2 min</button>
+        <button data-amount="300">+5 min</button>
+        <button data-amount="600">+10 min</button>
+        <button data-amount="1800">+30 min</button>
+        <button data-amount="3600">+1 h</button>
       </div>
 
-      <button class="sheet-start" onclick="startFromSheet()">▶ Commencer</button>
+      <button class="sheet-start" id="btnStartFromSheet">▶ Commencer</button>
     </div>
   </div>
 
@@ -1087,17 +1087,17 @@
       </video>
       <div class="alarm-text" id="alarmText">Temps écoulé !</div>
       <div class="alarm-actions">
-        <button class="alarm-btn primary" onclick="openSnoozeSheet()">Prolonger</button>
-        <button class="alarm-btn secondary" onclick="stopAlarm()">Arrêter</button>
+        <button class="alarm-btn primary" id="btnOpenSnoozeSheet">Prolonger</button>
+        <button class="alarm-btn secondary" id="btnStopAlarm">Arrêter</button>
       </div>
     </div>
   </div>
 
   <!-- Snooze sheet -->
-  <div class="sheet-backdrop" id="snoozeSheet" onclick="onBackdropClick(event,'snoozeSheet')">
+  <div class="sheet-backdrop" id="snoozeSheet">
     <div class="sheet-box">
       <div class="sheet-handle"></div>
-      <div class="sheet-close" onclick="closeSnoozeSheet()">✕</div>
+      <div class="sheet-close" id="btnCloseSnoozeSheet">✕</div>
       <strong class="sheet-title">Prolonger de…</strong>
 
       <div class="carousel-wrap">
@@ -1126,46 +1126,46 @@
         </div>
       </div>
 
-      <div class="sheet-adjusters" style="margin-bottom:14px">
-        <button onclick="snoozeQuick(60)">+1 min</button>
-        <button onclick="snoozeQuick(300)">+5 min</button>
-        <button onclick="snoozeQuick(900)">+15 min</button>
-        <button onclick="snoozeQuick(1800)">+30 min</button>
+      <div class="sheet-adjusters" id="snoozeAdjusters" style="margin-bottom:14px">
+        <button data-snooze-quick="60">+1 min</button>
+        <button data-snooze-quick="300">+5 min</button>
+        <button data-snooze-quick="900">+15 min</button>
+        <button data-snooze-quick="1800">+30 min</button>
       </div>
 
-      <button class="sheet-start" onclick="snoozeFromCarousel()">▶ Prolonger</button>
-      <button class="alarm-btn secondary" style="width:100%;margin-top:10px;" onclick="stopAlarm()">Arrêter complètement</button>
+      <button class="sheet-start" id="btnSnoozeFromCarousel">▶ Prolonger</button>
+      <button class="alarm-btn secondary" id="btnStopAlarmSnooze" style="width:100%;margin-top:10px;">Arrêter complètement</button>
     </div>
   </div>
 
   <!-- Style sheet -->
-  <div class="sheet-backdrop" id="styleSheet" onclick="onBackdropClick(event,'styleSheet')">
+  <div class="sheet-backdrop" id="styleSheet">
     <div class="sheet-box">
       <div class="sheet-handle"></div>
-      <div class="sheet-close" onclick="closeStyleSheet()">✕</div>
+      <div class="sheet-close" id="btnCloseStyleSheet">✕</div>
       <strong class="sheet-title">Style visuel</strong>
       <div class="style-grid">
-        <button class="style-btn" id="styleBtn-cercle" onclick="setStyle('cercle')">
+        <button class="style-btn" id="styleBtn-cercle" data-style="cercle">
           <span class="style-preview">⭕</span>
           <span class="style-name">Cercle</span>
         </button>
-        <button class="style-btn" id="styleBtn-barre" onclick="setStyle('barre')">
+        <button class="style-btn" id="styleBtn-barre" data-style="barre">
           <div class="style-preview-bar"></div>
           <span class="style-name">Barre</span>
         </button>
-        <button class="style-btn" id="styleBtn-segments" onclick="setStyle('segments')">
+        <button class="style-btn" id="styleBtn-segments" data-style="segments">
           <span class="style-preview">🔆</span>
           <span class="style-name">Segments</span>
         </button>
-        <button class="style-btn" id="styleBtn-pixels" onclick="setStyle('pixels')">
+        <button class="style-btn" id="styleBtn-pixels" data-style="pixels">
           <span class="style-preview">⬛</span>
           <span class="style-name">Pixels</span>
         </button>
-        <button class="style-btn" id="styleBtn-kawaii" onclick="setStyle('kawaii')">
+        <button class="style-btn" id="styleBtn-kawaii" data-style="kawaii">
           <span class="style-preview">🌈</span>
           <span class="style-name">Kawaii</span>
         </button>
-        <button class="style-btn" id="styleBtn-espace" onclick="setStyle('espace')">
+        <button class="style-btn" id="styleBtn-espace" data-style="espace">
           <span class="style-preview">🌌</span>
           <span class="style-name">Espace</span>
         </button>
@@ -1264,6 +1264,49 @@
       updateFinBtn();
       updateDisplay();
       restoreRunningState();
+
+      /* ---------- LISTENERS ---------- */
+      document.getElementById('btnBack').addEventListener('click', onBack);
+
+      ['circleWrap','barWrap','segmentsWrap','pixelsWrap','kawaiiWrap','spaceWrap'].forEach(function(id) {
+        document.getElementById(id).addEventListener('click', onCircleTap);
+      });
+
+      ['timeDisplay1','timeDisplay2','timeDisplay3','timeDisplay4','timeDisplay5','timeDisplay6'].forEach(function(id) {
+        document.getElementById(id).addEventListener('click', function(e) { onTimeTap(e); });
+      });
+
+      document.getElementById('btnReset').addEventListener('click', resetTimer);
+      document.getElementById('btnPlay').addEventListener('click', togglePause);
+      document.getElementById('btnSon').addEventListener('click', cycleSon);
+      document.getElementById('btnFin').addEventListener('click', cycleFin);
+      document.getElementById('btnStyle').addEventListener('click', openStyleSheet);
+
+      document.getElementById('durationSheet').addEventListener('click', function(e) { onBackdropClick(e, 'durationSheet'); });
+      document.getElementById('btnCloseDurationSheet').addEventListener('click', closeDurationSheet);
+      document.getElementById('durationAdjusters').addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-amount]');
+        if (btn) adjustDuration(parseInt(btn.dataset.amount, 10));
+      });
+      document.getElementById('btnStartFromSheet').addEventListener('click', startFromSheet);
+
+      document.getElementById('btnOpenSnoozeSheet').addEventListener('click', openSnoozeSheet);
+      document.getElementById('btnStopAlarm').addEventListener('click', stopAlarm);
+
+      document.getElementById('snoozeSheet').addEventListener('click', function(e) { onBackdropClick(e, 'snoozeSheet'); });
+      document.getElementById('btnCloseSnoozeSheet').addEventListener('click', closeSnoozeSheet);
+      document.getElementById('snoozeAdjusters').addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-snooze-quick]');
+        if (btn) snoozeQuick(parseInt(btn.dataset.snoozeQuick, 10));
+      });
+      document.getElementById('btnSnoozeFromCarousel').addEventListener('click', snoozeFromCarousel);
+      document.getElementById('btnStopAlarmSnooze').addEventListener('click', stopAlarm);
+
+      document.getElementById('styleSheet').addEventListener('click', function(e) { onBackdropClick(e, 'styleSheet'); });
+      document.getElementById('btnCloseStyleSheet').addEventListener('click', closeStyleSheet);
+      document.querySelectorAll('.style-btn[data-style]').forEach(function(btn) {
+        btn.addEventListener('click', function() { setStyle(btn.dataset.style); });
+      });
     });
 
     /* ---------- PERSISTANCE ---------- */

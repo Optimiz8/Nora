@@ -9,7 +9,7 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/images/logo.png" />
     <link rel="stylesheet" href="nora-common.css" />
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <title>Carte d'urgence numérique</title>
 
     <style>
@@ -341,7 +341,7 @@
   </head>
 
   <body>
-    <button class="close-btn" onclick="closeCarte()" aria-label="Fermer">
+    <button class="close-btn" id="btnCloseCarte" aria-label="Fermer">
       ×
     </button>
 
@@ -386,7 +386,7 @@
           <!-- Généré dynamiquement -->
         </div>
 
-        <button class="medical-btn" id="medicalBtn" onclick="openMedical()">
+        <button class="medical-btn" id="medicalBtn">
           <span class="emoji">🔍</span>
           <div class="text-content">
             <span class="main-text">Informations médicales</span>
@@ -400,7 +400,7 @@
 
     <!-- FOOTER FIXE : QR Code -->
     <div class="carte-footer footer">
-      <button class="qr-btn" onclick="generateQR()">
+      <button class="qr-btn" id="btnQR">
         📱 Partager via QR Code
       </button>
     </div>
@@ -416,7 +416,7 @@
       <div class="modal-content">
         <button
           class="modal-close"
-          onclick="closeMedical()"
+          id="btnCloseMedical"
           aria-label="Fermer"
         >
           ×
@@ -442,17 +442,17 @@
       aria-label="QR Code"
     >
       <div class="modal-content" style="text-align: center">
-        <button class="modal-close" onclick="closeQR()" aria-label="Fermer">
+        <button class="modal-close" id="btnCloseQR" aria-label="Fermer">
           ×
         </button>
         <div class="modal-title">Scannez ce QR Code</div>
         <div id="qrcode"></div>
-        <button class="qr-close-btn" onclick="closeQR()">Fermer</button>
+        <button class="qr-close-btn" id="btnQRFermer">Fermer</button>
       </div>
     </div>
 
     <!-- Bibliothèque QR Code -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="assets/js/qrcode.min.js"></script>
 
     <script>
       let qrCodeInstance = null;
@@ -512,10 +512,10 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
                 mainPart === mainPart.toUpperCase() &&
                 /[A-ZÀ-Ú]/.test(mainPart);
               if (isUpperCase) {
-                return `<div class="list-item"><strong>${mainPart}</strong>${parenthesis ? " " + parenthesis : ""}</div>`;
+                return `<div class="list-item"><strong>${escapeHtml(mainPart)}</strong>${parenthesis ? " " + escapeHtml(parenthesis) : ""}</div>`;
               }
             }
-            return `<div class="list-item">${trimmed}</div>`;
+            return `<div class="list-item">${escapeHtml(trimmed)}</div>`;
           })
           .join("");
       }
@@ -532,7 +532,7 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
         const container = document.getElementById("informationsBlock");
         const lines = texte.split("\n").filter((l) => l.trim());
         container.innerHTML = lines
-          .map((line) => `<div class="text">${line.trim()}</div>`)
+          .map((line) => `<div class="text">${escapeHtml(line.trim())}</div>`)
           .join("");
       }
 
@@ -563,7 +563,7 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
           const fullName = [prenom, nom.toUpperCase()]
             .filter(Boolean)
             .join(" ");
-          container.innerHTML = `Je m'appelle <strong>${fullName}</strong>.`;
+          container.innerHTML = `Je m'appelle <strong>${escapeHtml(fullName)}</strong>.`;
         } else {
           container.style.display = "none";
         }
@@ -583,6 +583,7 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
 
       // Sépare emojis (non italique) du texte (italique)
       function formatRemarque(text) {
+        const safe = escapeHtml(text);
         try {
           var emojiRegex = new RegExp(
             "(\\p{Emoji_Presentation}|\\p{Extended_Pictographic})",
@@ -590,12 +591,11 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
           );
           return (
             '<span class="remark-text">' +
-            text.replace(emojiRegex, '</span>$1<span class="remark-text">') +
+            safe.replace(emojiRegex, '</span>$1<span class="remark-text">') +
             "</span>"
           );
         } catch (e) {
-          // Fallback : tout en italique si le navigateur ne supporte pas \p{}
-          return '<span class="remark-text">' + text + "</span>";
+          return '<span class="remark-text">' + safe + "</span>";
         }
       }
 
@@ -643,15 +643,15 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
 
         container.innerHTML = selectedContacts
           .map((contact) => {
-            const lien = contact.lien ? ` (${contact.lien})` : "";
+            const lien = contact.lien ? ` (${escapeHtml(contact.lien)})` : "";
             const tel = contact.telephone || "";
             const remarque = contact.remarque
               ? `<div class="contact-remarque">${formatRemarque(contact.remarque)}</div>`
               : "";
             return `
             <div class="contact-entry">
-                <div class="contact-name">${contact.nom}${lien}</div>
-                ${tel ? `<div class="contact-phone"><a href="tel:${tel.replace(/\s/g, "")}">${tel}</a></div>` : ""}
+                <div class="contact-name">${escapeHtml(contact.nom)}${lien}</div>
+                ${tel ? `<div class="contact-phone"><a href="tel:${escapeHtml(tel.replace(/\s/g, ""))}">${escapeHtml(tel)}</a></div>` : ""}
                 ${remarque}
             </div>
         `;
@@ -726,19 +726,47 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
             (f) => `
         <div class="medical-info-row">
             <div class="medical-info-label">${f.label}</div>
-            <div class="medical-info-value">${f.value}</div>
+            <div class="medical-info-value">${escapeHtml(f.value)}</div>
         </div>
     `,
           )
           .join("");
       }
 
+      function trapFocus(modal) {
+        const sel = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        const focusables = [...modal.querySelectorAll(sel)];
+        if (!focusables.length) return;
+        focusables[0].focus();
+        function handler(e) {
+          if (e.key !== 'Tab') return;
+          const idx = focusables.indexOf(document.activeElement);
+          if (e.shiftKey) {
+            if (idx <= 0) { e.preventDefault(); focusables[focusables.length - 1].focus(); }
+          } else {
+            if (idx === focusables.length - 1) { e.preventDefault(); focusables[0].focus(); }
+          }
+        }
+        modal._trapHandler = handler;
+        modal.addEventListener('keydown', handler);
+      }
+      function releaseTrap(modal) {
+        if (modal._trapHandler) {
+          modal.removeEventListener('keydown', modal._trapHandler);
+          delete modal._trapHandler;
+        }
+      }
+
       function openMedical() {
-        document.getElementById("medicalModal").classList.add("visible");
+        const m = document.getElementById("medicalModal");
+        m.classList.add("visible");
+        trapFocus(m);
       }
 
       function closeMedical() {
-        document.getElementById("medicalModal").classList.remove("visible");
+        const m = document.getElementById("medicalModal");
+        releaseTrap(m);
+        m.classList.remove("visible");
       }
 
       function generateQR() {
@@ -759,11 +787,21 @@ Normalement, je vous entends et vous comprends mais peut avoir du mal à parler.
         });
 
         modal.classList.add("visible");
+        trapFocus(modal);
       }
 
       function closeQR() {
-        document.getElementById("qrModal").classList.remove("visible");
+        const m = document.getElementById("qrModal");
+        releaseTrap(m);
+        m.classList.remove("visible");
       }
+
+      document.getElementById('btnCloseCarte').addEventListener('click', closeCarte);
+      document.getElementById('medicalBtn').addEventListener('click', openMedical);
+      document.getElementById('btnQR').addEventListener('click', generateQR);
+      document.getElementById('btnCloseMedical').addEventListener('click', closeMedical);
+      document.getElementById('btnCloseQR').addEventListener('click', closeQR);
+      document.getElementById('btnQRFermer').addEventListener('click', closeQR);
 
       // Fermer avec Echap
       document.addEventListener("keydown", (e) => {

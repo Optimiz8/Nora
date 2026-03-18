@@ -309,28 +309,28 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="window.location.href='stats.html'" aria-label="Retour aux statistiques">⬅️</button>
+        <button class="back-button" id="btnBack" aria-label="Retour aux statistiques">⬅️</button>
         <h1 class="page-title">Statistiques</h1>
-        <button class="header-icon" onclick="location.replace('index.html')" style="margin-left:auto" aria-label="Accueil">🏠</button>
+        <button class="header-icon" id="btnHome" style="margin-left:auto" aria-label="Accueil">🏠</button>
     </header>
 
     <div class="page-tabs">
-        <button class="page-tab" onclick="saveNav(); window.location.href='stats.html'">Vue d'ensemble</button>
+        <button class="page-tab" id="btnTabOverview">Vue d'ensemble</button>
         <button class="page-tab active">Analyse</button>
     </div>
 
     <div class="filter-bar">
-        <button class="filter-btn" id="filterBtn" onclick="toggleFilterPanel()">
+        <button class="filter-btn" id="filterBtn">
             ⚙️ Filtres avancés <span class="filter-badge" id="filterBadge" style="display:none">0</span>
         </button>
     </div>
 
     <div class="period-header" style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);padding:14px 16px 6px">Période</div>
     <div class="period-bar">
-        <button class="period-btn active" data-days="7" onclick="selectPeriod(7)">7 j</button>
-        <button class="period-btn" data-days="30" onclick="selectPeriod(30)">30 j</button>
-        <button class="period-btn" data-days="365" onclick="selectPeriod(365)">1 an</button>
-        <button class="period-btn" data-days="0" onclick="selectPeriod(0)">Dates</button>
+        <button class="period-btn active" data-days="7">7 j</button>
+        <button class="period-btn" data-days="30">30 j</button>
+        <button class="period-btn" data-days="365">1 an</button>
+        <button class="period-btn" data-days="0">Dates</button>
     </div>
     <div class="date-range-panel" id="dateRangePanel">
         <div class="date-range-row">
@@ -341,10 +341,10 @@
             <span class="date-range-label">Fin</span>
             <input type="date" class="date-range-input" id="dateTo">
         </div>
-        <button class="date-range-apply" onclick="applyCustomRange()">Appliquer</button>
+        <button class="date-range-apply" id="btnApplyRange">Appliquer</button>
     </div>
 
-    <div class="filter-overlay" id="filterOverlay" onclick="closeFilterPanel()"></div>
+    <div class="filter-overlay" id="filterOverlay"></div>
     <div class="filter-panel" id="filterPanel">
         <div class="filter-panel-title">Filtres avancés</div>
         <div class="filter-group">
@@ -354,59 +354,59 @@
         <div class="filter-group">
             <div class="filter-group-label">Origine</div>
             <div class="filter-chips" id="filterOrigine">
-                <button class="filter-chip" data-val="Anticipatoire" onclick="toggleFilterChip(this)">Anticipatoire</button>
-                <button class="filter-chip" data-val="Réactionnelle" onclick="toggleFilterChip(this)">Réactionnelle</button>
-                <button class="filter-chip" data-val="Mixte" onclick="toggleFilterChip(this)">Mixte</button>
+                <button class="filter-chip" data-val="Anticipatoire">Anticipatoire</button>
+                <button class="filter-chip" data-val="Réactionnelle">Réactionnelle</button>
+                <button class="filter-chip" data-val="Mixte">Mixte</button>
             </div>
         </div>
         <div class="filter-group">
             <div class="filter-group-label">Type de crise</div>
             <div class="filter-chips" id="filterType">
-                <button class="filter-chip" data-val="Meltdown" onclick="toggleFilterChip(this)">Meltdown</button>
-                <button class="filter-chip" data-val="Shutdown" onclick="toggleFilterChip(this)">Shutdown</button>
-                <button class="filter-chip" data-val="Mixte" onclick="toggleFilterChip(this)">Mixte</button>
+                <button class="filter-chip" data-val="Meltdown">Meltdown</button>
+                <button class="filter-chip" data-val="Shutdown">Shutdown</button>
+                <button class="filter-chip" data-val="Mixte">Mixte</button>
             </div>
         </div>
         <div class="filter-actions">
-            <button class="filter-reset-btn" onclick="resetFilters()">Réinitialiser</button>
-            <button class="filter-apply-btn" onclick="applyFilters()">Appliquer</button>
+            <button class="filter-reset-btn" id="btnResetFilters">Réinitialiser</button>
+            <button class="filter-apply-btn" id="btnApplyFilters">Appliquer</button>
         </div>
     </div>
 
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn icon-btn" id="profileBtn" onclick="window.location.href='profil-crise.html'" style="display:none">👤 Profil</button>
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('share')">✉️ Partager</button>
-        <button class="export-stats-btn icon-btn" onclick="openShareExportModal('export')">📥 Exporter</button>
+        <button class="export-stats-btn icon-btn" id="profileBtn" style="display:none">👤 Profil</button>
+        <button class="export-stats-btn icon-btn" id="btnShare">✉️ Partager</button>
+        <button class="export-stats-btn icon-btn" id="btnExport">📥 Exporter</button>
     </div>
 
     <!-- Modale profil de crise -->
-    <div class="modal-overlay" id="profileModalOverlay" onclick="closeProfileModal()"></div>
+    <div class="modal-overlay" id="profileModalOverlay"></div>
     <div class="profile-modal" id="profileModal">
         <div class="profile-modal-header">
             <div class="profile-modal-title">Mon profil de crise</div>
-            <button class="profile-modal-close" onclick="closeProfileModal()">×</button>
+            <button class="profile-modal-close" id="btnCloseProfileModal">×</button>
         </div>
         <div id="profileContent"></div>
         <div class="profile-modal-footer">
-            <button class="profile-share-btn" onclick="shareProfile()">✉️ Partager ce profil</button>
-            <button class="profile-share-btn" style="background: rgba(245,228,204,0.15); color: var(--light);" onclick="exportProfile()">📥 Exporter ce profil</button>
-            <button class="export-cancel-btn" onclick="closeProfileModal()">Fermer</button>
+            <button class="profile-share-btn" id="btnShareProfile">✉️ Partager ce profil</button>
+            <button class="profile-share-btn" id="btnExportProfile" style="background: rgba(245,228,204,0.15); color: var(--light);">📥 Exporter ce profil</button>
+            <button class="export-cancel-btn" id="btnCloseProfileModalFooter">Fermer</button>
         </div>
     </div>
 
     <!-- Modale export/partage -->
-    <div class="modal-overlay" id="exportModalOverlay" onclick="closeExportModal()"></div>
+    <div class="modal-overlay" id="exportModalOverlay"></div>
     <div class="export-modal" id="exportModal">
         <div class="export-modal-title" id="exportModalTitle">Partager</div>
-        <button class="export-option-btn" onclick="doShareExport('overview')">Vue d'ensemble</button>
-        <button class="export-option-btn" onclick="doShareExport('analysis')">Analyse approfondie</button>
-        <button class="export-option-btn primary" onclick="doShareExport('both')">Les deux</button>
-        <button class="export-cancel-btn" onclick="closeExportModal()">Annuler</button>
+        <button class="export-option-btn" id="btnExportOverview">Vue d'ensemble</button>
+        <button class="export-option-btn" id="btnExportAnalysis">Analyse approfondie</button>
+        <button class="export-option-btn primary" id="btnExportBoth">Les deux</button>
+        <button class="export-cancel-btn" id="btnCloseExportModal">Annuler</button>
     </div>
 
-    <script src="nora-data.js"></script>
+    <script src="nora-data.js" defer></script>
     <script>
         var currentDays = 7;
         var customFrom = null, customTo = null;
@@ -1472,7 +1472,7 @@
             if (navigator.share) {
                 navigator.share({ title: 'Mon profil de crise — Nora', text: text }).catch(function() {});
             } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(function() { alert('Profil copié !'); }).catch(function() {});
+                navigator.clipboard.writeText(text).then(function() { showToast('Profil copié !'); }).catch(function() {});
             }
         }
 
@@ -1575,8 +1575,8 @@
 
         function applyCustomRange() {
             var from = document.getElementById('dateFrom').value, to = document.getElementById('dateTo').value;
-            if (!from || !to) { alert('Choisis une date de début et une date de fin.'); return; }
-            if (from > to) { alert('La date de début doit être avant la date de fin.'); return; }
+            if (!from || !to) { showToast('Choisis une date de début et une date de fin.'); return; }
+            if (from > to) { showToast('La date de début doit être avant la date de fin.'); return; }
             customFrom = from; customTo = to; saveNav(); renderCurrent();
         }
 
@@ -1678,7 +1678,7 @@
         function doShareExport(which) {
             closeExportModal();
             var stats = computeStats(currentDays, customFrom, customTo);
-            if (!stats) { alert('Aucune donnée sur cette période.'); return; }
+            if (!stats) { showToast('Aucune donnée sur cette période.'); return; }
             var text = which === 'overview' ? buildOverviewText(stats)
                      : which === 'analysis' ? buildAnalysisText(stats)
                      : buildOverviewText(stats) + '\n\n---\n\n' + buildAnalysisText(stats);
@@ -1686,11 +1686,11 @@
                 if (navigator.share) {
                     navigator.share({ title: 'Statistiques Nora', text: text }).catch(function() {});
                 } else if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(function() { alert('Résumé copié !'); }).catch(function() { downloadText(text); });
+                    navigator.clipboard.writeText(text).then(function() { showToast('Résumé copié !'); }).catch(function() { downloadText(text); });
                 } else { downloadText(text); }
             } else {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(text).then(function() { alert('Données copiées !'); }).catch(function() { downloadText(text); });
+                    navigator.clipboard.writeText(text).then(function() { showToast('Données copiées !'); }).catch(function() { downloadText(text); });
                 } else { downloadText(text); }
             }
         }
@@ -1699,6 +1699,37 @@
         if (getJournal().length >= 10) document.getElementById('profileBtn').style.display = '';
         renderCurrent();
         window.addEventListener('pagehide', saveNav);
+
+        document.getElementById('btnBack').addEventListener('click', function() { window.location.href = 'stats.html'; });
+        document.getElementById('btnHome').addEventListener('click', function() { location.replace('index.html'); });
+        document.getElementById('btnTabOverview').addEventListener('click', function() { saveNav(); window.location.href = 'stats.html'; });
+        document.getElementById('filterBtn').addEventListener('click', toggleFilterPanel);
+        document.getElementById('filterOverlay').addEventListener('click', closeFilterPanel);
+        document.getElementById('btnApplyRange').addEventListener('click', applyCustomRange);
+        document.getElementById('btnResetFilters').addEventListener('click', resetFilters);
+        document.getElementById('btnApplyFilters').addEventListener('click', applyFilters);
+        document.getElementById('profileBtn').addEventListener('click', function() { window.location.href = 'profil-crise.html'; });
+        document.getElementById('btnShare').addEventListener('click', function() { openShareExportModal('share'); });
+        document.getElementById('btnExport').addEventListener('click', function() { openShareExportModal('export'); });
+        document.getElementById('profileModalOverlay').addEventListener('click', closeProfileModal);
+        document.getElementById('btnCloseProfileModal').addEventListener('click', closeProfileModal);
+        document.getElementById('btnShareProfile').addEventListener('click', shareProfile);
+        document.getElementById('btnExportProfile').addEventListener('click', exportProfile);
+        document.getElementById('btnCloseProfileModalFooter').addEventListener('click', closeProfileModal);
+        document.getElementById('exportModalOverlay').addEventListener('click', closeExportModal);
+        document.getElementById('btnExportOverview').addEventListener('click', function() { doShareExport('overview'); });
+        document.getElementById('btnExportAnalysis').addEventListener('click', function() { doShareExport('analysis'); });
+        document.getElementById('btnExportBoth').addEventListener('click', function() { doShareExport('both'); });
+        document.getElementById('btnCloseExportModal').addEventListener('click', closeExportModal);
+
+        document.querySelector('.period-bar').addEventListener('click', function(e) {
+            var btn = e.target.closest('.period-btn[data-days]');
+            if (btn) selectPeriod(Number(btn.dataset.days));
+        });
+        document.getElementById('filterPanel').addEventListener('click', function(e) {
+            var chip = e.target.closest('.filter-chip');
+            if (chip) toggleFilterChip(chip);
+        });
 
         (function() {
             var startX, startY;
@@ -1716,8 +1747,16 @@
                 startX = undefined;
             }, { passive: true });
         })();
+
+        function showToast(msg, duration) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('visible');
+            setTimeout(function() { t.classList.remove('visible'); }, duration || 3000);
+        }
     </script>
 
+    <div class="toast" id="toast"></div>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
 </body>

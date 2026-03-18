@@ -85,9 +85,9 @@
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Confidentialité</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -127,7 +127,10 @@
 
                 <div class="subsection-title">Qui peut y accéder ?</div>
                 <p class="text">
-                    Seul toi (depuis ton appareil) peut accéder à ces données. Aucun serveur, aucune personne tierce, aucune analytics, aucun cookie de traçage n'est utilisé.
+                    Aucun serveur, aucune personne tierce, aucune analytics, aucun cookie de traçage n'est utilisé.
+                </p>
+                <p class="text">
+                    Les données sont stockées en clair dans le navigateur. Toute personne ayant accès à ton appareil déverrouillé et à ce navigateur peut techniquement les lire (via les outils de développement). <strong>Verrouille ton écran</strong> pour protéger l'accès.
                 </p>
 
                 <div class="divider"></div>
@@ -165,6 +168,9 @@
         function goBack() {
             window.location.href = 'parametres.html';
         }
+
+        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
 
         function renderDataSummary() {
             var checks = [

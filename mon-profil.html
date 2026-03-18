@@ -101,19 +101,22 @@
             font-size: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             z-index: 1000;
-            display: none;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
 
         .success-toast.visible {
-            display: block;
+            opacity: 1;
+            pointer-events: auto;
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <button class="back-button" onclick="goBack()" aria-label="Retour">⬅️</button>
+        <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Mon profil</h1>
-        <button class="back-button" onclick="window.location.href='index.html'" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
@@ -141,7 +144,7 @@
                 maxlength="50"
             >
 
-            <button class="save-button" onclick="saveProfil()">
+            <button class="save-button" id="btnSave">
                 💾 Enregistrer
             </button>
         </div>
@@ -177,6 +180,10 @@
         function goBack() {
             window.location.href = 'parametres.html';
         }
+
+        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
+        document.getElementById('btnSave').addEventListener('click', saveProfil);
     </script>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
