@@ -96,14 +96,17 @@
 
         .acc-text + .acc-text { margin-top: 10px; }
 
-        .acc-text ul {
-            margin: 8px 0 0 18px;
+        .acc-list {
+            margin: 10px 0 0 20px;
+            font-size: 15px;
+            color: rgba(46,58,89,0.85);
+            line-height: 1.7;
         }
 
-        .acc-text li { margin-bottom: 4px; }
+        .acc-list li { margin-bottom: 2px; }
 
         .acc-subtitle {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--dark);
             margin-top: 14px;
@@ -120,7 +123,7 @@
             gap: 8px;
             padding: 6px 0;
             border-bottom: 1px solid rgba(46,58,89,0.08);
-            font-size: 14px;
+            font-size: 15px;
             color: rgba(46,58,89,0.85);
         }
 
@@ -129,7 +132,7 @@
         .data-check { color: var(--dark); font-weight: 700; }
 
         .data-empty {
-            font-size: 14px;
+            font-size: 15px;
             color: rgba(46,58,89,0.5);
             font-style: italic;
             margin-top: 14px;
@@ -142,7 +145,7 @@
             border-radius: 8px;
             padding: 10px 14px;
             margin-top: 12px;
-            font-size: 14px;
+            font-size: 15px;
             color: rgba(46,58,89,0.85);
             line-height: 1.5;
         }
@@ -171,7 +174,7 @@
             </div>
             <div class="accordion-body">
                 <p class="acc-text">Selon ce que tu remplis dans l'application, Nora peut enregistrer :</p>
-                <p class="acc-text"><ul>
+                <ul class="acc-list">
                     <li>Ton prénom et nom (optionnel)</li>
                     <li>Tes contacts d'urgence (nom, téléphone, relation)</li>
                     <li>Tes informations médicales (groupe sanguin, allergies, traitements…)</li>
@@ -182,7 +185,7 @@
                     <li>Tes préréglages du mixeur sonore et volumes</li>
                     <li>Ta playlist musicale (nom et lien)</li>
                     <li>Tes préférences d'affichage (paramètres timer, son, etc.)</li>
-                </ul></p>
+                </ul>
                 <p class="acc-text">Aucun de ces éléments n'est obligatoire — Nora fonctionne même sans rien renseigner.</p>
             </div>
         </div>
@@ -211,12 +214,12 @@
             <div class="accordion-body">
                 <p class="acc-text"><strong>Personne d'autre que toi</strong> — et uniquement depuis ton téléphone.</p>
                 <p class="acc-text">Nora n'utilise :</p>
-                <p class="acc-text"><ul>
+                <ul class="acc-list">
                     <li>Aucun serveur distant</li>
                     <li>Aucun outil de mesure d'utilisation ou de pistage</li>
                     <li>Aucune publicité</li>
                     <li>Aucun cookie de suivi</li>
-                </ul></p>
+                </ul>
                 <div class="acc-note">🔐 Les données sont stockées en clair dans ton navigateur. Toute personne ayant accès à ton téléphone <strong>déverrouillé</strong> pourrait les lire en fouillant les paramètres du navigateur. <strong>Verrouille ton écran</strong> pour te protéger.</div>
             </div>
         </div>

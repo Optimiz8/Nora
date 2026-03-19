@@ -149,7 +149,7 @@
         .stat-value.large { font-size: 28px; }
 
         .stat-delta {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             margin-left: 6px;
             color: var(--dark);
@@ -157,7 +157,7 @@
         }
 
         .stat-sub {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 400;
             color: var(--dark);
             opacity: 0.5;
@@ -210,7 +210,7 @@
         .view-toggle-btn {
             background: none;
             border: none;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--dark);
             opacity: 0.5;
@@ -237,7 +237,7 @@
         .pill {
             background: rgba(46, 58, 89, 0.08);
             color: var(--dark);
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             padding: 6px 11px;
             border-radius: 20px;
@@ -305,7 +305,7 @@
         }
 
         .rank-meta {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--dark);
             opacity: 0.5;
             white-space: nowrap;
@@ -333,7 +333,7 @@
         }
 
         .rank-count {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--dark);
             opacity: 0.55;
             white-space: nowrap;
@@ -363,7 +363,7 @@
             border: none;
             border-top: 1px solid rgba(46, 58, 89, 0.1);
             padding: 9px 0;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--dark);
             opacity: 0.6;
@@ -498,14 +498,14 @@
         }
 
         .bilan-prev-val {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 400;
             opacity: 0.55;
         }
 
         .bilan-minmax {
             padding: 4px 16px 10px;
-            font-size: 12px;
+            font-size: 13px;
             color: var(--dark);
             opacity: 0.55;
         }
@@ -635,7 +635,7 @@
         .empty-text { font-size: 16px; }
 
         .no-data {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--dark);
             opacity: 0.4;
             font-style: italic;
@@ -835,7 +835,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 12px;
+            font-size: 13px;
             color: var(--dark);
             opacity: 0.7;
         }
@@ -848,7 +848,7 @@
         }
 
         .chart-bar-label {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--dark);
             opacity: 0.6;
             text-align: center;
@@ -868,7 +868,7 @@
         .cross-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 14px;
             color: var(--dark);
         }
 
@@ -1003,7 +1003,7 @@
         }
 
         .podium-label {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--dark);
             text-align: center;
@@ -1016,7 +1016,7 @@
         }
 
         .podium-count {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--dark);
             opacity: 0.6;
             font-weight: 600;
@@ -2265,9 +2265,15 @@
             var main = document.getElementById('mainContent');
 
             if (!stats) {
+                var hasActiveFilters = activeFilters.contexte.length || activeFilters.origine.length ||
+                    activeFilters.type.length || activeFilters.moment.length ||
+                    activeFilters.intMin > 1 || activeFilters.intMax < 10;
+                var hint = hasActiveFilters
+                    ? '<div class="empty-text" style="font-size:14px;margin-top:8px;opacity:0.75">Des filtres sont actifs — essaie de les réinitialiser.</div>'
+                    : '';
                 main.innerHTML =
                     '<div class="empty-state"><div class="empty-icon">📊</div>' +
-                    '<div class="empty-text">Aucune crise enregistrée<br>sur cette période.</div></div>';
+                    '<div class="empty-text">Aucune crise enregistrée<br>sur cette période.</div>' + hint + '</div>';
                 document.getElementById('exportFooter').style.display = 'none';
                 return;
             }

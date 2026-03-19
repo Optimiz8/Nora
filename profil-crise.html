@@ -22,13 +22,13 @@
         }
 
         .profile-baseline {
-            font-size: 12px;
+            font-size: 13px;
             color: rgba(245,228,204,0.35);
             margin-bottom: 20px;
         }
 
         .profile-section-title {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.07em;
@@ -303,7 +303,7 @@
             if (ps.triggerStats.length) {
                 html += '<div class="profile-section-title">Déclencheurs fréquents</div><div class="profile-card">';
                 if (ps.trigCatCounts.length > 1) {
-                    html += '<div class="profile-line" style="font-size:13px;opacity:0.6">Catégories : ' + ps.trigCatCounts.map(function(c) { return c.name; }).join(' · ') + '</div>';
+                    html += '<div class="profile-line" style="font-size:14px;opacity:0.6">Catégories : ' + ps.trigCatCounts.map(function(c) { return c.name; }).join(' · ') + '</div>';
                 }
                 for (var ti = 0; ti < Math.min(ps.triggerStats.length, 3); ti++) {
                     html += '<div class="profile-line"><strong>' + (ti + 1) + '.</strong> ' + ps.triggerStats[ti].name + '</div>';

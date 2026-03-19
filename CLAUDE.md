@@ -78,7 +78,7 @@ Ces mots-clés ne fonctionnent que si le message ne contient **que** le mot-clé
 Ne pas lister les docs à mettre à jour à cette étape.
 
 **`#ok`** / **`#go`** (ou **`#2`**, insensible à la casse) — Phase 2 : valider
-→ Mettre à jour uniquement le numéro de version dans `a-propos.html`.
+→ Mettre à jour le numéro de version dans `a-propos.html` ET dans `CACHE_VERSION` de `sw.js` (format `'nora-vX.Y.Z'`).
 → Confirmer, puis préciser à Marine de faire le commit et le push depuis VS Code.
 
 **`#MAJ`** — Mise à jour complète

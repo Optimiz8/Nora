@@ -513,7 +513,7 @@
         .form-block-q-avant { background: rgba(0,0,0,0.2); }
         .form-block-q-crise { background: rgba(247,184,156,0.07); }
         .form-block-q-title {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--accent);
             letter-spacing: 0.08em;
@@ -678,7 +678,7 @@
         .dur-value { font-size: 32px; font-weight: 700; color: var(--light); min-width: 56px; text-align: center; line-height: 1.1; }
         .dur-unit { font-size: 11px; color: var(--light); opacity: 0.45; }
         .dur-sep { font-size: 32px; font-weight: 300; color: var(--light); opacity: 0.4; padding: 0 2px; margin-bottom: 24px; }
-        .dur-zero { text-align: center; font-size: 13px; color: var(--light); opacity: 0.4; margin-top: 4px; font-style: italic; }
+        .dur-zero { text-align: center; font-size: 14px; color: var(--light); opacity: 0.4; margin-top: 4px; font-style: italic; }
 
         /* ACTIONS FOOTER */
         .questionnaire-actions {
@@ -1239,6 +1239,7 @@
         <div class="questionnaire-content" id="triggersModalContent">
             <div class="questionnaire-header">
                 <div class="questionnaire-title">Sélectionner les déclencheurs</div>
+                <button class="questionnaire-close-btn" id="btnCloseTriggersModal" aria-label="Fermer">×</button>
             </div>
             <p class="triggers-info">Une crise peut avoir plusieurs déclencheurs.<br>Prends quelques secondes pour repenser à ce qui s'est accumulé.</p>
 
@@ -1269,15 +1270,15 @@
             <div style="display:flex; flex-direction:column; gap:10px;">
                 <button id="btnRecapRegisterNow" style="background:var(--accent);color:var(--dark);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;">
                     Enregistrer maintenant
-                    <div style="font-size:13px;font-weight:400;opacity:0.7;margin-top:2px;">Ajouter au journal avec les données de la crise</div>
+                    <div style="font-size:14px;font-weight:400;opacity:0.7;margin-top:2px;">Ajouter au journal avec les données de la crise</div>
                 </button>
                 <button id="btnRecapRegisterSkip" style="background:rgba(46,58,89,0.1);color:var(--dark);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;">
                     Ne pas enregistrer
-                    <div style="font-size:13px;font-weight:400;opacity:0.7;margin-top:2px;">Terminer sans ajouter au journal</div>
+                    <div style="font-size:14px;font-weight:400;opacity:0.7;margin-top:2px;">Terminer sans ajouter au journal</div>
                 </button>
                 <button id="btnRecapAutoRegister" style="background:rgba(46,58,89,0.1);color:var(--dark);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;">
                     Toujours enregistrer automatiquement
-                    <div style="font-size:13px;font-weight:400;opacity:0.7;margin-top:2px;">Les prochaines crises seront ajoutées au journal sans demander</div>
+                    <div style="font-size:14px;font-weight:400;opacity:0.7;margin-top:2px;">Les prochaines crises seront ajoutées au journal sans demander</div>
                 </button>
             </div>
         </div>
@@ -2022,6 +2023,7 @@
             const tm = document.getElementById('triggersModal');
             tm.classList.add('open');
             trapFocus(tm);
+            history.pushState({ triggersModal: true }, '');
         }
 
         function toggleTriggerCategory(titleEl) {
@@ -2095,10 +2097,12 @@
             }
         }
 
+        function closeTriggersModal() {
+            document.getElementById('triggersModal').classList.remove('open');
+        }
+
         function closeTriggersOnOutside(event) {
-            if (event.target.id === 'triggersModal') {
-                document.getElementById('triggersModal').classList.remove('open');
-            }
+            if (event.target.id === 'triggersModal') closeTriggersModal();
         }
 
         function saveToJournal() {
@@ -2369,6 +2373,7 @@
             document.getElementById('btnSaveToJournal').addEventListener('click', saveToJournal);
             document.getElementById('triggersModal').addEventListener('click', function(e) { if (!document.getElementById('triggersModalContent').contains(e.target)) closeTriggersOnOutside(e); });
             document.getElementById('btnValidateTriggers').addEventListener('click', validateTriggers);
+            document.getElementById('btnCloseTriggersModal').addEventListener('click', closeTriggersModal);
             document.getElementById('calmModal').addEventListener('click', function(e) { if (!document.getElementById('calmModalContent').contains(e.target)) document.getElementById('calmModal').classList.remove('open'); });
             document.getElementById('btnCloseCalmModal').addEventListener('click', function() { document.getElementById('calmModal').classList.remove('open'); });
             document.getElementById('btnRecapRegisterNow').addEventListener('click', recapRegisterNow);
@@ -2430,7 +2435,9 @@
     </script>
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") { closeModal(); closeQuestionnaire(); document.getElementById('triggersModal').classList.remove('open'); } });
     window.addEventListener('popstate', function() {
-        if (document.getElementById('questionnaireModal').classList.contains('open')) {
+        if (document.getElementById('triggersModal').classList.contains('open')) {
+            closeTriggersModal();
+        } else if (document.getElementById('questionnaireModal').classList.contains('open')) {
             document.getElementById('questionnaireModal').classList.remove('open');
         }
     });</script>

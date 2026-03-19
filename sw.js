@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'nora-v2.8.1';
+const CACHE_VERSION = 'nora-v2.9.1';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const AUDIO_CACHE  = `${CACHE_VERSION}-audio`;
 
@@ -113,7 +113,7 @@ self.addEventListener('install', event => {
       )
     )
   );
-  // Pas de skipWaiting : le nouveau SW attend que toutes les fenêtres soient fermées
+  self.skipWaiting();
 });
 
 /* ---------- ACTIVATION : nettoyage des anciens caches ---------- */
@@ -127,7 +127,7 @@ self.addEventListener('activate', event => {
       )
     )
   );
-  // Pas de clients.claim() pour ne pas perturber une session en cours
+  self.clients.claim();
 });
 
 /* ---------- FETCH : stratégie par type de ressource ---------- */
