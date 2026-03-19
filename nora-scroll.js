@@ -43,6 +43,13 @@
     });
 
     function check() {
+      // Si le scroll est désactivé sur html ou body, ne jamais afficher l'indicateur
+      var bodyOverflow = getComputedStyle(document.body).overflow;
+      var htmlOverflow = getComputedStyle(document.documentElement).overflow;
+      if (bodyOverflow === 'hidden' || htmlOverflow === 'hidden') {
+        indicator.classList.add('hidden');
+        return;
+      }
       // Seuil plus élevé : au moins 80px de contenu caché pour afficher l'indicateur
       var footerHeight = hasFooter ? parseInt(getComputedStyle(document.documentElement).getPropertyValue('--footer-height')) || 64 : 0;
       var visibleHeight = window.innerHeight - footerHeight;

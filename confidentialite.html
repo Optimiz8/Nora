@@ -9,77 +9,142 @@
     <link rel="icon" href="assets/images/favicone.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/logo.png">
     <link rel="stylesheet" href="nora-common.css">
-    <title>Politique de confidentialité – Nora</title>
+    <title>Confidentialité – Nora</title>
     <style>
-        body {
-            padding-bottom: 40px;
+        body { padding-bottom: 40px; }
+
+        .main-content { padding: 20px 16px; }
+
+        /* ---------- RÉSUMÉ ---------- */
+
+        .summary-card {
+            background: var(--light);
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
         }
 
-        .main-content {
-            padding: 24px 20px;
-        }
+        .summary-icon { font-size: 24px; flex-shrink: 0; }
 
-        .section {
-            margin-bottom: 28px;
-        }
-
-        .section-card {
-            background-color: var(--light);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .section-title {
-            font-size: 18px;
+        .summary-text {
+            font-size: 15px;
             font-weight: 600;
-            margin-bottom: 16px;
-            color: var(--light);
+            color: var(--dark);
+            line-height: 1.5;
         }
 
-        .subsection-title {
+        /* ---------- ACCORDÉONS ---------- */
+
+        .accordion {
+            background: var(--light);
+            border-radius: 14px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .accordion-header:active { opacity: 0.75; }
+
+        .accordion-emoji { font-size: 20px; flex-shrink: 0; }
+
+        .accordion-title {
+            flex: 1;
             font-size: 16px;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 8px;
-            margin-top: 16px;
+            line-height: 1.3;
         }
 
-        .subsection-title:first-child {
-            margin-top: 0;
+        .accordion-chevron {
+            font-size: 13px;
+            color: rgba(46,58,89,0.4);
+            transition: transform 0.2s;
+            flex-shrink: 0;
         }
 
-        .text {
+        .accordion.open .accordion-chevron { transform: rotate(90deg); }
+
+        .accordion-body {
+            display: none;
+            padding: 0 18px 18px 18px;
+            border-top: 1px solid rgba(46,58,89,0.1);
+        }
+
+        .accordion.open .accordion-body { display: block; }
+
+        /* ---------- CONTENU ACCORDÉONS ---------- */
+
+        .acc-text {
             font-size: 15px;
-            color: rgba(46, 58, 89, 0.85);
+            color: rgba(46,58,89,0.85);
             line-height: 1.6;
-            margin-bottom: 8px;
+            margin-top: 14px;
+            margin-bottom: 0;
         }
 
-        .text ul {
-            margin: 8px 0 8px 20px;
+        .acc-text + .acc-text { margin-top: 10px; }
+
+        .acc-text ul {
+            margin: 8px 0 0 18px;
         }
 
-        .text li {
+        .acc-text li { margin-bottom: 4px; }
+
+        .acc-subtitle {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-top: 14px;
             margin-bottom: 4px;
         }
 
-        .privacy-highlight {
-            background-color: rgba(46, 58, 89, 0.08);
-            border: 2px solid rgba(46, 58, 89, 0.2);
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 16px;
+        .acc-subtitle:first-child { margin-top: 14px; }
+
+        /* ---------- DONNÉES DYNAMIQUES ---------- */
+
+        .data-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(46,58,89,0.08);
+            font-size: 14px;
+            color: rgba(46,58,89,0.85);
         }
 
-        .privacy-highlight .text {
-            margin-bottom: 0;
-            font-weight: 500;
+        .data-item:last-child { border-bottom: none; }
+
+        .data-check { color: var(--dark); font-weight: 700; }
+
+        .data-empty {
+            font-size: 14px;
+            color: rgba(46,58,89,0.5);
+            font-style: italic;
+            margin-top: 14px;
         }
 
-        .divider {
-            height: 1px;
-            background-color: rgba(46, 58, 89, 0.12);
-            margin: 16px 0;
+        /* ---------- ENCADRÉ ATTENTION ---------- */
+
+        .acc-note {
+            background: rgba(46,58,89,0.07);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: rgba(46,58,89,0.85);
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -87,112 +152,172 @@
     <header class="header">
         <button class="back-button" id="btnRetour" aria-label="Retour">⬅️</button>
         <h1 class="page-title" style="flex:1">Confidentialité</h1>
-        <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
+        <button class="back-button" id="btnAccueil" style="margin-left:auto" aria-label="Accueil">🏠</button>
     </header>
 
     <main class="main-content">
 
-        <section class="section">
-            <h2 class="section-title">🔒 Politique de confidentialité</h2>
-            <div class="section-card">
+        <div class="summary-card">
+            <div class="summary-icon">🛡️</div>
+            <div class="summary-text">Toutes tes données restent sur ton téléphone. Rien n'est envoyé à un serveur, ni partagé avec qui que ce soit.</div>
+        </div>
 
-                <div class="privacy-highlight">
-                    <p class="text">🛡️ <strong>Toutes tes données restent sur ton téléphone.</strong> Rien n'est envoyé vers un serveur, une base de données ou un service tiers.</p>
-                </div>
-
-                <div class="subsection-title">Quelles données sont stockées ?</div>
-                <p class="text">Nora stocke localement sur ton appareil :</p>
-                <ul class="text" id="dataList">
-                    <li>Ton prénom et nom (optionnel)</li>
-                    <li>Tes contacts d'urgence (nom, téléphone, lien)</li>
-                    <li>Tes informations médicales (groupe sanguin, allergies, traitements…)</li>
-                    <li>La configuration de ta carte d'urgence numérique</li>
-                    <li>Tes cartes de communication personnalisées</li>
-                    <li>Tes paramètres de contextes</li>
-                    <li>Ton journal de crises</li>
-                    <li>Tes ambiances sonores (préréglages mixeur et volumes)</li>
-                    <li>Ta playlist musicale</li>
-                    <li>Tes préférences d'affichage (timer, son…)</li>
-                </ul>
-                <div id="dynamicDataSummary" style="margin-top:12px"></div>
-
-                <div class="divider"></div>
-
-                <div class="subsection-title">Où sont-elles stockées ?</div>
-                <p class="text">
-                    Toutes les données sont enregistrées dans le <strong>LocalStorage</strong> de ton navigateur, sur ton appareil uniquement. Il s'agit d'un espace de stockage local qui ne communique pas avec internet.
-                </p>
-
-                <div class="divider"></div>
-
-                <div class="subsection-title">Qui peut y accéder ?</div>
-                <p class="text">
-                    Aucun serveur, aucune personne tierce, aucune analytics, aucun cookie de traçage n'est utilisé.
-                </p>
-                <p class="text">
-                    Les données sont stockées en clair dans le navigateur. Toute personne ayant accès à ton appareil déverrouillé et à ce navigateur peut techniquement les lire (via les outils de développement). <strong>Verrouille ton écran</strong> pour protéger l'accès.
-                </p>
-
-                <div class="divider"></div>
-
-                <div class="subsection-title">Désinstaller vs supprimer les données</div>
-                <p class="text"><strong>Si tu désinstalles l'application</strong> (appui long sur l'icône → "Désinstaller") :</p>
-                <ul class="text">
-                    <li>Sur iPhone/iPad : les données sont supprimées avec l'application.</li>
-                    <li>Sur Android : les données sont généralement supprimées avec l'application.</li>
-                    <li>En cas de doute, exporte tes données avant de désinstaller (Paramètres → Données → Exporter).</li>
-                </ul>
-                <p class="text"><strong>Pour effacer tes données sans désinstaller</strong> : Paramètres → Données → Réinitialiser les données.</p>
-                <p class="text"><strong>Supprimer le raccourci</strong> de l'écran d'accueil <em>sans désinstaller</em> ne supprime pas tes données — tu peux réinstaller Nora et les retrouver intactes.</p>
-
-                <div class="divider"></div>
-
-                <div class="subsection-title">Export et partage</div>
-                <p class="text">
-                    L'export crée un fichier JSON sur ton appareil. Tu es seul·e responsable de la sécurité de ce fichier. La carte d'urgence peut être partagée via QR Code — dans ce cas, les informations de la carte sont accessibles à quiconque scanne le code.
-                </p>
-
-                <div class="divider"></div>
-
-                <div class="subsection-title">Mise à jour de cette politique</div>
-                <p class="text">
-                    Cette politique peut être mise à jour lors des nouvelles versions de l'application. La version actuelle est indiquée dans "À propos de Nora".
-                </p>
-
+        <!-- 1. Données stockables -->
+        <div class="accordion open" id="acc-stored">
+            <div class="accordion-header" role="button" aria-expanded="true">
+                <span class="accordion-emoji">📋</span>
+                <span class="accordion-title">Quelles données Nora peut stocker ?</span>
+                <span class="accordion-chevron">▶</span>
             </div>
-        </section>
+            <div class="accordion-body">
+                <p class="acc-text">Selon ce que tu remplis dans l'application, Nora peut enregistrer :</p>
+                <p class="acc-text"><ul>
+                    <li>Ton prénom et nom (optionnel)</li>
+                    <li>Tes contacts d'urgence (nom, téléphone, relation)</li>
+                    <li>Tes informations médicales (groupe sanguin, allergies, traitements…)</li>
+                    <li>Le contenu de ta carte d'urgence numérique</li>
+                    <li>Tes cartes de communication personnalisées</li>
+                    <li>Tes contextes et profils de crise</li>
+                    <li>Ton journal de crises (date, intensité, déclencheurs, ressentis…)</li>
+                    <li>Tes préréglages du mixeur sonore et volumes</li>
+                    <li>Ta playlist musicale (nom et lien)</li>
+                    <li>Tes préférences d'affichage (paramètres timer, son, etc.)</li>
+                </ul></p>
+                <p class="acc-text">Aucun de ces éléments n'est obligatoire — Nora fonctionne même sans rien renseigner.</p>
+            </div>
+        </div>
+
+        <!-- 2. Où sont stockées -->
+        <div class="accordion" id="acc-where">
+            <div class="accordion-header" role="button" aria-expanded="false">
+                <span class="accordion-emoji">💾</span>
+                <span class="accordion-title">Où sont stockées tes données ?</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body">
+                <p class="acc-text">Toutes les données sont enregistrées dans la <strong>mémoire locale de ton navigateur</strong> (ce qu'on appelle le « stockage local »), directement sur ton téléphone ou tablette.</p>
+                <p class="acc-text">Il s'agit d'un espace de stockage intégré à ton navigateur, complètement isolé d'internet. Aucune donnée ne transite par un serveur ou un service extérieur.</p>
+                <div class="acc-note">⚠️ Si tu effaces les données de ton navigateur ou de l'application depuis les paramètres de ton téléphone, les données Nora seront supprimées. Pense à exporter avant si tu veux les conserver.</div>
+            </div>
+        </div>
+
+        <!-- 3. Qui peut y accéder -->
+        <div class="accordion" id="acc-who">
+            <div class="accordion-header" role="button" aria-expanded="false">
+                <span class="accordion-emoji">👁️</span>
+                <span class="accordion-title">Qui peut voir tes données ?</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body">
+                <p class="acc-text"><strong>Personne d'autre que toi</strong> — et uniquement depuis ton téléphone.</p>
+                <p class="acc-text">Nora n'utilise :</p>
+                <p class="acc-text"><ul>
+                    <li>Aucun serveur distant</li>
+                    <li>Aucun outil de mesure d'utilisation ou de pistage</li>
+                    <li>Aucune publicité</li>
+                    <li>Aucun cookie de suivi</li>
+                </ul></p>
+                <div class="acc-note">🔐 Les données sont stockées en clair dans ton navigateur. Toute personne ayant accès à ton téléphone <strong>déverrouillé</strong> pourrait les lire en fouillant les paramètres du navigateur. <strong>Verrouille ton écran</strong> pour te protéger.</div>
+            </div>
+        </div>
+
+        <!-- 4. Données actuellement présentes -->
+        <div class="accordion" id="acc-current">
+            <div class="accordion-header" role="button" aria-expanded="false">
+                <span class="accordion-emoji">📊</span>
+                <span class="accordion-title">Données actuellement sur cet appareil</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body">
+                <div id="dynamicData"></div>
+            </div>
+        </div>
+
+        <!-- 5. Supprimer ou effacer -->
+        <div class="accordion" id="acc-delete">
+            <div class="accordion-header" role="button" aria-expanded="false">
+                <span class="accordion-emoji">🗑️</span>
+                <span class="accordion-title">Supprimer ou effacer tes données</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body">
+                <div class="acc-subtitle">Supprimer le raccourci de l'écran d'accueil</div>
+                <p class="acc-text">Appuyer longuement sur l'icône Nora et la supprimer de l'écran d'accueil <strong>ne supprime pas tes données</strong>. C'est juste un raccourci. Tu peux rouvrir Nora depuis le navigateur et tout retrouver intact.</p>
+
+                <div class="acc-subtitle">Réinitialiser les données depuis Nora</div>
+                <p class="acc-text">Va dans <strong>Paramètres → Données → Réinitialiser</strong>. Cela efface toutes tes données Nora, mais l'application reste installée. C'est la méthode propre si tu veux repartir à zéro.</p>
+
+                <div class="acc-subtitle">Désinstaller l'application</div>
+                <p class="acc-text">Si tu désinstalles Nora (appui long → Désinstaller ou depuis les paramètres du téléphone), les données sont <strong>généralement supprimées en même temps</strong> — c'est le comportement habituel sur iPhone et Android. Si tu veux les conserver avant de désinstaller, exporte-les d'abord depuis <strong>Paramètres → Données → Exporter</strong>.</p>
+            </div>
+        </div>
+
+        <!-- 6. Export et partage -->
+        <div class="accordion" id="acc-export">
+            <div class="accordion-header" role="button" aria-expanded="false">
+                <span class="accordion-emoji">📤</span>
+                <span class="accordion-title">Exporter ou partager tes données</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body">
+                <p class="acc-text"><strong>Export JSON :</strong> Nora peut créer un fichier contenant toutes tes données, que tu peux enregistrer sur ton téléphone ou envoyer à quelqu'un. Tu es seul·e responsable de ce fichier une fois exporté.</p>
+                <p class="acc-text"><strong>QR Code de la carte d'urgence :</strong> Si tu génères un QR Code à partir de ta carte d'urgence, les informations qu'elle contient sont accessibles à toute personne qui scanne ce code. Ne le partage qu'avec des personnes de confiance.</p>
+            </div>
+        </div>
 
     </main>
 
     <script>
-        function goBack() {
-            window.location.href = 'parametres.html';
-        }
-
-        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnRetour').addEventListener('click', function() { window.location.href = 'parametres.html'; });
         document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
 
-        function renderDataSummary() {
+        // Accordéons
+        document.querySelectorAll('.accordion-header').forEach(function(header) {
+            header.addEventListener('click', function() {
+                var acc = this.parentElement;
+                var isOpen = acc.classList.contains('open');
+                acc.classList.toggle('open', !isOpen);
+                this.setAttribute('aria-expanded', !isOpen);
+            });
+        });
+
+        // Données dynamiques
+        function renderDynamicData() {
             var checks = [
                 { key: 'userPrenom', label: 'Prénom / nom' },
-                { key: 'carteConsignes', label: 'Carte d\'urgence (consignes)' },
+                { key: 'carteConsignes', label: 'Carte d\'urgence' },
                 { key: 'contactsUrgence', label: 'Contacts d\'urgence' },
+                { key: 'carteInformations', label: 'Informations médicales' },
                 { key: 'cartesCommunication', label: 'Cartes de communication' },
+                { key: 'noraContextes', label: 'Contextes personnalisés' },
                 { key: 'journalCrises', label: 'Journal de crises' },
-                { key: 'carteInformations', label: 'Infos médicales' },
+                { key: 'breathingSessions', label: 'Sessions de respiration' },
                 { key: 'mixerPresets', label: 'Ambiances sonores (préréglages)' },
                 { key: 'playlistName', label: 'Playlist musicale' },
+                { key: 'listeConseils', label: 'Conseils personnalisés' },
             ];
+
             var present = checks.filter(function(c) { return !!localStorage.getItem(c.key); });
-            if (present.length === 0) return;
-            var wrap = document.getElementById('dynamicDataSummary');
-            wrap.innerHTML = '<div style="font-size:13px;color:rgba(46,58,89,0.6);margin-bottom:6px">Données actuellement enregistrées sur cet appareil :</div>' +
+
+            // Clés mixer_* individuelles
+            var hasMixerVolumes = Object.keys(localStorage).some(function(k) { return k.startsWith('mixer_'); });
+            if (hasMixerVolumes && !present.some(function(c) { return c.label === 'Ambiances sonores (préréglages)'; })) {
+                present.push({ label: 'Volumes du mixeur sonore' });
+            }
+
+            var wrap = document.getElementById('dynamicData');
+            if (present.length === 0) {
+                wrap.innerHTML = '<p class="data-empty">Aucune donnée enregistrée pour l\'instant.</p>';
+                return;
+            }
+
+            wrap.innerHTML = '<p class="acc-text" style="margin-bottom:10px">Ces données sont actuellement enregistrées sur cet appareil — la liste se met à jour à chaque ouverture de cette page.</p>' +
                 present.map(function(c) {
-                    return '<div style="font-size:14px;color:rgba(46,58,89,0.85);padding:3px 0">✓ ' + c.label + '</div>';
+                    return '<div class="data-item"><span class="data-check">✓</span>' + c.label + '</div>';
                 }).join('');
         }
 
-        document.addEventListener('DOMContentLoaded', renderDataSummary);
+        document.addEventListener('DOMContentLoaded', renderDynamicData);
     </script>
     <script src="nora-scroll.js"></script>
 <script src="sw-register.js"></script>
