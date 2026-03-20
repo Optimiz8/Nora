@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.2
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,30 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.9.2] — mars 2026
+
+### Corrigé
+- **stats.html / stats-approfondie.html** — filtres avancés : passage de `localStorage` à `sessionStorage` — les filtres ne persistent plus entre sessions, mais restent synchronisés entre les deux onglets dans la même session
+- **stats.html / stats-approfondie.html** — badge ⚙️ Filtres affiché au démarrage si un filtre est restauré depuis la session en cours
+- **stats.html** — "Erreur de chargement" au changement d'onglet corrigée (causée par des filtres périmés stockés en localStorage)
+- **stats.html** — bouton 👤 Profil ajouté dans le footer (visible dès 5 crises enregistrées)
+- **stats.html** — espace vide excessif en bas du footer réduit
+- **sons.html** — bug scroll sliders : heuristique de détection direction revue — scroll vertical détecté dès 6 px, slider exige 12 px horizontaux ET ratio 2:1 sur le vertical (élimine les faux positifs sur scrolls diagonaux)
+- **coherence.html** — espacement entre animation prévisualisation et boutons Cercle/Bulle augmenté
+- **coherence.html** — lien "↗ voir" remplacé par "Détails" (souligné, style lien)
+- **coherence.html** — taille texte modale historique : 13 px → 14 px
+- **recap.html** — titres de sections "Avant la crise" / "La crise" : 13 px → 15 px
+- **profil-crise.html** — padding manquant sur `main-content` ajouté (contenu collé aux bords corrigé)
+- **profil-crise.html** — tailles de texte augmentées (baseline 13→14 px, titres sections 12→13 px)
+- **nora-scroll.js** — indicateur de scroll démarre caché (élimine le flash furtif au chargement sur les pages non-scrollables)
+- **Pop-it.html / Slider.html / cliqueur.html** — `html { overflow: hidden }` ajouté (corrige le scroll parasite / rebond iOS)
+- **besoins.html / etats.html** — style de sélection : fond crème conservé + contour bleu marine + ombre légère (remplace le fond rose)
+
+### Amélioré
+- Taille de police des textes descriptifs augmentée sur 6 pages : `sons.html`, `index.html`, `recap.html`, `stats.html`, `profil-crise.html`, `coherence.html`
 
 ---
 

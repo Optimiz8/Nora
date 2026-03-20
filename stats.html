@@ -1064,7 +1064,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 10px 16px 24px;
+            padding: 10px 16px 12px;
             background: var(--bg);
             border-top: 1px solid rgba(245, 228, 204, 0.1);
             display: flex;
@@ -1201,6 +1201,7 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
+        <button class="export-stats-btn icon-btn" id="btnProfileStats" style="display:none">👤 Profil</button>
         <button class="export-stats-btn icon-btn" id="btnShare">✉️ Partager</button>
         <button class="export-stats-btn icon-btn" id="btnExport">📥 Exporter</button>
     </div>
@@ -2840,14 +2841,14 @@
             localStorage.setItem('statsNavDays', currentDays);
             localStorage.setItem('statsNavFrom', customFrom || '');
             localStorage.setItem('statsNavTo', customTo || '');
-            localStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
+            sessionStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
         }
 
         function restoreNav() {
             var savedDays = localStorage.getItem('statsNavDays');
             var savedFrom = localStorage.getItem('statsNavFrom');
             var savedTo = localStorage.getItem('statsNavTo');
-            var savedFilters = localStorage.getItem('statsNavFilters');
+            var savedFilters = sessionStorage.getItem('statsNavFilters');
             if (savedDays !== null) {
                 currentDays = parseInt(savedDays, 10);
                 customFrom = savedFrom || null;
@@ -3128,7 +3129,7 @@
             localStorage.setItem('statsNavDays', currentDays);
             localStorage.setItem('statsNavFrom', customFrom || '');
             localStorage.setItem('statsNavTo', customTo || '');
-            localStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
+            sessionStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
             window.location.href = 'stats-approfondie.html';
         }
 
@@ -3144,9 +3145,12 @@
 
         restoreNav();
         initFilterContextes();
+        updateFilterBadge();
+        if (getJournal().length >= 5) document.getElementById('btnProfileStats').style.display = '';
         renderCurrent();
         window.addEventListener('pagehide', saveNav);
 
+        document.getElementById('btnProfileStats').addEventListener('click', function() { window.location.href = 'profil-crise.html'; });
         document.getElementById('btnBack').addEventListener('click', function() { window.location.href = 'journal.html'; });
         document.getElementById('btnHome').addEventListener('click', function() { location.replace('index.html'); });
         document.getElementById('btnTabAnalyse').addEventListener('click', goToAnalyse);

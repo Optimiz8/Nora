@@ -25,7 +25,7 @@
 (function() {
   document.addEventListener('DOMContentLoaded', function() {
     var indicator = document.createElement('div');
-    indicator.className = 'scroll-indicator';
+    indicator.className = 'scroll-indicator hidden';
     indicator.innerHTML = '<span>\u25BC</span>';
 
     var hasFooter = document.querySelector('.footer');

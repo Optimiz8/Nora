@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'nora-v2.9.1';
+const CACHE_VERSION = 'nora-v2.9.3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const AUDIO_CACHE  = `${CACHE_VERSION}-audio`;
 

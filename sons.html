@@ -1202,7 +1202,8 @@ function initMixer() {
       if (_isScrolling !== null) return;
       const dx = Math.abs(e.touches[0].clientX - _tx);
       const dy = Math.abs(e.touches[0].clientY - _ty);
-      if (dx > 3 || dy > 3) _isScrolling = dy > dx;
+      if (dy > 6) { _isScrolling = true; return; }
+      if (dx > 12 && dx > dy * 2) _isScrolling = false;
     }, { passive: true });
     slider.addEventListener('touchend', () => { _isScrolling = null; }, { passive: true });
     slider.addEventListener('input', (e) => {

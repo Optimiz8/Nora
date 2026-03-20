@@ -782,7 +782,7 @@
                     <div class="crisis-btn-desc">Accéder aux outils d'apaisement</div>
                 </button>
                 <button class="crisis-btn dismiss" data-close-crisis="crisisEndModal">
-                    Non, je ne souhaite pas
+                    Non, elle est toujours en cours
                 </button>
             </div>
         </div>
@@ -1481,20 +1481,18 @@
 
         // Ouvrir automatiquement la modale si hash présent
         if (location.hash === '#calm') {
-            open('calmModal');
             history.replaceState(null, '', location.pathname);
+            history.pushState({ modal: 'calmModal' }, '');
+            open('calmModal');
         }
 
         // Construire la grille de contextes dynamiquement
         buildContextGrid();
 
-        btnHelp.onclick = () => open('helpModal');
-        btnCalm.onclick = () => open('calmModal');
+        btnHelp.onclick = () => { history.pushState({ modal: 'helpModal' }, ''); open('helpModal'); };
+        btnCalm.onclick = () => { history.pushState({ modal: 'calmModal' }, ''); open('calmModal'); };
 
-        window.closeContextModal = () => {
-            close('contextModal');
-            open('helpModal');
-        };
+        window.closeContextModal = () => history.back();
 
         btnContext.onclick = () => {
             close('helpModal');
@@ -1503,6 +1501,7 @@
                 startCrisis('commun');
                 return;
             }
+            history.pushState({ modal: 'contextModal' }, '');
             open('contextModal');
         };
 
@@ -1510,8 +1509,10 @@
         btnComCards.onclick = () => location.href = 'cartes-communication.html';
 
         document.querySelectorAll('[data-close]').forEach(el =>
-            el.onclick = () => close(el.dataset.close)
+            el.onclick = () => history.back()
         );
+
+        document.getElementById('btnCloseContextModal').onclick = () => history.back();
 
         function goCalm(url) {
             // Mettre #calm dans l'historique pour que le bouton retour rouvre la modale
@@ -1540,6 +1541,17 @@
             }
         );
 
+        // Boutons modale fin de crise (étape 1)
+        document.getElementById('btnCrisisOver').onclick = crisisIsOver;
+        document.getElementById('btnGoToRecap').onclick = goToRecap;
+        document.getElementById('btnGoToCalm').onclick = goToCalm;
+
+        // Boutons modale enregistrement (étape 2)
+        document.getElementById('btnRegisterNow').onclick = registerCrisisNow;
+        document.getElementById('btnRegisterLater').onclick = registerCrisisLater;
+        document.getElementById('btnAutoRegister').onclick = enableAutoRegister;
+        document.getElementById('btnDismissCrisis').onclick = dismissCrisis;
+
         // Afficher le bandeau crise en cours si applicable
         if (localStorage.getItem('criseEnCours') === 'true') {
             var banner = document.getElementById('crisisBanner');
@@ -1559,9 +1571,33 @@
         }
         setupBanner.onclick = function() { location.href = 'tutoriel.html'; };
 
+        // Bouton retour téléphone : ferme la modale ouverte au lieu de quitter la page
+        window.addEventListener('popstate', function() {
+            const contextModal = document.getElementById('contextModal');
+            const helpModal = document.getElementById('helpModal');
+            const calmModal = document.getElementById('calmModal');
+            if (contextModal.classList.contains('visible')) {
+                close('contextModal');
+                open('helpModal');
+            } else if (helpModal.classList.contains('visible')) {
+                close('helpModal');
+            } else if (calmModal.classList.contains('visible')) {
+                close('calmModal');
+            }
+        });
+
         // Vérifier fin de crise après un court délai (laisser la page se charger)
         setTimeout(checkCrisisEnd, 500);
 
+        document.getElementById('btnClosePcm').addEventListener('click', closePcm);
+        document.getElementById('btnDurHUp').addEventListener('click', function() { adjustPcmDur('h', 1); });
+        document.getElementById('btnDurHDown').addEventListener('click', function() { adjustPcmDur('h', -1); });
+        document.getElementById('btnDurMUp').addEventListener('click', function() { adjustPcmDur('m', 1); });
+        document.getElementById('btnDurMDown').addEventListener('click', function() { adjustPcmDur('m', -1); });
+        document.getElementById('btnOpenTriggers').addEventListener('click', openPcmTriggersModal);
+        document.getElementById('btnSkipPrecrisis').addEventListener('click', skipPrecrisis);
+        document.getElementById('btnSavePrecrisis').addEventListener('click', saveWithPrecrisis);
+        document.getElementById('btnCloseTriggersModal').addEventListener('click', closePcmTriggersModal);
         document.getElementById('btnValidatePcmTriggers').addEventListener('click', validatePcmTriggers);
 
         var pcmTriggersContent = document.getElementById('pcmTriggersContent');

@@ -149,7 +149,7 @@ h2 {
 .preview-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 }
 
 .preview-main {
@@ -357,9 +357,11 @@ h2 {
 }
 .setup-stats-link {
   color: var(--accent);
-  opacity: 0.7;
-  margin-left: 4px;
-  font-size: 12px;
+  opacity: 0.85;
+  margin-left: 6px;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .stats-hist-row {
   display: flex;
@@ -374,7 +376,7 @@ h2 {
 .stats-hist-label { opacity: 0.65; font-size: 14px; }
 .stats-hist-prog {
   margin-top: 14px;
-  font-size: 13px;
+  font-size: 14px;
   color: rgba(245,228,204,0.5);
   text-align: center;
 }
@@ -778,7 +780,6 @@ h2 {
     <div class="visual" id="visual"></div>
     <div class="text" id="label">Prêt</div>
     <div class="progress-bar"><div class="progress" id="progress"></div></div>
-    <button class="back-btn" id="btnBackBreathing">⬅️ Retour</button>
   </div>
 </div>
 
@@ -923,7 +924,7 @@ function renderSetupStats() {
   const ts = sessions.length, tm = sessions.reduce((a, s) => a + (s.dureeMin || 0), 0);
   el.innerHTML =
     `Ce mois-ci : ${ms} session${ms>1?'s':''} · ${fmtMin(mm)} &nbsp;·&nbsp; Total : ${ts} · ${fmtMin(tm)}` +
-    ` <span class="setup-stats-link">↗ voir</span>`;
+    ` <span class="setup-stats-link">Détails</span>`;
 }
 renderSetupStats();
 
@@ -1136,7 +1137,7 @@ document.getElementById('btnSoundOff').addEventListener('click', () => {
 /* ---------- HEADER BACK BUTTON ---------- */
 function handleHeaderBack() {
   if (document.getElementById('breathing').style.display === 'flex') {
-    back();
+    history.back();
     return;
   }
   if (localStorage.getItem('calmSource') === 'recap') {
@@ -1244,6 +1245,7 @@ let remainingInPhase = 0;
 function start() {
   requestWakeLock();
   initAudio();
+  history.pushState({ breathing: true }, '');
   document.getElementById('setup').style.display = 'none';
   document.getElementById('startFooter').style.display = 'none';
   document.getElementById('breathing').style.display = 'flex';
@@ -1518,6 +1520,18 @@ document.getElementById('breathing').addEventListener('click', (e) => {
   }
 });
 
+window.addEventListener('popstate', function(e) {
+  if (document.getElementById('breathing').style.display === 'flex') {
+    back();
+  }
+});
+
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted && document.getElementById('breathing').style.display === 'flex') {
+    back();
+  }
+});
+
 document.getElementById('headerBackBtn').addEventListener('click', handleHeaderBack);
 document.getElementById('btnHome').addEventListener('click', function() { location.href = 'index.html'; });
 document.getElementById('btnInfoModal').addEventListener('click', openInfoModal);
@@ -1525,7 +1539,6 @@ document.getElementById('stepperMinus').addEventListener('click', function() { s
 document.getElementById('stepperPlus').addEventListener('click', function() { stepDuration(1); });
 document.getElementById('setupStats').addEventListener('click', openStatsModal);
 document.getElementById('btnStart').addEventListener('click', start);
-document.getElementById('btnBackBreathing').addEventListener('click', back);
 document.getElementById('btnRestartExercise').addEventListener('click', restartExercise);
 document.getElementById('btnEndExercise').addEventListener('click', endExercise);
 document.getElementById('btnCloseInfoModal').addEventListener('click', closeInfoModal);

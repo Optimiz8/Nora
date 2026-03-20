@@ -418,7 +418,7 @@
             var savedDays = localStorage.getItem('statsNavDays');
             var savedFrom = localStorage.getItem('statsNavFrom');
             var savedTo = localStorage.getItem('statsNavTo');
-            var savedFilters = localStorage.getItem('statsNavFilters');
+            var savedFilters = sessionStorage.getItem('statsNavFilters');
 
             if (savedDays !== null) {
                 currentDays = parseInt(savedDays, 10);
@@ -1561,7 +1561,7 @@
             localStorage.setItem('statsNavDays', currentDays);
             localStorage.setItem('statsNavFrom', customFrom || '');
             localStorage.setItem('statsNavTo', customTo || '');
-            localStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
+            sessionStorage.setItem('statsNavFilters', JSON.stringify(activeFilters));
         }
 
         function selectPeriod(days) {
@@ -1696,6 +1696,7 @@
         }
 
         initFilterContextes();
+        updateFilterBadge();
         if (getJournal().length >= 10) document.getElementById('profileBtn').style.display = '';
         renderCurrent();
         window.addEventListener('pagehide', saveNav);
