@@ -367,6 +367,15 @@
                 <button class="filter-chip" data-val="Mixte">Mixte</button>
             </div>
         </div>
+        <div class="filter-group">
+            <div class="filter-group-label">Moment de la journée</div>
+            <div class="filter-chips" id="filterMoment">
+                <button class="filter-chip" data-val="nuit">Nuit</button>
+                <button class="filter-chip" data-val="matin">Matin</button>
+                <button class="filter-chip" data-val="aprem">Après-midi</button>
+                <button class="filter-chip" data-val="soir">Soir</button>
+            </div>
+        </div>
         <div class="filter-actions">
             <button class="filter-reset-btn" id="btnResetFilters">Réinitialiser</button>
             <button class="filter-apply-btn" id="btnApplyFilters">Appliquer</button>
@@ -376,7 +385,7 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn icon-btn" id="profileBtn" style="display:none">👤 Profil</button>
+        <button class="export-stats-btn icon-btn" id="profileBtn" style="display:none">👤 Mon profil</button>
         <button class="export-stats-btn icon-btn" id="btnShare">✉️ Partager</button>
         <button class="export-stats-btn icon-btn" id="btnExport">📥 Exporter</button>
     </div>
@@ -410,7 +419,7 @@
     <script>
         var currentDays = 7;
         var customFrom = null, customTo = null;
-        var activeFilters = { contexte: [], origine: [], type: [], intMin: 1, intMax: 10 };
+        var activeFilters = { contexte: [], origine: [], type: [], moment: [], intMin: 1, intMax: 10 };
 
         /* ---------- INIT DEPUIS STATS.HTML ---------- */
 
@@ -424,7 +433,13 @@
                 currentDays = parseInt(savedDays, 10);
                 customFrom = savedFrom || null;
                 customTo = savedTo || null;
-                try { if (savedFilters) activeFilters = JSON.parse(savedFilters); } catch(e) {}
+                try {
+                    if (savedFilters) {
+                        var parsed = JSON.parse(savedFilters);
+                        var defaults = { contexte: [], origine: [], type: [], moment: [], intMin: 1, intMax: 10 };
+                        activeFilters = Object.assign(defaults, parsed);
+                    }
+                } catch(e) {}
             }
 
             var btns = document.querySelectorAll('.period-btn');
@@ -489,6 +504,11 @@
             if (activeFilters.type.length && activeFilters.type.indexOf(entry.typeManifestation || '') === -1) return false;
             var intV = parseFloat(entry.intensite);
             if (!isNaN(intV) && (intV < activeFilters.intMin || intV > activeFilters.intMax)) return false;
+            if (activeFilters.moment && activeFilters.moment.length) {
+                var h = entry.heure ? parseInt(entry.heure.split(':')[0]) : -1;
+                var slot = h >= 0 && h < 6 ? 'nuit' : h >= 6 && h < 12 ? 'matin' : h >= 12 && h < 18 ? 'aprem' : h >= 18 ? 'soir' : null;
+                if (!slot || activeFilters.moment.indexOf(slot) === -1) return false;
+            }
             return true;
         }
 
@@ -1030,13 +1050,13 @@
             if (!stats) {
                 main.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div>' +
                     '<div class="empty-text">Aucune crise enregistrée<br>sur cette période.</div></div>';
-                document.getElementById('exportFooter').style.display = 'none';
+                document.getElementById('exportFooter').style.display = 'flex';
                 return;
             }
 
             if (stats.total < 5) {
                 main.innerHTML = '<div class="analysis-gate">Données insuffisantes pour l\'analyse approfondie.<br>Il faut au moins 5 crises sur la période sélectionnée.<br><br><em>Actuel : ' + stats.total + ' crise' + (stats.total > 1 ? 's' : '') + '</em></div>';
-                document.getElementById('exportFooter').style.display = 'none';
+                document.getElementById('exportFooter').style.display = 'flex';
                 return;
             }
 
@@ -1503,13 +1523,13 @@
                 btn.setAttribute('data-val', key);
                 btn.textContent = info.icon + ' ' + info.name;
                 if (activeFilters.contexte.indexOf(key) !== -1) btn.classList.add('selected');
-                btn.onclick = function() { toggleFilterChip(this); };
                 container.appendChild(btn);
             }
-            var fixed = document.querySelectorAll('#filterOrigine .filter-chip, #filterType .filter-chip');
+            var fixed = document.querySelectorAll('#filterOrigine .filter-chip, #filterType .filter-chip, #filterMoment .filter-chip');
             for (var j = 0; j < fixed.length; j++) {
                 var g = fixed[j].getAttribute('data-val');
-                var group = fixed[j].parentElement.id === 'filterOrigine' ? activeFilters.origine : activeFilters.type;
+                var pid = fixed[j].parentElement.id;
+                var group = pid === 'filterOrigine' ? activeFilters.origine : pid === 'filterType' ? activeFilters.type : (activeFilters.moment || []);
                 if (group.indexOf(g) !== -1) fixed[j].classList.add('selected');
             }
         }
@@ -1536,6 +1556,7 @@
             activeFilters.contexte = getSelectedChips('filterContexte');
             activeFilters.origine = getSelectedChips('filterOrigine');
             activeFilters.type = getSelectedChips('filterType');
+            activeFilters.moment = getSelectedChips('filterMoment');
             updateFilterBadge();
             closeFilterPanel();
             renderCurrent();
@@ -1544,12 +1565,12 @@
         function resetFilters() {
             var chips = document.querySelectorAll('.filter-chip.selected');
             for (var i = 0; i < chips.length; i++) chips[i].classList.remove('selected');
-            activeFilters = { contexte: [], origine: [], type: [], intMin: 1, intMax: 10 };
+            activeFilters = { contexte: [], origine: [], type: [], moment: [], intMin: 1, intMax: 10 };
             updateFilterBadge(); closeFilterPanel(); renderCurrent();
         }
 
         function updateFilterBadge() {
-            var count = activeFilters.contexte.length + activeFilters.origine.length + activeFilters.type.length;
+            var count = activeFilters.contexte.length + activeFilters.origine.length + activeFilters.type.length + (activeFilters.moment || []).length;
             var badge = document.getElementById('filterBadge'), btn = document.getElementById('filterBtn');
             if (count > 0) { badge.textContent = count; badge.style.display = 'inline'; btn.classList.add('has-filters'); }
             else { badge.style.display = 'none'; btn.classList.remove('has-filters'); }

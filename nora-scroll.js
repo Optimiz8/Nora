@@ -50,10 +50,10 @@
         indicator.classList.add('hidden');
         return;
       }
-      // Seuil plus élevé : au moins 80px de contenu caché pour afficher l'indicateur
+      // Seuil 100px : évite les faux positifs dus au padding-bottom (footerHeight+20px)
       var footerHeight = hasFooter ? parseInt(getComputedStyle(document.documentElement).getPropertyValue('--footer-height')) || 64 : 0;
       var visibleHeight = window.innerHeight - footerHeight;
-      var scrollable = document.documentElement.scrollHeight > visibleHeight + 80;
+      var scrollable = document.documentElement.scrollHeight > visibleHeight + 100;
       var atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 30);
 
       if (!scrollable || atBottom) {

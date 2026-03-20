@@ -341,25 +341,6 @@
             </div>
         </section>
 
-        <!-- JOURNAL AUTOMATIQUE -->
-        <section class="section">
-            <h2 class="section-title">📔 Journal de crises</h2>
-            <p class="section-description">Options d'enregistrement des crises</p>
-
-            <div class="settings-card" style="cursor: default;">
-                <div class="settings-card-content">
-                    <div class="settings-icon">⚡</div>
-                    <div class="settings-text">
-                        <div class="settings-label">Enregistrement automatique</div>
-                        <div class="settings-sublabel">Ajouter les crises au journal sans demander</div>
-                    </div>
-                </div>
-                <div class="toggle-switch" id="toggleAutoRegister">
-                    <div class="toggle-knob"></div>
-                </div>
-            </div>
-        </section>
-
         <!-- 3) DONNÉES -->
         <section class="section">
             <h2 class="section-title">📁 Données</h2>
@@ -582,7 +563,6 @@
                     configs: contextesConfigs
                 },
                 journalCrises: JSON.parse(localStorage.getItem('journalCrises') || '[]'),
-                autoRegisterCrise: localStorage.getItem('autoRegisterCrise') || 'false',
                 cartesCommunication: JSON.parse(localStorage.getItem('cartesCommunication') || '[]'),
                 cartesShowIcons: localStorage.getItem('cartesShowIcons') || 'true',
                 mixerPresets: JSON.parse(localStorage.getItem('mixerPresets') || '[]'),
@@ -682,10 +662,6 @@
                         }
 
                         localStorage.setItem('journalCrises', JSON.stringify(arr(data.journalCrises)));
-
-                        if (data.autoRegisterCrise) {
-                            localStorage.setItem('autoRegisterCrise', bool(data.autoRegisterCrise));
-                        }
 
                         if (data.cartesCommunication) {
                             localStorage.setItem('cartesCommunication', JSON.stringify(arr(data.cartesCommunication)));
@@ -791,18 +767,6 @@
             setTimeout(() => { window.location.href = 'index.html'; }, 2000);
         }
 
-        // Toggle enregistrement automatique
-        function toggleAutoRegister() {
-            const toggle = document.getElementById('toggleAutoRegister');
-            const isActive = toggle.classList.toggle('active');
-            localStorage.setItem('autoRegisterCrise', isActive ? 'true' : 'false');
-            if (isActive) {
-                showToast('⚡ Activé — les crises seront enregistrées au journal quand tu mettras fin à ta crise.');
-            } else {
-                showToast('Enregistrement automatique désactivé.');
-            }
-        }
-
         function confirmExport() {
             const m = document.getElementById('exportModal');
             m.classList.add('visible');
@@ -827,15 +791,9 @@
             m.classList.remove('visible');
         }
 
-        // Initialiser le toggle au chargement
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('autoRegisterCrise') === 'true') {
-                document.getElementById('toggleAutoRegister').classList.add('active');
-            }
-
             document.getElementById('btnBack').addEventListener('click', goHome);
             document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
-            document.getElementById('toggleAutoRegister').addEventListener('click', toggleAutoRegister);
             document.getElementById('cardExport').addEventListener('click', confirmExport);
             document.getElementById('cardImport').addEventListener('click', confirmImport);
             document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);

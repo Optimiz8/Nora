@@ -135,6 +135,8 @@ Export/import géré dans `parametres.html` (version du format : `'2.5'`).
 
 **Export filtré du journal** (V2.9, `journal.html`) : la modale d'export embarque ses propres filtres (période + contexte). Toutes les fonctions d'export (`exportPDF`, `exportJSON`, `shareJournal`, `exportCSV`) acceptent un tableau en paramètre et sont appelées par `doExport()` avec le résultat de `getExportFilteredJournal()`. Le CSV utilise le séparateur `;` et un BOM UTF-8 pour la compatibilité Excel France.
 
+**Suppression de l'enregistrement automatique** (post-V2.9.3) : la clé `autoRegisterCrise` et le toggle associé dans `parametres.html` ont été supprimés. Cette feature enregistrait les crises au journal sans passer par le formulaire de recap, produisant des entrées sans intensité, type, déclencheurs, énergie ni durée — dégradant la qualité des données d'analyse. Elle a été remplacée par une protection dans `startCrisis()` : si une crise est déjà en cours quand l'utilisatrice en démarre une nouvelle, une modale lui propose d'enregistrer la précédente en mode dégradé (données disponibles + `remarques = "Enregistrement automatique"`, durée vide) avant de continuer. Cette approche préserve la trace de la crise oubliée sans jamais bloquer l'accès à l'app.
+
 ---
 
 ## Animations Lottie

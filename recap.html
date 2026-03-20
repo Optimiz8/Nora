@@ -1276,10 +1276,7 @@
                     Ne pas enregistrer
                     <div style="font-size:14px;font-weight:400;opacity:0.7;margin-top:2px;">Terminer sans ajouter au journal</div>
                 </button>
-                <button id="btnRecapAutoRegister" style="background:rgba(46,58,89,0.1);color:var(--dark);border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;">
-                    Toujours enregistrer automatiquement
-                    <div style="font-size:14px;font-weight:400;opacity:0.7;margin-top:2px;">Les prochaines crises seront ajoutées au journal sans demander</div>
-                </button>
+
             </div>
         </div>
     </div>
@@ -2300,15 +2297,7 @@
         }
 
         function endCrisisFromRecap() {
-            // Si auto-register activé, enregistrer directement
-            if (localStorage.getItem('autoRegisterCrise') === 'true') {
-                createJournalEntryFromRecap();
-                cleanupCrisisFromRecap();
-                showRecapToast('✅ Crise enregistrée dans le journal !');
-                return;
-            }
-
-            // Sinon, ouvrir la modale d'enregistrement
+            // Ouvrir la modale d'enregistrement
             const crm = document.getElementById('crisisRegisterRecapModal');
             crm.classList.add('open');
             trapFocus(crm);
@@ -2326,15 +2315,6 @@
             localStorage.removeItem('currentEtats');
             document.getElementById('crisisRegisterRecapModal').classList.remove('open');
             showRecapToast('Crise terminée');
-            setTimeout(function() { window.location.href = 'index.html'; }, 2200);
-        }
-
-        function recapEnableAutoRegister() {
-            localStorage.setItem('autoRegisterCrise', 'true');
-            createJournalEntryFromRecap();
-            cleanupCrisisFromRecap();
-            document.getElementById('crisisRegisterRecapModal').classList.remove('open');
-            showRecapToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
             setTimeout(function() { window.location.href = 'index.html'; }, 2200);
         }
 
@@ -2378,7 +2358,6 @@
             document.getElementById('btnCloseCalmModal').addEventListener('click', function() { document.getElementById('calmModal').classList.remove('open'); });
             document.getElementById('btnRecapRegisterNow').addEventListener('click', recapRegisterNow);
             document.getElementById('btnRecapRegisterSkip').addEventListener('click', recapRegisterSkip);
-            document.getElementById('btnRecapAutoRegister').addEventListener('click', recapEnableAutoRegister);
             document.getElementById('btnModifyRecap').addEventListener('click', modifyRecap);
             document.getElementById('btnShareRecap').addEventListener('click', shareRecap);
             document.getElementById('btnShowQRCode').addEventListener('click', showQRCode);

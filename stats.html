@@ -1201,7 +1201,7 @@
     <main class="main-content" id="mainContent"></main>
 
     <div class="export-footer" id="exportFooter" style="display:none">
-        <button class="export-stats-btn icon-btn" id="btnProfileStats" style="display:none">👤 Profil</button>
+        <button class="export-stats-btn icon-btn" id="btnProfileStats" style="display:none">👤 Mon profil</button>
         <button class="export-stats-btn icon-btn" id="btnShare">✉️ Partager</button>
         <button class="export-stats-btn icon-btn" id="btnExport">📥 Exporter</button>
     </div>
@@ -2646,7 +2646,6 @@
                 btn.className = 'filter-chip';
                 btn.setAttribute('data-val', key);
                 btn.textContent = info.icon + ' ' + info.name;
-                btn.onclick = function() { toggleFilterChip(this); };
                 container.appendChild(btn);
             }
         }
@@ -2853,7 +2852,13 @@
                 currentDays = parseInt(savedDays, 10);
                 customFrom = savedFrom || null;
                 customTo = savedTo || null;
-                try { if (savedFilters) activeFilters = JSON.parse(savedFilters); } catch(e) {}
+                try {
+                    if (savedFilters) {
+                        var parsed = JSON.parse(savedFilters);
+                        var defaults = { contexte: [], origine: [], type: [], moment: [], intMin: 1, intMax: 10 };
+                        activeFilters = Object.assign(defaults, parsed);
+                    }
+                } catch(e) {}
             }
             var btns = document.querySelectorAll('.period-btn');
             for (var i = 0; i < btns.length; i++) {

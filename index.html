@@ -781,7 +781,7 @@
                     Non, m'apaiser
                     <div class="crisis-btn-desc">Accéder aux outils d'apaisement</div>
                 </button>
-                <button class="crisis-btn dismiss" data-close-crisis="crisisEndModal">
+                <button class="crisis-btn secondary" id="btnCrisisNotOver">
                     Non, elle est toujours en cours
                 </button>
             </div>
@@ -805,12 +805,27 @@
                     Plus tard
                     <div class="crisis-btn-desc">On te redemandera demain</div>
                 </button>
-                <button class="crisis-btn secondary" id="btnAutoRegister">
-                    Toujours enregistrer automatiquement
-                    <div class="crisis-btn-desc">Les prochaines crises seront ajoutées au journal sans demander</div>
-                </button>
                 <button class="crisis-btn dismiss" id="btnDismissCrisis">
                     Non, je ne souhaite pas
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale : nouvelle crise alors qu'une est en cours -->
+    <div class="modal" id="newCrisisModal" role="dialog" aria-modal="true" aria-label="Nouvelle crise">
+        <div class="modal-content">
+            <div class="modal-title">Une crise est déjà en cours</div>
+            <div class="crisis-modal-text">
+                Veux-tu enregistrer les données de la crise précédente avant de continuer ?<br>Sans enregistrement, ces données seront perdues.
+            </div>
+            <div class="crisis-modal-actions">
+                <button class="crisis-btn primary" id="btnNewCrisisSave">
+                    Enregistrer la précédente
+                    <div class="crisis-btn-desc">Sauvegardée avec les données disponibles</div>
+                </button>
+                <button class="crisis-btn dismiss" id="btnNewCrisisDiscard">
+                    Non, continuer sans enregistrer
                 </button>
             </div>
         </div>
@@ -1001,10 +1016,16 @@
     }
 
     function startCrisis(profilId) {
+        if (localStorage.getItem('criseEnCours') === 'true' && pendingNewCrisisProfileId === null) {
+            pendingNewCrisisProfileId = profilId;
+            var m = document.getElementById('newCrisisModal');
+            m.classList.add('visible');
+            trapFocus(m);
+            return;
+        }
         localStorage.setItem('profilActuel', profilId);
         localStorage.setItem('criseEnCours', 'true');
         localStorage.setItem('crisisStartTime', Date.now().toString());
-        // Nettoyer les données de crise précédente
         localStorage.removeItem('currentCapacites');
         localStorage.removeItem('currentBesoins');
         localStorage.removeItem('currentEtats');
@@ -1046,24 +1067,15 @@
         const today = getTodayStr();
         if (lastCheck === today) return;
 
-        // Auto-register activé ?
-        if (localStorage.getItem('autoRegisterCrise') === 'true') {
-            createJournalEntry();
-            cleanupCrisisData();
-            return;
-        }
-
         // Afficher la modale
         var cem = document.getElementById('crisisEndModal');
+        history.pushState({ modal: 'crisisEnd' }, '');
         cem.classList.add('visible');
         trapFocus(cem);
     }
 
     function crisisNotOver() {
-        localStorage.setItem('lastCrisisCheck', getTodayStr());
-        var m = document.getElementById('crisisEndModal');
-        releaseTrap(m);
-        m.classList.remove('visible');
+        history.back();
     }
 
     function goToRecap() {
@@ -1077,6 +1089,7 @@
         localStorage.setItem('lastCrisisCheck', getTodayStr());
         releaseTrap(document.getElementById('crisisEndModal'));
         document.getElementById('crisisEndModal').classList.remove('visible');
+        history.replaceState({ modal: 'calmModal' }, '');
         var cm = document.getElementById('calmModal');
         cm.classList.add('visible');
         trapFocus(cm);
@@ -1085,14 +1098,6 @@
     function crisisIsOver() {
         releaseTrap(document.getElementById('crisisEndModal'));
         document.getElementById('crisisEndModal').classList.remove('visible');
-
-        // Si enregistrement automatique activé, skip la modale de choix
-        if (localStorage.getItem('autoRegisterCrise') === 'true') {
-            createJournalEntry();
-            cleanupCrisisData();
-            showCrisisToast('✅ Crise enregistrée dans le journal !');
-            return;
-        }
 
         var crm = document.getElementById('crisisRegisterModal');
         crm.classList.add('visible');
@@ -1270,14 +1275,24 @@
         m.classList.remove('visible');
     }
 
-    function enableAutoRegister() {
-        localStorage.setItem('autoRegisterCrise', 'true');
-        createJournalEntry();
-        cleanupCrisisData();
-        var m = document.getElementById('crisisRegisterModal');
+    var pendingNewCrisisProfileId = null;
+
+    function confirmNewCrisis(saveOld) {
+        var m = document.getElementById('newCrisisModal');
         releaseTrap(m);
         m.classList.remove('visible');
-        showCrisisToast('✅ Crise enregistrée ! Les prochaines seront automatiques.');
+        if (saveOld) {
+            var startTime = localStorage.getItem('crisisStartTime');
+            createJournalEntry({
+                horodatage: startTime ? new Date(parseInt(startTime)).toISOString() : new Date().toISOString(),
+                duree: '',
+                remarques: 'Enregistrement automatique'
+            });
+        }
+        cleanupCrisisData();
+        var profilId = pendingNewCrisisProfileId;
+        pendingNewCrisisProfileId = null;
+        startCrisis(profilId);
     }
 
     var pcmDurHours = 0, pcmDurMinutes = 0;
@@ -1533,11 +1548,14 @@
         document.querySelectorAll('[data-close-crisis]').forEach(el =>
             el.onclick = () => {
                 const modalId = el.getAttribute('data-close-crisis');
-                const m = document.getElementById(modalId);
-                releaseTrap(m);
-                m.classList.remove('visible');
-                // Si on ferme sans répondre, on repose la question demain
-                localStorage.setItem('lastCrisisCheck', getTodayStr());
+                if (modalId === 'crisisEndModal') {
+                    history.back(); // popstate gère la fermeture + lastCrisisCheck
+                } else {
+                    const m = document.getElementById(modalId);
+                    releaseTrap(m);
+                    m.classList.remove('visible');
+                    localStorage.setItem('lastCrisisCheck', getTodayStr());
+                }
             }
         );
 
@@ -1549,8 +1567,9 @@
         // Boutons modale enregistrement (étape 2)
         document.getElementById('btnRegisterNow').onclick = registerCrisisNow;
         document.getElementById('btnRegisterLater').onclick = registerCrisisLater;
-        document.getElementById('btnAutoRegister').onclick = enableAutoRegister;
         document.getElementById('btnDismissCrisis').onclick = dismissCrisis;
+        document.getElementById('btnNewCrisisSave').onclick = function() { confirmNewCrisis(true); };
+        document.getElementById('btnNewCrisisDiscard').onclick = function() { confirmNewCrisis(false); };
 
         // Afficher le bandeau crise en cours si applicable
         if (localStorage.getItem('criseEnCours') === 'true') {
@@ -1560,7 +1579,7 @@
                 document.getElementById('crisisBannerText').textContent = 'Crise à enregistrer';
                 banner.onclick = function() { var m = document.getElementById('crisisRegisterModal'); m.classList.add('visible'); trapFocus(m); };
             } else {
-                banner.onclick = function() { var m = document.getElementById('crisisEndModal'); m.classList.add('visible'); trapFocus(m); };
+                banner.onclick = function() { var m = document.getElementById('crisisEndModal'); history.pushState({ modal: 'crisisEnd' }, ''); m.classList.add('visible'); trapFocus(m); };
             }
         }
 
@@ -1576,7 +1595,12 @@
             const contextModal = document.getElementById('contextModal');
             const helpModal = document.getElementById('helpModal');
             const calmModal = document.getElementById('calmModal');
-            if (contextModal.classList.contains('visible')) {
+            const crisisEndModal = document.getElementById('crisisEndModal');
+            if (crisisEndModal.classList.contains('visible')) {
+                releaseTrap(crisisEndModal);
+                crisisEndModal.classList.remove('visible');
+                localStorage.setItem('lastCrisisCheck', getTodayStr());
+            } else if (contextModal.classList.contains('visible')) {
                 close('contextModal');
                 open('helpModal');
             } else if (helpModal.classList.contains('visible')) {
@@ -1585,6 +1609,8 @@
                 close('calmModal');
             }
         });
+
+        document.getElementById('btnCrisisNotOver').onclick = crisisNotOver;
 
         // Vérifier fin de crise après un court délai (laisser la page se charger)
         setTimeout(checkCrisisEnd, 500);

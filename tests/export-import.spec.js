@@ -113,7 +113,6 @@ test.describe('Export / Import', () => {
           remarques: '',
         },
       ],
-      autoRegisterCrise: 'false',
       cartesCommunication: [
         { id: 'c1', emoji: '✋', text: 'Stop', sousTexte: '' },
       ],
