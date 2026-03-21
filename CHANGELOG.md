@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.2
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.4
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,30 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.9.4] — mars 2026
+
+### Corrigé
+- **index.html** — listeners manquants : boutons "Non, elle est toujours en cours" (style secondary + navigation retour) et "Non, m'apaiser" (retour ferme la modale) corrigés
+- **index.html** — suppression de l'enregistrement automatique (`autoRegisterCrise`) : remplacé par une modale proposant d'enregistrer la crise précédente en mode dégradé si une nouvelle crise démarre avant la fin de la précédente
+- **stats.html / stats-approfondie.html** — filtres avancés : synchronisation inter-onglets et gel des filtres au chargement stabilisés
+- **confidentialite.html** — accordéons repliés par défaut ; chemin de suppression des données corrigé
+- **recap.html** — champ d'enregistrement automatique supprimé (feature retirée)
+- **nora-scroll.js** — seuil d'affichage de l'indicateur scroll : 80 → 100 px (élimine un faux positif sur `cartes-communication.html`)
+- **parametres.html** — toggle "Enregistrement automatique" supprimé
+
+---
+
+## [2.9.3] — mars 2026
+
+### Corrigé
+- **index.html** — 10+ listeners manquants sur les boutons des modales crise, questionnaire PCM, déclencheurs et durée
+- **index.html** — croix de fermeture (×) des modales `contextModal`, `precrisisModal`, `triggersModal` corrigées
+- **index.html** — bouton retour physique (Android) : ferme désormais les modales `helpModal`, `calmModal`, `contextModal` au lieu de quitter la page
+- **coherence.html** — suppression du bouton retour redondant affiché en bas de l'écran d'exercice
+- **coherence.html** — bouton retour physique pendant l'exercice → retour à l'écran de paramétrage (via `pushState` + `popstate` + `pageshow` pour le cache bfcache)
 
 ---
 

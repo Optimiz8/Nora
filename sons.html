@@ -632,6 +632,7 @@ input[type=range]::-moz-range-thumb {
     <img id="playerImage" alt="">
     <div class="player">
       <h2 id="playerTitle"></h2>
+      <div id="playerLoading" style="display:none;font-size:13px;color:rgba(245,228,204,0.55);margin-bottom:6px">Chargement en cours…</div>
       <div class="player-controls-row">
         <div class="controls" id="playPause"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" style="display:block"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg></div>
         <div class="timer" id="timerDisplay">⏱️ 10:00</div>
@@ -1073,11 +1074,32 @@ function openPlayer(fileName, displayName) {
   
   document.getElementById("playerImage").src = `assets/images/${fileName}.jpg`;
   document.getElementById("playerTitle").textContent = displayName;
-  
+
+  const loadingEl = document.getElementById("playerLoading");
+  loadingEl.textContent = 'Chargement…';
+  loadingEl.style.display = 'block';
+  playPauseBtn.style.opacity = '0.4';
+
+  // Si ça prend plus d'1s → expliquer pourquoi (son pas encore en cache)
+  const loadingTimer = setTimeout(function() {
+    if (loadingEl.style.display !== 'none') {
+      loadingEl.textContent = 'Téléchargement… Ce son sera disponible hors ligne après ça.';
+    }
+  }, 1000);
+
+  function clearLoading() {
+    clearTimeout(loadingTimer);
+    loadingEl.style.display = 'none';
+    playPauseBtn.style.opacity = '';
+  }
+
+  audio.onplaying = function() { clearLoading(); playPauseBtn.innerHTML = SVG_PAUSE; };
+  audio.onerror = function() { clearLoading(); playPauseBtn.innerHTML = SVG_PLAY; };
+
   audio.src = `assets/audio/${fileName}.${AUDIO_EXT}`;
   audio.loop = true;
-  audio.play().catch(() => { playPauseBtn.innerHTML = SVG_PLAY; });
-  
+  audio.play().catch(() => { clearLoading(); playPauseBtn.innerHTML = SVG_PLAY; });
+
   playPauseBtn.innerHTML = SVG_PAUSE;
   playerModal.classList.add("active");
   trapFocus(playerModal);
@@ -1087,6 +1109,10 @@ function openPlayer(fileName, displayName) {
 
 function closePlayer() {
   audio.pause();
+  audio.onplaying = null;
+  audio.onerror = null;
+  document.getElementById("playerLoading").style.display = 'none';
+  playPauseBtn.style.opacity = '';
   pauseTimer();
   releaseTrap(playerModal);
   playerModal.classList.remove("active");
@@ -1382,6 +1408,18 @@ document.getElementById('presetsChips').addEventListener('click', function(e) {
   var deleteEl = e.target.closest('.preset-chip-delete');
   if (nameEl) loadPreset(nameEl.dataset.presetId);
   if (deleteEl) deletePreset(deleteEl.dataset.presetId);
+});
+
+// Pré-cache des sons en arrière-plan (dans l'ordre d'affichage)
+window.addEventListener('load', function() {
+  setTimeout(function() {
+    var sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+    if (!sw) return;
+    var urls = soundsData.map(function(name) {
+      return 'assets/audio/' + name.toLowerCase().replace(/\s+/g, ' ') + '.' + AUDIO_EXT;
+    });
+    sw.postMessage({ type: 'CACHE_AUDIO', urls: urls });
+  }, 3000); // délai pour ne pas concurrencer le chargement de la page
 });
 </script>
 

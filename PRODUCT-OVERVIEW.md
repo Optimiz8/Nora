@@ -1,7 +1,7 @@
 # Nora — Vision & Stratégie Produit
 
 > **Document vivant.** À mettre à jour à chaque évolution significative : nouvelle fonctionnalité aboutie, décision de déploiement, changement de cap. Demander à Claude Code de le mettre à jour en fin de session si nécessaire.
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.2
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.4
 
 ---
 

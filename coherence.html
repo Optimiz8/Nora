@@ -356,12 +356,32 @@ h2 {
   -webkit-tap-highlight-color: transparent;
 }
 .setup-stats-link {
+  display: block;
   color: var(--accent);
   opacity: 0.85;
-  margin-left: 6px;
+  margin-top: 5px;
   font-size: 14px;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+.stats-session-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(245,228,204,0.07);
+  font-size: 14px;
+  color: var(--light);
+}
+.stats-session-row:last-child { border-bottom: none; }
+.stats-session-date { opacity: 0.55; font-size: 13px; min-width: 70px; }
+.stats-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(245,228,204,0.4);
+  margin: 16px 0 8px;
 }
 .stats-hist-row {
   display: flex;
@@ -922,9 +942,10 @@ function renderSetupStats() {
     if (s.date && s.date.startsWith(month)) { ms++; mm += s.dureeMin || 0; }
   });
   const ts = sessions.length, tm = sessions.reduce((a, s) => a + (s.dureeMin || 0), 0);
-  el.innerHTML =
-    `Ce mois-ci : ${ms} session${ms>1?'s':''} · ${fmtMin(mm)} &nbsp;·&nbsp; Total : ${ts} · ${fmtMin(tm)}` +
-    ` <span class="setup-stats-link">Détails</span>`;
+  let html = `Ce mois-ci — ${ms} session${ms>1?'s':''} · ${fmtMin(mm)}`;
+  if (ts > ms) html += `<br>Total — ${ts} session${ts>1?'s':''} · ${fmtMin(tm)}`;
+  html += `<br><span class="setup-stats-link">Détails</span>`;
+  el.innerHTML = html;
 }
 renderSetupStats();
 
@@ -934,34 +955,50 @@ function openStatsModal() {
 
   const f = fmtMin;
   const pl = n => n > 1 ? 's' : '';
+  const progNames = { coherence: 'Cohérence cardiaque', apaisement: 'Apaisement', custom: 'Personnalisé' };
 
-  // 3 derniers mois
+  // Liste individuelle (sessions triées du plus récent au plus ancien)
+  const sorted = sessions.slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  let sessionRows = '';
+  sorted.forEach(s => {
+    const d = s.date ? new Date(s.date) : null;
+    const dateLabel = d ? d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : '—';
+    const prog = progNames[s.programme] || s.programme || '—';
+    sessionRows += `<div class="stats-session-row">
+      <span class="stats-session-date">${dateLabel}</span>
+      <span>${f(s.dureeMin || 0)}</span>
+      <span style="opacity:0.6;font-size:13px">${prog}</span>
+    </div>`;
+  });
+
+  // Résumé par mois (si > 1 mois de données)
   const now = new Date();
   const months = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 6; i++) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
     const label = d.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
     months.push({ key, label });
   }
-
-  let rows = '';
+  let monthRows = '';
   months.forEach(({ key, label }) => {
     let n = 0, m = 0;
     sessions.forEach(s => { if (s.date && s.date.startsWith(key)) { n++; m += s.dureeMin || 0; } });
-    if (n > 0) rows += `<div class="stats-hist-row"><span class="stats-hist-label">${label}</span><span>${n} session${pl(n)} · ${f(m)}</span></div>`;
+    if (n > 0) monthRows += `<div class="stats-hist-row"><span class="stats-hist-label">${label}</span><span>${n} session${pl(n)} · ${f(m)}</span></div>`;
   });
-  if (!rows) rows = '<div class="stats-hist-row" style="opacity:.5;justify-content:center;">Aucune session ce trimestre</div>';
 
   // Programme le plus utilisé
   const progCount = {};
   sessions.forEach(s => { if (s.programme) progCount[s.programme] = (progCount[s.programme] || 0) + 1; });
   const topProg = Object.entries(progCount).sort((a, b) => b[1] - a[1])[0];
-  const progNames = { coherence: 'Cohérence cardiaque', apaisement: 'Apaisement', custom: 'Personnalisé' };
   const progLine = topProg ? `Programme favori : ${progNames[topProg[0]] || topProg[0]}` : '';
 
-  document.getElementById('statsModalBody').innerHTML =
-    rows + (progLine ? `<div class="stats-hist-prog">${progLine}</div>` : '');
+  const distinctMonths = new Set(sessions.map(s => s.date ? s.date.slice(0, 7) : '')).size;
+  let html = `<div class="stats-section-title">Sessions</div>` + sessionRows;
+  if (distinctMonths > 1) html += `<div class="stats-section-title" style="margin-top:20px">Par mois</div>` + monthRows;
+  if (progLine) html += `<div class="stats-hist-prog">${progLine}</div>`;
+
+  document.getElementById('statsModalBody').innerHTML = html;
 
   const sm = document.getElementById('statsModal');
   sm.classList.add('visible');

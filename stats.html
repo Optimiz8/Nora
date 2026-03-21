@@ -1397,6 +1397,11 @@
                     if (matchesFilters(entries[fi])) filtered.push(entries[fi]);
                 }
                 entries = filtered;
+                var filteredPrev = [];
+                for (var fp = 0; fp < prevEntries.length; fp++) {
+                    if (matchesFilters(prevEntries[fp])) filteredPrev.push(prevEntries[fp]);
+                }
+                prevEntries = filteredPrev;
             }
 
             if (!entries.length) return null;
@@ -2646,7 +2651,14 @@
                 btn.className = 'filter-chip';
                 btn.setAttribute('data-val', key);
                 btn.textContent = info.icon + ' ' + info.name;
+                if (activeFilters.contexte.indexOf(key) !== -1) btn.classList.add('selected');
                 container.appendChild(btn);
+            }
+            var fixed = document.querySelectorAll('#filterOrigine .filter-chip, #filterType .filter-chip, #filterMoment .filter-chip');
+            for (var j = 0; j < fixed.length; j++) {
+                var pid = fixed[j].parentElement.id;
+                var group = pid === 'filterOrigine' ? activeFilters.origine : pid === 'filterType' ? activeFilters.type : (activeFilters.moment || []);
+                if (group.indexOf(fixed[j].getAttribute('data-val')) !== -1) fixed[j].classList.add('selected');
             }
         }
 
