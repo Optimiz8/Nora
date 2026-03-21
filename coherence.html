@@ -378,18 +378,17 @@ h2 {
 .stats-session-date { opacity: 0.55; font-size: 13px; }
 .stats-session-prog { opacity: 0.55; font-size: 13px; text-align: right; }
 .stats-section-title {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(245,228,204,0.4);
-  margin: 16px 0 8px;
+  color: var(--light);
+  opacity: 0.75;
+  margin: 24px 0 10px;
 }
 .stats-section-title:first-child { margin-top: 0; }
 .stats-summary-block {
-  font-size: 17px;
+  font-size: 15px;
   color: var(--light);
-  font-weight: 600;
+  font-weight: 400;
   margin-bottom: 2px;
 }
 .stats-summary-sub {
@@ -969,10 +968,11 @@ function fmtMin(m) {
   return m < 60 ? m + ' min' : Math.floor(m/60) + 'h' + (m%60 ? ' ' + m%60 + 'min' : '');
 }
 
-function renderSetupStats() {
+function renderSetupStats(prog) {
   const el = document.getElementById('setupStats');
   if (!el) return;
-  const sessions = JSON.parse(localStorage.getItem('breathingSessions') || '[]');
+  const allSessions = JSON.parse(localStorage.getItem('breathingSessions') || '[]');
+  const sessions = prog ? allSessions.filter(s => s.programme === prog) : allSessions;
   if (sessions.length === 0) { el.innerHTML = ''; return; }
   const now = new Date();
   const month = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
@@ -986,7 +986,7 @@ function renderSetupStats() {
   html += `<br><span class="setup-stats-link">Détails</span>`;
   el.innerHTML = html;
 }
-renderSetupStats();
+renderSetupStats(currentProgram);
 
 function openStatsModal() {
   const sessions = JSON.parse(localStorage.getItem('breathingSessions') || '[]');
@@ -1181,6 +1181,7 @@ document.getElementById('progCoherence').addEventListener('click', () => {
   inhale = 5; exhale = 5;
   currentProgram = 'coherence';
   initStepper();
+  renderSetupStats(currentProgram);
 });
 
 document.getElementById('progApaisement').addEventListener('click', () => {
@@ -1188,6 +1189,7 @@ document.getElementById('progApaisement').addEventListener('click', () => {
   inhale = 4; exhale = 8;
   currentProgram = 'apaisement';
   initStepper();
+  renderSetupStats(currentProgram);
 });
 
 document.getElementById('progCustom').addEventListener('click', (e) => {
@@ -1198,6 +1200,7 @@ document.getElementById('progCustom').addEventListener('click', (e) => {
   exhale = custom ? custom.out : 5;
   currentProgram = 'custom';
   initStepper();
+  renderSetupStats(currentProgram);
 });
 
 document.getElementById('editLink').addEventListener('click', (e) => {
