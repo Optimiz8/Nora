@@ -1,7 +1,7 @@
 # Nora — Vision & Stratégie Produit
 
 > **Document vivant.** À mettre à jour à chaque évolution significative : nouvelle fonctionnalité aboutie, décision de déploiement, changement de cap. Demander à Claude Code de le mettre à jour en fin de session si nécessaire.
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.4
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.10
 
 ---
 
@@ -137,7 +137,7 @@ Comprendre les patterns pour mieux les anticiper.
 
 | Fonctionnalité | Fichier | État |
 |---|---|---|
-| Questionnaire de crise (avant/pendant) | `journal.html` | ✅ Fait |
+| Enregistrement de crise (formulaire unifié) | `enregistrement-crise.html` | ✅ Fait — V2.10 |
 | Journal — liste des entrées | `journal.html` | ✅ Fait |
 | Récapitulatif de crise | `recap.html` | ✅ Fait |
 | Récapitulatif — exemple | `recap-exemple.html` | ✅ Fait |
@@ -254,6 +254,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 - [x] Export / Import global des données (journal, profil, cartes, sons, playlist)
 - [x] **Export journal filtré** — filtre période + contexte, compteur live, formats PDF / partage / JSON / CSV (V2.9)
 - [x] **Mini stats respiration** — suivi sessions + temps, badges/paliers, modale de fin enrichie (V2.9)
+- [x] **Page d'enregistrement unifiée** — `enregistrement-crise.html` remplace 3 modales distinctes ; formulaire identique depuis index.html, recap.html et journal.html (V2.10)
 - [x] Tutoriel guidé en 7 étapes
 - [x] FAQ + Politique de confidentialité
 - [x] Installation PWA (manifest, raccourcis app shortcuts avec icônes SVG)

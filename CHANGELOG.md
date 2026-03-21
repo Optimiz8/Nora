@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.4
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.10
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,22 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.10] — mars 2026
+
+### Ajouté
+- **`enregistrement-crise.html`** — page dédiée à l'enregistrement de crise, remplace trois modales distinctes (precrisisModal dans index.html, questionnaireModal dans recap.html, formModal dans journal.html)
+  - Mode `nouveau` (depuis index.html ou recap.html) : sections "Avant la crise" (énergie, charge mentale, charge sociale, déclencheurs) puis "La crise" (date, heure, origine, type, intensité, durée, remarques)
+  - Mode `édition` (depuis journal.html) : idem + section "Mon état pendant la crise" (capacités, besoins, états)
+  - Navigation interne : modales en bottom sheet (déclencheurs, besoins, états, capacités) avec gestion du bouton retour physique
+  - Chargement via `nora-data.js` pour les constantes partagées (TRIGGER_CATEGORIES, BESOINS, ETATS, CAPACITES)
+
+### Modifié
+- **`index.html`** — `registerCrisisNow()` redirige vers `enregistrement-crise.html?mode=nouveau&retour=index` (precrisisModal supprimée)
+- **`recap.html`** — `addToJournal()` redirige vers `enregistrement-crise.html?mode=nouveau&retour=recap` (questionnaireModal supprimée)
+- **`journal.html`** — `openFormModal()` redirige vers `enregistrement-crise.html` selon le mode (formModal de création/édition remplacée)
 
 ---
 

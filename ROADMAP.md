@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026 — V2.9.4
+> Dernière mise à jour : mars 2026 — V2.10
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---

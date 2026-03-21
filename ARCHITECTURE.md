@@ -2,7 +2,7 @@
 
 > Document de référence pour comprendre les choix d'implémentation qui ne se lisent pas directement dans le code.
 > À mettre à jour à chaque décision technique significative.
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.4
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.10
 
 ---
 
@@ -139,6 +139,44 @@ Export/import géré dans `parametres.html` (version du format : `'2.5'`).
 
 ---
 
+## Page dédiée d'enregistrement de crise (V2.10)
+
+### Pourquoi une page et non une modale
+
+Avant V2.10, l'enregistrement d'une crise existait en trois versions distinctes (modales dans `index.html`, `recap.html` et `journal.html`) avec des structures et comportements légèrement différents. Toute correction devait être répercutée à trois endroits. La décision de créer `enregistrement-crise.html` comme page dédiée permet de centraliser toute la logique en un seul fichier.
+
+### Routage par paramètres URL
+
+La page reçoit ses instructions via paramètres d'URL :
+
+```
+enregistrement-crise.html?mode=nouveau&retour=index   → fin de crise (index.html)
+enregistrement-crise.html?mode=nouveau&retour=recap   → ajout depuis recap.html
+enregistrement-crise.html?mode=nouveau&retour=journal → ajout manuel depuis journal.html
+enregistrement-crise.html?mode=edition&id=N&retour=journal → édition d'une entrée existante
+```
+
+- `mode` : `nouveau` (création) ou `edition` (modification)
+- `id` : index dans `journalCrises` trié par date décroissante — la page trie elle-même avant d'indexer pour rester cohérente avec `journal.html`
+- `retour` : détermine la page de destination après sauvegarde (`index.html` ou `journal.html`)
+
+### Données pré-remplies en mode nouveau
+
+En mode `nouveau` depuis `index.html`, la page lit dans localStorage :
+- `crisisStartTime` → date, heure de début, durée estimée calculée automatiquement
+- `currentCapacites`, `currentBesoins`, `currentEtats` → associés à l'entrée mais non affichés dans le formulaire (déjà remplis pendant la crise)
+- `profilActuel` → pour associer le contexte à l'entrée
+
+### Cleanup après sauvegarde
+
+En mode `nouveau`, après sauvegarde, la page appelle `cleanupCrisisData()` qui supprime les clés temporaires de crise : `criseEnCours`, `crisisStartTime`, `currentCapacites`, `currentBesoins`, `currentEtats`, `lastCrisisCheck`, `criseATraiter`.
+
+### Section conditionnelle "Mon état pendant la crise"
+
+Cette section (capacités, besoins, états) n'est affichée qu'en mode `edition`. En mode `nouveau`, ces données proviennent du flux de crise (localStorage) — elles n'ont pas besoin d'être re-saisies.
+
+---
+
 ## Animations Lottie
 
 Certaines pages utilisent des animations Lottie (format JSON + webm de fallback) :
@@ -169,7 +207,7 @@ Claude Code n'a pas de mémoire entre deux sessions. À chaque nouvelle conversa
 
 Chaque doc de support contient une ligne de ce type :
 ```
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.9.4
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.10
 ```
 
 Ce marqueur indique jusqu'à quel commit le doc a été mis à jour.
