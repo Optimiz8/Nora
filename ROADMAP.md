@@ -89,104 +89,72 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 
 ---
 
-## V3 — Publication & Accessibilité élargie
+## To-do list — Avant présentation (mars 2026)
 
-### Nouvelles fonctionnalités confirmées V3
+> Cette section couvre les tâches **fonctionnelles et techniques** (tests, relectures, features).
+> Pour les décisions **produit & stratégie** (tests utilisateurs, déploiement, communication), voir [PRODUCT-OVERVIEW.md](PRODUCT-OVERVIEW.md) — section 9.
 
-#### Export sélectif des crises ✅ *livré en V2.9*
-Filtre par période (Ce mois / 3 mois / Cette année / Personnalisé) et par contexte, compteur live. Export en PDF, partage, JSON ou CSV.
+### Tests à valider
+- [ ] Export / Import complet — jamais retesté depuis V2.5 (tester en navigation privée pour ne pas perdre les données)
+- [ ] `enregistrement-crise.html` (V2.10) — parcours complet : nouveau + édition
+- [ ] Export sélectif des crises (`journal.html`) — fonctionnel mais pas encore testé
+- [ ] App Shortcuts Android — désinstallation/réinstallation nécessaire pour valider les icônes SVG
+- [ ] Sons sur Safari iOS < 17 — fallback MP3 (pas de matériel dispo, peut être différé)
 
-#### Bibliothèque de scripts sociaux
-Phrases types à réutiliser dans des situations sociales courantes (refus, demande d'aide, signalement de surcharge…).
-À définir : format, catégories, possibilité de personnalisation.
+### Relecture des textes (generés par IA, pas encore relus par Marine)
 
-#### Mini stats — exercices de respiration ✅ *livré en V2.9*
-Modale de fin d'exercice enrichie : stats Ce mois-ci / Au total, animation de félicitations, paliers/badges (sessions et temps).
+#### 🔴 Priorité haute
+- [ ] `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" : relire la Définition (réécrite en V2.10, à valider)
+- [ ] `recap.html` — Relire l'ensemble du texte partageable (contenu visible par les passants)
+- [ ] `enregistrement-crise.html` — Descriptions Meltdown / Shutdown / Mixte + liste complète des déclencheurs (6 catégories, tous les items)
 
-#### FAQ — début et fin d'une crise autistique
-Ajouter dans `faq.html` une entrée : *"Comment déterminer le début et la fin d'une crise autistique ?"* — question fréquente qui a un impact direct sur la qualité des données enregistrées dans le journal.
+#### 🟠 Priorité moyenne
+- [ ] `coherence.html` — Modales ℹ️ des 3 programmes (descriptions dans les paramètres de setup)
+- [ ] `stats.html` + `stats-approfondie.html` — Phrases d'insights automatiques (buildInsights, règles A–Q)
+- [ ] `profil-crise.html` — Phrases d'insights dynamiques
+- [ ] `faq.html` — Les 9 réponses complètes
+- [ ] `confidentialite.html` — Les 5 accordéons
 
-#### Export chiffré avec rappel de sauvegarde
-- Export protégé par mot de passe (chiffrement côté client)
-- Message de rappel automatique tous les X crises : "Pense à sauvegarder ton journal"
-- À creuser : quelle librairie de chiffrement ? Gestion du mot de passe oublié ?
+#### ✅ Déjà relu / validé
+- `coherence.html` — Messages de fin d'exercice ("Bien joué !" + messages par programme) ✅
+- `conseils.html` — Liste par défaut ✅ (faute "Prenez" corrigée, liens fidgets + harmonie visuelle ajoutés)
+- `faq.html` — Q8 "Comment identifier le début et la fin d'une crise ?" ✅
 
-### Ordre recommandé
+---
 
-```
-1. Tests à faire avant de continuer
-   - Tester App Shortcuts Android (raccourcis appui long)
-   - Tester import / export / sauvegarde des données complètes
-   - Tester sons sur Safari iOS < 17 (fallback MP3)
-2. Audit qualité ✅                          [livré en V2.9.1 — sécurité, performance, compat]
-3. Tutoriel V2                               [🔜 PROCHAIN CHANTIER — améliorations à définir]
-3. Service Worker / offline garanti ✅       [livré en V2.8 — prérequis pour Capacitor]
-4. FAQ — début et fin d'une crise autistique
-5. Export sélectif des crises
-6. Bibliothèque de scripts sociaux
-7. Mini stats — exercices de respiration
-8. Export chiffré + rappel sauvegarde
-9. App Shortcuts V2 (enrichis si besoin)
-10. Capacitor + stores                       [probable, pas acté]
-11. Multi-langue (anglais)                   [en dernier absolu]
-```
+## V3 — Fonctionnalités cibles
 
-### Détail
+> Phase d'utilisation réelle et de test avant d'engager de nouveaux développements majeurs.
+> Les fonctionnalités ci-dessous sont des **cibles, pas une to-do list validée**.
 
-#### 1. Service Worker / offline garanti ✅
-Script background qui met toute l'app en cache local.
-Garantit le fonctionnement sans réseau, même après mise à jour.
-**Prérequis pour Capacitor.**
+### Déjà livré dans le cycle V3
+- **Export sélectif des crises** ✅ *V2.9* — filtres période + contexte, compteur live, export PDF / JSON / CSV
+- **Mini stats — exercices de respiration** ✅ *V2.9* — sessions, badges, modale fin enrichie
+- **FAQ début et fin d'une crise** ✅ *V2.9* — Q8 dans `faq.html`
+- **Page enregistrement-crise unifiée** ✅ *V2.10* — remplace 3 modales distinctes
 
-Livré en V2.8 : `sw.js` + `sw-register.js`. Voir `ARCHITECTURE.md` pour le détail du fonctionnement.
-Stratégie : stale-while-revalidate pour les pages, cache-first pour l'audio. Sons des préréglages pré-cachés au lancement.
+### Nouvelles règles d'insights stats à implémenter
 
-#### 2. Tutoriel V2
-Améliorations à définir selon les retours d'usage.
+> Détail technique dans `analyse-donnees.md`.
 
-#### 4. FAQ — début et fin d'une crise autistique
-Ajouter une entrée dans `faq.html` : *"Comment déterminer le début et la fin d'une crise autistique ?"*
-Question fréquente qui a un impact direct sur la qualité des données enregistrées dans le journal (durée, heure).
+| Priorité | Insight | Logique |
+|----------|---------|---------|
+| 🔴 | Intervalle moyen entre crises | `(last - first) / (total - 1)` en jours |
+| 🟠 | Shutdown > Meltdown en durée | avgDuration Shutdown vs Meltdown |
+| 🟠 | Tendance intensité sur 3 périodes | Comparer moy. intensité P-2 / P-1 / P |
+| 🟠 | Crises nocturnes élevées | Nuit ≥30% → signal fatigue chronique |
+| 🟡 | Crises sans déclencheur | ≥30% avec 0 déclencheur identifié |
+| 🟡 | Déclencheur contextuel | Apparaît dans contexte X mais jamais dans Y |
 
-#### 5. Export sélectif des crises
-Permettre de choisir quelles crises exporter : filtre par date, contexte, intensité.
-Actuellement l'export est global — cette fonctionnalité est utile pour partager uniquement une période en thérapie.
+### Fonctionnalités envisagées (non engagées)
 
-#### 6. Bibliothèque de scripts sociaux
-Phrases types pour situations courantes : refus, demande d'aide, signalement de surcharge, besoin de silence…
-À définir : format (liste simple ou par catégorie), possibilité de personnalisation, lien avec les cartes de communication.
-
-#### 7. Mini stats — exercices de respiration
-Suivi du temps passé sur les exercices de respiration.
-
-**Phase 1 — Stats de base :**
-- À chaque fin de session complète : enregistrer en localStorage la date, le programme et la durée
-- Affichage dans la **modale de fin d'exercice** : "Ce mois-ci : X sessions · Y min" + "Au total : X sessions · Y min"
-- Ton : encourageant, chaleureux — pas de pression quotidienne
-- Pas de toggle semaine/mois/total : trop de décisions sous stress. Mois + total suffisent.
-
-**Phase 2 — Paliers et badges :**
-- Paliers session : 5, 10, 25, 50 sessions
-- Paliers temps : 30 min, 1h, 5h au total
-- Message spécial dans la modale si palier franchi ce jour-là (surprise, pas de barre de progression visible)
-- Aucune pression : les badges n'apparaissent qu'au moment du franchissement
-
-**Info scientifique à ajouter (Phase 1) :**
-- Ajouter dans le petit "ℹ️" des programmes : *"Les effets d'une session de cohérence cardiaque de 5 min durent environ 3 à 6 heures."*
-- Source : HeartMath Institute / David O'Hare (*365*). La formule "X minutes de vie gagnées" n'est pas validée scientifiquement — ne pas l'utiliser.
-
-**Clé localStorage :** `breathingSessions` — tableau d'objets `{date, programme, dureeMin}`
-
-#### 6. App Shortcuts V2
-Enrichissement si de nouvelles fonctionnalités le justifient.
-
-#### 7. Capacitor + stores
-Envelopper la PWA dans une coque native pour Play Store et App Store.
-Pas de réécriture — le HTML/CSS/JS existant est conservé.
-Fort probable mais pas définitivement acté.
-
-#### 8. Multi-langue
-Uniquement quand tous les textes sont stables. Priorité : anglais.
+- **Post-crise guidé** — Remplacer les notes libres par 3 questions fixes : "Qu'est-ce qui a aidé ?", "Qu'est-ce qui a aggravé ?", "Qu'aurais-tu aimé différent ?" → exploitable en TCC. *Fonctionnalité la plus aboutie de la liste.*
+- **Bibliothèque de scripts sociaux** — Phrases types pour situations courantes (refus, aide, surcharge…). *Standby — format et contenu à définir.*
+- **Export chiffré + rappel de sauvegarde** — Export protégé par mot de passe, rappel automatique tous les X crises. *Décision non prise — librairie de chiffrement à choisir.*
+- **Tutoriel V2** — Onboarding repensé en 2 temps : présentation des fonctionnalités puis config guidée optionnelle. *Standby — à faire quand les fonctionnalités sont stables.*
+- **App Shortcuts V2** — Enrichissement si de nouvelles fonctionnalités le justifient.
+- **Capacitor + stores** — Envelopper la PWA pour Play Store / App Store. *Probable, pas acté.*
+- **Multi-langue (anglais)** — Quand tous les textes sont stables. *En dernier absolu.*
 
 ---
 
@@ -196,23 +164,16 @@ Uniquement quand tous les textes sont stables. Priorité : anglais.
 - **Playlists multiples** (jusqu'à 5).
 - **Partage de profil entre appareils** — très lointain (pas avant V4).
 - **Numéros d'urgence rapides** — 3114, 15, 114, 18. Accès depuis l'accueil ou la carte d'urgence. Questions à trancher avant de coder.
-- **Post-crise guidé** — Remplacer les notes libres post-crise par 3 questions fixes : "Qu'est-ce qui a aidé ?", "Qu'est-ce qui a aggravé ?", "Qu'aurais-tu aimé différent ?" → exploitable en TCC.
-- **Mood tracker autisme** — Suivi des états émotionnels entre les crises, côté autisme (à définir : format, fréquence, données collectées).
-- **Théorie des cuillères / jauge d'énergie** — Représentation du "capital énergie" journalier, inspirée de la métaphore des cuillères. À définir : format, intégration avec le journal existant.
+- **Mood tracker autisme** — Suivi des états émotionnels entre les crises (à définir : format, fréquence, données collectées).
+- **Théorie des cuillères / jauge d'énergie** — Représentation du "capital énergie" journalier. À définir : format, intégration avec le journal existant.
 - **Outils utilisés pendant la crise** — Ajouter au questionnaire post-crise : ce qui a été utilisé (sons, respiration, cartes…) et si ça a aidé. Permettrait des stats sur l'efficacité des outils.
 - **Guide meltdown / shutdown** — Page éducative pour aider à identifier et distinguer un meltdown d'un shutdown. Exemples guidés, descriptions sensorielles et comportementales.
-- **Tracking des surcharges (hors crise)** — On peut être en surcharge sans faire de crise. Pouvoir enregistrer ces états permettrait un suivi plus fin du niveau d'énergie global et des patterns de risque.
-- **Carte "qui je suis en tant qu'autiste"** — Synthèse personnelle : mes déclencheurs principaux, mes signaux d'alarme, mes besoins de régulation. À faire évoluer automatiquement à partir des stats.
-- **Profil automatique après X crises** — Générer un profil de données à partir des statistiques accumulées (déclencheurs dominants, moments à risque, intensité moyenne par contexte…).
-- **Exclusion de crises du profil** — Permettre d'exclure certaines crises atypiques ou aberrantes du calcul du profil (ex. : crise liée à un événement exceptionnel), sans les supprimer du journal.
-- **Contexte décalé** — Réflexion ouverte : quand une crise est déclenchée par le travail mais se produit à la maison, dans quel contexte l'enregistrer ? Pas de solution simple.
-- **Axe psychoéducatif — identification des déclencheurs** — Modules courts d'aide à la reconnaissance des déclencheurs (sensoriels vs cognitifs vs sociaux, etc.) pour les profils qui ont beaucoup de "déclencheur flou ou non identifié".
-- **Scripts sociaux générés par IA** — L'utilisatrice décrit une situation, l'IA génère un script de conversation adapté. Variante dynamique et personnalisée de la bibliothèque statique prévue en V3. Nécessite une clé API (voir "Questions IA" ci-dessous).
-- **Compagnon conversationnel post-crise** — L'IA pose les 3 questions post-crise et aide à identifier un déclencheur flou par questions ciblées. Lié aux pistes "post-crise guidé" et "axe psychoéducatif". Nécessite une clé API.
-
-### Questions à trancher avant de coder (IA)
-1. **Clé API** : usage perso (clé côté client, acceptable) ou app publique (clé côté serveur — sort du vanilla pur) ? Option intermédiaire : chaque utilisatrice entre sa propre clé dans les paramètres.
-2. **Prompt système** : définir le caractère de Nora côté IA — ton bienveillant, phrases courtes, jamais condescendant, jamais de diagnostic.
+- **Tracking des surcharges (hors crise)** — Pouvoir enregistrer les états de surcharge sans crise permettrait un suivi plus fin du niveau d'énergie global.
+- **Carte "qui je suis en tant qu'autiste"** — Synthèse personnelle : déclencheurs principaux, signaux d'alarme, besoins de régulation. À faire évoluer automatiquement à partir des stats.
+- **Profil automatique après X crises** — Générer un profil de données à partir des statistiques accumulées.
+- **Exclusion de crises du profil** — Exclure certaines crises atypiques du calcul du profil sans les supprimer du journal.
+- **Contexte décalé** — Réflexion ouverte : quand une crise est déclenchée par le travail mais se produit à la maison, dans quel contexte l'enregistrer ?
+- **Axe psychoéducatif — identification des déclencheurs** — Modules courts d'aide à la reconnaissance des déclencheurs (sensoriels vs cognitifs vs sociaux, etc.).
 
 ---
 
@@ -226,3 +187,5 @@ Uniquement quand tous les textes sont stables. Priorité : anglais.
 - **Séquence de décompression personnalisée** — pas assez proche du cœur de Nora.
 - **Préparation aux transitions** — hors du cadre de l'app (gestion de crise / apaisement).
 - **Interoception** — éventuellement à reconsidérer, pas prioritaire.
+- **Scripts sociaux générés par IA** — Clé API trop complexe à gérer pour un projet de cette taille (côté client non acceptable en app publique, côté serveur sort du vanilla pur).
+- **Compagnon conversationnel post-crise** — Même raison que ci-dessus. La version non-IA (post-crise guidé avec 3 questions fixes) est retenue à la place.

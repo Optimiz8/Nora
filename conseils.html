@@ -102,7 +102,7 @@
             </div>
 
             <p class="note">
-                Prenez le temps de respirer <img src="assets/images/shortcut-coherence.svg" alt="" style="width:20px;height:20px;border-radius:4px;vertical-align:middle"><br>
+                Prends le temps de respirer <img src="assets/images/shortcut-coherence.svg" alt="" style="width:20px;height:20px;border-radius:4px;vertical-align:middle"><br>
                 <a id="linkBreathing">Exercices de respiration</a>
             </p>
         </main>
@@ -115,6 +115,8 @@
             "Mettre mon casque anti-bruit",
             "Fermer les yeux quelques instants",
             "M'allonger si possible",
+            "Utiliser un <a href=\"fidgets.html\" style=\"color:var(--accent);text-decoration:underline\">fidget numérique</a> ou physique",
+            "Regarder l'<a href=\"harmonie-visuelle.html\" style=\"color:var(--accent);text-decoration:underline\">harmonie visuelle</a>",
             "Écouter ma playlist apaisante",
             "Contacter quelqu'un de confiance",
             "Me rappeler que ça va passer",
@@ -127,9 +129,13 @@
 
             const list = document.getElementById('adviceList');
             list.innerHTML = '';
-            advice.forEach(item => {
+            advice.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.textContent = item;
+                if (saved) {
+                    li.textContent = item;
+                } else {
+                    li.innerHTML = item;
+                }
                 list.appendChild(li);
             });
         }

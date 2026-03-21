@@ -127,7 +127,7 @@ Des outils sensoriels pour redescendre.
 
 **Détails notables :**
 - Les exercices de respiration proposent plusieurs programmes (fréquences et durées, dont la cohérence cardiaque 5s/5s) avec animation visuelle + son optionnel. Un bouton ⓘ ouvre une modale de description scientifique de chaque programme. Une modale "Bien joué !" s'affiche à la fin avec la durée réalisée.
-- La bibliothèque de sons contient ~25 ambiances (nature, eau, feu, etc.) avec images évocatrices.
+- La bibliothèque de sons contient 28 ambiances (nature, eau, feu, etc.) avec images évocatrices.
 - Les fidgets numériques reproduisent la stimulation sensorielle sans objet physique.
 
 ---
@@ -277,7 +277,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 ### 🔄 En réflexion / En cours
 
 **Fonctionnel**
-- [ ] Post-crise guidé : remplacer les notes libres par 3 questions fixes (cf. Roadmap V3 dans MEMORY.md)
+- [ ] Post-crise guidé : remplacer les notes libres par 3 questions fixes (cf. ROADMAP.md — V3 cibles)
 - [ ] Axe psychoéducatif : aide à l'identification des déclencheurs (modules courts, exemples guidés)
 
 **Design & identité**
@@ -347,6 +347,9 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 ## 9. To-do — par ordre de priorité
 
+> Cette section couvre les décisions **produit & stratégie** (tests utilisateurs, communication, déploiement).
+> Pour les tâches **fonctionnelles et techniques** (relectures, bugs, features), voir [ROADMAP.md](ROADMAP.md) — section "To-do list".
+
 ### 🔴 Priorité 1 — Avant de faire tester à quiconque
 
 - [ ] Vérifier l'installation PWA depuis l'URL publique sur téléphone (iOS + Android) — s'assurer que les raccourcis fonctionnent, que l'app s'installe correctement
@@ -357,7 +360,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 - [ ] Définir le protocole de test : qui recruter (combien, quel profil), comment recueillir les retours (formulaire ? entretien ?), quels critères d'évaluation
 - [ ] Préparer un document ou message d'accueil pour les testeurs (expliquer ce qu'est l'app, comment l'installer, comment donner du feedback)
-- [ ] Implémenter le post-crise guidé V3 (3 questions fixes — cf. section 7) — améliore directement l'utilité pour les testeurs
+- [ ] Implémenter le post-crise guidé V3 (3 questions fixes — cf. ROADMAP.md) — améliore directement l'utilité pour les testeurs, mais non engagé à ce stade
 - [ ] Vérifier la cohérence visuelle inter-pages sur plusieurs tailles d'écran
 
 ### 🟡 Priorité 3 — Après retours positifs des tests

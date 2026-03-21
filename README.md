@@ -21,7 +21,7 @@ Quand on est en pleine surcharge sensorielle ou en crise autistique, parler devi
 
 ## Accès
 
-🌐 **[Ouvrir l'application](https://[ton-url].github.io/Nora-2/)**
+🌐 **[Ouvrir l'application](https://optimiz8.github.io/Nora-2/)**
 
 L'app est installable sur Android et iOS via le navigateur (option "Ajouter à l'écran d'accueil").
 
@@ -32,7 +32,7 @@ L'app est installable sur Android et iOS via le navigateur (option "Ajouter à l
 | | |
 |---|---|
 | Langages | HTML5, CSS3, JavaScript vanilla |
-| Architecture | 36 pages HTML autonomes, aucun framework |
+| Architecture | 37 pages HTML autonomes, aucun framework |
 | Données | localStorage (100% local, aucun serveur) |
 | PWA | manifest.webmanifest, Service Worker, installable |
 | Hébergement | GitHub Pages (statique, gratuit) |
@@ -42,7 +42,7 @@ L'app est installable sur Android et iOS via le navigateur (option "Ajouter à l
 
 ## Fonctionnement hors ligne
 
-Dès la première ouverture, un **Service Worker** met en cache toutes les pages, le CSS, les images et les sons déjà joués. L'app fonctionne ensuite entièrement sans connexion internet.
+Dès la première ouverture, un **Service Worker** met en cache toutes les pages, le CSS et les images. Les sons sont mis en cache en arrière-plan au chargement de la page Sons. L'app fonctionne ensuite entièrement sans connexion internet.
 
 ---
 
@@ -69,5 +69,5 @@ Voir [CHANGELOG.md](CHANGELOG.md).
 |---|---|
 | V1 | ✅ Publiée |
 | V1.1 | ✅ Corrections post-lancement |
-| V2 | ✅ Publiée (2.8 — mars 2026) |
+| V2 | ✅ Publiée — dernière version : 2.10 (mars 2026) |
 | V3 | 📋 Planifiée |

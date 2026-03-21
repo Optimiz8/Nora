@@ -1,4 +1,6 @@
-# Analyse des données — Nora V2.2.1
+# Analyse des données — Nora
+
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.10
 
 ---
 
@@ -24,7 +26,7 @@
 
 - Fréquence (crises/semaine, crises/mois)
 - Intervalle moyen entre crises
-- Jour de la semaine, moment de la journée
+- Jour de la semaine, moment de la journée (Matin / Après-midi / Soir / Nuit)
 - Tendance sur le temps (hausse/baisse)
 - Corrélations croisées entre variables
 - Distribution des intensités (légère 1–4 / modérée 5–7 / sévère 8–10)
@@ -32,27 +34,56 @@
 
 ---
 
-## 2. Insights pour l'utilisateur
+## 2. Insights automatiques — `buildInsights` (stats.html)
 
-*Pour mieux se comprendre au quotidien.*
+La fonction `buildInsights` génère jusqu'à **8 insights** par ordre de priorité (1 = le plus important).
+Les règles sont identifiées par une lettre (A–Q) dans le code source.
+
+### Tableau complet des règles
+
+| Règle | Priorité | Icône | Condition de déclenchement | Statut |
+|-------|----------|-------|---------------------------|--------|
+| **A** | 2 | 🎯 | Déclencheur le plus **fréquent** ≥30% des crises ET ≥3 occurrences | ✅ Implémenté |
+| **B** | 2 | 🕐 | Moment dominant ≥45% des crises (Matin / Après-midi / Soir / Nuit) | ✅ Implémenté |
+| **C** | 2 | 📍 | Contexte dominant ≥40% des crises (si plusieurs contextes présents) | ✅ Implémenté |
+| **D/E** | 1 | 🔴/🔵 | Type dominant : Meltdown OU Shutdown ≥65% des crises typées | ✅ Implémenté |
+| **F** | 1 | ⚡ | Énergie basse (≤3/10) → intensité moy. ≥1 pt au-dessus de la moy. globale | ✅ Implémenté |
+| **G** | 1 | ⬆️/⬇️ | Variation du nombre de crises ≥±20% vs période précédente | ✅ Implémenté |
+| **H** | 2 | 🧠 | Charge mentale élevée (≥7/10) → intensité moy. ≥1 pt au-dessus de la moy. globale | ✅ Implémenté |
+| **I** | 2 | 👥 | Charge sociale élevée (≥7/10) → intensité moy. ≥1 pt au-dessus de la moy. globale | ✅ Implémenté |
+| **J** | 3 | 💬 | Besoin le plus exprimé ≥40% des crises | ✅ Implémenté |
+| **K** | 1 | ✨ | Amélioration : ≤−20% de crises vs période précédente | ✅ Implémenté |
+| **L** | 1 | ⚠️ | Cluster détecté : ≥3 crises en ≤5 jours | ✅ Implémenté |
+| **M** | 2 | 🔥 | Déclencheur le plus **intense** (avgIntensity ≥6) ≠ déclencheur le plus fréquent | ✅ Implémenté |
+| **N** | 2 | ⚡ | Énergie basse **fréquence** : ≥40% des crises avec énergie ≤3/10 | ✅ Implémenté |
+| **O** | 2 | 🧠 | Charge mentale haute **fréquence** : ≥40% des crises avec CM ≥7/10 | ✅ Implémenté |
+| **P** | 2 | 👥 | Charge sociale haute **fréquence** : ≥40% des crises avec CS ≥7/10 | ✅ Implémenté |
+| **Q** | 2 | ⛔ | Capacité systématiquement impossible dans ≥50% des crises (avec données capacités) | ✅ Implémenté |
+
+> **Note :** Les règles G et K sont complémentaires (G = dégradation, K = amélioration). Elles ne s'affichent pas en même temps.
+
+### Affichage
+
+- Maximum **8 insights** affichés (`insights.slice(0, 8)`)
+- Triés par priorité croissante (1 d'abord)
+- Affichés dans la section "À retenir" de `stats.html`
+
+---
+
+## 3. Insights pour l'utilisateur — pistes non encore implémentées
+
+*Pour mieux se comprendre au quotidien. À intégrer dans une version future.*
 
 ### Patterns temporels
 - Intervalle moyen entre deux crises ("Tu as en moyenne une crise tous les X jours")
 - Mois ou saison où les crises sont plus fréquentes
-- Cluster détecté ("Tu as eu X crises en X jours — période difficile")
 
 ### Déclencheurs
-- Déclencheur qui provoque les crises les **plus intenses** (≠ le plus fréquent)
-- Nombre total de déclencheurs différents identifiés sur la période
 - Déclencheur qui apparaît toujours en contexte [X] mais jamais en [Y]
-
-### Pré-crisis
-- Seuil d'énergie sous lequel les crises arrivent systématiquement ("Sous 4/10 d'énergie, X% de tes crises arrivent")
-- Quel facteur est le meilleur prédicteur pour toi : énergie, charge mentale ou charge sociale ?
 
 ### Types
 - Tes shutdowns durent en moyenne plus longtemps que tes meltdowns (ou l'inverse)
-- Type de crise dominant dans chaque contexte ("à la maison = surtout shutdown ; au travail = surtout meltdown")
+- Type de crise dominant dans chaque contexte ("à la maison = surtout shutdown")
 
 ### Évolution
 - Tendance d'intensité sur les 3 dernières périodes (en hausse, stable, en baisse)
@@ -64,7 +95,7 @@
 
 ---
 
-## 3. Insights pour le thérapeute / médecin
+## 4. Insights pour le thérapeute / médecin
 
 *Données cliniquement pertinentes pour le suivi.*
 
@@ -94,28 +125,17 @@
 - Heure la plus fréquente par contexte (ex : crises au travail surtout en fin de journée)
 
 ### Capacités systématiquement altérées
-- Capacités "impossible" dans ≥50% des crises (fonctions à travailler en thérapie)
+- Capacités "impossible" dans ≥50% des crises → **implémenté (règle Q)**
 - Corrélation capacité impossible × type de crise (Meltdown = perte de contrôle moteur ; Shutdown = communication impossible)
 
 ### Signaux cliniques spécifiques
 - Proportion de crises nocturnes (signal de fatigue chronique)
 - Crises sans déclencheur identifiable (Indéterminé) — progression ou régression sur le temps
-- Présence de clusters (plusieurs crises en <72h) — signe de surcharge prolongée
+- Présence de clusters (plusieurs crises en <72h) → **implémenté (règle L)**
 
 ---
 
-## 4. Tableau des insights à implémenter
+## 5. Insights à implémenter
 
-| Priorité | Règle | Logique | Statut |
-|----------|-------|---------|--------|
-| 🔴 Haute | Cluster détecté | ≥3 crises en ≤5 jours | ✅ Implémenté |
-| 🔴 Haute | Déclencheur le plus intense | Celui avec avgIntensity le plus élevé (≠ plus fréquent) | ✅ Implémenté |
-| 🔴 Haute | Seuil énergie (fréquence) | ≥40% des crises avec énergie ≤3/10 | ✅ Implémenté |
-| 🟠 Moyen | Seuil charge mentale (fréquence) | ≥40% des crises avec charge ≥7/10 | ✅ Implémenté |
-| 🟠 Moyen | Seuil charge sociale (fréquence) | ≥40% des crises avec charge ≥7/10 | ✅ Implémenté |
-| 🟡 Bas | Capacité systématiquement impossible | Dans ≥50% des crises avec données capacités | ✅ Implémenté |
-| 🔴 Haute | Intervalle moyen entre crises | (dernier - premier) / (total - 1) | À faire |
-| 🟠 Moyen | Shutdown > Meltdown en durée | avgDuration Shutdown vs Meltdown | À faire |
-| 🟠 Moyen | Tendance intensité | Comparer 1ère moitié vs 2ème moitié des entrées | À faire |
-| 🟠 Moyen | Crises nocturnes élevées | Nuit ≥30% → signal fatigue | À faire |
-| 🟡 Bas | Crises sans déclencheur | ≥30% avec 0 déclencheur identifié | À faire |
+> La liste des insights à implémenter est dans **[ROADMAP.md](ROADMAP.md)** — section "V3 / Nouvelles règles d'insights stats".
+> Ce fichier documente la logique technique ; ROADMAP.md pilote les priorités.

@@ -49,13 +49,14 @@ Exception documentée : les 4 couleurs sémantiques d'état des capacités dans 
 
 ## Docs de support — synchronisation
 
-Les fichiers `.md` du projet sont appelés **docs de support** (ou "project docs"). Ils couvrent :
+Les fichiers `.md` du projet sont appelés **docs de support ou document du projet** (ou "project docs"). Ils couvrent :
 - `CHANGELOG.md` — historique des versions
-- `ROADMAP.md` — feuille de route
+- `ROADMAP.md` — feuille de route **+ to-do list unique du projet**
 - `PRODUCT-OVERVIEW.md` — vision & stratégie produit
 - `ARCHITECTURE.md` — fonctionnement technique (Service Worker, localStorage, choix d'implémentation)
 - `README.md` — présentation générale
 - `analyse-donnees.md` — documentation des insights statistiques
+- `CLAUDE.md` — instructions pour Claude Code (conventions de travail, workflow, règles) — **pas de marqueur "Dernière mise à jour"**, à mettre à jour quand les conventions changent
 
 **Chaque doc contient une ligne `> Dernière mise à jour : ... — couvre jusqu'au commit X (vY.Z)`**
 → En début de session, lire cette ligne et comparer avec `git log --oneline -10` pour savoir si des commits non documentés existent.
@@ -63,7 +64,20 @@ Les fichiers `.md` du projet sont appelés **docs de support** (ou "project docs
 
 **Convention de mise à jour :**
 Les docs doivent être mis à jour **en fin de session**, juste avant de signaler le commit à Marine.
-L'ordre : 1) `a-propos.html` (version), 2) `CHANGELOG.md`, 3) `ROADMAP.md` si nécessaire, 4) `ARCHITECTURE.md` si modification technique, 5) `PRODUCT-OVERVIEW.md` si nouvelle fonctionnalité majeure.
+L'ordre : 1) `a-propos.html` (version), 2) `CHANGELOG.md`, 3) `ROADMAP.md` si nécessaire, 4) `ARCHITECTURE.md` si modification technique, 5) `PRODUCT-OVERVIEW.md` si nouvelle fonctionnalité majeure, 6) `analyse-donnees.md` si les insights stats ont changé.
+
+## To-do list — source unique
+
+**`ROADMAP.md` est la seule to-do list du projet.** Elle contient :
+- Les tâches avant présentation (tests + relectures textes)
+- Les fonctionnalités V3 envisagées
+- Les nouvelles règles d'insights stats à implémenter
+
+Les autres docs pointent vers ROADMAP.md sans dupliquer :
+- `PRODUCT-OVERVIEW.md` section 9 = to-do **stratégie produit** uniquement (tests utilisateurs, déploiement)
+- `analyse-donnees.md` section 5 = lien vers ROADMAP.md
+
+**Quand Marine demande "qu'est-ce qu'il me reste à faire" ou "donne-moi ma to-do",** lire ROADMAP.md et PRODUCT-OVERVIEW.md section 9 et synthétiser en une liste unique.
 
 ## Commits et versioning
 
@@ -82,7 +96,7 @@ Ne pas lister les docs à mettre à jour à cette étape.
 → Confirmer, puis préciser à Marine de faire le commit et le push depuis VS Code.
 
 **`#MAJ`** — Mise à jour complète
-→ Mettre à jour tous les docs de support du projet dans l'ordre : `a-propos.html`, `CHANGELOG.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `PRODUCT-OVERVIEW.md`.
+→ Mettre à jour tous les docs de support du projet dans l'ordre : `a-propos.html`, `CHANGELOG.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `PRODUCT-OVERVIEW.md`, `analyse-donnees.md` (si insights modifiés).
 
 ### Schéma de versioning
 - `x.y` → nouvelle fonctionnalité ou changement UI significatif
@@ -90,7 +104,7 @@ Ne pas lister les docs à mettre à jour à cette étape.
 
 ## Branches Git
 Marine travaille directement sur `main` (seule développeuse, déploiement GitHub Pages automatique au push).
-- Ne pas vérifier la branche ni suggérer de passer sur `dev`.
+- Ne pas vérifier la branche ni suggérer de passer sur `dev` pour l'instant.
 - Pas de workflow de merge à suivre.
 
 ## Ce qu'on ne fait pas
@@ -99,6 +113,7 @@ Marine travaille directement sur `main` (seule développeuse, déploiement GitHu
 - Pas de commits automatiques
 - Pas de README ou documentation sauf si demandé explicitement
 - Pas d'arrondi ou de simplification silencieuse des comportements existants
+- Être malhonnête, mentir ou inventer une information quand on ne sait pas — dire "je ne sais pas" est toujours préférable
 
 ## Workflow
 - Lire le fichier avant toute modification

@@ -17,11 +17,66 @@ Nora est une **PWA (Progressive Web App)** en HTML/CSS/JS vanilla, sans framewor
 
 ---
 
+## Arborescence des pages
+
+### Vue arbre (texte)
+
+```
+index.html (Accueil)
+│
+├── 🆘 Aide & communication
+│   ├── carte.html                    Carte d'urgence (affichage)
+│   ├── cartes-communication.html     Grille de cartes
+│   ├── contacts-urgence.html         Liste des contacts
+│   └── timer.html                    Timer visuel
+│
+├── 😮 S'apaiser
+│   ├── coherence.html                Exercices de respiration
+│   ├── sons.html ──► playlist.html   Sons & ambiances + playlist
+│   ├── fidgets.html
+│   │   ├── Pop-it.html
+│   │   ├── Slider.html
+│   │   └── cliqueur.html
+│   ├── harmonie-visuelle.html
+│   └── conseils.html
+│
+├── 🔴 Flux de crise (bouton "Je suis en crise")
+│   ├── capacites.html
+│   ├── besoins.html
+│   ├── etats.html
+│   └── recap.html ──► enregistrement-crise.html
+│
+├── 📓 Journal & analyse
+│   ├── journal.html ◄──► enregistrement-crise.html
+│   ├── stats.html ◄──► stats-approfondie.html
+│   └── profil-crise.html
+│
+└── ⚙️ Paramètres
+    ├── parametres.html
+    │   ├── contextes-liste.html
+    │   │   ├── contexte-detail.html
+    │   │   └── contexte-commun.html
+    │   ├── carte-config.html
+    │   ├── cartes-com-config.html
+    │   ├── mon-profil.html
+    │   ├── infos-medicales.html
+    │   └── tutoriel.html
+    └── a-propos.html
+        ├── faq.html
+        └── confidentialite.html
+
+Pages autonomes (pas dans la navigation principale)
+    ├── recap-exemple.html            Démonstration du récapitulatif
+    └── 404.html                      Page d'erreur
+```
+
+---
+
 ## Service Worker — fonctionnement offline (V2.8)
 
 ### Fichiers concernés
 - `sw.js` — le Service Worker
-- `sw-register.js` — enregistrement du SW, inclus dans les 36 pages HTML
+- `sw-register.js` — enregistrement du SW, inclus dans les 37 pages HTML
 
 ### Pourquoi un Service Worker ?
 Nora est utilisée en situation de crise, potentiellement sans réseau (sous-sol, zone blanche, avion, panique avec téléphone en mode avion). L'objectif est que l'app soit **toujours disponible**, quelle que soit la connexion.
@@ -30,14 +85,14 @@ Nora est utilisée en situation de crise, potentiellement sans réseau (sous-sol
 
 1. Le SW s'installe silencieusement en arrière-plan
 2. Il pré-cache en parallèle toutes les ressources statiques :
-   - Les 36 pages HTML
+   - Les 37 pages HTML
    - `nora-common.css` et `manifest.webmanifest`
    - Toutes les images (`assets/images/`) — ~9 Mo
    - Les animations Lottie/webm (`assets/*.json`, `assets/*.webm`)
    - **Total : ~15 Mo**
 3. Si l'utilisatrice a des **préréglages enregistrés dans le mixeur**, `sw-register.js` lit le localStorage, extrait les sons utilisés dans ces préréglages et les envoie au SW via `postMessage` — ils sont mis en cache silencieusement
 
-> **Les sons ne sont PAS pré-cachés en bloc** : les fichiers audio font jusqu'à ~11 Mo chacun (69 Mo au total en Opus). Les pré-cacher tous au premier lancement bloquerait l'installation et userait le stockage téléphone.
+> **Les sons sont pré-cachés au chargement de `sons.html`** : 3 secondes après l'ouverture de la page, tous les fichiers audio (69 Mo au total en Opus) sont envoyés au SW pour mise en cache en arrière-plan. Ce délai évite de concurrencer le chargement initial de la page. Les sons des préréglages mixeur enregistrés sont eux mis en cache dès le premier lancement de l'app (via `sw-register.js`).
 
 ### Ce qui se passe lors des utilisations suivantes
 
@@ -101,7 +156,7 @@ Au chargement de n'importe quelle page, `sw-register.js` :
 
 ### Cas particulier : pre-cache complet depuis sons.html (v2.9)
 
-Au chargement de `sons.html`, tous les fichiers audio (31 sons) sont envoyés au SW via le même message `CACHE_AUDIO`. Cela garantit que tous les sons sont disponibles hors-ligne après une première visite en ligne, même s'ils n'ont jamais été joués.
+Au chargement de `sons.html`, tous les fichiers audio (28 sons) sont envoyés au SW via le même message `CACHE_AUDIO`. Cela garantit que tous les sons sont disponibles hors-ligne après une première visite en ligne, même s'ils n'ont jamais été joués.
 
 ### Format audio — Opus avec fallback MP3
 
@@ -126,8 +181,13 @@ Toutes les données sont stockées localement, jamais envoyées à un serveur.
 | `cartesShowIcons` | Affichage des icônes sur les cartes |
 | `playlistName` / `lienPlaylist` | Playlist personnalisée |
 | `profil_*` | Données du profil utilisateur |
+| `breathingSessions` | Sessions de respiration (array `{date, programme, dureeMin}`) — V2.9 |
 | `tutorielRetour` | Flag de navigation dans le tutoriel |
 | `carteConfigured` | Flag de configuration de la carte d'urgence |
+| `criseEnCours` | Flag booléen — crise active en cours |
+| `crisisStartTime` | Timestamp du début de crise |
+| `currentCapacites` / `currentBesoins` / `currentEtats` | Sélections faites pendant le flux de crise |
+| `criseATraiter` | Flag — crise précédente à enregistrer avant d'en démarrer une nouvelle |
 
 Export/import géré dans `parametres.html` (version du format : `'2.5'`).
 
