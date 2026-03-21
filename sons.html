@@ -1083,9 +1083,9 @@ function openPlayer(fileName, displayName) {
   // Si ça prend plus d'1s → expliquer pourquoi (son pas encore en cache)
   const loadingTimer = setTimeout(function() {
     if (loadingEl.style.display !== 'none') {
-      loadingEl.textContent = 'Téléchargement… Ce son sera disponible hors ligne après ça.';
+      loadingEl.innerHTML = 'Téléchargement en cours<br>Ce son sera disponible hors ligne après cela.';
     }
-  }, 1000);
+  }, 3000);
 
   function clearLoading() {
     clearTimeout(loadingTimer);
