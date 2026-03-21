@@ -553,6 +553,8 @@ h2 {
   line-height: 1.65;
   color: var(--light);
   opacity: 0.9;
+  text-align: center;
+  white-space: pre-line;
   margin-bottom: 8px;
 }
 
@@ -631,7 +633,7 @@ h2 {
   border: 1px solid rgba(245,228,204,0.1);
   border-radius: 14px;
   padding: 10px 16px;
-  margin: 10px 0 0;
+  margin: 20px 0 0;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -844,9 +846,8 @@ h2 {
 <!-- MODAL FIN D'EXERCICE -->
 <div class="modal-overlay" id="endModal" role="dialog" aria-modal="true" aria-label="Exercice terminé">
   <div class="modal-content">
-    <div class="end-anim-wrap" id="endAnimWrap"></div>
-    <div class="end-badge" id="endBadge" style="display:none;"></div>
     <div class="modal-title">Bien joué !</div>
+    <div class="end-badge" id="endBadge" style="display:none;"></div>
     <p class="end-modal-message" id="endMessage"></p>
     <div class="end-stats-block" id="endStats"></div>
     <div class="modal-buttons" style="margin-top:20px;">
@@ -1387,20 +1388,13 @@ const END_MESSAGES = {
   coherence: [
     "6 respirations par minute. Ton système nerveux vient d'être régulé.",
     "Chaque session renforce ta variabilité cardiaque sur le long terme.",
-    "C'est fait. Les effets durent environ 3 à 6 heures.",
-    "Tu viens de synchroniser ton cœur et ton cerveau. Bien.",
+    "Les effets d'une session de 5 min peuvent durer entre 3 et 6 heures.",
   ],
   apaisement: [
-    "L'expiration longue a activé ton frein naturel.",
-    "Le nerf vague a reçu le signal. Le niveau d'alerte redescend.",
-    "Tu as abaissé ton niveau d'alerte. Prends le temps de le sentir.",
-    "Bien fait. Ton corps sait maintenant que c'est calme.",
+    "Le nerf vague a reçu le signal.\nLe niveau d'alerte redescend.",
+    "Ce type d'exercice t'aide à abaisser ton niveau d'alerte.",
   ],
-  custom: [
-    "Session terminée. Prends un instant pour sentir la différence.",
-    "C'est fait. Bien joué.",
-    "Tu as pris ce temps pour toi.",
-  ]
+  custom: null
 };
 
 const SESSION_MILESTONES = [
@@ -1464,23 +1458,26 @@ function showEndModal() {
   saveBreathingSession(currentProgram, minutes);
   const statsAfter = getBreathingStats(currentProgram);
 
-  // Animation — reset à chaque ouverture
-  const animWrap = document.getElementById('endAnimWrap');
-  animWrap.innerHTML = '<div class="end-anim-ring"></div><div class="end-anim-ring end-anim-ring-2"></div><span class="end-anim-check">✓</span>';
-
   // Badge palier
   const badge = document.getElementById('endBadge');
   const milestone = checkMilestone(statsBefore.totalSessions, statsAfter.totalSessions, statsBefore.totalMin, statsAfter.totalMin);
   if (milestone) {
-    badge.textContent = milestone;
+    badge.textContent = milestone + ' Bravo.';
     badge.style.display = 'block';
   } else {
     badge.style.display = 'none';
   }
 
   // Message varié par programme
-  const msgs = END_MESSAGES[currentProgram] || END_MESSAGES.custom;
-  document.getElementById('endMessage').textContent = msgs[Math.floor(Math.random() * msgs.length)];
+  const msgs = END_MESSAGES[currentProgram];
+  const endMsg = document.getElementById('endMessage');
+  if (msgs) {
+    endMsg.textContent = msgs[Math.floor(Math.random() * msgs.length)];
+    endMsg.style.display = '';
+  } else {
+    endMsg.textContent = '';
+    endMsg.style.display = 'none';
+  }
 
   // Stats
   const pl = n => n > 1 ? 's' : '';

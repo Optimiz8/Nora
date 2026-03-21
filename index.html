@@ -1209,48 +1209,10 @@
     }
 
     function registerCrisisNow() {
-        document.getElementById('crisisRegisterModal').classList.remove('visible');
-        resetPcmSliders();
-        selectedPcmTriggers = [];
-        pcmTriggerIntensities = {};
-        updatePcmTriggersPreview();
-        document.getElementById('pcmType').value = '';
-        document.getElementById('pcmManifestation').value = '';
-        document.getElementById('pcmRemarks').value = '';
-
-        var startTime = localStorage.getItem('crisisStartTime');
-        var hint = document.getElementById('pcmStartHint');
-        if (startTime) {
-            var start = new Date(parseInt(startTime));
-            var y = start.getFullYear();
-            var mo = String(start.getMonth() + 1).padStart(2, '0');
-            var d = String(start.getDate()).padStart(2, '0');
-            var h = String(start.getHours()).padStart(2, '0');
-            var mi = String(start.getMinutes()).padStart(2, '0');
-            document.getElementById('pcmDate').value = y + '-' + mo + '-' + d;
-            document.getElementById('pcmTime').value = h + ':' + mi;
-            if (hint) hint.textContent = 'Début de l\'enregistrement : ' + h + 'h' + mi;
-
-            var totalMin = Math.round((Date.now() - parseInt(startTime)) / 60000);
-            pcmDurHours = Math.floor(totalMin / 60);
-            var rawMin = totalMin % 60;
-            pcmDurMinutes = PCM_DUR_QUARTERS.reduce(function(a, b) {
-                return Math.abs(b - rawMin) < Math.abs(a - rawMin) ? b : a;
-            });
-            if (pcmDurMinutes === 60) { pcmDurHours++; pcmDurMinutes = 0; }
-        } else {
-            var now = new Date();
-            document.getElementById('pcmDate').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-            document.getElementById('pcmTime').value = '';
-            if (hint) hint.textContent = '';
-            pcmDurHours = 0;
-            pcmDurMinutes = 0;
-        }
-        updatePcmDurDisplay();
-
-        var pcm = document.getElementById('precrisisModal');
-        pcm.classList.add('visible');
-        trapFocus(pcm);
+        var m = document.getElementById('crisisRegisterModal');
+        releaseTrap(m);
+        m.classList.remove('visible');
+        location.href = 'enregistrement-crise.html?mode=nouveau&retour=index';
     }
 
     function registerCrisisLater() {

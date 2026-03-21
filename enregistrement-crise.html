@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#384657">
+    <title>Enregistrer la crise — Nora</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="nora-common.css">
+    <style>
+        /* ---------- PAGE LAYOUT ---------- */
+        .main-content {
+            padding: calc(var(--header-height) + 16px) 0 calc(var(--footer-height) + 24px);
+        }
+
+        /* ---------- SECTIONS ---------- */
+        .form-section {
+            margin: 0 16px 16px;
+            background: rgba(245,228,204,0.06);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: rgba(245,228,204,0.5);
+            padding: 14px 16px 10px;
+            text-transform: uppercase;
+        }
+        .form-group {
+            padding: 0 16px 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 16px;
+            color: rgba(245,228,204,0.85);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* ---------- SLIDERS ---------- */
+        .slider-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .slider-label { font-size: 16px; color: rgba(245,228,204,0.85); }
+        .slider-value { font-size: 16px; font-weight: 600; color: var(--light); }
+        .slider-value.null-state { color: rgba(245,228,204,0.4); font-weight: 400; }
+        .form-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(245,228,204,0.15);
+            outline: none;
+        }
+        .form-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--light);
+            cursor: pointer;
+        }
+        .form-slider.null-state::-webkit-slider-thumb { background: rgba(245,228,204,0.4); }
+        .slider-hints {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: rgba(245,228,204,0.4);
+            margin-top: 6px;
+        }
+
+        /* ---------- DATE / HEURE ---------- */
+        .date-row { display: flex; gap: 12px; }
+        .date-row > div { flex: 1; }
+
+        /* ---------- INPUT / SELECT / TEXTAREA ---------- */
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: rgba(245,228,204,0.08);
+            border: 1.5px solid rgba(245,228,204,0.15);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 16px;
+            padding: 12px 14px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: rgba(245,228,204,0.4);
+        }
+        .form-textarea { min-height: 90px; resize: vertical; }
+        .form-select option { background: var(--dark); }
+
+        /* ---------- DURÉE ---------- */
+        .duration-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .dur-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .dur-arrow {
+            background: rgba(245,228,204,0.08);
+            border: 1.5px solid rgba(245,228,204,0.15);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 18px;
+            width: 44px;
+            height: 38px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dur-value {
+            font-size: 30px;
+            font-weight: 700;
+            color: var(--light);
+            min-width: 52px;
+            text-align: center;
+        }
+        .dur-unit { font-size: 13px; color: rgba(245,228,204,0.4); }
+        .dur-sep { font-size: 30px; font-weight: 700; color: rgba(245,228,204,0.4); padding-bottom: 22px; }
+        .dur-zero { text-align: center; font-size: 13px; color: rgba(245,228,204,0.4); margin-top: 10px; font-style: italic; }
+
+        /* ---------- BOUTONS SÉLECTION ---------- */
+        .triggers-btn {
+            width: 100%;
+            background: rgba(245,228,204,0.08);
+            border: 1.5px solid rgba(245,228,204,0.2);
+            border-radius: 12px;
+            color: var(--light);
+            font-size: 16px;
+            padding: 13px 16px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+        .triggers-preview {
+            margin-top: 8px;
+            font-size: 14px;
+            color: rgba(245,228,204,0.5);
+            font-style: italic;
+        }
+
+        /* ---------- FOOTER ---------- */
+        .footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 16px;
+        }
+        .btn-secondary {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(245,228,204,0.2);
+            background: rgba(245,228,204,0.08);
+            color: rgba(245,228,204,0.8);
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            flex: 2;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            background: var(--accent);
+            color: var(--dark);
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ---------- MODALES (bottom sheet) ---------- */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            align-items: flex-end;
+        }
+        .modal.visible { display: flex; }
+        .modal-sheet {
+            background: var(--dark);
+            border-radius: 24px 24px 0 0;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(245,228,204,0.1);
+            flex-shrink: 0;
+        }
+        .modal-title { font-size: 17px; font-weight: 700; color: var(--light); }
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(245,228,204,0.6);
+            font-size: 26px;
+            cursor: pointer;
+            padding: 4px 8px;
+            line-height: 1;
+        }
+        .modal-body { overflow-y: auto; padding: 16px; flex: 1; }
+        .modal-footer {
+            padding: 12px 16px;
+            border-top: 1px solid rgba(245,228,204,0.1);
+            flex-shrink: 0;
+        }
+        .btn-validate {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            background: var(--accent);
+            color: var(--dark);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ---------- MODALE DÉCLENCHEURS ---------- */
+        .trig-cat-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: rgba(245,228,204,0.5);
+            text-transform: uppercase;
+            padding: 12px 0 6px;
+        }
+        .trig-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(245,228,204,0.1);
+            background: rgba(245,228,204,0.04);
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .trig-item.selected { background: rgba(247,184,156,0.15); border-color: var(--accent); }
+        .trig-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(245,228,204,0.3);
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .trig-item.selected .trig-check { background: var(--accent); border-color: var(--accent); color: var(--dark); }
+        .trig-text { flex: 1; }
+        .trig-name { font-size: 15px; color: var(--light); }
+        .trig-desc { font-size: 12px; color: rgba(245,228,204,0.45); margin-top: 2px; }
+        .trig-intensity-block { margin-top: 10px; }
+        .trig-intensity-label {
+            font-size: 12px;
+            color: rgba(245,228,204,0.5);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .trig-custom-input {
+            width: 100%;
+            background: rgba(245,228,204,0.08);
+            border: 1.5px solid rgba(245,228,204,0.2);
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 15px;
+            padding: 8px 12px;
+            box-sizing: border-box;
+            margin-top: 6px;
+        }
+
+        /* ---------- MODALE BESOINS / ÉTATS ---------- */
+        .sel-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(245,228,204,0.1);
+            background: rgba(245,228,204,0.04);
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .sel-item.active { background: rgba(247,184,156,0.15); border-color: var(--accent); }
+        .sel-emoji { font-size: 20px; }
+        .sel-text { font-size: 15px; color: var(--light); }
+
+        /* ---------- MODALE CAPACITÉS ---------- */
+        .cap-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(245,228,204,0.1);
+            background: rgba(245,228,204,0.04);
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .cap-item.impossible { border-color: rgba(255,80,80,0.35); background: rgba(255,80,80,0.06); }
+        .cap-item.difficile  { border-color: rgba(255,160,50,0.35); background: rgba(255,160,50,0.06); }
+        .cap-item.possible   { border-color: rgba(80,200,100,0.35); background: rgba(80,200,100,0.06); }
+        .cap-emoji { font-size: 18px; }
+        .cap-text { font-size: 15px; color: var(--light); flex: 1; }
+        .cap-status { font-size: 12px; color: rgba(245,228,204,0.5); }
+        .cap-hint {
+            font-size: 13px;
+            color: rgba(245,228,204,0.45);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        /* ---------- TOAST ---------- */
+        .toast {
+            position: fixed;
+            bottom: calc(var(--footer-height) + 16px);
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--dark);
+            color: var(--light);
+            border: 1px solid rgba(245,228,204,0.2);
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 15px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        .toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <button class="back-button" id="btnBack" aria-label="Retour">⬅️</button>
+    <h1 class="page-title" id="pageTitle">Enregistrer la crise</h1>
+</header>
+
+<main class="main-content">
+
+    <!-- AVANT LA CRISE -->
+    <div class="form-section">
+        <div class="section-title">Avant la crise</div>
+
+        <div class="form-group">
+            <div class="slider-row">
+                <span class="slider-label">⚡ Énergie</span>
+                <span class="slider-value null-state" id="energieDisplay">— /10</span>
+            </div>
+            <input type="range" class="form-slider null-state" id="sliderEnergie" min="0" max="10" value="5">
+            <div class="slider-hints"><span>épuisé</span><span>en forme</span></div>
+        </div>
+
+        <div class="form-group">
+            <div class="slider-row">
+                <span class="slider-label">🧠 Charge mentale</span>
+                <span class="slider-value null-state" id="mentalDisplay">— /10</span>
+            </div>
+            <input type="range" class="form-slider null-state" id="sliderMental" min="0" max="10" value="5">
+            <div class="slider-hints"><span>légère</span><span>saturée</span></div>
+        </div>
+
+        <div class="form-group">
+            <div class="slider-row">
+                <span class="slider-label">👥 Charge sociale</span>
+                <span class="slider-value null-state" id="socialeDisplay">— /10</span>
+            </div>
+            <input type="range" class="form-slider null-state" id="sliderSociale" min="0" max="10" value="5">
+            <div class="slider-hints"><span>légère</span><span>saturée</span></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Déclencheurs identifiés</label>
+            <button type="button" class="triggers-btn" id="btnOpenTriggers">
+                <span>🎯</span><span>Sélectionner les déclencheurs</span>
+            </button>
+            <div class="triggers-preview" id="triggersPreview">Aucun déclencheur sélectionné</div>
+        </div>
+    </div>
+
+    <!-- LA CRISE -->
+    <div class="form-section">
+        <div class="section-title">La crise</div>
+
+        <div class="form-group">
+            <div class="date-row">
+                <div>
+                    <label class="form-label">Date <span style="color:var(--accent);font-weight:bold">*</span></label>
+                    <input type="date" class="form-input" id="crisisDate">
+                </div>
+                <div>
+                    <label class="form-label">Heure de début</label>
+                    <input type="time" class="form-input" id="crisisTime">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Origine</label>
+            <select class="form-select" id="crisisOrigine">
+                <option value="">Non précisé</option>
+                <option value="Anticipatoire">Anticipatoire</option>
+                <option value="Réactionnelle">Réactionnelle</option>
+                <option value="Mixte">Mixte</option>
+                <option value="Indéterminé">Indéterminé</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Type de crise</label>
+            <select class="form-select" id="crisisType">
+                <option value="">Non précisé</option>
+                <option value="Meltdown">Meltdown (explosion externe, perte de contrôle)</option>
+                <option value="Shutdown">Shutdown (repli intérieur, effacement)</option>
+                <option value="Mixte">Mixte (meltdown et shutdown combinés)</option>
+                <option value="Indéterminé">Indéterminé</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <div class="slider-row">
+                <span class="slider-label">Intensité</span>
+                <span class="slider-value null-state" id="intensiteDisplay">— /10</span>
+            </div>
+            <input type="range" class="form-slider null-state" id="sliderIntensite" min="0" max="10" value="5">
+            <div class="slider-hints"><span>légère</span><span>très intense</span></div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Durée estimée</label>
+            <div class="duration-row">
+                <div class="dur-col">
+                    <button type="button" class="dur-arrow" id="btnDurHUp">▲</button>
+                    <div class="dur-value" id="durH">0</div>
+                    <button type="button" class="dur-arrow" id="btnDurHDown">▼</button>
+                    <div class="dur-unit">heure</div>
+                </div>
+                <div class="dur-sep">:</div>
+                <div class="dur-col">
+                    <button type="button" class="dur-arrow" id="btnDurMUp">▲</button>
+                    <div class="dur-value" id="durM">00</div>
+                    <button type="button" class="dur-arrow" id="btnDurMDown">▼</button>
+                    <div class="dur-unit">min</div>
+                </div>
+            </div>
+            <div class="dur-zero" id="durZeroLabel">Non renseigné</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Remarques (optionnel)</label>
+            <textarea class="form-textarea" id="crisisRemarks" placeholder="Contexte, sensations, ce qui a aidé..."></textarea>
+        </div>
+    </div>
+
+    <!-- MON ÉTAT PENDANT LA CRISE — mode edition uniquement -->
+    <div class="form-section" id="sectionEtat" style="display:none;">
+        <div class="section-title">Mon état pendant la crise</div>
+
+        <div class="form-group">
+            <label class="form-label">🎯 Capacités</label>
+            <button type="button" class="triggers-btn" id="btnOpenCaps">
+                <span>Renseigner mes capacités</span>
+            </button>
+            <div class="triggers-preview" id="capsPreview">Non renseigné</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">🤲 Besoins</label>
+            <button type="button" class="triggers-btn" id="btnOpenBes">
+                <span>Sélectionner mes besoins</span>
+            </button>
+            <div class="triggers-preview" id="besPreview">Non renseigné</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">💭 États</label>
+            <button type="button" class="triggers-btn" id="btnOpenEtats">
+                <span>Sélectionner mes états</span>
+            </button>
+            <div class="triggers-preview" id="etatsPreview">Non renseigné</div>
+        </div>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <button class="btn-secondary" id="btnCancel">Annuler</button>
+    <button class="btn-primary" id="btnSave">💾 Enregistrer</button>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODALE DÉCLENCHEURS -->
+<div class="modal" id="triggersModal" role="dialog" aria-modal="true" aria-label="Déclencheurs identifiés">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <div class="modal-title">Déclencheurs identifiés</div>
+            <button class="modal-close" id="btnCloseTriggers" aria-label="Fermer">×</button>
+        </div>
+        <div class="modal-body" id="triggersContent"></div>
+        <div class="modal-footer">
+            <button class="btn-validate" id="btnValidateTriggers">✅ Valider</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE BESOINS -->
+<div class="modal" id="besModal" role="dialog" aria-modal="true" aria-label="Besoins">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <div class="modal-title">🤲 Mes besoins</div>
+            <button class="modal-close" id="btnCloseBes" aria-label="Fermer">×</button>
+        </div>
+        <div class="modal-body" id="besContent"></div>
+        <div class="modal-footer">
+            <button class="btn-validate" id="btnValidateBes">✅ Valider</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE ÉTATS -->
+<div class="modal" id="etatsModal" role="dialog" aria-modal="true" aria-label="États">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <div class="modal-title">💭 Comment je me sens</div>
+            <button class="modal-close" id="btnCloseEtats" aria-label="Fermer">×</button>
+        </div>
+        <div class="modal-body" id="etatsContent"></div>
+        <div class="modal-footer">
+            <button class="btn-validate" id="btnValidateEtats">✅ Valider</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE CAPACITÉS -->
+<div class="modal" id="capsModal" role="dialog" aria-modal="true" aria-label="Capacités">
+    <div class="modal-sheet">
+        <div class="modal-header">
+            <div class="modal-title">🎯 Mes capacités</div>
+            <button class="modal-close" id="btnCloseCaps" aria-label="Fermer">×</button>
+        </div>
+        <div class="modal-body" id="capsContent"></div>
+        <div class="modal-footer">
+            <button class="btn-validate" id="btnValidateCaps">✅ Valider</button>
+        </div>
+    </div>
+</div>
+
+<script src="nora-data.js"></script>
+<script>
+/* ---------- URL PARAMS ---------- */
+var params   = new URLSearchParams(location.search);
+var MODE     = params.get('mode')   || 'nouveau';
+var ENTRY_ID = parseInt(params.get('id') || '-1', 10);
+var RETOUR   = params.get('retour') || 'index';
+
+/* ---------- ÉTAT GLOBAL ---------- */
+var sliderTouched = { energie: false, mentale: false, sociale: false, intensite: false };
+var durHeures = 0, durMinutes = 0;
+var DUR_MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+var selectedTriggers  = [];
+var triggerIntensities = {};
+var customTriggerText = '';
+var formBes  = null;
+var formEtats = null;
+var formCaps  = null;
+
+var CAP_STATUTS = [
+    { key: 'impossible', label: '❌ Impossible' },
+    { key: 'difficile',  label: '⚠️ Difficile'  },
+    { key: 'possible',   label: '✅ Possible'   }
+];
+
+/* ---------- INIT ---------- */
+document.addEventListener('DOMContentLoaded', function() {
+    ensureDefaultContextes();
+    if (MODE === 'edition') {
+        document.getElementById('pageTitle').textContent = 'Modifier la crise';
+        document.getElementById('sectionEtat').style.display = '';
+        loadEntryForEdit();
+    } else {
+        prefillFromCrisis();
+    }
+    setupSliders();
+    setupDuration();
+    setupListeners();
+    updateDurDisplay();
+});
+
+/* ---------- PRÉFILL MODE NOUVEAU ---------- */
+function prefillFromCrisis() {
+    var startTime = localStorage.getItem('crisisStartTime');
+    if (startTime) {
+        var start = new Date(parseInt(startTime));
+        var now   = new Date();
+        document.getElementById('crisisDate').value = start.toISOString().slice(0, 10);
+        document.getElementById('crisisTime').value =
+            String(start.getHours()).padStart(2,'0') + ':' + String(start.getMinutes()).padStart(2,'0');
+        var totalMin = Math.round((now - start) / 60000);
+        if (totalMin > 0 && totalMin < 600) {
+            durHeures  = Math.floor(totalMin / 60);
+            var roundM = Math.round((totalMin % 60) / 5) * 5;
+            if (roundM >= 60) { durHeures++; roundM = 0; }
+            durMinutes = roundM;
+        }
+    } else {
+        document.getElementById('crisisDate').value = new Date().toISOString().slice(0, 10);
+    }
+}
+
+/* ---------- CHARGEMENT MODE EDITION ---------- */
+function loadEntryForEdit() {
+    var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+    journal.sort(function(a, b) { return new Date(b.horodatage) - new Date(a.horodatage); });
+    if (ENTRY_ID < 0 || ENTRY_ID >= journal.length) { history.back(); return; }
+    var e = journal[ENTRY_ID];
+
+    if (e.horodatage) {
+        var d = new Date(e.horodatage);
+        document.getElementById('crisisDate').value = d.toISOString().slice(0, 10);
+        document.getElementById('crisisTime').value =
+            String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    }
+    if (e.typeCrise)         document.getElementById('crisisOrigine').value = e.typeCrise;
+    if (e.typeManifestation) document.getElementById('crisisType').value    = e.typeManifestation;
+    if (e.remarques)         document.getElementById('crisisRemarks').value  = e.remarques;
+
+    if (e.energie      !== '' && e.energie      != null) setSlider('sliderEnergie',  'energieDisplay',  'energie',   e.energie);
+    if (e.chargeMentale !== '' && e.chargeMentale != null) setSlider('sliderMental', 'mentalDisplay',   'mentale',   e.chargeMentale);
+    if (e.chargeSociale !== '' && e.chargeSociale != null) setSlider('sliderSociale','socialeDisplay',  'sociale',   e.chargeSociale);
+    if (e.intensite     !== '' && e.intensite     != null) setSlider('sliderIntensite','intensiteDisplay','intensite',e.intensite);
+
+    if (e.duree) setDur(e.duree);
+
+    if (e.declencheurs && e.declencheurs.length) {
+        normalizeDeclencheurs(e.declencheurs).forEach(function(t) {
+            selectedTriggers.push(t.nom);
+            if (t.intensite !== null && t.intensite !== undefined) triggerIntensities[t.nom] = t.intensite;
+        });
+        updateTriggersPreview();
+    }
+
+    formBes   = e.besoins   || null;
+    formEtats = e.etats     || null;
+    formCaps  = e.capacites || null;
+    updateBesEtaCapsPreview();
+}
+
+function normalizeDeclencheurs(arr) {
+    if (!arr || !arr.length) return [];
+    if (typeof arr[0] === 'string') return arr.map(function(s) { return { nom: s, intensite: null }; });
+    return arr;
+}
+
+/* ---------- SLIDERS ---------- */
+function setupSliders() {
+    [
+        ['sliderEnergie',   'energieDisplay',   'energie'  ],
+        ['sliderMental',    'mentalDisplay',    'mentale'  ],
+        ['sliderSociale',   'socialeDisplay',   'sociale'  ],
+        ['sliderIntensite', 'intensiteDisplay', 'intensite']
+    ].forEach(function(cfg) {
+        document.getElementById(cfg[0]).addEventListener('input', function() {
+            activateSlider(cfg[0], cfg[1], cfg[2]);
+        });
+    });
+}
+
+function activateSlider(sliderId, displayId, field) {
+    sliderTouched[field] = true;
+    var el   = document.getElementById(sliderId);
+    var disp = document.getElementById(displayId);
+    el.classList.remove('null-state');
+    disp.classList.remove('null-state');
+    disp.textContent = el.value + ' /10';
+}
+
+function setSlider(sliderId, displayId, field, val) {
+    sliderTouched[field] = true;
+    var el   = document.getElementById(sliderId);
+    var disp = document.getElementById(displayId);
+    el.value = val;
+    el.classList.remove('null-state');
+    disp.classList.remove('null-state');
+    disp.textContent = val + ' /10';
+}
+
+/* ---------- DURÉE ---------- */
+function setupDuration() {
+    document.getElementById('btnDurHUp').onclick   = function() { adjustDur('h',  1); };
+    document.getElementById('btnDurHDown').onclick = function() { adjustDur('h', -1); };
+    document.getElementById('btnDurMUp').onclick   = function() { adjustDur('m',  1); };
+    document.getElementById('btnDurMDown').onclick = function() { adjustDur('m', -1); };
+}
+
+function adjustDur(unit, dir) {
+    if (unit === 'h') {
+        durHeures = Math.max(0, Math.min(12, durHeures + dir));
+    } else {
+        var idx = DUR_MINUTES.indexOf(durMinutes);
+        if (idx === -1) idx = 0;
+        durMinutes = DUR_MINUTES[(idx + dir + DUR_MINUTES.length) % DUR_MINUTES.length];
+    }
+    updateDurDisplay();
+}
+
+function updateDurDisplay() {
+    document.getElementById('durH').textContent = durHeures;
+    document.getElementById('durM').textContent = String(durMinutes).padStart(2, '0');
+    document.getElementById('durZeroLabel').style.display = (durHeures === 0 && durMinutes === 0) ? '' : 'none';
+}
+
+function getDur() {
+    if (durHeures === 0 && durMinutes === 0) return '';
+    if (durHeures  === 0) return durMinutes + ' min';
+    if (durMinutes === 0) return durHeures + 'h';
+    return durHeures + 'h' + String(durMinutes).padStart(2, '0');
+}
+
+function setDur(str) {
+    if (!str) return;
+    var mH = str.match(/(\d+)h/);
+    var mM = str.match(/(\d+)\s*min/);
+    durHeures  = mH ? parseInt(mH[1]) : 0;
+    durMinutes = mM ? parseInt(mM[1]) : 0;
+    updateDurDisplay();
+}
+
+/* ---------- DÉCLENCHEURS ---------- */
+function openTriggersModal() {
+    var html = '';
+    TRIGGER_CATEGORIES.forEach(function(cat) {
+        html += '<div class="trig-cat-title">' + escapeHtml(cat.label) + '</div>';
+        cat.items.forEach(function(item) {
+            var key      = cat.key + ' \u2014 ' + item.name;
+            var isCustom = !!item.custom;
+            var selected = selectedTriggers.indexOf(key) !== -1;
+            html += '<div class="trig-item' + (selected ? ' selected' : '') +
+                    '" data-key="' + escapeHtml(key) + '" data-custom="' + (isCustom ? '1' : '0') + '">';
+            html += '<div class="trig-check">' + (selected ? '\u2713' : '') + '</div>';
+            html += '<div class="trig-text">';
+            html += '<div class="trig-name">' + escapeHtml(item.name) + '</div>';
+            if (item.desc) html += '<div class="trig-desc">' + escapeHtml(item.desc) + '</div>';
+            if (isCustom)  html += '<input class="trig-custom-input" id="customTrigInput" placeholder="Précise le déclencheur..." value="' + escapeHtml(customTriggerText) + '">';
+            html += '</div>';
+            if (selected) {
+                var intens = triggerIntensities[key];
+                html += '<div class="trig-intensity-block" style="min-width:90px;">';
+                html += '<div class="trig-intensity-label"><span>Intensité</span><span id="intVal_' + selected + '">' + (intens != null ? intens + '/10' : '\u2014') + '</span></div>';
+                html += '<input type="range" class="form-slider" min="1" max="10" value="' + (intens || 5) + '" data-intkey="' + escapeHtml(key) + '">';
+                html += '</div>';
+            }
+            html += '</div>';
+        });
+    });
+
+    var body = document.getElementById('triggersContent');
+    body.innerHTML = html;
+
+    body.onclick = function(e) {
+        var item = e.target.closest('.trig-item');
+        if (!item) return;
+        if (e.target.classList.contains('trig-custom-input') || e.target.closest('.trig-intensity-block')) return;
+        var key      = item.dataset.key;
+        var isCustom = item.dataset.custom === '1';
+        var idx      = selectedTriggers.indexOf(key);
+        if (idx !== -1) {
+            selectedTriggers.splice(idx, 1);
+            if (isCustom) customTriggerText = '';
+        } else {
+            if (isCustom) {
+                var inp = item.querySelector('.trig-custom-input');
+                customTriggerText = inp ? inp.value.trim() : '';
+            }
+            selectedTriggers.push(key);
+        }
+        openTriggersModal();
+    };
+
+    body.oninput = function(e) {
+        if (!e.target.dataset.intkey) return;
+        var k = e.target.dataset.intkey;
+        triggerIntensities[k] = parseInt(e.target.value);
+        var lbl = body.querySelector('[data-intkey="' + k + '"]');
+        if (lbl) {
+            var span = lbl.closest('.trig-intensity-block').querySelector('.trig-intensity-label span:last-child');
+            if (span) span.textContent = e.target.value + '/10';
+        }
+    };
+
+    history.pushState({ noraModal: true }, '');
+    document.getElementById('triggersModal').classList.add('visible');
+}
+
+function closeTriggersModal() {
+    document.getElementById('triggersModal').classList.remove('visible');
+}
+
+function validateTriggers() {
+    var inp = document.getElementById('customTrigInput');
+    if (inp) customTriggerText = inp.value.trim();
+    var customKey = 'Divers \u2014 Autre d\u00e9clencheur';
+    var cidx = selectedTriggers.indexOf(customKey);
+    if (cidx !== -1 && customTriggerText) {
+        selectedTriggers[cidx] = 'Divers \u2014 ' + customTriggerText;
+    } else if (cidx !== -1) {
+        selectedTriggers.splice(cidx, 1);
+    }
+    updateTriggersPreview();
+    closeModalWithHistory('triggersModal', closeTriggersModal);
+}
+
+function updateTriggersPreview() {
+    var prev = document.getElementById('triggersPreview');
+    if (!selectedTriggers.length) {
+        prev.textContent = 'Aucun déclencheur sélectionné';
+    } else {
+        prev.textContent = selectedTriggers.map(function(t) {
+            return t.split(' \u2014 ').pop();
+        }).join(', ');
+    }
+}
+
+/* ---------- BESOINS ---------- */
+function openBesModal() {
+    var config   = getProfileConfig(localStorage.getItem('profilActuel') || 'maison');
+    var visibles = config.besoins.visibles || [];
+    var items    = BESOINS.concat(config.besoins.personnalisees || []).filter(function(i) { return visibles.includes(i.id); });
+    document.getElementById('besContent').innerHTML = items.map(function(item) {
+        var active = formBes && formBes.some(function(b) { return b.label === item.nom; });
+        return '<div class="sel-item' + (active ? ' active' : '') + '" data-id="' + escapeHtml(item.id) + '" data-nom="' + escapeHtml(item.nom) + '">' +
+               '<span class="sel-emoji">' + item.emoji + '</span>' +
+               '<span class="sel-text">' + escapeHtml(item.nom) + '</span></div>';
+    }).join('');
+    document.getElementById('besContent').onclick = function(e) {
+        var it = e.target.closest('.sel-item');
+        if (it) it.classList.toggle('active');
+    };
+    history.pushState({ noraModal: true }, '');
+    document.getElementById('besModal').classList.add('visible');
+}
+
+function closeBesModal() { document.getElementById('besModal').classList.remove('visible'); }
+
+function validateBes() {
+    formBes = Array.from(document.querySelectorAll('#besContent .sel-item.active')).map(function(el) {
+        return { label: el.dataset.nom, value: el.dataset.id };
+    });
+    updateBesEtaCapsPreview();
+    closeModalWithHistory('besModal', closeBesModal);
+}
+
+/* ---------- ÉTATS ---------- */
+function openEtatsModal() {
+    var config   = getProfileConfig(localStorage.getItem('profilActuel') || 'maison');
+    var visibles = config.etats.visibles || [];
+    var items    = ETATS.concat(config.etats.personnalisees || []).filter(function(i) { return visibles.includes(i.id); });
+    document.getElementById('etatsContent').innerHTML = items.map(function(item) {
+        var active = formEtats && formEtats.some(function(e) { return e.label === item.nom; });
+        return '<div class="sel-item' + (active ? ' active' : '') + '" data-id="' + escapeHtml(item.id) + '" data-nom="' + escapeHtml(item.nom) + '">' +
+               '<span class="sel-emoji">' + item.emoji + '</span>' +
+               '<span class="sel-text">' + escapeHtml(item.nom) + '</span></div>';
+    }).join('');
+    document.getElementById('etatsContent').onclick = function(e) {
+        var it = e.target.closest('.sel-item');
+        if (it) it.classList.toggle('active');
+    };
+    history.pushState({ noraModal: true }, '');
+    document.getElementById('etatsModal').classList.add('visible');
+}
+
+function closeEtatsModal() { document.getElementById('etatsModal').classList.remove('visible'); }
+
+function validateEtats() {
+    formEtats = Array.from(document.querySelectorAll('#etatsContent .sel-item.active')).map(function(el) {
+        return { label: el.dataset.nom, value: el.dataset.id };
+    });
+    updateBesEtaCapsPreview();
+    closeModalWithHistory('etatsModal', closeEtatsModal);
+}
+
+/* ---------- CAPACITÉS ---------- */
+function openCapsModal() {
+    var config   = getProfileConfig(localStorage.getItem('profilActuel') || 'maison');
+    var visibles = config.capacites.visibles || [];
+    var items    = CAPACITES.concat(config.capacites.personnalisees || []).filter(function(i) { return visibles.includes(i.id); });
+    var currCaps = formCaps || {};
+
+    var html = '<p class="cap-hint">Appuie pour changer le statut : rien → impossible → difficile → possible → rien</p>';
+    items.forEach(function(item) {
+        var status = null;
+        CAP_STATUTS.forEach(function(s) {
+            if (currCaps[s.key] && currCaps[s.key].indexOf(item.nom) !== -1) status = s.key;
+        });
+        var statusLabel = status ? CAP_STATUTS.find(function(s) { return s.key === status; }).label : '';
+        html += '<div class="cap-item' + (status ? ' ' + status : '') + '" data-nom="' + escapeHtml(item.nom) + '" data-status="' + (status || '') + '">' +
+                '<span class="cap-emoji">' + item.emoji + '</span>' +
+                '<span class="cap-text">' + escapeHtml(item.nom) + '</span>' +
+                '<span class="cap-status">' + statusLabel + '</span></div>';
+    });
+
+    document.getElementById('capsContent').innerHTML = html;
+    document.getElementById('capsContent').onclick = function(e) {
+        var it = e.target.closest('.cap-item');
+        if (!it) return;
+        var order = ['', 'impossible', 'difficile', 'possible'];
+        var cur   = it.dataset.status || '';
+        var next  = order[(order.indexOf(cur) + 1) % order.length];
+        it.dataset.status = next;
+        it.className = 'cap-item' + (next ? ' ' + next : '');
+        it.querySelector('.cap-status').textContent = next ? CAP_STATUTS.find(function(s) { return s.key === next; }).label : '';
+    };
+
+    history.pushState({ noraModal: true }, '');
+    document.getElementById('capsModal').classList.add('visible');
+}
+
+function closeCapsModal() { document.getElementById('capsModal').classList.remove('visible'); }
+
+function validateCaps() {
+    var result = { impossible: [], difficile: [], possible: [], incertain: [] };
+    document.querySelectorAll('#capsContent .cap-item').forEach(function(it) {
+        var s = it.dataset.status;
+        if (s && result[s]) result[s].push(it.dataset.nom);
+    });
+    formCaps = result;
+    updateBesEtaCapsPreview();
+    closeModalWithHistory('capsModal', closeCapsModal);
+}
+
+/* ---------- PREVIEW BESOINS / ÉTATS / CAPACITÉS ---------- */
+function updateBesEtaCapsPreview() {
+    var bPrev = document.getElementById('besPreview');
+    var ePrev = document.getElementById('etatsPreview');
+    var cPrev = document.getElementById('capsPreview');
+    if (bPrev) bPrev.textContent = (formBes  && formBes.length)  ? formBes.map(function(b) { return b.label; }).join(', ')  : 'Non renseigné';
+    if (ePrev) ePrev.textContent = (formEtats && formEtats.length) ? formEtats.map(function(e) { return e.label; }).join(', ') : 'Non renseigné';
+    if (cPrev) {
+        var parts = [];
+        if (formCaps) {
+            if (formCaps.impossible && formCaps.impossible.length) parts.push('Impossible\u00a0: ' + formCaps.impossible.join(', '));
+            if (formCaps.difficile  && formCaps.difficile.length)  parts.push('Difficile\u00a0: '  + formCaps.difficile.join(', '));
+            if (formCaps.possible   && formCaps.possible.length)   parts.push('Possible\u00a0: '   + formCaps.possible.join(', '));
+        }
+        cPrev.textContent = parts.length ? parts.join(' · ') : 'Non renseigné';
+    }
+}
+
+/* ---------- SAUVEGARDE ---------- */
+function saveEntry() {
+    var dateInput = document.getElementById('crisisDate').value;
+    if (!dateInput) { showToast('La date est obligatoire.'); return; }
+
+    var timeInput  = document.getElementById('crisisTime').value;
+    var horodatage;
+    if (timeInput) {
+        horodatage = new Date(dateInput + 'T' + timeInput + ':00').toISOString();
+    } else {
+        var d = new Date(dateInput);
+        d.setHours(12, 0, 0, 0);
+        horodatage = d.toISOString();
+    }
+
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    if (new Date(horodatage) > tomorrow) { showToast('Tu ne peux pas enregistrer une crise dans le futur.'); return; }
+
+    var declencheurs = selectedTriggers.map(function(t) {
+        return { nom: t, intensite: triggerIntensities[t] != null ? triggerIntensities[t] : null };
+    });
+
+    var journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
+
+    if (MODE === 'edition' && ENTRY_ID >= 0 && ENTRY_ID < journal.length) {
+        journal.sort(function(a, b) { return new Date(b.horodatage) - new Date(a.horodatage); });
+        var e = journal[ENTRY_ID];
+        e.horodatage        = horodatage;
+        e.typeCrise         = document.getElementById('crisisOrigine').value;
+        e.typeManifestation = document.getElementById('crisisType').value;
+        e.intensite         = sliderTouched.intensite ? document.getElementById('sliderIntensite').value : (e.intensite || '');
+        e.duree             = getDur();
+        e.remarques         = document.getElementById('crisisRemarks').value;
+        e.energie           = sliderTouched.energie  ? document.getElementById('sliderEnergie').value  : (e.energie       || '');
+        e.chargeMentale     = sliderTouched.mentale  ? document.getElementById('sliderMental').value   : (e.chargeMentale || '');
+        e.chargeSociale     = sliderTouched.sociale  ? document.getElementById('sliderSociale').value  : (e.chargeSociale || '');
+        e.declencheurs      = declencheurs;
+        if (formBes   !== null) e.besoins   = formBes;
+        if (formEtats !== null) e.etats     = formEtats;
+        if (formCaps  !== null) e.capacites = formCaps;
+        journal.sort(function(a, b) { return new Date(b.horodatage) - new Date(a.horodatage); });
+        localStorage.setItem('journalCrises', JSON.stringify(journal));
+        location.href = 'journal.html';
+    } else {
+        var profil     = localStorage.getItem('profilActuel') || 'commun';
+        var profilInfo = getContexteInfo(profil);
+        var capacites  = {};
+        var besoins    = [];
+        var etats      = [];
+        if (RETOUR === 'index') {
+            capacites = JSON.parse(localStorage.getItem('currentCapacites') || '{}');
+            besoins   = JSON.parse(localStorage.getItem('currentBesoins')   || '[]');
+            etats     = JSON.parse(localStorage.getItem('currentEtats')     || '[]');
+        }
+        var entry = {
+            horodatage:       horodatage,
+            profil:           profil,
+            profilNom:        profilInfo.nom,
+            profilEmoji:      profilInfo.emoji,
+            capacites:        capacites,
+            besoins:          besoins,
+            etats:            etats,
+            typeCrise:        document.getElementById('crisisOrigine').value,
+            typeManifestation:document.getElementById('crisisType').value,
+            intensite:        sliderTouched.intensite ? document.getElementById('sliderIntensite').value : '',
+            duree:            getDur(),
+            declencheurs:     declencheurs,
+            remarques:        document.getElementById('crisisRemarks').value,
+            energie:          sliderTouched.energie  ? document.getElementById('sliderEnergie').value  : '',
+            chargeMentale:    sliderTouched.mentale  ? document.getElementById('sliderMental').value   : '',
+            chargeSociale:    sliderTouched.sociale  ? document.getElementById('sliderSociale').value  : '',
+            manual:           RETOUR !== 'index'
+        };
+        journal.unshift(entry);
+        localStorage.setItem('journalCrises', JSON.stringify(journal));
+        cleanupCrisisData();
+        location.href = RETOUR === 'journal' ? 'journal.html' : 'index.html';
+    }
+}
+
+/* ---------- CLEANUP ---------- */
+function cleanupCrisisData() {
+    ['criseEnCours','crisisStartTime','currentCapacites','currentBesoins','currentEtats','lastCrisisCheck','criseATraiter'].forEach(function(k) {
+        localStorage.removeItem(k);
+    });
+}
+
+/* ---------- TOAST ---------- */
+function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('visible');
+    setTimeout(function() { t.classList.remove('visible'); }, 3000);
+}
+
+/* ---------- HELPER POPSTATE ---------- */
+function closeModalWithHistory(id, closeFn) {
+    if (history.state && history.state.noraModal) history.back();
+    else closeFn();
+}
+
+/* ---------- LISTENERS ---------- */
+function setupListeners() {
+    document.getElementById('btnBack').onclick   = function() { history.back(); };
+    document.getElementById('btnCancel').onclick = function() { history.back(); };
+    document.getElementById('btnSave').onclick   = saveEntry;
+
+    document.getElementById('btnOpenTriggers').onclick   = openTriggersModal;
+    document.getElementById('btnCloseTriggers').onclick  = function() { closeModalWithHistory('triggersModal', closeTriggersModal); };
+    document.getElementById('btnValidateTriggers').onclick = validateTriggers;
+
+    document.getElementById('btnOpenBes').onclick    = openBesModal;
+    document.getElementById('btnCloseBes').onclick   = function() { closeModalWithHistory('besModal', closeBesModal); };
+    document.getElementById('btnValidateBes').onclick = validateBes;
+
+    document.getElementById('btnOpenEtats').onclick    = openEtatsModal;
+    document.getElementById('btnCloseEtats').onclick   = function() { closeModalWithHistory('etatsModal', closeEtatsModal); };
+    document.getElementById('btnValidateEtats').onclick = validateEtats;
+
+    document.getElementById('btnOpenCaps').onclick    = openCapsModal;
+    document.getElementById('btnCloseCaps').onclick   = function() { closeModalWithHistory('capsModal', closeCapsModal); };
+    document.getElementById('btnValidateCaps').onclick = validateCaps;
+
+    window.addEventListener('popstate', function() {
+        var order = [
+            { id: 'capsModal',     close: closeCapsModal     },
+            { id: 'etatsModal',    close: closeEtatsModal    },
+            { id: 'besModal',      close: closeBesModal      },
+            { id: 'triggersModal', close: closeTriggersModal }
+        ];
+        for (var i = 0; i < order.length; i++) {
+            var el = document.getElementById(order[i].id);
+            if (el && el.classList.contains('visible')) { order[i].close(); return; }
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Escape') return;
+        ['capsModal','etatsModal','besModal','triggersModal'].forEach(function(id) {
+            document.getElementById(id).classList.remove('visible');
+        });
+    });
+}
+</script>
+<script src="nora-scroll.js"></script>
+<script src="sw-register.js"></script>
+</body>
+</html>

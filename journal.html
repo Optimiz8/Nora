@@ -1884,87 +1884,12 @@
             trapFocus(dm);
         }
 
-        function openFormModal(mode, index = null) {
-            formMode = mode;
-            currentEntryIndex = index;
-
-            const modalTitle = document.getElementById('formModalTitle');
-            const dateGroup = document.getElementById('dateGroup');
-
-            if (mode === 'create') {
-                modalTitle.textContent = 'Ajouter une crise manuellement';
-                dateGroup.style.display = 'block';
-
-                const now = new Date();
-                const ty = now.getFullYear();
-                const tm = String(now.getMonth() + 1).padStart(2, '0');
-                const td = String(now.getDate()).padStart(2, '0');
-                document.getElementById('formDate').value = `${ty}-${tm}-${td}`;
-                document.getElementById('formTime').value = '';
-                document.getElementById('formType').value = '';
-                document.getElementById('formTypeManifestation').value = '';
-                resetSlider('energie');
-                resetSlider('chargeMentale');
-                resetSlider('chargeSociale');
-                resetSlider('intensite');
-                durHours = 0; durMinutes = 0; updateDurDisplay();
-                document.getElementById('formRemarks').value = '';
-                selectedTriggers = [];
-                triggerIntensities = {};
-                jFormBes = null; jFormEtats = null; jFormCaps = null;
-                updateTriggersPreview();
-                updateBesEtaCapsPreview();
+        function openFormModal(mode, index) {
+            if (mode === 'edit' && index != null) {
+                location.href = 'enregistrement-crise.html?mode=edition&id=' + index + '&retour=journal';
             } else {
-                modalTitle.textContent = 'Modifier la crise';
-                dateGroup.style.display = 'block';
-
-                const journal = JSON.parse(localStorage.getItem('journalCrises') || '[]');
-                journal.sort((a, b) => new Date(b.horodatage) - new Date(a.horodatage));
-                const entry = journal[index];
-
-                const d = new Date(entry.horodatage);
-                const yr = d.getFullYear();
-                const mo = String(d.getMonth() + 1).padStart(2, '0');
-                const dy = String(d.getDate()).padStart(2, '0');
-                document.getElementById('formDate').value = `${yr}-${mo}-${dy}`;
-                const fh = String(d.getHours()).padStart(2, '0');
-                const fm = String(d.getMinutes()).padStart(2, '0');
-                document.getElementById('formTime').value = `${fh}:${fm}`;
-
-                document.getElementById('formType').value = entry.typeCrise || '';
-                document.getElementById('formTypeManifestation').value = entry.typeManifestation || '';
-                var ener = normalizeEnergie(entry);
-                var cm = normalizeChargeMentale(entry);
-                var cs = normalizeChargeSociale(entry);
-                if (ener !== null) setSliderValue('energie', ener); else resetSlider('energie');
-                if (cm !== null) setSliderValue('chargeMentale', cm); else resetSlider('chargeMentale');
-                if (cs !== null) setSliderValue('chargeSociale', cs); else resetSlider('chargeSociale');
-                if (entry.intensite) setSliderValue('intensite', entry.intensite); else resetSlider('intensite');
-                setDuration(entry.duree || '');
-                document.getElementById('formRemarks').value = entry.remarques || '';
-
-                var decl = normalizeDeclencheurs(entry.declencheurs);
-                selectedTriggers = decl.map(function(d) { return d.nom; });
-                triggerIntensities = {};
-                decl.forEach(function(d) {
-                    if (d.intensite !== null && d.intensite !== undefined) {
-                        triggerIntensities[d.nom] = d.intensite;
-                    }
-                });
-
-                jFormBes = (entry.besoins !== null && entry.besoins !== undefined) ? entry.besoins : null;
-                jFormEtats = (entry.etats !== null && entry.etats !== undefined) ? entry.etats : null;
-                jFormCaps = (entry.capacites !== null && entry.capacites !== undefined) ? entry.capacites : null;
-
-                updateTriggersPreview();
-                updateBesEtaCapsPreview();
+                location.href = 'enregistrement-crise.html?mode=nouveau&retour=journal';
             }
-
-            history.pushState({ noraModal: true }, '');
-            var fm = document.getElementById('formModal');
-            fm.classList.add('visible');
-            fm.scrollTop = 0;
-            trapFocus(fm);
         }
 
         function openTriggersModal() {

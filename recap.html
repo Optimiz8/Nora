@@ -1925,45 +1925,7 @@
         }
 
         function addToJournal() {
-            const now = new Date();
-
-            // Pré-remplir la date avec aujourd'hui (en heure locale)
-            const y = now.getFullYear();
-            const mo = String(now.getMonth() + 1).padStart(2, '0');
-            const d = String(now.getDate()).padStart(2, '0');
-            document.getElementById('crisisDate').value = `${y}-${mo}-${d}`;
-
-            // Pré-remplir l'heure depuis le début de crise ou l'heure actuelle
-            const startTime = localStorage.getItem('crisisStartTime');
-            const startDate = startTime ? new Date(parseInt(startTime)) : now;
-            const hh = String(startDate.getHours()).padStart(2, '0');
-            const mm = String(startDate.getMinutes()).padStart(2, '0');
-            document.getElementById('crisisTime').value = `${hh}:${mm}`;
-
-            resetSliderQ('crisisEnergie', 'energieDisplay', 'energie');
-            resetSliderQ('crisisChargeMentale', 'chargeMentaleDisplay', 'chargeMentale');
-            resetSliderQ('crisisChargeSociale', 'chargeSocialeDisplay', 'chargeSociale');
-            resetSliderQ('intensitySlider', 'intensityDisplay', 'intensite');
-            // Pré-remplir durée depuis le timer si disponible
-            if (startTime) {
-                const durationMs = now - parseInt(startTime);
-                const totalMinutes = Math.round(durationMs / 60000);
-                setDurQ(totalMinutes < 60 ? totalMinutes + ' min' : Math.floor(totalMinutes/60) + 'h' + (totalMinutes%60 > 0 ? (totalMinutes%60) + ' min' : ''));
-            } else {
-                durQHours = 0; durQMinutes = 0; updateDurQDisplay();
-            }
-            document.getElementById('crisisType').value = '';
-            document.getElementById('crisisManifestation').value = '';
-            selectedTriggers = [];
-            triggerIntensities = {};
-            updateTriggersPreview();
-            document.getElementById('crisisRemarks').value = '';
-
-            // Intercepter le bouton retour navigateur pour fermer la modale
-            history.pushState({ questionnaireOpen: true }, '');
-            const qm = document.getElementById('questionnaireModal');
-            qm.classList.add('open');
-            trapFocus(qm);
+            location.href = 'enregistrement-crise.html?mode=nouveau&retour=recap';
         }
 
         function openTriggersModal() {
