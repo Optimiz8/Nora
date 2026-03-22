@@ -249,9 +249,9 @@ const TRIGGER_CATEGORIES = [
         key: "Sensoriel",
         label: "Déclencheurs sensoriels",
         items: [
-            { name: "Auditif", desc: "Bruit soudain, répétitif ou de fond" },
+            { name: "Auditif", desc: "Bruit soudain, répétitif ou de fond, brouhaha, conversations simultanées…" },
             { name: "Visuel", desc: "Lumière vive, néon, clignotement, motifs, foule en mouvement…" },
-            { name: "Tactile", desc: "Contact physique non désiré, étiquette ou matière de vêtement, variation de température…" },
+            { name: "Tactile", desc: "Contact physique non désiré, proximité subie (foule, transports en commun), étiquette ou matière de vêtement, variation de température…" },
             { name: "Olfactif", desc: "Parfum fort, odeur alimentaire, produit ménager, odeur persistante…" },
             { name: "Goût", desc: "Texture, mélange alimentaire, saveur intense…" }
         ]
@@ -263,8 +263,9 @@ const TRIGGER_CATEGORIES = [
             { name: "Conversation superficielle", desc: "Échange informel forcé, discussion banale prolongée…" },
             { name: "Interaction sociale imposée", desc: "Obligation de participer, prise de parole forcée, présentation publique, réunion…" },
             { name: "Conflit relationnel", desc: "Dispute, tension familiale, désaccord marqué, reproche direct…" },
-            { name: "Difficulté de compréhension sociale", desc: "Sous-entendus, ironie, sarcasme, règle implicite, message indirect…" },
-            { name: "Difficulté d'expression", desc: "Blocage verbal, incapacité à formuler une demande, sentiment de ne pas être compris…" }
+            { name: "Codes sociaux implicites / non-dits", desc: "Sous-entendus, ironie, sarcasme, règle implicite, message indirect…" },
+            { name: "Appel téléphonique", desc: "Appel imprévu, obligation d'appeler, sans langage corporel, avec pression de répondre immédiatement…" },
+            { name: "Épuisement du masking", desc: "Effort prolongé de paraître neurotypique, d'inhiber ses stims ou réponses naturelles, de s'adapter à un environnement non adapté…" }
         ]
     },
     {
@@ -272,17 +273,17 @@ const TRIGGER_CATEGORIES = [
         label: "Changement d'habitude / d'environnement",
         items: [
             { name: "Imprévu", desc: "Événement non anticipé, information soudaine, changement non préparé…" },
-            { name: "Modification / annulation de plan", desc: "" },
+            { name: "Modification / annulation de plan", desc: "Rendez-vous annulé, itinéraire changé, programme prévu qui ne se fait plus…" },
             { name: "Transition", desc: "Passage rapide d'une activité à une autre, interruption soudaine, fin brutale d'un moment sécurisant…" },
             { name: "Rupture de routine", desc: "Impossibilité ou modification d'un rituel, changement d'ordre habituel…" },
-            { name: "Règle modifiée", desc: "Consigne changée, cadre ajusté sans prévenir, nouvelle exigence introduite…" }
+            { name: "Règle modifiée", desc: "La règle elle-même a changé — consigne ajustée, nouvelle exigence, cadre revu. Pas une violation : la règle a bougé." }
         ]
     },
     {
         key: "Cadre",
         label: "Cadre, règles et contrôle",
         items: [
-            { name: "Non-respect d'une règle établie", desc: "" },
+            { name: "Non-respect d'une règle établie", desc: "Quelqu'un enfreint une règle qui existe — règle sociale, consigne, accord établi. La règle n'a pas changé : elle a été bafouée." },
             { name: "Injustice", desc: "Subie ou constatée" },
             { name: "Incohérence logique", desc: "Contradiction, raisonnement illogique, règle incohérente…" },
             { name: "Limite personnelle non respectée", desc: "Insistance malgré un refus, non-respect d'un besoin exprimé, pression…" },
@@ -297,8 +298,7 @@ const TRIGGER_CATEGORIES = [
             { name: "Trop d'informations simultanées", desc: "Conversations multiples, instructions complexes, multitâche, accumulation de demandes…" },
             { name: "Instructions floues ou ambiguës", desc: "Consigne imprécise, manque de clarté, double sens, sous-entendus…" },
             { name: "Démarches administratives", desc: "Démarches complexes, formulaires, procédures…" },
-            { name: "Pression de résultat", desc: "Exigence de perfection, crainte de se tromper…" },
-            { name: "Appel téléphonique", desc: "Appel imprévu, obligation d'appeler…" }
+            { name: "Pression de résultat", desc: "Exigence de perfection, crainte de se tromper…" }
         ]
     },
     {

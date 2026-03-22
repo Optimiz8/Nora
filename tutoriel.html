@@ -16,9 +16,7 @@
 
         .onboarding-header {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             height: 52px;
             display: flex;
             align-items: center;
@@ -26,6 +24,19 @@
             padding: 0 20px;
             background: var(--bg);
             z-index: 100;
+        }
+
+        #headerCenter {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .discovery-indicator {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(245, 228, 204, 0.55);
+            letter-spacing: 0.5px;
         }
 
         .progress-dots {
@@ -47,9 +58,15 @@
             background: var(--light);
             width: 20px;
             border-radius: 4px;
+            animation: dotActive 2.2s ease-in-out infinite;
         }
 
         .dot.done { background: rgba(245, 228, 204, 0.55); }
+
+        @keyframes dotActive {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.6; }
+        }
 
         .skip-link {
             background: none;
@@ -75,7 +92,7 @@
 
         .step {
             display: none;
-            padding: 88px 24px 140px;
+            padding: 88px 24px 160px;
             box-sizing: border-box;
         }
 
@@ -110,9 +127,7 @@
 
         .step-footer {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             padding: 14px 24px;
             padding-bottom: max(14px, env(safe-area-inset-bottom));
             background: var(--bg);
@@ -179,36 +194,103 @@
             border-radius: 20px;
         }
 
-        .welcome-title {
-            font-size: 30px;
+        .tuto-note {
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.35);
+            margin-top: 20px;
+        }
+
+        /* ---------- DÉCOUVERTE : VUE D'ENSEMBLE ---------- */
+
+        .overview-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .overview-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: rgba(245, 228, 204, 0.06);
+            border-radius: 14px;
+            padding: 16px;
+        }
+
+        .overview-item-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+
+        .overview-item-title {
+            font-size: 16px;
             font-weight: 700;
             color: var(--light);
-            text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 4px;
         }
 
-        .welcome-text {
-            font-size: 17px;
-            color: rgba(245, 228, 204, 0.8);
-            line-height: 1.65;
-            text-align: center;
-            margin-bottom: 12px;
-        }
-
-        .welcome-tag {
-            display: block;
-            width: fit-content;
-            background: rgba(247, 184, 156, 0.15);
-            border: 1px solid rgba(247, 184, 156, 0.3);
-            color: var(--accent);
+        .overview-item-desc {
             font-size: 14px;
-            font-weight: 600;
-            padding: 6px 14px;
-            border-radius: 20px;
-            margin: 0 auto 32px;
+            color: rgba(245, 228, 204, 0.55);
+            line-height: 1.5;
         }
 
-        /* ---------- ÉTAPE 2 : PRÉNOM ---------- */
+        /* ---------- DÉCOUVERTE : PILIERS ---------- */
+
+        .pilier-card {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .pilier-items {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pilier-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(46, 58, 89, 0.07);
+            opacity: 0;
+        }
+
+        .pilier-item:last-child { border-bottom: none; }
+
+        .step.active .pilier-item { animation: itemFadeIn 0.3s ease forwards; }
+        .step.active .pilier-item:nth-child(1) { animation-delay: 0.1s; }
+        .step.active .pilier-item:nth-child(2) { animation-delay: 0.18s; }
+        .step.active .pilier-item:nth-child(3) { animation-delay: 0.26s; }
+        .step.active .pilier-item:nth-child(4) { animation-delay: 0.34s; }
+        .step.active .pilier-item:nth-child(5) { animation-delay: 0.42s; }
+
+        @keyframes itemFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .pilier-item-icon {
+            font-size: 18px;
+            min-width: 26px;
+            text-align: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .pilier-item-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 3px;
+        }
+
+        .pilier-item-desc {
+            font-size: 13px;
+            color: rgba(46, 58, 89, 0.6);
+            line-height: 1.45;
+        }
+
+        /* ---------- CONFIG : PRÉNOM ---------- */
 
         .prenom-input {
             width: 100%;
@@ -248,102 +330,7 @@
             border-radius: 8px;
         }
 
-        /* ---------- ANIMATIONS ---------- */
-
-        @keyframes itemFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .step.active .pilier-item {
-            opacity: 0;
-            animation: itemFadeIn 0.35s ease forwards;
-        }
-
-        .step.active .pilier-item:nth-child(1) { animation-delay: 0.15s; }
-        .step.active .pilier-item:nth-child(2) { animation-delay: 0.25s; }
-        .step.active .pilier-item:nth-child(3) { animation-delay: 0.35s; }
-        .step.active .pilier-item:nth-child(4) { animation-delay: 0.45s; }
-        .step.active .pilier-item:nth-child(5) { animation-delay: 0.55s; }
-
-        @keyframes checkPop {
-            0%   { transform: scale(0.3); opacity: 0; }
-            70%  { transform: scale(1.25); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .summary-item-status {
-            display: inline-block;
-            animation: checkPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
-
-        .summary-item:nth-child(2) .summary-item-status { animation-delay: 0.15s; }
-
-        @keyframes dotActive {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.6; }
-        }
-
-        .dot.active { animation: dotActive 2.2s ease-in-out infinite; }
-
-        /* ---------- ÉTAPES 3-4 : FONCTIONNALITÉS ---------- */
-
-        .pilier-card {
-            background: var(--light);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .pilier-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
-        }
-
-        .pilier-icon { font-size: 28px; }
-
-        .pilier-title {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--dark);
-            line-height: 1.3;
-        }
-
-        .pilier-items {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .pilier-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 15px;
-            color: var(--dark);
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(46, 58, 89, 0.07);
-        }
-
-        .pilier-item:last-child { border-bottom: none; }
-
-        .pilier-item[onclick] { cursor: pointer; }
-        .pilier-item[onclick]:active { background: rgba(46, 58, 89, 0.07); }
-        .pilier-item-arrow { color: rgba(46, 58, 89, 0.3); font-size: 18px; flex-shrink: 0; margin-left: 4px; }
-
-        .pilier-item-icon { font-size: 16px; min-width: 22px; text-align: center; }
-
-        .pilier-item-label { flex: 1; font-weight: 500; }
-
-        .pilier-item-desc {
-            font-size: 13px;
-            color: rgba(46, 58, 89, 0.55);
-            margin-top: 1px;
-        }
-
-        /* ---------- ÉTAPE 5 : CARTE D'URGENCE ---------- */
+        /* ---------- CONFIG : CARTE D'URGENCE ---------- */
 
         .feature-icon {
             font-size: 36px;
@@ -403,10 +390,9 @@
         }
 
         .mini-carte-row:last-child { border-bottom: none; }
-
         .mini-carte-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
 
-        /* ---------- ÉTAPE 6 : CARTES DE COMMUNICATION ---------- */
+        /* ---------- CONFIG : CARTES DE COM ---------- */
 
         .cartes-preview-grid {
             display: grid;
@@ -440,7 +426,7 @@
             margin-top: 4px;
         }
 
-        /* ---------- ÉTAPE 7 : RÉSUMÉ ---------- */
+        /* ---------- CONFIG : C'EST PRÊT ---------- */
 
         .summary-icon {
             font-size: 56px;
@@ -469,15 +455,116 @@
 
         .summary-item:last-child { border-bottom: none; }
         .summary-item:active { background: rgba(245, 228, 204, 0.05); }
-
         .summary-item-label { opacity: 0.8; }
-        .summary-item-status { font-size: 18px; }
 
-        .explore-hint {
-            font-size: 14px;
-            color: rgba(245, 228, 204, 0.5);
+        .summary-item-status {
+            font-size: 18px;
+            display: inline-block;
+            animation: checkPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+
+        .summary-item:nth-child(2) .summary-item-status { animation-delay: 0.15s; }
+
+        @keyframes checkPop {
+            0%   { transform: scale(0.3); opacity: 0; }
+            70%  { transform: scale(1.25); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ---------- DÉCOUVERTE : NOTE HORS LIGNE ---------- */
+
+        .offline-note {
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.4);
             text-align: center;
-            line-height: 1.6;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        /* ---------- STEP 1 : GREETING PERSONNALISÉ ---------- */
+
+        .step-greeting {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        /* ---------- DÉCOUVERTE : CONTEXTES OPTIONS ---------- */
+
+        .contexte-option {
+            background: var(--light);
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .contexte-option.active {
+            background: linear-gradient(to right, rgba(247,184,156,0.70), var(--light));
+            border: 2px solid var(--accent);
+            box-shadow: 0 2px 8px rgba(247,184,156,0.3);
+        }
+
+        .contexte-option-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .contexte-option-desc {
+            font-size: 13px;
+            color: rgba(46, 58, 89, 0.6);
+            line-height: 1.45;
+        }
+
+        /* ---------- CHARNIÈRE : LISTE DE COMPLÉTION ---------- */
+
+        .config-check-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+            background: rgba(245, 228, 204, 0.06);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .config-check-item:active { background: rgba(245, 228, 204, 0.1); }
+
+        .config-check-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--light);
+        }
+
+        .config-check-status {
+            font-size: 18px;
+            color: var(--accent);
+            font-weight: 700;
+            min-width: 20px;
+            text-align: right;
+        }
+
+        /* ---------- TRANSITION DÉCOUVERTE → CONFIG ---------- */
+
+        .transition-icon {
+            font-size: 48px;
+            text-align: center;
+            display: block;
+            margin: 8px 0 24px;
+        }
+
+        .config-note {
+            font-size: 13px;
+            color: rgba(245, 228, 204, 0.4);
+            text-align: center;
+            line-height: 1.5;
         }
 
     </style>
@@ -487,154 +574,173 @@
     <!-- Header onboarding -->
     <div class="onboarding-header">
         <button class="back-link" id="backBtn" style="display:none">⬅️</button>
-        <div class="progress-dots" id="progressDots" style="visibility:hidden">
-            <span class="dot" id="dot-2"></span>
-            <span class="dot" id="dot-3"></span>
-            <span class="dot" id="dot-4"></span>
-            <span class="dot" id="dot-5"></span>
-            <span class="dot" id="dot-6"></span>
-            <span class="dot" id="dot-7"></span>
-        </div>
+        <div id="headerCenter"></div>
         <button class="skip-link" id="skipLink" style="visibility:hidden">Passer ›</button>
     </div>
 
-    <!-- ÉTAPE 1 : Bienvenue -->
+    <!-- ÉTAPE 1 : Prénom -->
     <div class="step active" id="step-1" style="text-align:center">
         <img src="assets/images/logo.png" alt="Nora" class="welcome-logo">
-        <h1 class="welcome-title">Bonjour&nbsp;!</h1>
-        <p class="welcome-text">Je suis Nora, ton compagnon pour les moments difficiles.</p>
-        <span class="welcome-tag">Quelques étapes rapides</span>
-    </div>
-
-    <!-- ÉTAPE 2 : Prénom + Nom -->
-    <div class="step" id="step-2">
-        <h2 class="step-title">Comment tu t'appelles&nbsp;?</h2>
-        <p class="step-text">Ces informations apparaîtront sur ta carte d'urgence.</p>
-        <input
-            type="text"
-            id="prenomInput"
-            class="prenom-input"
-            placeholder="Ton prénom"
-            autocomplete="given-name"
-            maxlength="40"
-        >
-        <input
-            type="text"
-            id="nomInput"
-            class="prenom-input"
-            placeholder="Ton nom de famille (facultatif)"
-            autocomplete="family-name"
-            maxlength="60"
-        >
-        <p class="name-hint">💡 Le nom de famille aide les secours à t'identifier — notamment si tu ne peux pas parler.</p>
+        <h1 class="step-title" style="text-align:center">Je m'appelle Nora.<br>Et toi&nbsp;?</h1>
+        <p class="step-text" style="margin-bottom:24px">Ces informations apparaîtront sur ta carte d'urgence.</p>
+        <input type="text" id="prenomInput" class="prenom-input" placeholder="Ton prénom" autocomplete="given-name" maxlength="40">
+        <input type="text" id="nomInput" class="prenom-input" placeholder="Ton nom de famille (facultatif)" autocomplete="family-name" maxlength="60">
+        <p class="name-hint" style="text-align:left">💡 Le nom aide les secours à t'identifier si tu ne peux pas parler.</p>
         <p class="privacy-note">🔒 Tes données restent sur ton téléphone.</p>
+        <p class="tuto-note" style="margin-top:24px">Tu retrouveras ce tutoriel à tout moment dans Paramètres.</p>
     </div>
 
-    <!-- ÉTAPE 3 : Aide et communication -->
+    <!-- ÉTAPE 2 : Vue d'ensemble (1/4) -->
+    <div class="step" id="step-2">
+        <p class="step-greeting" id="step2Greeting"></p>
+        <h2 class="step-title">Nora est organisée en 3 espaces.</h2>
+        <div class="overview-list">
+            <div class="overview-item">
+                <span class="overview-item-icon">💬</span>
+                <div>
+                    <div class="overview-item-title">Aide et communication</div>
+                    <div class="overview-item-desc">Carte d'urgence, fiches de contexte, cartes de communication, timer</div>
+                </div>
+            </div>
+            <div class="overview-item">
+                <span class="overview-item-icon">🌸</span>
+                <div>
+                    <div class="overview-item-title">S'apaiser</div>
+                    <div class="overview-item-desc">Cohérence cardiaque, sons relaxants, fidget, harmonie visuelle, conseils</div>
+                </div>
+            </div>
+            <div class="overview-item">
+                <span class="overview-item-icon">📊</span>
+                <div>
+                    <div class="overview-item-title">Comprendre et suivre</div>
+                    <div class="overview-item-desc">Journal de crises, statistiques</div>
+                </div>
+            </div>
+        </div>
+        <p class="offline-note">📶 Fonctionne hors connexion — tes données restent sur ton téléphone.</p>
+    </div>
+
+    <!-- ÉTAPE 3 : Aide et communication (2/4) -->
     <div class="step" id="step-3">
         <h2 class="step-title">Aide et communication</h2>
-        <p class="step-text">Le premier bouton de l'accueil. Pour les moments où les mots ne viennent plus ou où la situation dépasse.</p>
+        <p class="step-text">Pour les moments où les mots sont difficiles ou la situation dépasse.</p>
         <div class="pilier-card">
-            <div class="pilier-header">
-                <span class="pilier-icon">💬</span>
-                <div class="pilier-title">J'ai besoin d'aide et de communiquer</div>
-            </div>
             <div class="pilier-items">
-                <div class="pilier-item" data-preview="carte.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">🪪</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Carte d'urgence</div>
-                        <div class="pilier-item-desc">À montrer aux secours ou aux passants</div>
+                        <div class="pilier-item-desc">Tes infos, consignes et contacts — à montrer aux secours ou aux passants quand les mots ne viennent plus.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" data-preview="contextes-liste.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">🧭</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Fiches de contexte</div>
-                        <div class="pilier-item-desc">Conseils selon ta situation : maison, extérieur, travail, secours</div>
+                        <div class="pilier-item-desc">Des recommandations adaptées selon où tu te trouves : maison, extérieur, travail, secours.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" data-preview="cartes-communication.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">💬</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Cartes de communication</div>
-                        <div class="pilier-item-desc">Messages courts à montrer à ton interlocuteur</div>
+                        <div class="pilier-item-desc">Des messages courts à montrer à ton interlocuteur sans avoir à parler.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" data-preview="timer.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">⏱️</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Timer visuel</div>
-                        <div class="pilier-item-desc">Pour rythmer le temps d'une crise</div>
+                        <div class="pilier-item-desc">Pour garder un repère sur le temps qui passe pendant une crise.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ÉTAPE 4 : S'apaiser -->
+    <!-- ÉTAPE 4 : S'apaiser (3/4) -->
     <div class="step" id="step-4">
         <h2 class="step-title">S'apaiser</h2>
-        <p class="step-text">Le deuxième bouton de l'accueil. Pour redescendre, te réguler et retrouver un état stable.</p>
+        <p class="step-text">Des outils pour réguler et redescendre.</p>
         <div class="pilier-card">
-            <div class="pilier-header">
-                <span class="pilier-icon">🌸</span>
-                <div class="pilier-title">J'ai besoin de m'apaiser</div>
-            </div>
             <div class="pilier-items">
-                <div class="pilier-item" data-preview="coherence.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon"><img src="assets/images/shortcut-coherence.svg" alt="" style="width:18px;height:18px;border-radius:4px;vertical-align:middle"></span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Cohérence cardiaque</div>
-                        <div class="pilier-item-desc">Respiration guidée avec animation visuelle</div>
+                        <div class="pilier-item-desc">Respiration guidée avec animation visuelle — pour réguler le système nerveux progressivement.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" data-preview="sons.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">🎧</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Sons relaxants</div>
-                        <div class="pilier-item-desc">Pour apaiser l'environnement sonore</div>
+                        <div class="pilier-item-desc">Fond sonore personnalisable et mixable — à garder en arrière-plan autant que nécessaire.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" data-preview="fidgets.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">🧩</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Fidget numérique</div>
-                        <div class="pilier-item-desc">Pour occuper les mains et te concentrer</div>
+                        <div class="pilier-item-desc">Stimulation visuelle et tactile pour canaliser l'agitation des mains.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" data-preview="harmonie-visuelle.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">☁️</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Harmonie visuelle</div>
-                        <div class="pilier-item-desc">Animation apaisante pour détourner l'attention</div>
+                        <div class="pilier-item-desc">Animation apaisante à regarder pour décrocher de l'environnement.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
-                <div class="pilier-item" data-preview="conseils.html">
+                <div class="pilier-item">
                     <span class="pilier-item-icon">✓</span>
-                    <div style="flex:1">
+                    <div>
                         <div class="pilier-item-label">Conseils</div>
-                        <div class="pilier-item-desc">Recommandations pour redescendre</div>
+                        <div class="pilier-item-desc">Recommandations pratiques pour redescendre progressivement.</div>
                     </div>
-                    <span class="pilier-item-arrow">›</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ÉTAPE 5 : Carte d'urgence -->
+    <!-- ÉTAPE 5 : Comprendre et suivre (4/4) -->
     <div class="step" id="step-5">
+        <h2 class="step-title">Comprendre et suivre</h2>
+        <p class="step-text">Pour analyser tes crises dans la durée.</p>
+        <div class="pilier-card">
+            <div class="pilier-items">
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">📓</span>
+                    <div>
+                        <div class="pilier-item-label">Journal</div>
+                        <div class="pilier-item-desc">Enregistre chaque épisode après coup : déclencheurs, intensité, durée, état avant et après. Les données restent sur ton téléphone.</div>
+                    </div>
+                </div>
+                <div class="pilier-item">
+                    <span class="pilier-item-icon">📊</span>
+                    <div>
+                        <div class="pilier-item-label">Statistiques</div>
+                        <div class="pilier-item-desc">Identifie tes patterns dans le temps : déclencheurs fréquents, périodes à risque, évolution de l'intensité.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉTAPE 6 : Transition découverte → configuration -->
+    <div class="step" id="step-6">
+        <span class="transition-icon">⚙️</span>
+        <h2 class="step-title">Configurons Nora</h2>
+        <p class="step-text">Maintenant, prenons cinq minutes pour configurer ce qui pourra t'aider en cas de crise.</p>
+        <div id="configCheckList"></div>
+        <p class="config-note">Tout est modifiable à tout moment depuis Paramètres.</p>
+    </div>
+
+    <!-- ÉTAPE 7 : Carte d'urgence (C1/3) -->
+    <div class="step" id="step-7">
         <span class="feature-icon">🪪</span>
         <h2 class="step-title">Ta carte d'urgence</h2>
-        <p class="step-text">C'est le document que tu montres quand tu ne peux plus parler. Il contient tes consignes, tes contacts et tes infos médicales.</p>
+        <p class="step-text">Le document à montrer quand tu ne peux plus parler. Il contient tes consignes, tes contacts et tes infos médicales.</p>
         <p class="prefilled-hint">Un texte est pré-rempli dans chaque section — conserve-le tel quel ou modifie-le selon tes besoins.</p>
         <span class="status-badge" id="carteStatus"></span>
         <div class="mini-carte">
@@ -657,8 +763,24 @@
         </div>
     </div>
 
-    <!-- ÉTAPE 6 : Cartes de communication -->
-    <div class="step" id="step-6">
+    <!-- ÉTAPE 8 : Contextes (C2/3) -->
+    <div class="step" id="step-8">
+        <span class="feature-icon">🧭</span>
+        <h2 class="step-title">Tes fiches de contexte</h2>
+        <p class="step-text">Nora peut adapter ce qu'elle te montre selon où tu te trouves — domicile, travail, extérieur, secours...</p>
+        <div class="contexte-option" id="optSimple">
+            <div class="contexte-option-title">Mode simplifié</div>
+            <div class="contexte-option-desc">Le même contenu pour toutes les situations.</div>
+        </div>
+        <div class="contexte-option" id="optPerso">
+            <div class="contexte-option-title">Mode personnalisé</div>
+            <div class="contexte-option-desc">Un contenu différent selon le contexte. Tu peux personnaliser chaque fiche et en créer de nouvelles.</div>
+        </div>
+        <p class="config-note">Tu pourras modifier ce choix et personnaliser chaque fiche depuis Paramètres.</p>
+    </div>
+
+    <!-- ÉTAPE 9 : Cartes de communication (C3/3) -->
+    <div class="step" id="step-9">
         <span class="feature-icon">💬</span>
         <h2 class="step-title">Tes cartes de communication</h2>
         <p class="step-text">Des messages courts à montrer quand les mots sont difficiles. Tu peux les personnaliser selon tes besoins.</p>
@@ -680,16 +802,15 @@
         <p class="cartes-status-note" id="cartesStatusNote"></p>
     </div>
 
-    <!-- ÉTAPE 7 : C'est prêt -->
-    <div class="step" id="step-7">
+    <!-- ÉTAPE 10 : C'est prêt (C4/4) -->
+    <div class="step" id="step-10">
         <span class="summary-icon">✅</span>
         <h2 class="step-title" id="finalTitle">Nora est prête&nbsp;!</h2>
-        <p class="step-text">Tu retrouveras ce tutoriel à tout moment dans Paramètres.</p>
+        <p class="step-text" id="finalSubtitle">Tu retrouveras ce tutoriel à tout moment dans Paramètres.</p>
         <div class="summary-list" id="summaryList"></div>
-        <p class="explore-hint">Depuis l'accueil, explore l'aide en situation de crise et les outils d'apaisement.</p>
     </div>
 
-    <!-- Footer fixe (boutons d'action, mis à jour à chaque étape) -->
+    <!-- Footer fixe -->
     <div class="step-footer" id="footerActions"></div>
 
     <script>
@@ -697,12 +818,18 @@
         var deferredInstallPrompt = null;
         var isReviewMode = !!localStorage.getItem('onboardingDone') || !!localStorage.getItem('onboardingSkipped');
 
+        var DISCOVERY_STEPS = [2, 3, 4, 5];
+        var CONFIG_STEPS    = [7, 8, 9, 10];
+
+        function isDiscovery(n) { return DISCOVERY_STEPS.indexOf(n) !== -1; }
+        function isConfig(n)    { return CONFIG_STEPS.indexOf(n) !== -1; }
+
         /* ---------- PWA INSTALL ---------- */
 
         window.addEventListener('beforeinstallprompt', function(e) {
             e.preventDefault();
             deferredInstallPrompt = e;
-            if (currentStep === 7) renderFooter(7);
+            if (currentStep === 10) renderFooter(10);
         });
 
         function installPWA() {
@@ -710,7 +837,7 @@
             deferredInstallPrompt.prompt();
             deferredInstallPrompt.userChoice.then(function() {
                 deferredInstallPrompt = null;
-                renderFooter(7);
+                renderFooter(10);
             });
         }
 
@@ -725,12 +852,13 @@
             renderFooter(n);
             window.scrollTo(0, 0);
 
-            if (n === 2) {
-                setTimeout(function() { document.getElementById('prenomInput').focus(); }, 350);
-            }
-            if (n === 5) renderStep5();
-            if (n === 6) renderStep6();
-            if (n === 7) renderStep7();
+            if (n === 1)  setTimeout(function() { document.getElementById('prenomInput').focus(); }, 350);
+            if (n === 2)  renderStep2();
+            if (n === 6)  renderStep6();
+            if (n === 7)  renderStep7();
+            if (n === 8)  renderStep8();
+            if (n === 9)  renderStep9();
+            if (n === 10) renderStep10();
         }
 
         function goBack() {
@@ -742,61 +870,69 @@
         }
 
         function updateHeader() {
-            var dots = document.getElementById('progressDots');
-            var skip = document.getElementById('skipLink');
-            var back = document.getElementById('backBtn');
+            var center = document.getElementById('headerCenter');
+            var skip   = document.getElementById('skipLink');
+            var back   = document.getElementById('backBtn');
 
-            if (currentStep === 1) {
-                dots.style.visibility = 'hidden';
-                skip.style.visibility = 'hidden';
-                back.style.display = isReviewMode ? 'block' : 'none';
-            } else if (currentStep === 7) {
-                dots.style.visibility = 'visible';
-                skip.style.visibility = 'hidden';
-                back.style.display = 'block';
-            } else {
-                dots.style.visibility = 'visible';
+            back.style.display = (currentStep === 1 && !isReviewMode) ? 'none' : 'block';
+            skip.style.visibility = 'hidden';
+            center.innerHTML = '';
+
+            if (isDiscovery(currentStep)) {
+                var pos = DISCOVERY_STEPS.indexOf(currentStep) + 1;
+                center.innerHTML = '<span class="discovery-indicator">' + pos + '\u00a0/\u00a04</span>';
                 skip.style.visibility = 'visible';
-                back.style.display = 'block';
-            }
-
-            for (var i = 2; i <= 7; i++) {
-                var dot = document.getElementById('dot-' + i);
-                dot.classList.remove('active', 'done');
-                if (i === currentStep) dot.classList.add('active');
-                else if (i < currentStep) dot.classList.add('done');
+            } else if (isConfig(currentStep)) {
+                var dots = '<div class="progress-dots">';
+                for (var i = 0; i < CONFIG_STEPS.length; i++) {
+                    var cls = 'dot';
+                    if (CONFIG_STEPS[i] === currentStep) cls += ' active';
+                    else if (CONFIG_STEPS[i] < currentStep) cls += ' done';
+                    dots += '<span class="' + cls + '"></span>';
+                }
+                dots += '</div>';
+                center.innerHTML = dots;
             }
         }
 
+        /* ---------- FOOTER ---------- */
+
         function renderFooter(n) {
             var el = document.getElementById('footerActions');
+
             if (n === 1) {
                 el.innerHTML =
-                    '<button class="btn-primary" data-action="goToStep" data-step="2">Commencer\u00a0›</button>' +
-                    '<button class="btn-ghost" data-action="skipOnboarding">Explorer d\'abord</button>';
-            } else if (n === 2) {
-                el.innerHTML = '<button class="btn-primary" data-action="savePrenomAndContinue">Continuer\u00a0›</button>';
-            } else if (n === 3 || n === 4) {
+                    '<button class="btn-primary" data-action="savePrenomAndContinue">Commencer\u00a0›</button>' +
+                    (isReviewMode ? '<button class="btn-ghost" data-action="skipOnboarding">Aller à l\'accueil</button>' : '');
+            } else if (n >= 2 && n <= 4) {
                 el.innerHTML = '<button class="btn-primary" data-action="goToStep" data-step="' + (n + 1) + '">Continuer\u00a0›</button>';
             } else if (n === 5) {
                 el.innerHTML =
-                    '<button class="btn-primary" data-action="goToCarteConfig">✏️ Configurer ma carte</button>' +
-                    '<button class="btn-ghost" data-action="goToStep" data-step="6">Configurer plus tard — disponible dans Paramètres</button>';
+                    '<button class="btn-primary" data-action="goToStep" data-step="6">Configurer Nora\u00a0›</button>' +
+                    '<button class="btn-ghost" data-action="skipOnboarding">Aller à l\'accueil</button>';
             } else if (n === 6) {
+                var next = getFirstUncompletedStep();
+                var label = (next === 10) ? 'Voir le résumé\u00a0›' :
+                            (next === 7)  ? 'Commencer\u00a0›' : 'Continuer\u00a0›';
+                el.innerHTML =
+                    '<button class="btn-primary" data-action="goToStep" data-step="' + next + '">' + label + '</button>' +
+                    '<button class="btn-ghost" data-action="skipOnboarding">Aller à l\'accueil</button>';
+            } else if (n === 7) {
+                el.innerHTML =
+                    '<button class="btn-primary" data-action="goToCarteConfig">✏️ Configurer ma carte</button>' +
+                    '<button class="btn-ghost" data-action="goToStep" data-step="8">Configurer plus tard — disponible dans Paramètres</button>';
+            } else if (n === 8) {
+                el.innerHTML = '<button class="btn-primary" data-action="saveContextesAndContinue">Continuer\u00a0›</button>';
+            } else if (n === 9) {
                 el.innerHTML =
                     '<button class="btn-primary" data-action="goToCartesCom">💬 Voir mes cartes de communication</button>' +
-                    '<button class="btn-ghost" data-action="goToStep" data-step="7">Passer pour l\'instant</button>';
-            } else if (n === 7) {
+                    '<button class="btn-ghost" data-action="goToStep" data-step="10">Passer pour l\'instant</button>';
+            } else if (n === 10) {
                 var pwaHtml = deferredInstallPrompt
                     ? '<button class="pwa-btn" data-action="installPWA">📲 Ajouter à mon écran d\'accueil</button>'
                     : '';
                 el.innerHTML = pwaHtml + '<button class="btn-primary" data-action="finishOnboarding">Aller à l\'accueil</button>';
             }
-        }
-
-        function previewFeature(url) {
-            localStorage.setItem('tutorielRetour', String(currentStep));
-            location.href = url;
         }
 
         function skipOnboarding() {
@@ -812,25 +948,59 @@
             location.href = 'index.html';
         }
 
-        /* ---------- ÉTAPE 2 : PRÉNOM ---------- */
+        /* ---------- ÉTAPE 1 : PRÉNOM ---------- */
 
         function savePrenomAndContinue() {
             var prenom = document.getElementById('prenomInput').value.trim();
-            var nom = document.getElementById('nomInput').value.trim();
+            var nom    = document.getElementById('nomInput').value.trim();
             if (prenom) localStorage.setItem('userPrenom', prenom);
-            if (nom) localStorage.setItem('userNom', nom);
-            goToStep(3);
+            if (nom)    localStorage.setItem('userNom', nom);
+            goToStep(2);
         }
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && currentStep === 2) savePrenomAndContinue();
+            if (e.key === 'Enter' && currentStep === 1) savePrenomAndContinue();
         });
 
-        /* ---------- ÉTAPE 5 : CARTE D'URGENCE ---------- */
+        /* ---------- ÉTAPE 2 : GREETING ---------- */
 
-        function renderStep5() {
+        function renderStep2() {
             var prenom = localStorage.getItem('userPrenom') || '';
-            var nom = localStorage.getItem('userNom') || '';
+            var el = document.getElementById('step2Greeting');
+            el.textContent = prenom ? 'Bonjour\u00a0' + prenom + '\u00a0!' : '';
+        }
+
+        /* ---------- ÉTAPE 6 : CHARNIÈRE ---------- */
+
+        function renderStep6() {
+            var carteOk = localStorage.getItem('carteConfigured') === 'true'
+                || localStorage.getItem('carteShowIdentity') !== null;
+            var contextesOk = localStorage.getItem('tutorielContextesFait') === 'true';
+            var cartes = [];
+            try { cartes = JSON.parse(localStorage.getItem('cartesCommunication') || '[]'); } catch(e) {}
+            var cartesOk = cartes.length > 0;
+
+            var items = [
+                { label: '🪪\u00a0 Carte d\'urgence',         ok: carteOk,     step: 7 },
+                { label: '🧭\u00a0 Fiches de contexte',        ok: contextesOk, step: 8 },
+                { label: '💬\u00a0 Cartes de communication',   ok: cartesOk,    step: 9 }
+            ];
+
+            var html = '';
+            items.forEach(function(item) {
+                html += '<div class="config-check-item" data-step="' + item.step + '">' +
+                    '<span class="config-check-label">' + item.label + '</span>' +
+                    '<span class="config-check-status">' + (item.ok ? '✓' : '') + '</span>' +
+                '</div>';
+            });
+            document.getElementById('configCheckList').innerHTML = html;
+        }
+
+        /* ---------- ÉTAPE 7 : CARTE D'URGENCE ---------- */
+
+        function renderStep7() {
+            var prenom = localStorage.getItem('userPrenom') || '';
+            var nom    = localStorage.getItem('userNom') || '';
             var nomComplet = [prenom, nom].filter(Boolean).join(' ');
             document.getElementById('miniCarteNom').textContent = nomComplet || 'Ton identité';
 
@@ -847,18 +1017,55 @@
         }
 
         function goToCarteConfig() {
-            localStorage.setItem('tutorielRetour', '5');
+            localStorage.setItem('tutorielRetour', '6');
             location.href = 'carte-config.html';
         }
 
-        /* ---------- ÉTAPE 6 : CARTES DE COM ---------- */
+        /* ---------- ÉTAPE 8 : CONTEXTES ---------- */
 
-        function renderStep6() {
+        function renderStep8() {
+            var modeSimple = localStorage.getItem('contexte_messageUnique') === 'true';
+            document.getElementById('optSimple').classList.toggle('active', modeSimple);
+            document.getElementById('optPerso').classList.toggle('active', !modeSimple);
+
+            document.getElementById('optSimple').onclick = function() {
+                localStorage.setItem('contexte_messageUnique', 'true');
+                document.getElementById('optSimple').classList.add('active');
+                document.getElementById('optPerso').classList.remove('active');
+            };
+            document.getElementById('optPerso').onclick = function() {
+                localStorage.removeItem('contexte_messageUnique');
+                document.getElementById('optPerso').classList.add('active');
+                document.getElementById('optSimple').classList.remove('active');
+            };
+        }
+
+        function saveContextesAndContinue() {
+            localStorage.setItem('tutorielContextesFait', 'true');
+            goToStep(6);
+        }
+
+        function getFirstUncompletedStep() {
+            var carteOk = localStorage.getItem('carteConfigured') === 'true'
+                || localStorage.getItem('carteShowIdentity') !== null;
+            var contextesOk = localStorage.getItem('tutorielContextesFait') === 'true';
+            var cartes = [];
+            try { cartes = JSON.parse(localStorage.getItem('cartesCommunication') || '[]'); } catch(e) {}
+            var cartesOk = cartes.length > 0;
+            if (!carteOk)    return 7;
+            if (!contextesOk) return 8;
+            if (!cartesOk)   return 9;
+            return 10;
+        }
+
+        /* ---------- ÉTAPE 9 : CARTES DE COM ---------- */
+
+        function renderStep9() {
             var cartes = [];
             try { cartes = JSON.parse(localStorage.getItem('cartesCommunication') || '[]'); } catch(e) {}
 
             var badge = document.getElementById('cartesComStatus');
-            var note = document.getElementById('cartesStatusNote');
+            var note  = document.getElementById('cartesStatusNote');
 
             if (cartes.length > 0) {
                 badge.textContent = cartes.length + ' carte' + (cartes.length > 1 ? 's' : '') + ' configurée' + (cartes.length > 1 ? 's' : '');
@@ -872,99 +1079,114 @@
         }
 
         function goToCartesCom() {
+            localStorage.setItem('tutorielRetour', '6');
             location.href = 'cartes-communication.html';
         }
 
-        /* ---------- ÉTAPE 7 : RÉSUMÉ ---------- */
+        /* ---------- ÉTAPE 10 : RÉSUMÉ ---------- */
 
-        function renderStep7() {
-            var prenom = localStorage.getItem('userPrenom') || '';
-            if (prenom) {
-                document.getElementById('finalTitle').textContent = 'Nora est prête, ' + prenom + '\u00a0!';
-            }
-
-            var carteOk = localStorage.getItem('carteConfigured') === 'true'
+        function renderStep10() {
+            var prenom   = localStorage.getItem('userPrenom') || '';
+            var prenomOk = !!prenom;
+            var carteOk  = localStorage.getItem('carteConfigured') === 'true'
                 || localStorage.getItem('carteShowIdentity') !== null;
-            var cartes = [];
+            var contextesOk = localStorage.getItem('tutorielContextesFait') === 'true';
+            var cartes  = [];
             try { cartes = JSON.parse(localStorage.getItem('cartesCommunication') || '[]'); } catch(e) {}
             var cartesOk = cartes.length > 0;
+            var allOk    = prenomOk && carteOk && contextesOk && cartesOk;
+
+            var title    = document.getElementById('finalTitle');
+            var subtitle = document.getElementById('finalSubtitle');
+
+            if (allOk) {
+                title.textContent    = prenom ? 'Nora est prête, ' + prenom + '\u00a0!' : 'Nora est prête\u00a0!';
+                subtitle.textContent = 'Tu retrouveras ce tutoriel à tout moment dans Paramètres.';
+            } else {
+                title.textContent    = prenom ? 'C\'est parti, ' + prenom + '\u00a0!' : 'C\'est parti\u00a0!';
+                subtitle.textContent = 'Tu pourras compléter la configuration depuis Paramètres à tout moment.';
+            }
 
             document.getElementById('summaryList').innerHTML =
-                '<div class="summary-item" data-href="' + (carteOk ? 'carte.html' : '') + '" data-action="' + (carteOk ? '' : 'goToStep5') + '">' +
+                '<div class="summary-item">' +
+                    '<span class="summary-item-label">👤 Prénom / Nom</span>' +
+                    '<span class="summary-item-status">' + (prenomOk ? '✅' : '') + '</span>' +
+                '</div>' +
+                '<div class="summary-item" data-href="' + (carteOk ? 'carte.html' : '') + '" data-action="' + (carteOk ? '' : 'goToStep7') + '">' +
                     '<span class="summary-item-label">🪪 Carte d\'urgence</span>' +
-                    '<span class="summary-item-status">' + (carteOk ? '✅' : '⚠️ Configurer') + '</span>' +
+                    '<span class="summary-item-status">' + (carteOk ? '✅' : '') + '</span>' +
+                '</div>' +
+                '<div class="summary-item" data-action="' + (contextesOk ? '' : 'goToStep8') + '">' +
+                    '<span class="summary-item-label">🧭 Fiches de contexte</span>' +
+                    '<span class="summary-item-status">' + (contextesOk ? '✅' : '') + '</span>' +
                 '</div>' +
                 '<div class="summary-item" data-href="cartes-communication.html">' +
                     '<span class="summary-item-label">💬 Cartes de communication</span>' +
-                    '<span class="summary-item-status">' + (cartesOk ? '✅' : '⚠️ Configurer') + '</span>' +
-                '</div>' +
-                '<div class="summary-item" data-href="timer.html">' +
-                    '<span class="summary-item-label">⏱️ Timer visuel</span>' +
-                    '<span class="summary-item-status">›</span>' +
-                '</div>' +
-                '<div class="summary-item" data-href="coherence.html">' +
-                    '<span class="summary-item-label"><img src="assets/images/shortcut-coherence.svg" alt="" style="width:18px;height:18px;border-radius:4px;vertical-align:middle"> Cohérence cardiaque</span>' +
-                    '<span class="summary-item-status">›</span>' +
+                    '<span class="summary-item-status">' + (cartesOk ? '✅' : '') + '</span>' +
                 '</div>';
         }
 
         /* ---------- INIT ---------- */
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Reprendre là où on s'est arrêté (retour depuis une page externe)
             var savedStep = parseInt(localStorage.getItem('tutorielRetour') || '0');
-            if (savedStep >= 2 && savedStep <= 7) {
+            if (savedStep >= 2 && savedStep <= 10) {
                 localStorage.removeItem('tutorielRetour');
                 goToStep(savedStep);
                 return;
             }
 
-            // Reprendre en cours de tutoriel
             var resumeStep = parseInt(localStorage.getItem('tutorielStep') || '1');
-            if (resumeStep >= 2 && resumeStep <= 7) {
+            if (resumeStep >= 2 && resumeStep <= 10) {
                 goToStep(resumeStep);
                 return;
             }
 
-            // Étape 1 initiale
             updateHeader();
             renderFooter(1);
+            setTimeout(function() { document.getElementById('prenomInput').focus(); }, 300);
 
-            // Pré-remplir le prénom et nom si déjà connus
             var prenom = localStorage.getItem('userPrenom') || '';
             if (prenom) document.getElementById('prenomInput').value = prenom;
             var nom = localStorage.getItem('userNom') || '';
             if (nom) document.getElementById('nomInput').value = nom;
 
             document.getElementById('backBtn').addEventListener('click', goBack);
-            document.getElementById('skipLink').addEventListener('click', skipOnboarding);
+            document.getElementById('skipLink').addEventListener('click', function() {
+                goToStep(6);
+            });
 
             document.addEventListener('click', function(e) {
-                var item = e.target.closest('.pilier-item[data-preview]');
-                if (item) { previewFeature(item.dataset.preview); return; }
+                var checkItem = e.target.closest('#configCheckList .config-check-item');
+                if (checkItem && checkItem.dataset.step) {
+                    goToStep(Number(checkItem.dataset.step));
+                    return;
+                }
 
                 var footerBtn = e.target.closest('#footerActions [data-action]');
                 if (footerBtn) {
                     var action = footerBtn.dataset.action;
-                    if (action === 'goToStep') goToStep(Number(footerBtn.dataset.step));
-                    else if (action === 'skipOnboarding') skipOnboarding();
-                    else if (action === 'savePrenomAndContinue') savePrenomAndContinue();
-                    else if (action === 'goToCarteConfig') goToCarteConfig();
-                    else if (action === 'goToCartesCom') goToCartesCom();
-                    else if (action === 'installPWA') installPWA();
-                    else if (action === 'finishOnboarding') finishOnboarding();
+                    if (action === 'goToStep')                    goToStep(Number(footerBtn.dataset.step));
+                    else if (action === 'skipOnboarding')         skipOnboarding();
+                    else if (action === 'savePrenomAndContinue')  savePrenomAndContinue();
+                    else if (action === 'saveContextesAndContinue') saveContextesAndContinue();
+                    else if (action === 'goToCarteConfig')        goToCarteConfig();
+                    else if (action === 'goToCartesCom')          goToCartesCom();
+                    else if (action === 'installPWA')             installPWA();
+                    else if (action === 'finishOnboarding')       finishOnboarding();
                     return;
                 }
 
                 var summaryItem = e.target.closest('#summaryList .summary-item');
                 if (summaryItem) {
-                    if (summaryItem.dataset.action === 'goToStep5') { goToStep(5); return; }
+                    if (summaryItem.dataset.action === 'goToStep7') { goToStep(7); return; }
+                    if (summaryItem.dataset.action === 'goToStep8') { goToStep(8); return; }
                     if (summaryItem.dataset.href) { location.href = summaryItem.dataset.href; return; }
                 }
             });
         });
     </script>
     <script src="nora-scroll.js"></script>
-<script src="sw-register.js"></script>
+    <script src="sw-register.js"></script>
 </body>
 </html>

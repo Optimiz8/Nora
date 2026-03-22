@@ -1539,9 +1539,11 @@
             }
         }
 
-        // Afficher la bannière setup si onboarding skippé mais non terminé
+        // Afficher la bannière setup si la carte d'urgence n'est pas encore configurée
         var setupBanner = document.getElementById('setupBanner');
-        if (localStorage.getItem('onboardingSkipped') === 'true' && !localStorage.getItem('onboardingDone')) {
+        var carteConfigured = localStorage.getItem('carteConfigured') === 'true'
+            || localStorage.getItem('carteShowIdentity') !== null;
+        if (!carteConfigured) {
             setupBanner.classList.add('visible');
         }
         setupBanner.onclick = function() { location.href = 'tutoriel.html'; };

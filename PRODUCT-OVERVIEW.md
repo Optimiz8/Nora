@@ -1,7 +1,7 @@
 # Nora — Vision & Stratégie Produit
 
 > **Document vivant.** À mettre à jour à chaque évolution significative : nouvelle fonctionnalité aboutie, décision de déploiement, changement de cap. Demander à Claude Code de le mettre à jour en fin de session si nécessaire.
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.10
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.12 · entrée en phase alpha · protocole tests dans TESTS-ALPHA.md
 
 ---
 
@@ -243,6 +243,14 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 ## 7. Roadmap globale
 
+### État courant — mars 2026
+
+L'application est **feature-complete pour la V2**. Toutes les fonctionnalités prévues ont été livrées (V1 → V2.10). Le projet entre en **phase alpha** : tests en conditions réelles par un groupe restreint de personnes autistes adultes, avant toute diffusion plus large. Le protocole de tests est défini dans [TESTS-ALPHA.md](TESTS-ALPHA.md).
+
+Les développements V3 (post-crise guidé, axe psychoéducatif, nouveaux insights stats) sont identifiés mais non engagés — ils seront priorisés après synthèse des retours alpha.
+
+---
+
 ### ✅ Fait (V1 → V2.9)
 
 **Fonctionnel**
@@ -286,7 +294,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 **Produit & stratégie**
 - [ ] Définir la stratégie de déploiement (voir section 8)
-- [ ] Construire un protocole de test utilisateur (recrutement, méthode, critères)
+- [x] Construire un protocole de test utilisateur (recrutement, méthode, critères) ✅ → voir [TESTS-ALPHA.md](TESTS-ALPHA.md)
 
 ---
 
@@ -313,12 +321,12 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 ## 8. Déploiement & distribution
 
-### Situation actuelle
+### Situation actuelle (mars 2026 — phase alpha)
 
 - **Hébergement :** GitHub Pages — déploiement automatique à chaque push sur `main`
 - **URL :** https://optimiz8.github.io/Nora-2/
 - **Format :** PWA installable depuis le navigateur mobile (Chrome/Safari)
-- **Accès :** public (URL accessible à quiconque a le lien)
+- **Accès :** restreint pendant l'alpha — `robots.txt` actif (non indexé), mot de passe JS à implémenter
 - **Coût d'infrastructure :** 0€
 
 ### Ce qui fonctionne bien
@@ -326,22 +334,21 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 - Pas de build, pas de CI/CD complexe
 - Accessible immédiatement depuis n'importe quel appareil
 
-### Ce qui est à construire ensemble
+### Décisions prises pour la phase alpha
 
-**Stratégie de diffusion**
-- Comment partager l'app pour les tests ? (lien direct, QR code, autre ?)
-- Faut-il un "landing page" d'explication avant d'arriver sur l'app ?
+- **Partage :** lien direct envoyé aux testeurs recrutés + mot de passe JS
+- **Indexation :** bloquée via `robots.txt` pendant toute la phase alpha (à supprimer avant diffusion large)
+- **Protocole complet :** voir [TESTS-ALPHA.md](TESTS-ALPHA.md)
+
+### Questions ouvertes (post-alpha)
+
+- Faut-il une landing page d'explication avant d'arriver sur l'app ?
 - Quid de la découvrabilité (référencement, réseaux, communautés autistes) ?
-
-**Vers une distribution plus large**
 - PWA Builder (Microsoft) : packaging pour le Play Store sans code natif — à évaluer
 - App Store iOS : nécessite un compte développeur Apple (99€/an) + wrapper natif — à évaluer
 - Quel modèle économique si diffusion large ? (gratuit, don, freemium ?)
-
-**Questions ouvertes**
 - Faut-il un nom de domaine dédié ? (ex. `nora-app.fr`)
-- Comment gérer les mises à jour une fois l'app installée sur des appareils tierces ?
-- Quel niveau de support est envisageable si des utilisateurs rencontrent des bugs ?
+- Comment gérer les mises à jour une fois l'app installée sur des appareils tiers ?
 
 ---
 
@@ -349,6 +356,7 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 
 > Cette section couvre les décisions **produit & stratégie** (tests utilisateurs, communication, déploiement).
 > Pour les tâches **fonctionnelles et techniques** (relectures, bugs, features), voir [ROADMAP.md](ROADMAP.md) — section "To-do list".
+> Pour le protocole de tests alpha complet (questionnaire, consentement, recrutement, calendrier), voir [TESTS-ALPHA.md](TESTS-ALPHA.md).
 
 ### 🔴 Priorité 1 — Avant de faire tester à quiconque
 
@@ -356,15 +364,24 @@ Le tutoriel en 7 étapes est non-contournable (ou presque) : il guide la configu
 - [ ] Finaliser le logo (version définitive — bloquant pour toute présentation externe)
 - [ ] Tester soi-même l'app en conditions réelles sur plusieurs semaines — noter ce qui bloque, ce qui manque
 
-### 🟠 Priorité 2 — Avant les tests utilisateurs
+### 🟠 Priorité 2 — Avant les tests alpha
 
-- [ ] Définir le protocole de test : qui recruter (combien, quel profil), comment recueillir les retours (formulaire ? entretien ?), quels critères d'évaluation
-- [ ] Préparer un document ou message d'accueil pour les testeurs (expliquer ce qu'est l'app, comment l'installer, comment donner du feedback)
-- [ ] Implémenter le post-crise guidé V3 (3 questions fixes — cf. ROADMAP.md) — améliore directement l'utilité pour les testeurs, mais non engagé à ce stade
+> Protocole complet dans [TESTS-ALPHA.md](TESTS-ALPHA.md).
+
+- [ ] Implémenter le mot de passe JS d'accès (avec mémorisation `localStorage`) — contrôle d'accès pendant l'alpha
+- [ ] Créer le fichier `robots.txt` à la racine — empêche Google d'indexer l'URL pendant l'alpha
+- [ ] Ajouter la mention "Version alpha — ne pas rediffuser" sur la page d'accueil
+- [ ] Créer l'écran de consentement au premier lancement (version alpha, pas d'outil clinique, données locales, engagement à remplir le questionnaire)
+- [ ] Créer le Google Forms (questionnaire de retour — cf. TESTS-ALPHA.md §6)
+- [ ] Rédiger le document d'accueil testeur avec guide d'installation iOS + Android
+- [ ] Recruter 5 à 8 testeurs (profil : autiste adulte SDI, francophone, smartphone Android ou iOS)
+- [ ] Définir les dates de début et de fin de l'alpha (durée recommandée : 3 à 6 semaines)
 - [ ] Vérifier la cohérence visuelle inter-pages sur plusieurs tailles d'écran
 
-### 🟡 Priorité 3 — Après retours positifs des tests
+### 🟡 Priorité 3 — Après retours positifs des tests alpha
 
+- [ ] **Supprimer ou vider `robots.txt`** — tant qu'il contient `Disallow: /`, Nora n'apparaît dans aucun résultat Google
+- [ ] Synthétiser les retours questionnaire → liste priorisée de corrections
 - [ ] Définir la stratégie de déploiement large (stores ? nom de domaine ? modèle économique ?)
 - [ ] Créer une landing page d'explication (pour les personnes qui arrivent sur l'URL sans contexte)
 - [ ] Axe psychoéducatif — aide à l'identification des déclencheurs

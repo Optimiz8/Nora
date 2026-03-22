@@ -2424,6 +2424,7 @@
             var insightsHtml = buildInsights(stats, days, from, to);
             if (insightsHtml) {
                 html += '<div class="section-tag">À retenir</div>';
+                html += '<p style="font-size:13px; color:var(--light); opacity:0.7; margin:0 0 8px; padding:0 4px;">Ces observations sont générées à partir de tes données personnelles. Elles indiquent des tendances — pas des diagnostics.</p>';
                 html += insightsHtml;
             }
 
@@ -3025,7 +3026,7 @@
                 var pctImprove = Math.round(((stats.total - stats.prev.count) / stats.prev.count) * 100);
                 if (pctImprove <= -20) {
                     insights.push({ priority: 1, icon: '✨',
-                        text: 'Bonne nouvelle : <strong>' + Math.abs(pctImprove) + '% moins de crises</strong> que la période précédente.' });
+                        text: '<strong>' + Math.abs(pctImprove) + '% moins de crises</strong> que la période précédente — tendance à confirmer dans le temps.' });
                 }
             }
 

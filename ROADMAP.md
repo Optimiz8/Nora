@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026 — V2.10
+> Dernière mise à jour : mars 2026 — V2.12
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -93,8 +93,10 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 
 > Cette section couvre les tâches **fonctionnelles et techniques** (tests, relectures, features).
 > Pour les décisions **produit & stratégie** (tests utilisateurs, déploiement, communication), voir [PRODUCT-OVERVIEW.md](PRODUCT-OVERVIEW.md) — section 9.
+> Pour le protocole de tests alpha complet, voir [TESTS-ALPHA.md](TESTS-ALPHA.md).
 
 ### Tests à valider
+- [ ] `tutoriel.html` (V2.12) — parcours complet premier lancement (prénom → découverte → config → résumé) + retour depuis carte-config et cartes-communication
 - [ ] Export / Import complet — jamais retesté depuis V2.5 (tester en navigation privée pour ne pas perdre les données)
 - [ ] `enregistrement-crise.html` (V2.10) — parcours complet : nouveau + édition
 - [ ] Export sélectif des crises (`journal.html`) — fonctionnel mais pas encore testé
@@ -103,19 +105,18 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 
 ### Relecture des textes (generés par IA, pas encore relus par Marine)
 
-#### 🔴 Priorité haute
-- [ ] `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" : relire la Définition (réécrite en V2.10, à valider)
-- [ ] `recap.html` — Relire l'ensemble du texte partageable (contenu visible par les passants)
-- [ ] `enregistrement-crise.html` — Descriptions Meltdown / Shutdown / Mixte + liste complète des déclencheurs (6 catégories, tous les items)
-
 #### 🟠 Priorité moyenne
-- [ ] `coherence.html` — Modales ℹ️ des 3 programmes (descriptions dans les paramètres de setup)
-- [ ] `stats.html` + `stats-approfondie.html` — Phrases d'insights automatiques (buildInsights, règles A–Q)
-- [ ] `profil-crise.html` — Phrases d'insights dynamiques
-- [ ] `faq.html` — Les 9 réponses complètes
-- [ ] `confidentialite.html` — Les 5 accordéons
+- [ ] `recap.html` — Texte partageable passants : envisager d'ajouter une section "Ce que tu peux faire" (3 actions concrètes)
+- [ ] `enregistrement-crise.html` — Vérifier manuellement la liste complète des déclencheurs (6 catégories, tous les libellés, doublons éventuels)
 
 #### ✅ Déjà relu / validé
+- `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" ✅ (définition réécrite : meltdown + shutdown distincts)
+- `enregistrement-crise.html` — Descriptions Meltdown / Shutdown / Mixte ✅ ("perte de contrôle" → "réaction involontaire")
+- `coherence.html` — Modales ℹ️ des programmes ✅ (durée reformulée, distinction effet immédiat / pratique régulière)
+- `stats.html` — Insights A–Q ✅ (nuance K "Bonne nouvelle" supprimée, chapeau "tendances pas diagnostics" ajouté)
+- `profil-crise.html` — Phrases d'insights dynamiques ✅ (formulations neutres, rien à corriger)
+- `faq.html` — 12 réponses ✅ (Q11 stats ≠ diagnostic + Q12 multi-appareils ajoutées)
+- `confidentialite.html` — Les accordéons ✅ (QR code reformulé)
 - `coherence.html` — Messages de fin d'exercice ("Bien joué !" + messages par programme) ✅
 - `conseils.html` — Liste par défaut ✅ (faute "Prenez" corrigée, liens fidgets + harmonie visuelle ajoutés)
 - `faq.html` — Q8 "Comment identifier le début et la fin d'une crise ?" ✅
@@ -132,6 +133,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - **Mini stats — exercices de respiration** ✅ *V2.9* — sessions, badges, modale fin enrichie
 - **FAQ début et fin d'une crise** ✅ *V2.9* — Q8 dans `faq.html`
 - **Page enregistrement-crise unifiée** ✅ *V2.10* — remplace 3 modales distinctes
+- **Tutoriel V2** ✅ *V2.12* — onboarding 10 étapes : prénom, découverte (4 piliers), hub de config, résumé adaptatif
 
 ### Nouvelles règles d'insights stats à implémenter
 
@@ -151,7 +153,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - **Post-crise guidé** — Remplacer les notes libres par 3 questions fixes : "Qu'est-ce qui a aidé ?", "Qu'est-ce qui a aggravé ?", "Qu'aurais-tu aimé différent ?" → exploitable en TCC. *Fonctionnalité la plus aboutie de la liste.*
 - **Bibliothèque de scripts sociaux** — Phrases types pour situations courantes (refus, aide, surcharge…). *Standby — format et contenu à définir.*
 - **Export chiffré + rappel de sauvegarde** — Export protégé par mot de passe, rappel automatique tous les X crises. *Décision non prise — librairie de chiffrement à choisir.*
-- **Tutoriel V2** — Onboarding repensé en 2 temps : présentation des fonctionnalités puis config guidée optionnelle. *Standby — à faire quand les fonctionnalités sont stables.*
+- **Tutoriel V2** ✅ *V2.12* — Onboarding 10 étapes : prénom → découverte (4 piliers) → hub de configuration → résumé. *Implémenté, en attente relecture + test.*
 - **App Shortcuts V2** — Enrichissement si de nouvelles fonctionnalités le justifient.
 - **Capacitor + stores** — Envelopper la PWA pour Play Store / App Store. *Probable, pas acté.*
 - **Multi-langue (anglais)** — Quand tous les textes sont stables. *En dernier absolu.*

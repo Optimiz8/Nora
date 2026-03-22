@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.10
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.12
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,31 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.12] — mars 2026
+
+### Modifié
+- **`tutoriel.html`** — refonte complète de l'onboarding (V2) : 10 étapes structurées en 3 blocs (prénom → découverte → configuration guidée)
+  - Step 1 : saisie du prénom ("Je m'appelle Nora. Et toi ?")
+  - Steps 2–5 : découverte des 4 piliers de l'app (indicateur 1/4 … 4/4)
+  - Step 6 : charnière hub ⚙️ avec checklist dynamique des 3 éléments à configurer et bouton intelligent (`getFirstUncompletedStep()`)
+  - Step 7 : carte d'urgence — redirect `carte-config.html` avec retour garanti sur le hub
+  - Step 8 : fiches de contexte — configuration inline (mode simplifié / personnalisé, clé `contexte_messageUnique`)
+  - Step 9 : cartes de communication — redirect `cartes-communication.html` avec retour garanti sur le hub
+  - Step 10 : résumé adaptatif ("Nora est prête" si tout configuré, "C'est parti" sinon)
+- **`index.html`** — bannière "Terminer la configuration" désormais affichée si `carteConfigured` absent (remplace la logique `onboardingSkipped`)
+
+---
+
+## [docs] — mars 2026
+
+### Documentation
+- **`TESTS-ALPHA.md`** — nouveau document : protocole complet de tests alpha (profil testeurs, contrôle d'accès, consentement, questionnaire Google Forms 28 questions, calendrier, critères de passage à la bêta)
+- **`robots.txt`** — créé à la racine pour bloquer l'indexation pendant la phase alpha (à supprimer avant déploiement public)
+- **`PRODUCT-OVERVIEW.md`** — section 7 mise à jour (état courant : feature-complete V2, entrée en phase alpha) ; section 8 mise à jour (situation alpha, décisions prises, questions post-alpha)
+- **`ROADMAP.md`** — lien vers TESTS-ALPHA.md ajouté ; relectures et tests mis à jour
 
 ---
 

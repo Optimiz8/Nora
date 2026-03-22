@@ -1,0 +1,6 @@
+# ALPHA UNIQUEMENT — À SUPPRIMER AVANT LE DÉPLOIEMENT PUBLIC
+# Ce fichier empêche Google et les autres moteurs de recherche d'indexer le site.
+# Il doit être supprimé (ou vidé) quand Nora sera diffusée au grand public.
+
+User-agent: *
+Disallow: /
