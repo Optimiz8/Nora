@@ -119,6 +119,8 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
   - [ ] Bannière index.html : visible si rien configuré, disparaît après config carte
 - [ ] Export / Import complet — jamais retesté depuis V2.5 (tester en navigation privée pour ne pas perdre les données)
 - [ ] `enregistrement-crise.html` (V2.10) — parcours complet : nouveau + édition
+- [ ] `recap.html` — accordéon déclencheurs : tester l'ouverture/fermeture des catégories (bug signalé, JS semble correct, à valider en vrai navigateur)
+- [ ] `recap.html` — "Fin de crise ?" sur index après retour accueil depuis récap : vérifier que la modale n'apparaît plus
 - [ ] `enregistrement-crise.html` (V2.11.1) — modale déclencheurs : vérifier tous les items et catégories, nouveaux libellés ("Codes sociaux implicites / non-dits", "Épuisement du masking", "Appel téléphonique" dans Social), nouvelles descriptions ("Règle modifiée" / "Non-respect d'une règle établie"), sélection + slider intensité + sauvegarde
 - [ ] `journal.html` (V2.11.1) — ouvrir détail d'une crise avec anciens déclencheurs → vérifier affichage correct (rétrocompat)
 - [ ] Export sélectif des crises (`journal.html`) — fonctionnel mais pas encore testé

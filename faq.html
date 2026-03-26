@@ -93,52 +93,60 @@
         <button class="back-button" id="btnAccueil" style="margin-left:auto;" aria-label="Accueil">🏠</button>
     </header>
 
-    <main class="main-content">
+    <main class="main-content" id="faqMain">
 
+        <!-- ---------- COMPRENDRE NORA ---------- -->
         <section class="section">
-            <h2 class="section-title">❓ Questions fréquentes</h2>
+            <h2 class="section-title">🔍 Comprendre Nora</h2>
             <div class="section-card">
 
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="0">
-                        <span>Où sont stockées mes données ?</span>
+                        <span>À qui s'adresse Nora ?</span>
                         <span class="faq-icon" id="faqIcon0">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer0">
-                        Toutes tes données sont stockées localement dans le navigateur de ton appareil (Local Storage).
-                        Elles ne quittent jamais ton téléphone et ne sont pas envoyées vers internet.
+                        Nora est conçue pour les personnes autistes qui vivent des crises — meltdowns ou shutdowns. Elle peut aussi être utile aux proches et aidants qui souhaitent mieux comprendre et accompagner ces moments.
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="1">
-                        <span>Qui peut voir mes informations ?</span>
+                        <span>Comment installer Nora sur mon écran d'accueil ?</span>
                         <span class="faq-icon" id="faqIcon1">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer1">
-                        Personne ne peut voir tes informations à moins que tu ne les partages volontairement
-                        (par exemple en montrant ton récapitulatif ou en exportant tes données).
+                        <strong>Sur iPhone</strong> : ouvre Nora dans Safari, appuie sur l'icône de partage ↑, puis "Sur l'écran d'accueil".<br><br>
+                        <strong>Sur Android</strong> : ouvre Nora dans Chrome, appuie sur le menu ⋮, puis "Ajouter à l'écran d'accueil" ou "Installer l'application".<br><br>
+                        Une fois installée, Nora fonctionne comme une application normale — même sans connexion internet.
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="2">
-                        <span>Comment modifier mes contacts ?</span>
+                        <span>L'app fonctionne-t-elle hors ligne ?</span>
                         <span class="faq-icon" id="faqIcon2">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer2">
-                        Va dans Paramètres > Contacts d'urgence.
-                        Tu peux modifier, ajouter ou supprimer tes contacts depuis cet écran.
+                        Oui. Dès la première ouverture, l'application est mise en cache automatiquement sur ton appareil. Toutes les pages, les images et les sons déjà joués restent disponibles sans connexion internet.
                     </div>
                 </div>
 
+            </div>
+        </section>
+
+        <!-- ---------- UTILISER L'APP ---------- -->
+        <section class="section">
+            <h2 class="section-title">📱 Utiliser l'app</h2>
+            <div class="section-card">
+
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="3">
-                        <span>L'app fonctionne-t-elle hors ligne ?</span>
+                        <span>Comment modifier mes contacts d'urgence ?</span>
                         <span class="faq-icon" id="faqIcon3">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer3">
-                        Oui ! Dès la première ouverture, l'application est mise en cache sur ton appareil grâce au Service Worker. Toutes les pages, les images et les sons déjà joués sont disponibles sans connexion internet.
+                        Va dans Paramètres → Contacts d'urgence. Tu peux modifier, ajouter ou supprimer tes contacts depuis cet écran.
                     </div>
                 </div>
 
@@ -148,33 +156,33 @@
                         <span class="faq-icon" id="faqIcon4">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer4">
-                        Oui ! Dans Paramètres > Paramètres des contextes, tu peux choisir quelles capacités, besoins et états afficher, et en ajouter des personnalisés.
+                        Oui. Dans Paramètres → Paramètres des contextes, tu peux choisir quelles capacités, quels besoins et quels états afficher, et en ajouter des personnalisés.
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="5">
-                        <span>Comment sauvegarder mes données ?</span>
+                        <span>Comment fonctionne le journal de crises ?</span>
                         <span class="faq-icon" id="faqIcon5">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer5">
-                        Va dans Paramètres → Données → Exporter mes données. Tu téléchargeras un fichier de sauvegarde complet (journal, profil, carte d'urgence, cartes de communication, ambiances sonores, playlist…) que tu pourras réimporter sur n'importe quel appareil.
+                        Après chaque crise, tu peux l'enregistrer dans le journal : type, intensité, durée, déclencheurs, contexte, besoins, états et capacités du moment. Ces données alimentent ensuite tes statistiques et tes analyses personnelles.
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="6">
-                        <span>Exporter mes données les supprime-t-il ?</span>
+                        <span>À quoi servent les cartes de communication ?</span>
                         <span class="faq-icon" id="faqIcon6">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer6">
-                        Non, pas du tout. L'export crée simplement une copie de tes données dans un fichier. Tout reste intact sur ton appareil. Tu ne perdras rien.
+                        Les cartes de communication sont des vignettes que tu peux montrer à ton entourage quand parler est difficile ou impossible. Tu peux les personnaliser (texte, icône) et les réorganiser selon tes besoins depuis Paramètres → Cartes de communication.
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="7">
-                        <span>Le partage du récap demande des autorisations, pourquoi ?</span>
+                        <span>Le partage du récapitulatif demande des autorisations — pourquoi ?</span>
                         <span class="faq-icon" id="faqIcon7">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer7">
@@ -182,24 +190,70 @@
                     </div>
                 </div>
 
+            </div>
+        </section>
+
+        <!-- ---------- MES DONNÉES ---------- -->
+        <section class="section">
+            <h2 class="section-title">🔒 Mes données</h2>
+            <div class="section-card">
+
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="8">
-                        <span>Comment identifier le début et la fin d'une crise ?</span>
+                        <span>Où sont stockées mes données ?</span>
                         <span class="faq-icon" id="faqIcon8">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer8">
-                        Il n'existe pas de définition médicale officielle du début ou de la fin d'une crise autistique — et c'est propre à chacun. Ce qui compte, c'est de choisir tes propres repères et de les utiliser à chaque fois. L'important n'est pas d'être précis·e à la minute — c'est d'être cohérent·e avec toi-même d'une crise à l'autre. C'est ce qui rend les données de ton journal utiles.<br><br>
-                        <strong>Quelques points de départ possibles :</strong> quand tu ne peux plus parler normalement, quand tu n'arrives plus à faire ce que tu faisais, quand tu sens que tu n'as plus le contrôle.<br><br>
-                        <strong>Quelques points de fin possibles :</strong> quand tu peux reprendre une activité simple, quand tu arrives à répondre à une question basique, quand l'intensité physique redescend.
+                        Toutes tes données sont stockées dans la mémoire locale de ton navigateur, sur ton appareil uniquement. Elles ne quittent jamais ton téléphone et ne sont pas envoyées vers internet.
                     </div>
                 </div>
 
                 <div class="faq-item">
                     <div class="faq-question" data-faq-index="9">
-                        <span>Désinstaller Nora supprime-t-il mes données ?</span>
+                        <span>Qui peut voir mes informations ?</span>
                         <span class="faq-icon" id="faqIcon9">▼</span>
                     </div>
                     <div class="faq-answer" id="faqAnswer9">
+                        Personne — à moins que tu ne les partages volontairement (en montrant ton récapitulatif ou en exportant tes données).
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-faq-index="10">
+                        <span>Comment sauvegarder mes données ?</span>
+                        <span class="faq-icon" id="faqIcon10">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer10">
+                        Va dans Paramètres → Données → Exporter. Tu téléchargeras un fichier de sauvegarde complet (journal, profil, carte d'urgence, cartes de communication, ambiances sonores, playlist…) que tu pourras réimporter sur n'importe quel appareil.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-faq-index="11">
+                        <span>L'export supprime-t-il mes données ?</span>
+                        <span class="faq-icon" id="faqIcon11">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer11">
+                        Non. L'export crée une copie de tes données dans un fichier. Tout reste intact sur ton appareil.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-faq-index="12">
+                        <span>Que se passe-t-il si je vide le cache du navigateur ?</span>
+                        <span class="faq-icon" id="faqIcon12">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer12">
+                        Vider le cache supprime toutes les données de l'application : journal, profil, carte d'urgence, cartes de communication. Avant toute manipulation de ce type, pense à exporter tes données (Paramètres → Données → Exporter).
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" data-faq-index="13">
+                        <span>Désinstaller Nora supprime-t-il mes données ?</span>
+                        <span class="faq-icon" id="faqIcon13">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer13">
                         <strong>Si tu désinstalles l'application</strong> (appui long sur l'icône → "Désinstaller") : sur iPhone et sur Android, les données sont généralement supprimées avec l'application.<br><br>
                         <strong>Si tu supprimes juste le raccourci</strong> de l'écran d'accueil sans désinstaller : les données restent dans le navigateur. Tu peux réinstaller Nora et les retrouver.<br><br>
                         <strong>Pour effacer tes données sans désinstaller</strong> : va dans Paramètres → Données → Réinitialiser les données.<br><br>
@@ -208,22 +262,42 @@
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question" data-faq-index="10">
-                        <span>Les statistiques et insights sont-ils des conseils médicaux ?</span>
-                        <span class="faq-icon" id="faqIcon10">▼</span>
+                    <div class="faq-question" data-faq-index="14">
+                        <span>Puis-je utiliser Nora sur plusieurs appareils ?</span>
+                        <span class="faq-icon" id="faqIcon14">▼</span>
                     </div>
-                    <div class="faq-answer" id="faqAnswer10">
-                        Non. Les observations générées par Nora sont basées uniquement sur tes propres données. Elles mettent en évidence des tendances personnelles — pas des diagnostics, pas des recommandations médicales. Si tu as des questions sur tes crises ou leur évolution, parle-en avec un professionnel de santé.
+                    <div class="faq-answer" id="faqAnswer14">
+                        Oui, mais les données ne se synchronisent pas automatiquement entre appareils. Pour les transférer : Paramètres → Données → Exporter sur le premier appareil, puis Importer sur le second.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ---------- CRISES & STATISTIQUES ---------- -->
+        <section class="section">
+            <h2 class="section-title">📊 Crises & statistiques</h2>
+            <div class="section-card">
+
+                <div class="faq-item">
+                    <div class="faq-question" data-faq-index="15">
+                        <span>Comment repérer le début et la fin d'une crise ?</span>
+                        <span class="faq-icon" id="faqIcon15">▼</span>
+                    </div>
+                    <div class="faq-answer" id="faqAnswer15">
+                        Il n'existe pas de définition médicale officielle du début ou de la fin d'une crise autistique — et c'est propre à chacun. Ce qui compte, c'est de choisir tes propres repères et de les utiliser à chaque fois. L'important n'est pas d'être précis·e à la minute — c'est d'être cohérent·e avec toi-même d'une crise à l'autre. C'est ce qui rend les données de ton journal utiles.<br><br>
+                        <strong>Quelques points de départ possibles :</strong> quand tu ne peux plus parler normalement, quand tu n'arrives plus à faire ce que tu faisais, quand tu sens que tu n'as plus le contrôle.<br><br>
+                        <strong>Quelques points de fin possibles :</strong> quand tu peux reprendre une activité simple, quand tu arrives à répondre à une question basique, quand l'intensité physique redescend.
                     </div>
                 </div>
 
                 <div class="faq-item">
-                    <div class="faq-question" data-faq-index="11">
-                        <span>Puis-je utiliser Nora sur plusieurs appareils ?</span>
-                        <span class="faq-icon" id="faqIcon11">▼</span>
+                    <div class="faq-question" data-faq-index="16">
+                        <span>Les analyses de Nora ont-elles une valeur médicale ?</span>
+                        <span class="faq-icon" id="faqIcon16">▼</span>
                     </div>
-                    <div class="faq-answer" id="faqAnswer11">
-                        Oui, mais les données ne se synchronisent pas automatiquement entre appareils. Pour les transférer, utilise l'export/import : Paramètres → Données → Exporter sur le premier appareil, puis Importer sur le second.
+                    <div class="faq-answer" id="faqAnswer16">
+                        Non. Nora est un outil de suivi personnel — pas un dispositif médical. Les observations qu'elle génère reflètent tes propres données et mettent en évidence des tendances personnelles. Elles ne constituent pas un diagnostic et ne remplacent pas l'accompagnement d'un professionnel de santé (médecin, psychologue, psychiatre…).
                     </div>
                 </div>
 
@@ -234,9 +308,8 @@
 
     <script>
         function toggleFaq(index) {
-            const answer = document.getElementById(`faqAnswer${index}`);
-            const icon = document.getElementById(`faqIcon${index}`);
-
+            const answer = document.getElementById('faqAnswer' + index);
+            const icon = document.getElementById('faqIcon' + index);
             if (answer.classList.contains('visible')) {
                 answer.classList.remove('visible');
                 icon.classList.remove('open');
@@ -246,18 +319,14 @@
             }
         }
 
-        function goBack() {
-            window.location.href = 'parametres.html';
-        }
-
-        document.getElementById('btnRetour').addEventListener('click', goBack);
+        document.getElementById('btnRetour').addEventListener('click', function() { window.location.href = 'parametres.html'; });
         document.getElementById('btnAccueil').addEventListener('click', function() { window.location.href = 'index.html'; });
-        document.querySelector('.section-card').addEventListener('click', function(e) {
+        document.getElementById('faqMain').addEventListener('click', function(e) {
             var q = e.target.closest('.faq-question');
             if (q && q.dataset.faqIndex !== undefined) toggleFaq(Number(q.dataset.faqIndex));
         });
     </script>
     <script src="nora-scroll.js"></script>
-<script src="sw-register.js"></script>
+    <script src="sw-register.js"></script>
 </body>
 </html>

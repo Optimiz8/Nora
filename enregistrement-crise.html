@@ -16,18 +16,19 @@
         /* ---------- SECTIONS ---------- */
         .form-section {
             margin: 0 16px 16px;
-            background: rgba(245,228,204,0.06);
+            background: rgba(0,0,0,0.2);
             border-radius: 16px;
             overflow: hidden;
         }
         .section-title {
-            font-size: 12px;
+            font-size: 19px;
             font-weight: 700;
-            letter-spacing: 1.5px;
-            color: rgba(245,228,204,0.5);
-            padding: 14px 16px 10px;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
+            color: var(--accent);
+            padding: 14px 16px 10px;
         }
+        .slider-row .form-label { margin-bottom: 0; }
         .form-group {
             padding: 0 16px 16px;
         }
@@ -364,6 +365,8 @@
 
 <main class="main-content">
 
+    <p style="padding: 10px 16px 0; font-size: 14px; color: var(--light); opacity: 0.55; font-style: italic;">Seule la date (*) est obligatoire. Remplis ce dont tu te souviens — tu pourras modifier cette entrée depuis le journal.</p>
+
     <!-- AVANT LA CRISE -->
     <div class="form-section">
         <div class="section-title">Avant la crise</div>
@@ -445,7 +448,7 @@
 
         <div class="form-group">
             <div class="slider-row">
-                <span class="slider-label">Intensité</span>
+                <label class="form-label">Intensité</label>
                 <span class="slider-value null-state" id="intensiteDisplay">— /10</span>
             </div>
             <input type="range" class="form-slider null-state" id="sliderIntensite" min="0" max="10" value="5">

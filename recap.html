@@ -511,9 +511,9 @@
             margin: 14px 16px 0;
         }
         .form-block-q-avant { background: rgba(0,0,0,0.2); }
-        .form-block-q-crise { background: rgba(247,184,156,0.07); }
+        .form-block-q-crise { background: rgba(0,0,0,0.15); }
         .form-block-q-title {
-            font-size: 15px;
+            font-size: 19px;
             font-weight: 700;
             color: var(--accent);
             letter-spacing: 0.08em;
@@ -522,6 +522,7 @@
             border-bottom: 1px solid rgba(245,228,204,0.12);
         }
         .questionnaire-content .form-group { margin-bottom: 16px; }
+        .slider-row-q .form-label { margin-bottom: 0; }
         .questionnaire-content .form-group:last-child { margin-bottom: 0; }
         .questionnaire-content .form-label {
             color: rgba(245,228,204,0.8);
@@ -576,7 +577,7 @@
         }
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
-            border-color: #F7B89C;
+            border-color: var(--accent);
         }
 
         /* SLIDER ROW INLINE */
@@ -777,7 +778,6 @@
 
         .triggers-modal .questionnaire-content {
             max-width: 700px;
-            max-height: 80vh;
             overflow-y: auto;
             padding-bottom: 80px;
         }
@@ -1027,7 +1027,7 @@
 
         <!-- Lien information en bas de page -->
         <div style="text-align: center; padding: 20px 0 8px;">
-            <a href="#" id="linkOpenModal" style="color: #F7B89C; text-decoration: none; font-size: 15px; display: inline-flex; align-items: center; gap: 6px;">
+            <a href="#" id="linkOpenModal" style="color: var(--accent); text-decoration: none; font-size: 15px; display: inline-flex; align-items: center; gap: 6px;">
                 <span>ℹ️</span>
                 <span>Qu'est-ce qu'une crise autistique ?</span>
             </a>
@@ -1117,6 +1117,10 @@
                 <button class="questionnaire-close-btn" id="btnCloseQuestionnaire" aria-label="Fermer">×</button>
             </div>
 
+            <p style="padding: 12px 16px 0; font-size: 14px; color: var(--light); opacity: 0.6; font-style: italic;">Seule la date (*) est obligatoire. Le reste est facultatif — remplis ce dont tu te souviens. Tu pourras modifier cette entrée depuis le journal.</p>
+
+            <p style="padding: 10px 16px 0; font-size: 14px; color: var(--light); opacity: 0.55; font-style: italic;">Seule la date (*) est obligatoire. Remplis ce dont tu te souviens — tu pourras modifier cette entrée depuis le journal.</p>
+
             <div class="form-block-q form-block-q-avant">
                 <div class="form-block-q-title">AVANT LA CRISE</div>
 
@@ -1194,7 +1198,7 @@
 
                 <div class="form-group">
                     <div class="slider-row-q">
-                        <span class="slider-row-q-label">Intensité</span>
+                        <label class="form-label">Intensité</label>
                         <span class="slider-row-q-value null-state" id="intensityDisplay">— /10</span>
                     </div>
                     <input type="range" class="intensity-slider null-state" id="intensitySlider" min="0" max="10" value="5" oninput="activateSliderQ('intensitySlider','intensityDisplay','intensite')">
@@ -2155,6 +2159,7 @@
 
         function goBack() {
             showConfirm('Retourner à l\'accueil ?', function() {
+                localStorage.setItem('lastCrisisCheck', new Date().toISOString().split('T')[0]);
                 window.location.href = 'index.html';
             });
         }
