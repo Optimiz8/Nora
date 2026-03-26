@@ -346,22 +346,11 @@
             <h2 class="section-title">📁 Données</h2>
             <p class="section-description">Sauvegarder ou restaurer tes réglages</p>
 
-            <div class="settings-card" id="cardShare" style="display:none">
-                <div class="settings-card-content">
-                    <div class="settings-icon">☁️</div>
-                    <div class="settings-text">
-                        <div class="settings-label">Sauvegarder hors du téléphone</div>
-                        <div class="settings-sublabel">Envoyer vers iCloud, Drive, Mail…</div>
-                    </div>
-                </div>
-                <div class="settings-arrow">›</div>
-            </div>
-
             <div class="settings-card" id="cardExport">
                 <div class="settings-card-content">
                     <div class="settings-icon">📤</div>
                     <div class="settings-text">
-                        <div class="settings-label">Exporter mes données</div>
+                        <div class="settings-label">Sauvegarder et exporter mes données</div>
                         <div class="settings-sublabel" id="exportSublabel">Télécharger un fichier de sauvegarde</div>
                     </div>
                 </div>
@@ -471,7 +460,7 @@
     <div class="modal" id="exportModal" role="dialog" aria-modal="true" aria-label="Exporter les données">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">📤 Exporter mes données</h2>
+                <h2 class="modal-title">📤 Sauvegarder et exporter mes données</h2>
             </div>
             <div class="modal-text">
                 L'export va créer un <strong>fichier de sauvegarde</strong> contenant toutes tes informations (profil, contacts, carte d'urgence, paramètres, journal de crises).<br><br>
@@ -602,26 +591,6 @@
             showToast(`✅ Données exportées — ${sizeKo} Ko`);
         }
 
-        async function shareData() {
-            const data = buildExportData();
-            const json = JSON.stringify(data, null, 2);
-            const fileName = `nora-sauvegarde-${new Date().toISOString().split('T')[0]}.json`;
-            const file = new File([json], fileName, { type: 'text/plain' });
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({ files: [file], title: 'Sauvegarde Nora' });
-                    return;
-                } catch (e) {
-                    if (e.name === 'AbortError') return;
-                }
-            }
-            // Fallback : téléchargement classique
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = fileName; a.click();
-            URL.revokeObjectURL(url);
-        }
 
         function updateExportSublabel() {
             const raw = localStorage.getItem('lastExportDate');
@@ -847,8 +816,6 @@
             updateExportSublabel();
             document.getElementById('btnBack').addEventListener('click', goHome);
             document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
-            if (navigator.canShare) document.getElementById('cardShare').style.display = '';
-            document.getElementById('cardShare').addEventListener('click', shareData);
             document.getElementById('cardExport').addEventListener('click', confirmExport);
             document.getElementById('cardImport').addEventListener('click', confirmImport);
             document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);

@@ -262,6 +262,9 @@
             color: rgba(245,228,204,0.65);
             text-transform: uppercase;
         }
+        .trig-cat-header.open .trig-cat-title {
+            color: var(--accent);
+        }
         .trig-cat-arrow {
             font-size: 13px;
             color: rgba(245,228,204,0.4);
@@ -782,7 +785,7 @@ function openTriggersModal() {
     var html = '';
     TRIGGER_CATEGORIES.forEach(function(cat) {
         var isOpen = !!trigCatOpen[cat.key];
-        html += '<div class="trig-cat-header" data-catkey="' + escapeHtml(cat.key) + '">';
+        html += '<div class="trig-cat-header' + (isOpen ? ' open' : '') + '" data-catkey="' + escapeHtml(cat.key) + '">';
         html += '<span class="trig-cat-title">' + escapeHtml(cat.label) + '</span>';
         html += '<span class="trig-cat-arrow">' + (isOpen ? '▲' : '▼') + '</span>';
         html += '</div>';
@@ -824,10 +827,12 @@ function openTriggersModal() {
             var arrow   = header.querySelector('.trig-cat-arrow');
             if (trigCatOpen[catKey]) {
                 itemsEl.classList.remove('trig-cat-collapsed');
+                header.classList.add('open');
                 arrow.textContent = '▲';
                 setTimeout(function() { header.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
             } else {
                 itemsEl.classList.add('trig-cat-collapsed');
+                header.classList.remove('open');
                 arrow.textContent = '▼';
             }
             return;

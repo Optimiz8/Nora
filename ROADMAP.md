@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026 — V2.13.2
+> Dernière mise à jour : mars 2026 — V2.13.4
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -117,7 +117,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
   - [ ] Bouton hub tout configuré : libellé "Voir le résumé ›" → va en step 10
   - [ ] Step 10 : titre "Nora est prête, [prénom] !" si tout configuré, "C'est parti, [prénom] !" si partiel
   - [ ] Bannière index.html : visible si rien configuré, disparaît après config carte
-- [ ] Export / Import complet — jamais retesté depuis V2.5 (tester en navigation privée pour ne pas perdre les données)
+- [x] Import ✅ testé V2.13.3 — données restaurées correctement, toast de confirmation OK (les entrées créées après l'export ne sont pas réimportées — comportement attendu)
 - [ ] `enregistrement-crise.html` (V2.10) — parcours complet : nouveau + édition
 - [ ] `recap.html` — accordéon déclencheurs : tester l'ouverture/fermeture des catégories (bug signalé, JS semble correct, à valider en vrai navigateur)
 - [ ] `recap.html` — "Fin de crise ?" sur index après retour accueil depuis récap : vérifier que la modale n'apparaît plus

@@ -14,6 +14,21 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 ## [2.13.4] — mars 2026
 
 ### Ajouté
+- **`parametres.html`** — export : affichage de la date de dernière sauvegarde sous le bouton
+- **`parametres.html`** — import : sélection du fichier avant la modale de confirmation, avec affichage de la date de la sauvegarde
+
+### Modifié
+- **`parametres.html`** — boutons "Sauvegarder hors du téléphone" et "Exporter mes données" fusionnés en un seul bouton "Sauvegarder et exporter mes données" (Web Share API abandonnée — non fiable sur Chrome Android)
+
+### Corrigé
+- **`parametres.html`** — import : les données n'étaient pas écrasées (race condition : `closeImportModal` vidait `_pendingImportData` avant `importData`)
+- **`parametres.html`** — import : couleur du texte de date illisible (crème sur fond crème)
+
+---
+
+## [2.13.3] — mars 2026
+
+### Ajouté
 - **`a-propos.html`** — mentions légales transformées en lien ouvrant une modale (hébergeur, vocation, données)
 
 ### Modifié
