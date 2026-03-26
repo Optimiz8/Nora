@@ -346,6 +346,17 @@
             <h2 class="section-title">📁 Données</h2>
             <p class="section-description">Sauvegarder ou restaurer tes réglages</p>
 
+            <div class="settings-card" id="cardShare" style="display:none">
+                <div class="settings-card-content">
+                    <div class="settings-icon">☁️</div>
+                    <div class="settings-text">
+                        <div class="settings-label">Sauvegarder hors du téléphone</div>
+                        <div class="settings-sublabel">Envoyer vers iCloud, Drive, Mail…</div>
+                    </div>
+                </div>
+                <div class="settings-arrow">›</div>
+            </div>
+
             <div class="settings-card" id="cardExport">
                 <div class="settings-card-content">
                     <div class="settings-icon">📤</div>
@@ -490,7 +501,7 @@
                 <strong>⚠️ Attention :</strong> cette action est irréversible. Toutes tes données actuelles seront écrasées par le contenu du fichier importé.<br><br>
                 Assure-toi d'importer un fichier exporté depuis Nora.
             </div>
-            <div id="importDateInfo" style="display:none; margin: 0 0 8px; padding: 10px 14px; background: rgba(245,228,204,0.12); border-radius: 8px; font-size: 0.9rem; color: var(--light);"></div>
+            <div id="importDateInfo" style="display:none; margin: 0 0 8px; padding: 10px 14px; background: rgba(46,58,89,0.1); border-radius: 8px; font-size: 0.9rem; color: var(--dark);"></div>
             <div class="modal-actions">
                 <button class="modal-button secondary" id="btnCloseImportModal">Annuler</button>
                 <button class="modal-button danger" id="btnDoImport">Continuer</button>
@@ -518,25 +529,19 @@
         }
 
         // Export des données
-        function exportData() {
-            // Récupérer la liste des contextes et leurs configs
+        function buildExportData() {
             const contextesList = JSON.parse(localStorage.getItem('contextes') || '[]');
             const contextesConfigs = {};
             contextesList.forEach(ctx => {
                 const config = localStorage.getItem(`contexte_${ctx.id}`);
                 if (config) contextesConfigs[ctx.id] = JSON.parse(config);
             });
-
-            // Collecte des volumes du mixeur (clés dynamiques mixer_*)
             const mixerVolumes = {};
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
-                if (key && key.startsWith('mixer_')) {
-                    mixerVolumes[key] = localStorage.getItem(key);
-                }
+                if (key && key.startsWith('mixer_')) mixerVolumes[key] = localStorage.getItem(key);
             }
-
-            const data = {
+            return {
                 version: '2.9',
                 dateExport: new Date().toISOString(),
                 prenom: localStorage.getItem('userPrenom') || '',
@@ -579,7 +584,10 @@
                 timerFinMode: localStorage.getItem('timerFinMode') || '',
                 timerStyle: localStorage.getItem('timerStyle') || ''
             };
+        }
 
+        function exportData() {
+            const data = buildExportData();
             const json = JSON.stringify(data, null, 2);
             const blob = new Blob([json], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -588,12 +596,26 @@
             a.download = `nora-sauvegarde-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
-
             const sizeKo = (blob.size / 1024).toFixed(1);
-            const now = new Date().toISOString();
-            localStorage.setItem('lastExportDate', now);
+            localStorage.setItem('lastExportDate', new Date().toISOString());
             updateExportSublabel();
             showToast(`✅ Données exportées — ${sizeKo} Ko`);
+        }
+
+        async function shareData() {
+            const data = buildExportData();
+            const json = JSON.stringify(data, null, 2);
+            const fileName = `nora-sauvegarde-${new Date().toISOString().split('T')[0]}.json`;
+            const file = new File([json], fileName, { type: 'application/json' });
+            if (!navigator.canShare({ files: [file] })) {
+                showToast('❌ Partage non supporté sur cet appareil');
+                return;
+            }
+            try {
+                await navigator.share({ files: [file], title: 'Sauvegarde Nora' });
+            } catch (e) {
+                if (e.name !== 'AbortError') showToast('❌ Partage impossible');
+            }
         }
 
         function updateExportSublabel() {
@@ -820,6 +842,8 @@
             updateExportSublabel();
             document.getElementById('btnBack').addEventListener('click', goHome);
             document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
+            if (navigator.canShare) document.getElementById('cardShare').style.display = '';
+            document.getElementById('cardShare').addEventListener('click', shareData);
             document.getElementById('cardExport').addEventListener('click', confirmExport);
             document.getElementById('cardImport').addEventListener('click', confirmImport);
             document.getElementById('btnConfirmReset').addEventListener('click', confirmReset);
@@ -829,7 +853,7 @@
             document.getElementById('btnCloseExportModal').addEventListener('click', closeExportModal);
             document.getElementById('btnDoExport').addEventListener('click', function() { closeExportModal(); exportData(); });
             document.getElementById('btnCloseImportModal').addEventListener('click', closeImportModal);
-            document.getElementById('btnDoImport').addEventListener('click', function() { closeImportModal(); importData(); });
+            document.getElementById('btnDoImport').addEventListener('click', function() { importData(); closeImportModal(); });
 
             document.querySelector('.main-content').addEventListener('click', function(e) {
                 var card = e.target.closest('.settings-card[data-page]');

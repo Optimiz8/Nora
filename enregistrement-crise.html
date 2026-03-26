@@ -10,7 +10,7 @@
     <style>
         /* ---------- PAGE LAYOUT ---------- */
         .main-content {
-            padding: calc(var(--header-height) + 16px) 0 calc(var(--footer-height) + 24px);
+            padding: 8px 0 calc(var(--footer-height) + 24px);
         }
 
         /* ---------- SECTIONS ---------- */
@@ -180,6 +180,16 @@
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
+        }
+
+        /* ---------- MODALE DÉCLENCHEURS — PLEIN ÉCRAN ---------- */
+        #triggersModal {
+            align-items: stretch;
+        }
+        #triggersModal .modal-sheet {
+            max-height: 100vh;
+            height: 100vh;
+            border-radius: 0;
         }
 
         /* ---------- MODALES (bottom sheet) ---------- */
@@ -815,6 +825,7 @@ function openTriggersModal() {
             if (trigCatOpen[catKey]) {
                 itemsEl.classList.remove('trig-cat-collapsed');
                 arrow.textContent = '▲';
+                setTimeout(function() { header.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
             } else {
                 itemsEl.classList.add('trig-cat-collapsed');
                 arrow.textContent = '▼';

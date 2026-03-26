@@ -2,7 +2,7 @@
 
 > Document de référence pour comprendre les choix d'implémentation qui ne se lisent pas directement dans le code.
 > À mettre à jour à chaque décision technique significative.
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.12.2
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.14
 
 ---
 
@@ -189,7 +189,9 @@ Toutes les données sont stockées localement, jamais envoyées à un serveur.
 | `currentCapacites` / `currentBesoins` / `currentEtats` | Sélections faites pendant le flux de crise |
 | `criseATraiter` | Flag — crise précédente à enregistrer avant d'en démarrer une nouvelle |
 
-Export/import géré dans `parametres.html` (version du format : `'2.5'`).
+Export/import géré dans `parametres.html` (version du format : `'2.9'`).
+
+**Sauvegarde hors du téléphone** (V2.14, `parametres.html`) : bouton "Sauvegarder hors du téléphone" utilisant la **Web Share API** (`navigator.share({ files: [...] })`). Ouvre le panneau de partage natif du téléphone (iCloud Drive, Google Drive, Mail…). Affiché uniquement si `navigator.canShare` est disponible — invisible sur les navigateurs non supportés. La construction des données est factorisée dans `buildExportData()`, partagée avec l'export JSON classique.
 
 **Filtres avancés des stats** (V2.9.2) : `statsNavFilters` stocké en `sessionStorage` (et non `localStorage`) — les filtres sont réinitialisés à chaque nouvelle session navigateur, mais partagés entre `stats.html` et `stats-approfondie.html` dans la même session. La période (days/from/to) reste en `localStorage` et persiste entre sessions.
 

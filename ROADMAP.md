@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026 — V2.12.2
+> Dernière mise à jour : mars 2026 — V2.14
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -128,6 +128,9 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - [ ] Sons sur Safari iOS < 17 — fallback MP3 (pas de matériel dispo, peut être différé)
 
 ### Relecture des textes (generés par IA, pas encore relus par Marine)
+
+#### 🔴 Relecture de fond à faire
+- [ ] Relecture détaillée des catégories de déclencheurs et des déclencheurs eux-mêmes : pertinence des libellés, descriptions, cohérence des catégories, doublons sémantiques — dans `nora-data.js`, affiché dans `enregistrement-crise.html` et `journal.html`
 
 #### 🟠 Priorité moyenne
 - [ ] `recap.html` — Texte partageable passants : envisager d'ajouter une section "Ce que tu peux faire" (3 actions concrètes)

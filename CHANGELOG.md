@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.12.2
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.14
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,31 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.14] — mars 2026
+
+### Ajouté
+- **`parametres.html`** — bouton "Sauvegarder hors du téléphone" : déclenche le panneau de partage natif du téléphone (Web Share API) pour envoyer le fichier JSON vers iCloud, Google Drive, Mail, etc. Affiché uniquement si `navigator.canShare` est supporté par l'appareil (principalement iOS Safari et Chrome Android).
+
+---
+
+## [2.13.2] — mars 2026
+
+### Modifié
+- **`coherence.html`** — modale programmes élargie (max-width 340px → 420px)
+- **`coherence.html`** — texte cohérence cardiaque reformulé : lien 5s/5s → 6 resp/min explicite dès le début, VFC supprimée, phrase "plusieurs heures" retirée (scientifiquement non étayée)
+- **`coherence.html`** — parenthèse explicative ajoutée après "système parasympathique" : "(la partie du système nerveux qui gère le calme et la récupération)"
+- **`coherence.html`** — scroll résiduel bloqué (`overflow: hidden` sur html et body)
+
+---
+
+## [2.13.1] — mars 2026
+
+### Modifié
+- **`enregistrement-crise.html`** — modale déclencheurs refaite : accordéon par catégorie, couleur, police, aperçu (preview), bouton Annuler ; texte chapeau supprimé
+- **`recap.html`** — code mort retiré (HTML, JS, CSS liés au questionnaire)
 
 ---
 
