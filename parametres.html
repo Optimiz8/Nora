@@ -588,7 +588,7 @@
             const sizeKo = (blob.size / 1024).toFixed(1);
             localStorage.setItem('lastExportDate', new Date().toISOString());
             updateExportSublabel();
-            showToast(`✅ Données exportées — ${sizeKo} Ko`);
+            setTimeout(() => showToast(`✅ Données exportées — ${sizeKo} Ko`), 1000);
         }
 
 

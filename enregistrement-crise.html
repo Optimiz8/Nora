@@ -252,8 +252,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 4px 8px;
+            padding: 12px 14px;
+            margin-bottom: 6px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(245,228,204,0.12);
+            background: rgba(245,228,204,0.06);
             cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .trig-cat-header.open {
+            background: rgba(247,184,156,0.1);
+            border-color: var(--accent);
         }
         .trig-cat-title {
             font-size: 15px;
@@ -261,6 +270,7 @@
             letter-spacing: 0.5px;
             color: rgba(245,228,204,0.65);
             text-transform: uppercase;
+            transition: color 0.2s;
         }
         .trig-cat-header.open .trig-cat-title {
             color: var(--accent);
@@ -268,6 +278,10 @@
         .trig-cat-arrow {
             font-size: 13px;
             color: rgba(245,228,204,0.4);
+            transition: color 0.2s;
+        }
+        .trig-cat-header.open .trig-cat-arrow {
+            color: var(--accent);
         }
         .trig-cat-collapsed {
             display: none;
