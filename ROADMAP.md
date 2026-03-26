@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026 — V2.14
+> Dernière mise à jour : mars 2026 — V2.13.2
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -102,7 +102,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - [ ] `stats.html` — Texte chapeau "Ces observations…" s'affiche sous "À retenir" sans casser la mise en page (nécessite des données)
 - [ ] `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" : nouvelle définition lisible, meltdown/shutdown en gras
 - [ ] `enregistrement-crise.html` + `recap.html` — Dropdown type de crise : libellé "Meltdown (réaction extériorisée, involontaire)"
-- [ ] `coherence.html` — Modale ℹ️ : texte reformulé lisible et cohérent
+- [x] `coherence.html` — Modale ℹ️ : texte reformulé lisible et cohérent ✅
 
 #### Tests fonctionnels antérieurs
 - [ ] `tutoriel.html` (V2.12) — parcours complet (tester en navigation privée)
@@ -121,7 +121,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - [ ] `enregistrement-crise.html` (V2.10) — parcours complet : nouveau + édition
 - [ ] `recap.html` — accordéon déclencheurs : tester l'ouverture/fermeture des catégories (bug signalé, JS semble correct, à valider en vrai navigateur)
 - [ ] `recap.html` — "Fin de crise ?" sur index après retour accueil depuis récap : vérifier que la modale n'apparaît plus
-- [ ] `enregistrement-crise.html` (V2.11.1) — modale déclencheurs : vérifier tous les items et catégories, nouveaux libellés ("Codes sociaux implicites / non-dits", "Épuisement du masking", "Appel téléphonique" dans Social), nouvelles descriptions ("Règle modifiée" / "Non-respect d'une règle établie"), sélection + slider intensité + sauvegarde
+- [x] `enregistrement-crise.html` (V2.13.1) — modale déclencheurs : accordéon, couleur, police, preview, bouton Annuler, sélection + slider intensité + sauvegarde ✅
 - [ ] `journal.html` (V2.11.1) — ouvrir détail d'une crise avec anciens déclencheurs → vérifier affichage correct (rétrocompat)
 - [ ] Export sélectif des crises (`journal.html`) — fonctionnel mais pas encore testé
 - [ ] App Shortcuts Android — désinstallation/réinstallation nécessaire pour valider les icônes SVG
@@ -133,6 +133,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - [ ] Relecture détaillée des catégories de déclencheurs et des déclencheurs eux-mêmes : pertinence des libellés, descriptions, cohérence des catégories, doublons sémantiques — dans `nora-data.js`, affiché dans `enregistrement-crise.html` et `journal.html`
 
 #### 🟠 Priorité moyenne
+- [ ] `a-propos.html` — Relecture complète des textes
 - [ ] `recap.html` — Texte partageable passants : envisager d'ajouter une section "Ce que tu peux faire" (3 actions concrètes)
 - [x] `enregistrement-crise.html` — Vérifier manuellement la liste complète des déclencheurs (6 catégories, tous les libellés, doublons éventuels) ✅ audit complet + corrections V2.11.1
 
@@ -142,7 +143,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - `coherence.html` — Modales ℹ️ des programmes ✅ (durée reformulée, distinction effet immédiat / pratique régulière)
 - `stats.html` — Insights A–Q ✅ (nuance K "Bonne nouvelle" supprimée, chapeau "tendances pas diagnostics" ajouté)
 - `profil-crise.html` — Phrases d'insights dynamiques ✅ (formulations neutres, rien à corriger)
-- `faq.html` — 12 réponses ✅ (Q11 stats ≠ diagnostic + Q12 multi-appareils ajoutées)
+- `faq.html` — 17 réponses ✅ (Q11 stats ≠ diagnostic + Q12 multi-appareils + réorganisation 4 sections + Q16 enrichie mention professionnels)
 - `confidentialite.html` — Les accordéons ✅ (QR code reformulé)
 - `coherence.html` — Messages de fin d'exercice ("Bien joué !" + messages par programme) ✅
 - `conseils.html` — Liste par défaut ✅ (faute "Prenez" corrigée, liens fidgets + harmonie visuelle ajoutés)
@@ -180,7 +181,6 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - **Post-crise guidé** — Remplacer les notes libres par 3 questions fixes : "Qu'est-ce qui a aidé ?", "Qu'est-ce qui a aggravé ?", "Qu'aurais-tu aimé différent ?" → exploitable en TCC. *Fonctionnalité la plus aboutie de la liste.*
 - **Bibliothèque de scripts sociaux** — Phrases types pour situations courantes (refus, aide, surcharge…). *Standby — format et contenu à définir.*
 - **Export chiffré + rappel de sauvegarde** — Export protégé par mot de passe, rappel automatique tous les X crises. *Décision non prise — librairie de chiffrement à choisir.*
-- **Tutoriel V2** ✅ *V2.12* — Onboarding 10 étapes : prénom → découverte (4 piliers) → hub de configuration → résumé. *Implémenté, en attente relecture + test.*
 - **App Shortcuts V2** — Enrichissement si de nouvelles fonctionnalités le justifient.
 - **Capacitor + stores** — Envelopper la PWA pour Play Store / App Store. *Probable, pas acté.*
 - **Multi-langue (anglais)** — Quand tous les textes sont stables. *En dernier absolu.*

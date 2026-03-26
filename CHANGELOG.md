@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.14
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.13.4
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,23 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.13.4] — mars 2026
+
+### Ajouté
+- **`a-propos.html`** — mentions légales transformées en lien ouvrant une modale (hébergeur, vocation, données)
+
+### Modifié
+- **`enregistrement-crise.html`** — espace header corrigé (padding-top inutile supprimé, header étant `position: sticky`)
+- **`enregistrement-crise.html`** — modale déclencheurs en plein écran (`height: 100vh`)
+- **`enregistrement-crise.html`** — scroll automatique vers la catégorie à l'ouverture d'un accordéon
+- **`faq.html`** — Q16 enrichie : phrase sur l'utilité du journal/analyses pour les professionnels de santé
+
+### Corrigé
+- **`recap.html`** — bug bloquant : listeners sur éléments supprimés bloquaient silencieusement "Ajouter au journal" et "Enregistrer"
+- **`a-propos.html`** — couleur du lien "Mentions légales ›" harmonisée avec les autres titres (n'était plus rose)
 
 ---
 

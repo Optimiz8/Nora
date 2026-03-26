@@ -1817,7 +1817,13 @@
             var decl = normalizeDeclencheurs(entry.declencheurs);
             if (decl.length > 0) {
                 html += `<div class="modal-section"><div class="modal-section-title">🎯 Déclencheurs</div>`;
+                var prevCat = null;
                 decl.forEach(function(d) {
+                    var cat = d.nom.includes(' \u2014 ') ? d.nom.split(' \u2014 ')[0] : '';
+                    if (prevCat !== null && cat !== prevCat) {
+                        html += `<div style="margin-top:8px;"></div>`;
+                    }
+                    prevCat = cat;
                     var intLabel = d.intensite !== null && d.intensite !== undefined ? ` — ${d.intensite}/10` : '';
                     html += `<div class="modal-text">• ${escapeHtml(d.nom)}${intLabel}</div>`;
                 });

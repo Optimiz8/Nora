@@ -265,7 +265,7 @@ const TRIGGER_CATEGORIES = [
             { name: "Conflit relationnel", desc: "Dispute, tension familiale, désaccord marqué, reproche direct…" },
             { name: "Codes sociaux implicites / non-dits", desc: "Sous-entendus, ironie, sarcasme, règle implicite, message indirect…" },
             { name: "Appel téléphonique", desc: "Appel imprévu, obligation d'appeler, sans langage corporel, avec pression de répondre immédiatement…" },
-            { name: "Épuisement du masking", desc: "Effort prolongé de paraître neurotypique, d'inhiber ses stims ou réponses naturelles, de s'adapter à un environnement non adapté…" }
+            { name: "Épuisement dû au masking", desc: "Effort prolongé de paraître neurotypique, d'inhiber ses stims ou réponses naturelles, de s'adapter à un environnement non adapté…" }
         ]
     },
     {

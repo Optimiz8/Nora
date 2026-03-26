@@ -606,16 +606,21 @@
             const data = buildExportData();
             const json = JSON.stringify(data, null, 2);
             const fileName = `nora-sauvegarde-${new Date().toISOString().split('T')[0]}.json`;
-            const file = new File([json], fileName, { type: 'application/json' });
-            if (!navigator.canShare({ files: [file] })) {
-                showToast('❌ Partage non supporté sur cet appareil');
-                return;
+            const file = new File([json], fileName, { type: 'text/plain' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({ files: [file], title: 'Sauvegarde Nora' });
+                    return;
+                } catch (e) {
+                    if (e.name === 'AbortError') return;
+                }
             }
-            try {
-                await navigator.share({ files: [file], title: 'Sauvegarde Nora' });
-            } catch (e) {
-                if (e.name !== 'AbortError') showToast('❌ Partage impossible');
-            }
+            // Fallback : téléchargement classique
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = fileName; a.click();
+            URL.revokeObjectURL(url);
         }
 
         function updateExportSublabel() {

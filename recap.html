@@ -1431,14 +1431,6 @@
             document.getElementById('btnEndCrisis').addEventListener('click', endCrisisFromRecap);
             document.getElementById('infoModal').addEventListener('click', function(e) { if (!document.getElementById('infoModalContent').contains(e.target)) closeModal(); });
             document.getElementById('btnCloseInfoModal').addEventListener('click', closeModal);
-            document.getElementById('questionnaireModal').addEventListener('click', function(e) { if (!document.getElementById('questionnaireContent').contains(e.target)) closeQuestionnaireOnOutside(e); });
-            document.getElementById('btnCloseQuestionnaire').addEventListener('click', closeQuestionnaire);
-            document.getElementById('btnOpenTriggersModal').addEventListener('click', openTriggersModal);
-            document.getElementById('btnCancelQuestionnaire').addEventListener('click', closeQuestionnaire);
-            document.getElementById('btnSaveToJournal').addEventListener('click', saveToJournal);
-            document.getElementById('triggersModal').addEventListener('click', function(e) { if (!document.getElementById('triggersModalContent').contains(e.target)) closeTriggersOnOutside(e); });
-            document.getElementById('btnValidateTriggers').addEventListener('click', validateTriggers);
-            document.getElementById('btnCloseTriggersModal').addEventListener('click', closeTriggersModal);
             document.getElementById('calmModal').addEventListener('click', function(e) { if (!document.getElementById('calmModalContent').contains(e.target)) document.getElementById('calmModal').classList.remove('open'); });
             document.getElementById('btnCloseCalmModal').addEventListener('click', function() { document.getElementById('calmModal').classList.remove('open'); });
             document.getElementById('btnRecapRegisterNow').addEventListener('click', recapRegisterNow);
