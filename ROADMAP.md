@@ -96,9 +96,31 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 > Pour le protocole de tests alpha complet, voir [TESTS-ALPHA.md](TESTS-ALPHA.md).
 
 ### Tests à valider
-- [ ] `tutoriel.html` (V2.12) — parcours complet premier lancement (prénom → découverte → config → résumé) + retour depuis carte-config et cartes-communication
+
+#### V2.11.1 — Relecture textes (vérifications visuelles)
+- [ ] `faq.html` — Q11 et Q12 s'ouvrent/ferment correctement au tap
+- [ ] `stats.html` — Texte chapeau "Ces observations…" s'affiche sous "À retenir" sans casser la mise en page (nécessite des données)
+- [ ] `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" : nouvelle définition lisible, meltdown/shutdown en gras
+- [ ] `enregistrement-crise.html` + `recap.html` — Dropdown type de crise : libellé "Meltdown (réaction extériorisée, involontaire)"
+- [ ] `coherence.html` — Modale ℹ️ : texte reformulé lisible et cohérent
+
+#### Tests fonctionnels antérieurs
+- [ ] `tutoriel.html` (V2.12) — parcours complet (tester en navigation privée)
+  - [ ] Step 1 : saisir un prénom → vérifie qu'il apparaît dans les étapes suivantes
+  - [ ] Steps 2–5 : navigation, indicateur 1/4…4/4 s'incrémente correctement
+  - [ ] Step 6 (hub) : les 3 items apparaissent sans coche au premier lancement
+  - [ ] Step 7 → carte-config.html → sauvegarder → retour automatique sur le **hub** (pas step 7), coche carte apparaît
+  - [ ] Step 8 : basculer simplifié ↔ personnalisé, vérifier `contexte_messageUnique` en localStorage, bouton Continuer → retour hub
+  - [ ] Step 9 → cartes-communication.html → retour → hub avec coche cartes com
+  - [ ] Bouton hub sans rien configuré : libellé "Commencer ›" → va en step 7
+  - [ ] Bouton hub partiellement configuré : libellé "Continuer ›" → va au premier non-complété
+  - [ ] Bouton hub tout configuré : libellé "Voir le résumé ›" → va en step 10
+  - [ ] Step 10 : titre "Nora est prête, [prénom] !" si tout configuré, "C'est parti, [prénom] !" si partiel
+  - [ ] Bannière index.html : visible si rien configuré, disparaît après config carte
 - [ ] Export / Import complet — jamais retesté depuis V2.5 (tester en navigation privée pour ne pas perdre les données)
 - [ ] `enregistrement-crise.html` (V2.10) — parcours complet : nouveau + édition
+- [ ] `enregistrement-crise.html` (V2.11.1) — modale déclencheurs : vérifier tous les items et catégories, nouveaux libellés ("Codes sociaux implicites / non-dits", "Épuisement du masking", "Appel téléphonique" dans Social), nouvelles descriptions ("Règle modifiée" / "Non-respect d'une règle établie"), sélection + slider intensité + sauvegarde
+- [ ] `journal.html` (V2.11.1) — ouvrir détail d'une crise avec anciens déclencheurs → vérifier affichage correct (rétrocompat)
 - [ ] Export sélectif des crises (`journal.html`) — fonctionnel mais pas encore testé
 - [ ] App Shortcuts Android — désinstallation/réinstallation nécessaire pour valider les icônes SVG
 - [ ] Sons sur Safari iOS < 17 — fallback MP3 (pas de matériel dispo, peut être différé)
@@ -107,7 +129,7 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 
 #### 🟠 Priorité moyenne
 - [ ] `recap.html` — Texte partageable passants : envisager d'ajouter une section "Ce que tu peux faire" (3 actions concrètes)
-- [ ] `enregistrement-crise.html` — Vérifier manuellement la liste complète des déclencheurs (6 catégories, tous les libellés, doublons éventuels)
+- [x] `enregistrement-crise.html` — Vérifier manuellement la liste complète des déclencheurs (6 catégories, tous les libellés, doublons éventuels) ✅ audit complet + corrections V2.11.1
 
 #### ✅ Déjà relu / validé
 - `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" ✅ (définition réécrite : meltdown + shutdown distincts)

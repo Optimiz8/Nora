@@ -351,7 +351,7 @@
                     <div class="settings-icon">📤</div>
                     <div class="settings-text">
                         <div class="settings-label">Exporter mes données</div>
-                        <div class="settings-sublabel">Télécharger un fichier de sauvegarde</div>
+                        <div class="settings-sublabel" id="exportSublabel">Télécharger un fichier de sauvegarde</div>
                     </div>
                 </div>
                 <div class="settings-arrow">›</div>
@@ -490,6 +490,7 @@
                 <strong>⚠️ Attention :</strong> cette action est irréversible. Toutes tes données actuelles seront écrasées par le contenu du fichier importé.<br><br>
                 Assure-toi d'importer un fichier exporté depuis Nora.
             </div>
+            <div id="importDateInfo" style="display:none; margin: 0 0 8px; padding: 10px 14px; background: rgba(245,228,204,0.12); border-radius: 8px; font-size: 0.9rem; color: var(--light);"></div>
             <div class="modal-actions">
                 <button class="modal-button secondary" id="btnCloseImportModal">Annuler</button>
                 <button class="modal-button danger" id="btnDoImport">Continuer</button>
@@ -589,29 +590,28 @@
             URL.revokeObjectURL(url);
 
             const sizeKo = (blob.size / 1024).toFixed(1);
+            const now = new Date().toISOString();
+            localStorage.setItem('lastExportDate', now);
+            updateExportSublabel();
             showToast(`✅ Données exportées — ${sizeKo} Ko`);
+        }
+
+        function updateExportSublabel() {
+            const raw = localStorage.getItem('lastExportDate');
+            const el = document.getElementById('exportSublabel');
+            if (!raw || !el) return;
+            const d = new Date(raw);
+            const formatted = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            el.textContent = `Dernière sauvegarde : ${formatted}`;
         }
 
         // Import des données
         function importData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
+            const data = _pendingImportData;
+            _pendingImportData = null;
+            if (!data) return;
 
-            input.onchange = e => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = event => {
-                    try {
-                        const data = JSON.parse(event.target.result);
-
-                        if (!data.version) {
-                            alert('❌ Fichier invalide');
-                            return;
-                        }
-
+            try {
                         const str  = v => typeof v === 'string' ? v.replace(/<[^>]*>/g, '') : '';
                         const arr  = v => Array.isArray(v) ? v : [];
                         const obj  = v => (v !== null && typeof v === 'object' && !Array.isArray(v)) ? v : {};
@@ -708,15 +708,10 @@
 
                         showToast('✅ Données importées avec succès !');
                         setTimeout(() => location.reload(), 2000);
-                    } catch (err) {
-                        showToast('❌ Erreur lors de l\'import : fichier corrompu');
-                        console.error(err);
-                    }
-                };
-                reader.readAsText(file);
-            };
-
-            input.click();
+            } catch (err) {
+                showToast('❌ Erreur lors de l\'import : fichier corrompu');
+                console.error(err);
+            }
         }
 
         function trapFocus(modal) {
@@ -779,19 +774,50 @@
             m.classList.remove('visible');
         }
 
+        let _pendingImportData = null;
+
         function confirmImport() {
-            const m = document.getElementById('importModal');
-            m.classList.add('visible');
-            trapFocus(m);
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = event => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        if (!data.version) { alert('❌ Fichier invalide'); return; }
+                        _pendingImportData = data;
+                        const dateInfo = document.getElementById('importDateInfo');
+                        if (data.dateExport) {
+                            const d = new Date(data.dateExport);
+                            const formatted = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            dateInfo.textContent = `📅 Sauvegarde du ${formatted}`;
+                            dateInfo.style.display = 'block';
+                        } else {
+                            dateInfo.style.display = 'none';
+                        }
+                        const m = document.getElementById('importModal');
+                        m.classList.add('visible');
+                        trapFocus(m);
+                    } catch { alert('❌ Fichier invalide'); }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
         }
 
         function closeImportModal() {
             const m = document.getElementById('importModal');
             releaseTrap(m);
             m.classList.remove('visible');
+            _pendingImportData = null;
+            document.getElementById('importDateInfo').style.display = 'none';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            updateExportSublabel();
             document.getElementById('btnBack').addEventListener('click', goHome);
             document.getElementById('btnHome').addEventListener('click', function() { window.location.href = 'index.html'; });
             document.getElementById('cardExport').addEventListener('click', confirmExport);
