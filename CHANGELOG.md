@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.12
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.12.2
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,16 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.12.2] — mars 2026
+
+### Modifié
+- **`nora-data.js`** — audit complet de la liste des déclencheurs : renommage "Codes sociaux implicites / non-dits", ajout "Épuisement du masking" dans Social, déplacement "Appel téléphonique" vers Social, suppression "Difficulté d'expression", clarification descriptions "Règle modifiée" / "Non-respect d'une règle établie"
+- **`recap.html`** — corrections visuelles modale questionnaire : titres de blocs 19px `var(--accent)`, fonds sombres harmonisés, texte intro (date obligatoire / facultatif), "Intensité" harmonisé avec les autres labels, deux couleurs hex `#F7B89C` → `var(--accent)`, modale déclencheurs en pleine page
+- **`recap.html`** — fix : retour accueil depuis récap ne déclenche plus la modale "Fin de crise ?" sur index (`lastCrisisCheck` posé avant navigation)
+- **`enregistrement-crise.html`** — mêmes corrections visuelles : titres 19px `var(--accent)` + uppercase, fonds sombres, texte intro, "Intensité" harmonisé
 
 ---
 
