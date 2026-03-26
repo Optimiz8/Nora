@@ -193,7 +193,7 @@
         }
         .modal.visible { display: flex; }
         .modal-sheet {
-            background: var(--dark);
+            background: var(--bg);
             border-radius: 24px 24px 0 0;
             width: 100%;
             max-height: 85vh;
@@ -238,13 +238,26 @@
         }
 
         /* ---------- MODALE DÉCLENCHEURS ---------- */
+        .trig-cat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 4px 8px;
+            cursor: pointer;
+        }
         .trig-cat-title {
-            font-size: 13px;
+            font-size: 15px;
             font-weight: 700;
-            letter-spacing: 1px;
-            color: rgba(245,228,204,0.5);
+            letter-spacing: 0.5px;
+            color: rgba(245,228,204,0.65);
             text-transform: uppercase;
-            padding: 12px 0 6px;
+        }
+        .trig-cat-arrow {
+            font-size: 13px;
+            color: rgba(245,228,204,0.4);
+        }
+        .trig-cat-collapsed {
+            display: none;
         }
         .trig-item {
             display: flex;
@@ -273,7 +286,7 @@
         .trig-item.selected .trig-check { background: var(--accent); border-color: var(--accent); color: var(--dark); }
         .trig-text { flex: 1; }
         .trig-name { font-size: 15px; color: var(--light); }
-        .trig-desc { font-size: 12px; color: rgba(245,228,204,0.45); margin-top: 2px; }
+        .trig-desc { font-size: 13px; color: rgba(245,228,204,0.45); margin-top: 2px; }
         .trig-intensity-block { margin-top: 10px; }
         .trig-intensity-label {
             font-size: 12px;
@@ -364,8 +377,6 @@
 </header>
 
 <main class="main-content">
-
-    <p style="padding: 10px 16px 0; font-size: 14px; color: var(--light); opacity: 0.55; font-style: italic;">Seule la date (*) est obligatoire. Remplis ce dont tu te souviens — tu pourras modifier cette entrée depuis le journal.</p>
 
     <!-- AVANT LA CRISE -->
     <div class="form-section">
@@ -585,6 +596,7 @@ var RETOUR   = params.get('retour') || 'index';
 
 /* ---------- ÉTAT GLOBAL ---------- */
 var sliderTouched = { energie: false, mentale: false, sociale: false, intensite: false };
+var trigCatOpen = {};
 var durHeures = 0, durMinutes = 0;
 var DUR_MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 var selectedTriggers  = [];
@@ -759,7 +771,12 @@ function setDur(str) {
 function openTriggersModal() {
     var html = '';
     TRIGGER_CATEGORIES.forEach(function(cat) {
-        html += '<div class="trig-cat-title">' + escapeHtml(cat.label) + '</div>';
+        var isOpen = !!trigCatOpen[cat.key];
+        html += '<div class="trig-cat-header" data-catkey="' + escapeHtml(cat.key) + '">';
+        html += '<span class="trig-cat-title">' + escapeHtml(cat.label) + '</span>';
+        html += '<span class="trig-cat-arrow">' + (isOpen ? '▲' : '▼') + '</span>';
+        html += '</div>';
+        html += '<div class="trig-cat-items' + (isOpen ? '' : ' trig-cat-collapsed') + '" data-catitems="' + escapeHtml(cat.key) + '">';
         cat.items.forEach(function(item) {
             var key      = cat.key + ' \u2014 ' + item.name;
             var isCustom = !!item.custom;
@@ -775,18 +792,36 @@ function openTriggersModal() {
             if (selected) {
                 var intens = triggerIntensities[key];
                 html += '<div class="trig-intensity-block" style="min-width:90px;">';
-                html += '<div class="trig-intensity-label"><span>Intensité</span><span id="intVal_' + selected + '">' + (intens != null ? intens + '/10' : '\u2014') + '</span></div>';
+                html += '<div class="trig-intensity-label"><span>Intensité</span><span>' + (intens != null ? intens + '/10' : '\u2014') + '</span></div>';
                 html += '<input type="range" class="form-slider" min="1" max="10" value="' + (intens || 5) + '" data-intkey="' + escapeHtml(key) + '">';
                 html += '</div>';
             }
             html += '</div>';
         });
+        html += '</div>';
     });
 
     var body = document.getElementById('triggersContent');
     body.innerHTML = html;
 
     body.onclick = function(e) {
+        /* Accordéon catégorie */
+        var header = e.target.closest('.trig-cat-header');
+        if (header) {
+            var catKey  = header.dataset.catkey;
+            trigCatOpen[catKey] = !trigCatOpen[catKey];
+            var itemsEl = body.querySelector('[data-catitems="' + catKey + '"]');
+            var arrow   = header.querySelector('.trig-cat-arrow');
+            if (trigCatOpen[catKey]) {
+                itemsEl.classList.remove('trig-cat-collapsed');
+                arrow.textContent = '▲';
+            } else {
+                itemsEl.classList.add('trig-cat-collapsed');
+                arrow.textContent = '▼';
+            }
+            return;
+        }
+        /* Sélection item */
         var item = e.target.closest('.trig-item');
         if (!item) return;
         if (e.target.classList.contains('trig-custom-input') || e.target.closest('.trig-intensity-block')) return;
@@ -817,7 +852,10 @@ function openTriggersModal() {
         }
     };
 
-    history.pushState({ noraModal: true }, '');
+    /* Ne pousse un état dans l'historique qu'à la première ouverture */
+    if (!document.getElementById('triggersModal').classList.contains('visible')) {
+        history.pushState({ noraModal: true }, '');
+    }
     document.getElementById('triggersModal').classList.add('visible');
 }
 
@@ -844,9 +882,10 @@ function updateTriggersPreview() {
     if (!selectedTriggers.length) {
         prev.textContent = 'Aucun déclencheur sélectionné';
     } else {
-        prev.textContent = selectedTriggers.map(function(t) {
-            return t.split(' \u2014 ').pop();
-        }).join(', ');
+        var n     = selectedTriggers.length;
+        var noms  = selectedTriggers.map(function(t) { return t.split(' \u2014 ').pop(); }).join(' · ');
+        prev.innerHTML = '<strong>' + n + ' déclencheur' + (n > 1 ? 's' : '') + ' sélectionné' + (n > 1 ? 's' : '') + '</strong>'
+                       + '<br><span style="font-size:13px;opacity:0.7;">' + noms + '</span>';
     }
 }
 
