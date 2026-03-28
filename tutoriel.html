@@ -534,14 +534,14 @@
         }
 
         .contexte-option-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 4px;
         }
 
         .contexte-option-desc {
-            font-size: 13px;
+            font-size: 15px;
             color: rgba(46, 58, 89, 0.6);
             line-height: 1.45;
         }
@@ -1225,6 +1225,7 @@
                 var dx = e.changedTouches[0].clientX - _swipeStartX;
                 var dy = e.changedTouches[0].clientY - _swipeStartY;
                 if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+                if (currentStep >= 6) return;
                 if (dx < 0) {
                     var primaryBtn = document.querySelector('#footerActions .btn-primary');
                     if (primaryBtn) primaryBtn.click();
