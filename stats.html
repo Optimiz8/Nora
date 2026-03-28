@@ -102,7 +102,7 @@
         /* ---------- TITRES DE SECTION ---------- */
 
         .section-tag {
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.07em;
@@ -925,13 +925,13 @@
         }
 
         .insight-icon {
-            font-size: 18px;
+            font-size: 20px;
             flex-shrink: 0;
             margin-top: 1px;
         }
 
         .insight-text {
-            font-size: 14px;
+            font-size: 16px;
             color: var(--light);
             line-height: 1.5;
         }
@@ -2424,7 +2424,7 @@
             var insightsHtml = buildInsights(stats, days, from, to);
             if (insightsHtml) {
                 html += '<div class="section-tag">À retenir</div>';
-                html += '<p style="font-size:13px; color:var(--light); opacity:0.7; margin:0 0 8px; padding:0 4px;">Ces observations sont générées à partir de tes données personnelles. Elles indiquent des tendances — pas des diagnostics.</p>';
+                html += '<p style="font-size:15px; color:var(--light); opacity:0.7; margin:0 0 8px; padding:0 4px; text-align:justify;">Ces observations sont générées à partir de tes données personnelles. Elles indiquent des tendances — pas des diagnostics.</p>';
                 html += insightsHtml;
             }
 
@@ -3122,6 +3122,21 @@
                             text: 'La capacité <strong>"' + topCapQ.name + '"</strong> est impossible dans <strong>' +
                                 capPctQ + '% de tes crises</strong>.' });
                     }
+                }
+            }
+
+            /* Règle R — Intervalle moyen entre crises */
+            if (stats.total >= 3 && stats.entries.length >= 3) {
+                var sortedR = stats.entries.slice().sort(function(a, b) {
+                    return new Date(a.horodatage) - new Date(b.horodatage);
+                });
+                var rFirst = new Date(sortedR[0].horodatage);
+                var rLast  = new Date(sortedR[sortedR.length - 1].horodatage);
+                var rSpan  = (rLast - rFirst) / 86400000;
+                var rAvg   = Math.round(rSpan / (sortedR.length - 1));
+                if (rAvg >= 1) {
+                    insights.push({ priority: 2, icon: '📅',
+                        text: 'En moyenne, une crise tous les <strong>' + rAvg + '\u00a0jour' + (rAvg > 1 ? 's' : '') + '</strong> sur cette période.' });
                 }
             }
 

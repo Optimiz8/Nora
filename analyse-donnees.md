@@ -59,6 +59,7 @@ Les règles sont identifiées par une lettre (A–Q) dans le code source.
 | **O** | 2 | 🧠 | Charge mentale haute **fréquence** : ≥40% des crises avec CM ≥7/10 | ✅ Implémenté |
 | **P** | 2 | 👥 | Charge sociale haute **fréquence** : ≥40% des crises avec CS ≥7/10 | ✅ Implémenté |
 | **Q** | 2 | ⛔ | Capacité systématiquement impossible dans ≥50% des crises (avec données capacités) | ✅ Implémenté |
+| **R** | 2 | 📅 | Intervalle moyen entre deux crises : `(last - first) / (total - 1)` en jours, si ≥3 crises et avg ≥1 jour | ✅ Implémenté |
 
 > **Note :** Les règles G et K sont complémentaires (G = dégradation, K = amélioration). Elles ne s'affichent pas en même temps.
 
@@ -75,7 +76,7 @@ Les règles sont identifiées par une lettre (A–Q) dans le code source.
 *Pour mieux se comprendre au quotidien. À intégrer dans une version future.*
 
 ### Patterns temporels
-- Intervalle moyen entre deux crises ("Tu as en moyenne une crise tous les X jours")
+- ~~Intervalle moyen entre deux crises~~ → **implémenté (règle R)**
 - Mois ou saison où les crises sont plus fréquentes
 
 ### Déclencheurs

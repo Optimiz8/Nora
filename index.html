@@ -1131,7 +1131,7 @@
                     var existing = selectedPcmTriggers.find(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; });
                     var customValue = existing ? existing.replace('Divers \u2014 ', '') : '';
                     html += '<div class="trigger-custom-container" id="pcmCustomTriggerContainer" style="' + (isChecked ? '' : 'display:none') + '">' +
-                        '<input type="text" id="pcmCustomTriggerInput" class="trigger-custom-input" placeholder="D\u00e9cris le d\u00e9clencheur\u2026" value="' + customValue.replace(/"/g, '&quot;') + '"></div>';
+                        '<input type="text" id="pcmCustomTriggerInput" class="trigger-custom-input" placeholder="D\u00e9cris le d\u00e9clencheur\u2026" value="' + escapeHtml(customValue) + '"></div>';
                 }
             });
             html += '</div></div>';

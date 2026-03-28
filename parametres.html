@@ -514,6 +514,7 @@
         }
 
         function goToPage(page) {
+            if (page === 'tutoriel.html') localStorage.removeItem('tutorielStep');
             window.location.href = page;
         }
 

@@ -117,7 +117,7 @@
         }
 
         .step-text {
-            font-size: 16px;
+            font-size: 17px;
             color: rgba(245, 228, 204, 0.8);
             line-height: 1.6;
             margin-bottom: 20px;
@@ -205,32 +205,44 @@
         .overview-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 8px;
+            gap: 22px;
+            margin-top: 12px;
         }
 
         .overview-item {
             display: flex;
             align-items: flex-start;
             gap: 14px;
-            background: rgba(245, 228, 204, 0.06);
-            border-radius: 14px;
-            padding: 16px;
+            padding: 4px 0;
         }
 
         .overview-item-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
 
         .overview-item-title {
-            font-size: 16px;
+            font-size: 19px;
             font-weight: 700;
             color: var(--light);
-            margin-bottom: 4px;
+            margin-bottom: 10px;
         }
 
         .overview-item-desc {
             font-size: 14px;
-            color: rgba(245, 228, 204, 0.55);
-            line-height: 1.5;
+            color: rgba(245, 228, 204, 0.65);
+            line-height: 1.6;
+        }
+
+        .overview-item-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .overview-item-tag {
+            background: rgba(245, 228, 204, 0.1);
+            color: rgba(245, 228, 204, 0.75);
+            border-radius: 20px;
+            padding: 5px 12px;
+            font-size: 14px;
         }
 
         /* ---------- DÉCOUVERTE : PILIERS ---------- */
@@ -269,6 +281,18 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
+        /* ---------- STEP 2 : ANIMATION EN CASCADE ---------- */
+        #step-2.active .step-greeting,
+        #step-2.active h2.step-title,
+        #step-2.active .overview-item,
+        #step-2.active .offline-note { opacity: 0; animation: itemFadeIn 0.45s ease forwards; }
+        #step-2.active .step-greeting          { animation-delay: 0s; }
+        #step-2.active h2.step-title           { animation-delay: 0.2s; }
+        #step-2.active .overview-item:nth-child(1) { animation-delay: 0.45s; }
+        #step-2.active .overview-item:nth-child(2) { animation-delay: 0.7s; }
+        #step-2.active .overview-item:nth-child(3) { animation-delay: 0.95s; }
+        #step-2.active .offline-note           { animation-delay: 1.2s; }
+
         .pilier-item-icon {
             font-size: 18px;
             min-width: 26px;
@@ -278,16 +302,16 @@
         }
 
         .pilier-item-label {
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 600;
             color: var(--dark);
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .pilier-item-desc {
-            font-size: 13px;
-            color: rgba(46, 58, 89, 0.6);
-            line-height: 1.45;
+            font-size: 15px;
+            color: rgba(46, 58, 89, 0.65);
+            line-height: 1.5;
         }
 
         /* ---------- CONFIG : PRÉNOM ---------- */
@@ -484,11 +508,11 @@
         /* ---------- STEP 1 : GREETING PERSONNALISÉ ---------- */
 
         .step-greeting {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--accent);
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 20px;
         }
 
         /* ---------- DÉCOUVERTE : CONTEXTES OPTIONS ---------- */
@@ -585,35 +609,45 @@
         <p class="step-text" style="margin-bottom:24px">Ces informations apparaîtront sur ta carte d'urgence.</p>
         <input type="text" id="prenomInput" class="prenom-input" placeholder="Ton prénom" autocomplete="given-name" maxlength="40">
         <input type="text" id="nomInput" class="prenom-input" placeholder="Ton nom de famille (facultatif)" autocomplete="family-name" maxlength="60">
-        <p class="name-hint" style="text-align:left">💡 Le nom aide les secours à t'identifier si tu ne peux pas parler.</p>
+        <p class="name-hint" style="text-align:left">💡 Le nom aide les secours à t'identifier si tu ne peux plus parler.</p>
         <p class="privacy-note">🔒 Tes données restent sur ton téléphone.</p>
-        <p class="tuto-note" style="margin-top:24px">Tu retrouveras ce tutoriel à tout moment dans Paramètres.</p>
     </div>
 
     <!-- ÉTAPE 2 : Vue d'ensemble (1/4) -->
     <div class="step" id="step-2">
         <p class="step-greeting" id="step2Greeting"></p>
-        <h2 class="step-title">Nora est organisée en 3 espaces.</h2>
+        <h2 class="step-title" style="font-size:20px; font-weight:500; opacity:0.8">Nora est organisée en 3 espaces.</h2>
         <div class="overview-list">
             <div class="overview-item">
                 <span class="overview-item-icon">💬</span>
                 <div>
                     <div class="overview-item-title">Aide et communication</div>
-                    <div class="overview-item-desc">Carte d'urgence, fiches de contexte, cartes de communication, timer</div>
+                    <div class="overview-item-tags">
+                        <span class="overview-item-tag">Carte d'urgence</span>
+                        <span class="overview-item-tag">Cartes de communication</span>
+                        <span class="overview-item-tag">Fiches de contexte</span>
+                        <span class="overview-item-tag">Timer visuel</span>
+                    </div>
                 </div>
             </div>
             <div class="overview-item">
                 <span class="overview-item-icon">🌸</span>
                 <div>
                     <div class="overview-item-title">S'apaiser</div>
-                    <div class="overview-item-desc">Cohérence cardiaque, sons relaxants, fidget, harmonie visuelle, conseils</div>
+                    <div class="overview-item-tags">
+                        <span class="overview-item-tag">Exercices de respiration</span>
+                        <span class="overview-item-tag">Sons relaxants</span>
+                        <span class="overview-item-tag">Fidgets numériques et visuels</span>
+                        <span class="overview-item-tag">Harmonie visuelle</span>
+                        <span class="overview-item-tag">Conseils</span>
+                    </div>
                 </div>
             </div>
             <div class="overview-item">
                 <span class="overview-item-icon">📊</span>
                 <div>
                     <div class="overview-item-title">Comprendre et suivre</div>
-                    <div class="overview-item-desc">Journal de crises, statistiques</div>
+                    <div class="overview-item-desc">Chaque crise enregistrée devient une donnée. Au fil du temps, Nora identifie tes déclencheurs, tes contextes à risque, tes patterns — pour mieux te connaître, et pouvoir l'expliquer à ceux qui t'entourent.</div>
                 </div>
             </div>
         </div>
@@ -729,7 +763,13 @@
 
     <!-- ÉTAPE 6 : Transition découverte → configuration -->
     <div class="step" id="step-6">
-        <span class="transition-icon">⚙️</span>
+        <span class="transition-icon">
+            <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M28 6 C28 6 29.5 19 37 28 C29.5 28 29.5 37 28 50 C28 50 26.5 37 19 28 C26.5 28 26.5 19 28 6 Z" fill="rgba(247,184,156,0.75)"/>
+                <path d="M6 28 C6 28 19 26.5 28 19 C28 26.5 37 26.5 50 28 C50 28 37 29.5 28 37 C28 29.5 19 29.5 6 28 Z" fill="rgba(247,184,156,0.5)"/>
+                <circle cx="28" cy="28" r="4.5" fill="rgba(247,184,156,0.95)"/>
+            </svg>
+        </span>
         <h2 class="step-title">Configurons Nora</h2>
         <p class="step-text">Maintenant, prenons cinq minutes pour configurer ce qui pourra t'aider en cas de crise.</p>
         <div id="configCheckList"></div>
@@ -1126,31 +1166,21 @@
                 '</div>';
         }
 
+        /* ---------- BFCACHE (retour depuis cartes-com ou carte-config) ---------- */
+
+        window.addEventListener('pageshow', function(e) {
+            if (!e.persisted) return;
+            var ret = parseInt(localStorage.getItem('tutorielRetour') || '0');
+            if (ret >= 2 && ret <= 10) {
+                localStorage.removeItem('tutorielRetour');
+                goToStep(ret);
+            }
+        });
+
         /* ---------- INIT ---------- */
 
         document.addEventListener('DOMContentLoaded', function() {
-            var savedStep = parseInt(localStorage.getItem('tutorielRetour') || '0');
-            if (savedStep >= 2 && savedStep <= 10) {
-                localStorage.removeItem('tutorielRetour');
-                goToStep(savedStep);
-                return;
-            }
-
-            var resumeStep = parseInt(localStorage.getItem('tutorielStep') || '1');
-            if (resumeStep >= 2 && resumeStep <= 10) {
-                goToStep(resumeStep);
-                return;
-            }
-
-            updateHeader();
-            renderFooter(1);
-            setTimeout(function() { document.getElementById('prenomInput').focus(); }, 300);
-
-            var prenom = localStorage.getItem('userPrenom') || '';
-            if (prenom) document.getElementById('prenomInput').value = prenom;
-            var nom = localStorage.getItem('userNom') || '';
-            if (nom) document.getElementById('nomInput').value = nom;
-
+            /* -- Listeners toujours enregistrés, quelle que soit l'étape de départ -- */
             document.getElementById('backBtn').addEventListener('click', goBack);
             document.getElementById('skipLink').addEventListener('click', function() {
                 goToStep(6);
@@ -1184,6 +1214,46 @@
                     if (summaryItem.dataset.href) { location.href = summaryItem.dataset.href; return; }
                 }
             });
+
+            /* ---------- SWIPE GAUCHE / DROITE ---------- */
+            var _swipeStartX = 0, _swipeStartY = 0;
+            document.addEventListener('touchstart', function(e) {
+                _swipeStartX = e.touches[0].clientX;
+                _swipeStartY = e.touches[0].clientY;
+            }, { passive: true });
+            document.addEventListener('touchend', function(e) {
+                var dx = e.changedTouches[0].clientX - _swipeStartX;
+                var dy = e.changedTouches[0].clientY - _swipeStartY;
+                if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+                if (dx < 0) {
+                    var primaryBtn = document.querySelector('#footerActions .btn-primary');
+                    if (primaryBtn) primaryBtn.click();
+                } else {
+                    goBack();
+                }
+            }, { passive: true });
+
+            /* -- Navigation de départ -- */
+            var savedStep = parseInt(localStorage.getItem('tutorielRetour') || '0');
+            if (savedStep >= 2 && savedStep <= 10) {
+                localStorage.removeItem('tutorielRetour');
+                goToStep(savedStep);
+                return;
+            }
+
+            var resumeStep = parseInt(localStorage.getItem('tutorielStep') || '1');
+            if (resumeStep >= 2 && resumeStep <= 10) {
+                goToStep(resumeStep);
+                return;
+            }
+
+            updateHeader();
+            renderFooter(1);
+            setTimeout(function() { document.getElementById('prenomInput').focus(); }, 300);
+            var prenom = localStorage.getItem('userPrenom') || '';
+            if (prenom) document.getElementById('prenomInput').value = prenom;
+            var nom = localStorage.getItem('userNom') || '';
+            if (nom) document.getElementById('nomInput').value = nom;
         });
     </script>
     <script src="nora-scroll.js"></script>

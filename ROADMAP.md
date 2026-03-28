@@ -97,15 +97,15 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 
 ### Tests à valider
 
-#### V2.11.1 — Relecture textes (vérifications visuelles)
-- [ ] `faq.html` — Q11 et Q12 s'ouvrent/ferment correctement au tap
+#### Vérifications visuelles
+- [x] `faq.html` — Q11 et Q12 s'ouvrent/ferment correctement au tap ✅
 - [ ] `stats.html` — Texte chapeau "Ces observations…" s'affiche sous "À retenir" sans casser la mise en page (nécessite des données)
-- [ ] `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" : nouvelle définition lisible, meltdown/shutdown en gras
-- [ ] `enregistrement-crise.html` + `recap.html` — Dropdown type de crise : libellé "Meltdown (réaction extériorisée, involontaire)"
+- [x] `recap.html` — Modale "Qu'est-ce qu'une crise autistique ?" : définition lisible, meltdown/shutdown en gras ✅
+- [x] `enregistrement-crise.html` + `recap.html` — Type de crise : libellé "Meltdown (réaction extériorisée, involontaire)" ✅
 - [x] `coherence.html` — Modale ℹ️ : texte reformulé lisible et cohérent ✅
 
-#### Tests fonctionnels antérieurs
-- [ ] `tutoriel.html` (V2.12) — parcours complet (tester en navigation privée)
+#### Tests fonctionnels
+- [ ] `tutoriel.html` (V2.12) — parcours complet (tester en navigation privée) — en cours de révision
   - [ ] Step 1 : saisir un prénom → vérifie qu'il apparaît dans les étapes suivantes
   - [ ] Steps 2–5 : navigation, indicateur 1/4…4/4 s'incrémente correctement
   - [ ] Step 6 (hub) : les 3 items apparaissent sans coche au premier lancement
@@ -118,14 +118,14 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
   - [ ] Step 10 : titre "Nora est prête, [prénom] !" si tout configuré, "C'est parti, [prénom] !" si partiel
   - [ ] Bannière index.html : visible si rien configuré, disparaît après config carte
 - [x] Import ✅ testé V2.13.3 — données restaurées correctement, toast de confirmation OK (les entrées créées après l'export ne sont pas réimportées — comportement attendu)
-- [ ] `enregistrement-crise.html` (V2.10) — parcours complet : nouveau + édition
-- [ ] `recap.html` — accordéon déclencheurs : tester l'ouverture/fermeture des catégories (bug signalé, JS semble correct, à valider en vrai navigateur)
-- [ ] `recap.html` — "Fin de crise ?" sur index après retour accueil depuis récap : vérifier que la modale n'apparaît plus
+- [x] `enregistrement-crise.html` — parcours complet : nouveau + édition ✅
+- [x] `recap.html` — accordéon déclencheurs : ouverture/fermeture des catégories ✅
+- [x] `recap.html` — "Fin de crise ?" sur index après retour accueil : modale n'apparaît plus ✅
 - [x] `enregistrement-crise.html` (V2.13.1) — modale déclencheurs : accordéon, couleur, police, preview, bouton Annuler, sélection + slider intensité + sauvegarde ✅
-- [ ] `journal.html` (V2.11.1) — ouvrir détail d'une crise avec anciens déclencheurs → vérifier affichage correct (rétrocompat)
-- [ ] Export sélectif des crises (`journal.html`) — fonctionnel mais pas encore testé
-- [ ] App Shortcuts Android — désinstallation/réinstallation nécessaire pour valider les icônes SVG
-- [ ] Sons sur Safari iOS < 17 — fallback MP3 (pas de matériel dispo, peut être différé)
+- [x] Export sélectif des crises (`journal.html`) ✅
+- [x] App Shortcuts Android — icônes SVG validées ✅
+- [x] Service Worker hors-ligne — testé en mode avion (Samsung S25) : navigation entre pages OK, création de crise OK ✅
+- ~~Sons sur Safari iOS < 17~~ — différé à la phase alpha/bêta (pas de matériel dispo)
 
 ### Relecture des textes (generés par IA, pas encore relus par Marine)
 
@@ -163,6 +163,10 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - **Page enregistrement-crise unifiée** ✅ *V2.10* — remplace 3 modales distinctes
 - **Tutoriel V2** ✅ *V2.12* — onboarding 10 étapes : prénom, découverte (4 piliers), hub de config, résumé adaptatif
 
+### Relecture stats à faire avant ou pendant V3
+
+- [ ] Relecture approfondie de `stats.html` et `stats-approfondie.html` — vérifier que les insights existants (règles A–Q) sont toujours pertinents, bien formulés et utiles avec des données réelles
+
 ### Nouvelles règles d'insights stats à implémenter
 
 > Détail technique dans `analyse-donnees.md`.
@@ -175,6 +179,10 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 | 🟠 | Crises nocturnes élevées | Nuit ≥30% → signal fatigue chronique |
 | 🟡 | Crises sans déclencheur | ≥30% avec 0 déclencheur identifié |
 | 🟡 | Déclencheur contextuel | Apparaît dans contexte X mais jamais dans Y |
+
+### Audit de sécurité (avant publication large)
+
+- **Audit de sécurité de l'application** — Vérifier les vulnérabilités courantes avant diffusion large : injection de contenu via les champs utilisateur (localStorage → affichage HTML), politique CSP dans les headers GitHub Pages, intégrité du Service Worker face à une compromission du dépôt. Contexte : recrudescence des attaques sur GitHub depuis la généralisation des IA (+200% rapporté), qui facilitent autant la détection de bugs que leur exploitation.
 
 ### Fonctionnalités envisagées (non engagées)
 
