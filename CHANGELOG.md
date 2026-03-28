@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.13.4
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.14.0
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -43,10 +43,22 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 
 ---
 
-## [2.14] — mars 2026
+## [2.14.0] — mars 2026
 
 ### Ajouté
-- **`parametres.html`** — bouton "Sauvegarder hors du téléphone" : déclenche le panneau de partage natif du téléphone (Web Share API) pour envoyer le fichier JSON vers iCloud, Google Drive, Mail, etc. Affiché uniquement si `navigator.canShare` est supporté par l'appareil (principalement iOS Safari et Chrome Android).
+- **`stats.html`** — Insight R : intervalle moyen entre deux crises ("En moyenne, une crise tous les X jours"), affiché dès 3 crises avec un intervalle ≥1 jour
+- **`analyse-donnees.md`** — règle R documentée dans le tableau des insights
+
+### Modifié
+- **`tutoriel.html`** — step 2 refondu : animation en cascade des éléments, tags pills pour les outils de chaque pilier, tailles de texte et espacement revus
+- **`tutoriel.html`** — step 1 : typo corrigée, note déplacée ; icône sparkle SVG
+- **`tutoriel.html`** — fix bug critique : les event listeners (clicks, swipe) étaient enregistrés après les `return` de navigation — aucun bouton ne répondait si le tutoriel reprenait à une étape intermédiaire
+- **`tutoriel.html`** — fix reprise depuis Paramètres : le tutoriel repart désormais à l'étape 1 (le `tutorielStep` sauvegardé est effacé à l'ouverture depuis Paramètres)
+- **`tutoriel.html`** — ajout listener `pageshow` pour gérer le retour via bfcache (step 9 → cartes-com → retour navigateur → hub)
+- **`parametres.html`** — efface `tutorielStep` avant de naviguer vers `tutoriel.html`
+- **`recap.html`** — texte "pas un danger pour vous" revu
+- **`carte-config.html`** — conseil contacts mis à jour
+- **`stats-approfondie.html`** — harmonisation tailles de police (section-tag 15px→17px, insight-icon 18px→20px, insight-text 14px→16px)
 
 ---
 
