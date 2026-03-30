@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.14.0
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.15
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,16 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.15] — mars 2026
+
+### Modifié
+- **`nora-common.css`** — icônes de navigation remasterisées en SVG via `background-image` data URI CSS : retour (cercle cadre accent), accueil (maison bicolore coins bas arrondis), paramètres (engrenage — dents crème, anneau accent, trou foncé), journal (carnet coins arrondis, fond rosé, coin plié accent) — aucune modification HTML nécessaire grâce aux sélecteurs `[aria-label]`
+- **`journal.html`** — bouton "Statistiques" : emoji 📊 remplacé par les barres SVG equalizer inline
+- **`index.html`** — bannière "Terminer la configuration" : emoji ⚙️ remplacé par le SVG engrenage inline
+- **`tutoriel.html`** — icônes 📊 (overview + section Statistiques) remplacées par les barres SVG equalizer inline
 
 ---
 

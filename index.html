@@ -699,7 +699,7 @@
             <div class="crisis-banner-arrow">›</div>
         </div>
         <div class="setup-banner" id="setupBanner">
-            <div class="setup-banner-icon">⚙️</div>
+            <div class="setup-banner-icon"><svg width="22" height="22" viewBox="0 0 32 32"><circle cx="16" cy="16" r="11" fill="var(--bg)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(0 16 16)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(45 16 16)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(90 16 16)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(135 16 16)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(180 16 16)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(225 16 16)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(270 16 16)"/><rect x="13.5" y="1.5" width="5" height="11" rx="2.5" fill="var(--light)" transform="rotate(315 16 16)"/><circle cx="16" cy="16" r="10" fill="var(--light)"/><circle cx="16" cy="16" r="7" fill="var(--accent)"/><circle cx="16" cy="16" r="4.5" fill="var(--dark)"/></svg></div>
             <div class="setup-banner-text">
                 <strong>Terminer la configuration</strong>
                 <span>3 étapes rapides pour personnaliser Nora</span>
@@ -723,7 +723,7 @@
 
     <div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-label="De quoi as-tu besoin">
         <div class="modal-content">
-            <div class="modal-close" data-close="helpModal">×</div>
+            <div class="modal-close" data-close="helpModal" role="button" aria-label="Fermer">×</div>
             <div class="modal-title">De quoi as-tu besoin&nbsp;?</div>
             <div class="modal-option" id="btnEmergency">
                 <div class="option-icon">🪪</div>
@@ -742,7 +742,7 @@
 
     <div class="modal" id="contextModal" role="dialog" aria-modal="true" aria-label="Choix du contexte">
         <div class="modal-content">
-            <div class="modal-close" id="btnCloseContextModal">×</div>
+            <div class="modal-close" id="btnCloseContextModal" role="button" aria-label="Fermer">×</div>
             <div class="modal-title">Où es-tu&nbsp;?</div>
             <div class="context-grid" id="contextGrid">
                 <!-- Généré dynamiquement -->
@@ -752,7 +752,7 @@
 
     <div class="modal" id="calmModal" role="dialog" aria-modal="true" aria-label="Me calmer">
         <div class="modal-content">
-            <div class="modal-close" data-close="calmModal">×</div>
+            <div class="modal-close" data-close="calmModal" role="button" aria-label="Fermer">×</div>
             <div class="modal-title">Comment veux-tu t'apaiser&nbsp;?</div>
             <div class="modal-option" id="btnConseils"><div class="option-icon">✓</div><div class="option-text">Conseils</div></div>
             <div class="modal-option" id="btnBreathing"><div class="option-icon"><img src="assets/images/shortcut-coherence.svg" alt="" style="width:32px;height:32px;border-radius:5px;vertical-align:middle"></div><div class="option-text">Respiration apaisante</div></div>
@@ -766,7 +766,7 @@
     <!-- Modale fin de crise : étape 1 -->
     <div class="modal" id="crisisEndModal" role="dialog" aria-modal="true" aria-label="Fin de crise">
         <div class="modal-content">
-            <div class="modal-close" data-close-crisis="crisisEndModal">×</div>
+            <div class="modal-close" data-close-crisis="crisisEndModal" role="button" aria-label="Fermer">×</div>
             <div class="modal-title">Fin de crise ?</div>
             <div class="crisis-modal-text">
                 Une crise semble être en cours.<br>Est-elle terminée ?
@@ -791,7 +791,7 @@
     <!-- Modale fin de crise : étape 2 (choix enregistrement) -->
     <div class="modal" id="crisisRegisterModal" role="dialog" aria-modal="true" aria-label="Enregistrer la crise">
         <div class="modal-content">
-            <div class="modal-close" data-close-crisis="crisisRegisterModal">×</div>
+            <div class="modal-close" data-close-crisis="crisisRegisterModal" role="button" aria-label="Fermer">×</div>
             <div class="modal-title">Enregistrer la crise</div>
             <div class="crisis-modal-text">
                 Souhaites-tu enregistrer cette crise dans ton journal ?

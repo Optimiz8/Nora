@@ -2,7 +2,7 @@
 
 > Document de référence pour comprendre les choix d'implémentation qui ne se lisent pas directement dans le code.
 > À mettre à jour à chaque décision technique significative.
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.14
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.15
 
 ---
 
@@ -69,6 +69,31 @@ Pages autonomes (pas dans la navigation principale)
     ├── recap-exemple.html            Démonstration du récapitulatif
     └── 404.html                      Page d'erreur
 ```
+
+---
+
+## Icônes de navigation — SVG via data URI CSS (V2.15)
+
+### Principe
+
+Les icônes des boutons de navigation (retour, accueil, paramètres, journal) sont implémentées comme `background-image` SVG data URI dans `nora-common.css`, via des sélecteurs `aria-label` :
+
+```css
+.back-button                    { background-image: url("data:image/svg+xml,..."); font-size: 0; }
+button[aria-label="Accueil"]    { background-image: url("data:image/svg+xml,..."); font-size: 0; }
+button[aria-label="Paramètres"] { background-image: url("data:image/svg+xml,..."); font-size: 0; }
+button[aria-label="Journal"]    { background-image: url("data:image/svg+xml,..."); font-size: 0; }
+```
+
+### Pourquoi cette approche
+
+Les 28+ pages HTML utilisent toutes des emojis (`⬅️`, `🏠`…) dans leurs boutons. Modifier chaque fichier individuellement est coûteux. En masquant l'emoji (`font-size: 0`) et en injectant un SVG via `background-image`, une seule règle CSS couvre toutes les pages.
+
+### Contraintes
+
+- Les SVG data URI ne supportent pas les variables CSS — les couleurs sont hardcodées en hex dans le CSS (exception justifiée et contenue dans `nora-common.css`)
+- Les SVG inline dans le HTML (`index.html`, `tutoriel.html`) utilisent eux les variables CSS (`var(--light)`, `var(--accent)`) conformément à la charte
+- `button[aria-label="Paramètres"]` cible uniquement le bouton header de `index.html` — les autres ⚙️ en contexte textuel (`stats.html` "Filtres avancés", `parametres.html` décoratif) restent en emoji
 
 ---
 

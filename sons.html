@@ -628,7 +628,7 @@ input[type=range]::-moz-range-thumb {
 <!-- ===== MODALE LECTEUR SIMPLE ===== -->
 <div class="modal" id="playerModal" role="dialog" aria-modal="true" aria-label="Lecteur audio">
   <div class="modal-content">
-    <div class="close" id="closePlayer" role="button" aria-label="Fermer">✕</div>
+    <div class="close" id="closePlayer" role="button" aria-label="Fermer">×</div>
     <img id="playerImage" alt="">
     <div class="player">
       <h2 id="playerTitle"></h2>
@@ -644,7 +644,7 @@ input[type=range]::-moz-range-thumb {
 <!-- ===== MINI MODALE TIMER ===== -->
 <div class="timer-modal" id="timerModal" role="dialog" aria-modal="true" aria-label="Minuterie">
   <div class="timer-box">
-    <div class="timer-close" id="closeTimer" role="button" aria-label="Fermer">✕</div>
+    <div class="timer-close" id="closeTimer" role="button" aria-label="Fermer">×</div>
     <strong>Minuterie</strong>
     <div class="timer-buttons">
       <button id="addTime5">+5 min</button>
@@ -665,7 +665,7 @@ input[type=range]::-moz-range-thumb {
   <div class="mixer-box">
     <div class="mixer-header">
       <strong>Ambiance sonore personnalisée</strong>
-      <span id="closeMixer" role="button" aria-label="Fermer">✕</span>
+      <span id="closeMixer" role="button" aria-label="Fermer">×</span>
     </div>
     <div class="mixer-center">
       <div class="mixer-time" id="mixTime">⏱️ 10:00</div>
@@ -901,7 +901,7 @@ function renderPresets() {
     container.innerHTML = presets.map(p => `
       <div class="preset-chip" data-id="${p.id}">
         <span class="preset-chip-name" data-preset-id="${p.id}">${p.name}</span>
-        <span class="preset-chip-delete" data-preset-id="${p.id}">✕</span>
+        <span class="preset-chip-delete" data-preset-id="${p.id}">×</span>
       </div>
     `).join('');
   }

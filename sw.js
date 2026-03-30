@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'nora-v2.14.0';
+const CACHE_VERSION = 'nora-v2.15';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const AUDIO_CACHE  = 'nora-audio-stable'; // Indépendant de la version — survit aux mises à jour
 
