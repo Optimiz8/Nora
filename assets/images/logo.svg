@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800&amp;display=swap');
+    </style>
+  </defs>
+
+  <!-- Fond -->
+  <rect width="600" height="600" fill="#384657"/>
+
+  <!-- Texte "nora" — n en accent, ora en crème -->
+  <text
+    x="300" y="315"
+    font-family="'Nunito', sans-serif"
+    font-weight="800"
+    font-size="148"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    letter-spacing="-1">
+    <tspan fill="#F7B89C">n</tspan><tspan fill="#F5E4CC">ora</tspan>
+  </text>
+
+  <!-- Étoile 4 branches (sparkle), bas droite -->
+  <g transform="translate(539, 549) scale(0.48)">
+    <path d="M28 6 C28 6 29.5 19 37 28 C29.5 28 29.5 37 28 50 C28 50 26.5 37 19 28 C26.5 28 26.5 19 28 6 Z"
+          fill="rgba(245,228,204,0.55)"/>
+    <path d="M6 28 C6 28 19 26.5 28 19 C28 26.5 37 26.5 50 28 C50 28 37 29.5 28 37 C28 29.5 19 29.5 6 28 Z"
+          fill="rgba(245,228,204,0.45)"/>
+  </g>
+</svg>

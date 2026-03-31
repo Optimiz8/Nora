@@ -1,11 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#384657"/>
-  <!-- Bulle principale -->
-  <rect x="80" y="120" width="290" height="190" rx="30" fill="#F5E4CC"/>
-  <!-- Queue de la bulle -->
-  <path d="M130 310 L90 390 L200 320" fill="#F5E4CC"/>
-  <!-- Points à l'intérieur -->
-  <circle cx="165" cy="215" r="20" fill="#384657"/>
-  <circle cx="225" cy="215" r="20" fill="#384657"/>
-  <circle cx="285" cy="215" r="20" fill="#384657"/>
+  <rect width="512" height="512" rx="96" fill="#384657"/>
+  <!-- Grille 2×2 de cartes de com -->
+  <!-- Carte haut gauche -->
+  <rect x="72" y="96" width="160" height="140" rx="18" fill="#F5E4CC"/>
+  <circle cx="152" cy="152" r="24" fill="#F7B89C"/>
+  <rect x="100" y="188" width="104" height="12" rx="6" fill="rgba(46,58,89,0.3)"/>
+  <!-- Carte haut droite -->
+  <rect x="248" y="96" width="192" height="140" rx="18" fill="rgba(245,228,204,0.18)" stroke="#F5E4CC" stroke-width="3"/>
+  <rect x="276" y="136" width="136" height="14" rx="7" fill="rgba(245,228,204,0.7)"/>
+  <rect x="276" y="162" width="96" height="12" rx="6" fill="rgba(245,228,204,0.4)"/>
+  <!-- Carte bas gauche -->
+  <rect x="72" y="256" width="192" height="140" rx="18" fill="rgba(245,228,204,0.18)" stroke="#F5E4CC" stroke-width="3"/>
+  <rect x="100" y="296" width="136" height="14" rx="7" fill="rgba(245,228,204,0.7)"/>
+  <rect x="100" y="322" width="96" height="12" rx="6" fill="rgba(245,228,204,0.4)"/>
+  <!-- Carte bas droite -->
+  <rect x="280" y="256" width="160" height="140" rx="18" fill="#F5E4CC"/>
+  <circle cx="360" cy="316" r="24" fill="#F7B89C"/>
+  <rect x="308" y="352" width="104" height="12" rx="6" fill="rgba(46,58,89,0.3)"/>
 </svg>

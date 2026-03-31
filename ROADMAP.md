@@ -1,6 +1,6 @@
 # Nora — Roadmap
 
-> Dernière mise à jour : mars 2026 — V2.15
+> Dernière mise à jour : mars 2026 — V2.16
 > Stack : HTML / CSS / JavaScript vanilla · PWA · GitHub Pages
 
 ---
@@ -95,6 +95,13 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 > Pour les décisions **produit & stratégie** (tests utilisateurs, déploiement, communication), voir [PRODUCT-OVERVIEW.md](PRODUCT-OVERVIEW.md) — section 9.
 > Pour le protocole de tests alpha complet, voir [TESTS-ALPHA.md](TESTS-ALPHA.md).
 
+### Restructuration accueil — communication
+
+- [ ] **Bug** : icônes de navigation (footer/header) qui ne s'affichent plus depuis le dernier commit — à investiguer
+- [ ] **Carte d'urgence** : sortir du flux "communiquer" → bouton flottant fixe en bas à droite (miroir symétrique du timer en bas à gauche), accès direct sans modale
+- [ ] **Bouton principal** : renommer → **"Communiquer"** avec sous-titre "quand parler devient difficile" (remplace "J'ai besoin d'aide et de communiquer")
+- [ ] **Modale derrière** : passer à 2 options seulement — cartes de communication + communiquer selon le contexte (libellés et éventuelles évolutions à affiner)
+
 ### Tests à valider
 
 #### Vérifications visuelles
@@ -105,17 +112,20 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 - [x] `coherence.html` — Modale ℹ️ : texte reformulé lisible et cohérent ✅
 
 #### Tests fonctionnels
-- [ ] `tutoriel.html` (V2.12) — parcours complet (tester en navigation privée) — en cours de révision
-  - [ ] Step 1 : saisir un prénom → vérifie qu'il apparaît dans les étapes suivantes
-  - [ ] Steps 2–5 : navigation, indicateur 1/4…4/4 s'incrémente correctement
-  - [ ] Step 6 (hub) : les 3 items apparaissent sans coche au premier lancement
-  - [ ] Step 7 → carte-config.html → sauvegarder → retour automatique sur le **hub** (pas step 7), coche carte apparaît
-  - [ ] Step 8 : basculer simplifié ↔ personnalisé, vérifier `contexte_messageUnique` en localStorage, bouton Continuer → retour hub
-  - [ ] Step 9 → cartes-communication.html → retour → hub avec coche cartes com
-  - [ ] Bouton hub sans rien configuré : libellé "Commencer ›" → va en step 7
+- [ ] `tutoriel.html` (V2.16) — parcours complet (tester en navigation privée)
+  - [ ] Step 1 (Bienvenue) : logo, 4 bullets, bouton "Commencer" → step 2
+  - [ ] Step 2 (Prénom) : saisir prénom → vérifie qu'il apparaît en step 3 ("Bonjour [prénom] !")
+  - [ ] Step 3 : 4 cartes animées en cascade, indicateur "1/4" affiché
+  - [ ] Steps 4–6 : navigation, indicateur 1/4…4/4 s'incrémente correctement, bouton "Passer ›" visible
+  - [ ] Step 7 (hub) : les 3 items apparaissent sans coche au premier lancement
+  - [ ] Bouton hub sans rien configuré : libellé "Commencer ›" → va en step 8
   - [ ] Bouton hub partiellement configuré : libellé "Continuer ›" → va au premier non-complété
-  - [ ] Bouton hub tout configuré : libellé "Voir le résumé ›" → va en step 10
-  - [ ] Step 10 : titre "Nora est prête, [prénom] !" si tout configuré, "C'est parti, [prénom] !" si partiel
+  - [ ] Bouton hub tout configuré : libellé "Voir le résumé ›" → va en step 11
+  - [ ] Step 8 → "Configurer ma carte" → carte-config.html → sauvegarder → retour automatique sur le hub (step 7), coche carte apparaît
+  - [ ] Step 8 → "Passer pour l'instant" → va en step 9
+  - [ ] Step 9 : basculer simplifié ↔ personnalisé, vérifier `contexte_messageUnique` en localStorage, bouton Continuer → retour hub
+  - [ ] Step 10 → "Voir mes cartes" → cartes-communication.html → retour → step 10 (pas hub), coche cartes com
+  - [ ] Step 11 : titre "Tout est en place, [prénom] !" si tout configuré, "C'est un bon début, [prénom] !" si partiel
   - [ ] Bannière index.html : visible si rien configuré, disparaît après config carte
 - [x] Import ✅ testé V2.13.3 — données restaurées correctement, toast de confirmation OK (les entrées créées après l'export ne sont pas réimportées — comportement attendu)
 - [x] `enregistrement-crise.html` — parcours complet : nouveau + édition ✅
@@ -186,6 +196,8 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 
 ### Fonctionnalités envisagées (non engagées)
 
+- **Lecture à voix haute (TTS)** — Via l'API Web Speech native (pas de lib externe), sur : `carte.html` (consignes / infos médicales), `recap.html` (récapitulatif de crise), `cartes-communication.html` (carte sélectionnée en plein écran). Utile quand lire sous stress devient difficile.
+
 - **Post-crise guidé** — Remplacer les notes libres par 3 questions fixes : "Qu'est-ce qui a aidé ?", "Qu'est-ce qui a aggravé ?", "Qu'aurais-tu aimé différent ?" → exploitable en TCC. *Fonctionnalité la plus aboutie de la liste.*
 - **Bibliothèque de scripts sociaux** — Phrases types pour situations courantes (refus, aide, surcharge…). *Standby — format et contenu à définir.*
 - **Export chiffré + rappel de sauvegarde** — Export protégé par mot de passe, rappel automatique tous les X crises. *Décision non prise — librairie de chiffrement à choisir.*
@@ -196,6 +208,8 @@ Livré : 4 raccourcis — Carte d'urgence · Communication · Exercices de respi
 ---
 
 ## En réflexion (pas de version assignée)
+
+- **Logo SVG** — Remplacer `assets/images/logo.png` par une version SVG scalable. Un `assets/images/logo.svg` existe (police Nunito, approximative). La police originale (générée par Unia, outil IA) est inconnue ; caractéristiques souhaitées : bas plat avec très léger arrondi aux coins, légère rondeur sur le haut des lettres. Page de comparaison 6 polices disponible dans `preview-logo.html` (Poppins, Outfit, Figtree, Quicksand, DM Sans, Nunito). **En stand by — à reprendre quand la police est identifiée ou choisie.**
 
 - **Notifications push** — décision non prise, à reconsidérer en V4.
 - **Playlists multiples** (jusqu'à 5).

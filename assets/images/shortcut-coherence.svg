@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#384657"/>
-  <!-- Coeur -->
-  <path d="M256 390 C256 390 90 290 90 180 C90 130 130 100 180 110 C210 116 240 136 256 160 C272 136 302 116 332 110 C382 100 422 130 422 180 C422 290 256 390 256 390Z" fill="#F7B89C"/>
-  <!-- Onde respiration -->
-  <path d="M96 310 Q140 270 180 310 Q220 350 256 290 Q292 230 330 290 Q368 350 416 300" fill="none" stroke="#F5E4CC" stroke-width="18" stroke-linecap="round"/>
+  <rect width="512" height="512" rx="96" fill="#384657"/>
+  <!-- Coeur plein -->
+  <path d="M256 400 C256 400 76 288 76 172 C76 116 118 82 172 92 C206 98 238 120 256 148 C274 120 306 98 340 92 C394 82 436 116 436 172 C436 288 256 400 256 400Z" fill="#F7B89C"/>
+  <!-- Onde respiration sur le coeur -->
+  <path d="M88 300 Q128 260 168 300 Q208 340 248 272 Q288 204 328 272 Q368 340 424 296" fill="none" stroke="#F5E4CC" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

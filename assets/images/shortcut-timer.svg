@@ -1,13 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="80" fill="#384657"/>
-  <!-- Cercle horloge -->
-  <circle cx="256" cy="276" r="180" fill="none" stroke="#F5E4CC" stroke-width="22"/>
-  <!-- Tige du haut -->
-  <rect x="230" y="72" width="52" height="30" rx="12" fill="#F5E4CC"/>
-  <!-- Aiguille minute -->
-  <line x1="256" y1="276" x2="256" y2="150" stroke="#F5E4CC" stroke-width="20" stroke-linecap="round"/>
-  <!-- Aiguille heure -->
-  <line x1="256" y1="276" x2="330" y2="220" stroke="#F7B89C" stroke-width="16" stroke-linecap="round"/>
+  <rect width="512" height="512" rx="96" fill="#384657"/>
+  <!-- Corps de la montre (cercle extérieur) -->
+  <circle cx="256" cy="284" r="182" fill="none" stroke="#F5E4CC" stroke-width="22"/>
+  <!-- Couronne en haut -->
+  <rect x="228" y="68" width="56" height="34" rx="14" fill="#F5E4CC"/>
+  <!-- Bouton côté (start/stop) -->
+  <rect x="432" y="230" width="36" height="28" rx="10" fill="rgba(245,228,204,0.5)"/>
+  <!-- Marques des heures (4 principales) -->
+  <rect x="246" y="122" width="20" height="32" rx="10" fill="rgba(245,228,204,0.4)"/>
+  <rect x="246" y="414" width="20" height="32" rx="10" fill="rgba(245,228,204,0.4)"/>
+  <rect x="102" y="274" width="32" height="20" rx="10" fill="rgba(245,228,204,0.4)"/>
+  <rect x="378" y="274" width="32" height="20" rx="10" fill="rgba(245,228,204,0.4)"/>
+  <!-- Aiguille minute (vers 12) -->
+  <line x1="256" y1="284" x2="256" y2="148" stroke="#F5E4CC" stroke-width="18" stroke-linecap="round"/>
+  <!-- Aiguille heure (vers 3) -->
+  <line x1="256" y1="284" x2="348" y2="224" stroke="#F7B89C" stroke-width="14" stroke-linecap="round"/>
   <!-- Centre -->
-  <circle cx="256" cy="276" r="16" fill="#F7B89C"/>
+  <circle cx="256" cy="284" r="18" fill="#F7B89C"/>
 </svg>

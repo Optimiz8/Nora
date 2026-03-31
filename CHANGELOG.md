@@ -1,6 +1,6 @@
 # Nora — Changelog
 
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.15
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.16
 
 Toutes les modifications notables sont documentées ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
@@ -8,6 +8,31 @@ Versionnage : `MAJEUR.MINEUR.PATCH`
 - MAJEUR = refonte ou nouvelle version majeure (V2, V3…)
 - MINEUR = nouvelle fonctionnalité
 - PATCH = correction de bug ou ajustement
+
+---
+
+## [2.16] — mars 2026
+
+### Modifié
+- **`index.html`** — icônes des 2 boutons principaux remplacées par SVG inline :
+  - 💬 → bulle pleine dark + 3 points rose (fond crème)
+  - 🌸 → fleur 5 pétales rose symétriques + couronne crème + centre #384657
+- **`tutoriel.html`** — mêmes icônes SVG adaptées (bulle outline crème, fleur identique) + checkboxes config et résumé (✓/✅ → carré arrondi outline vide / carré accent + coche dark)
+- **`recap.html`** — icône 🌸 du footer → fleur SVG (22px)
+- **`conseils.html`** — icône 🌸 d'illustration → fleur SVG (48px)
+- **`nora-common.css`** — harmonisation boutons fermeture (✕ → ×) + `aria-label="Fermer"` sur modales
+- **`tutoriel.html`** — refonte complète de l'onboarding : 11 étapes (était 10)
+  - Step 1 nouveau : écran Bienvenue (logo 108px, description Nora en 4 bullets, note vie privée discrète)
+  - Step 2 : prénom repositionné, titre reformulé "Pour commencer, comment t'appelles-tu ?"
+  - Step 3 nouveau : vue d'ensemble animée — 4 cartes en cascade (Obtenir de l'aide / Communiquer / S'apaiser / Se comprendre)
+  - Steps 4-6 : renommés selon les cartes (Communiquer, S'apaiser, Se comprendre)
+  - Step 7 : hub de configuration (inchangé, renuméroté)
+  - Step 8 : "Ta carte d'urgence numérique" — mini-carte cliquable, statut affiché, bouton "Passer pour l'instant"
+  - Step 9 : "Mes contextes" — description enrichie (état, besoins, capacités en crise)
+  - Step 10 : cartes de communication — retour sur step 10 après visite (était hub)
+  - Step 11 : résumé reformulé ("Tout est en place" / "C'est un bon début"), mentions Paramètres centralisées ici
+  - Bouton retour harmonisé avec le SVG global (`nora-common.css`)
+  - CSS dead code `#step-2.active` migré vers `#step-3.active`
 
 ---
 

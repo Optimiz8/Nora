@@ -2,7 +2,7 @@
 
 > Document de référence pour comprendre les choix d'implémentation qui ne se lisent pas directement dans le code.
 > À mettre à jour à chaque décision technique significative.
-> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.15
+> Dernière mise à jour : mars 2026 — couvre jusqu'à v2.16
 
 ---
 
@@ -92,8 +92,16 @@ Les 28+ pages HTML utilisent toutes des emojis (`⬅️`, `🏠`…) dans leurs 
 ### Contraintes
 
 - Les SVG data URI ne supportent pas les variables CSS — les couleurs sont hardcodées en hex dans le CSS (exception justifiée et contenue dans `nora-common.css`)
-- Les SVG inline dans le HTML (`index.html`, `tutoriel.html`) utilisent eux les variables CSS (`var(--light)`, `var(--accent)`) conformément à la charte
-- `button[aria-label="Paramètres"]` cible uniquement le bouton header de `index.html` — les autres ⚙️ en contexte textuel (`stats.html` "Filtres avancés", `parametres.html` décoratif) restent en emoji
+- Les SVG inline dans le HTML (`index.html`, `tutoriel.html`) utilisent des couleurs hex explicites (pas de `var()`) car les data URI ne supportent pas les variables CSS — exception justifiée et documentée
+- `button[aria-label="Paramètres"]` cible uniquement le bouton header de `index.html` — les autres ⚙️ en contexte textuel restent en emoji
+
+### Icônes SVG inline (V2.16)
+
+Les icônes des deux boutons d'accueil et des checkboxes du tutoriel sont des SVG inline dans le HTML (pas dans `nora-common.css`), car elles varient selon le contexte de fond :
+
+- **Communication** : bulle pleine dark (`#2E3A59`) + 3 points rose sur fond crème (`index.html`) ; bulle outline crème + 3 points rose sur fond sombre (`tutoriel.html`)
+- **Apaisement** : fleur 5 pétales symétriques (positions calculées à 72° exact) rose + couronne crème + centre #384657 — même SVG partout (rose visible sur tous les fonds)
+- **Checkbox tutoriel** : SVG injecté via JS — carré outline crème (vide) ou carré accent + coche dark (coché)
 
 ---
 

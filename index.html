@@ -263,6 +263,33 @@
         }
         .timer-fab:active { transform: scale(0.92); }
 
+        /* Bouton flottant carte d'urgence */
+        .urgence-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(245, 228, 204, 0.1);
+            border: 1.5px solid rgba(245, 228, 204, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .urgence-fab:active { transform: scale(0.92); }
+
+        .choice-subtitle {
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.65;
+            margin-top: 3px;
+            line-height: 1.3;
+        }
+
         /* Toast */
         .crisis-toast {
             position: fixed;
@@ -710,12 +737,13 @@
 
         <div class="choices">
             <div class="big-choice" id="btnHelp">
-                <div class="choice-icon">💬</div>
-                <div class="choice-text">J'ai besoin d'aide<br>et de communiquer</div>
+                <div class="choice-icon"><svg width="38" height="38" viewBox="0 0 32 32" fill="none"><path d="M3 5Q3 3 5 3H27Q29 3 29 5V20Q29 22 27 22H10L5 27V22H5Q3 22 3 20V5Z" fill="#2E3A59"/><circle cx="10" cy="12" r="2.1" fill="#F7B89C"/><circle cx="16" cy="12" r="2.1" fill="#F7B89C"/><circle cx="22" cy="12" r="2.1" fill="#F7B89C"/></svg></div>
+                <div class="choice-text">Communiquer</div>
+                <div class="choice-subtitle">quand parler devient difficile</div>
             </div>
 
             <div class="big-choice" id="btnCalm">
-                <div class="choice-icon">🌸</div>
+                <div class="choice-icon"><svg width="38" height="38" viewBox="0 0 38 38" fill="none"><circle cx="19" cy="9" r="7" fill="#F7B89C"/><circle cx="28.51" cy="15.91" r="7" fill="#F7B89C"/><circle cx="24.88" cy="27.09" r="7" fill="#F7B89C"/><circle cx="13.12" cy="27.09" r="7" fill="#F7B89C"/><circle cx="9.49" cy="15.91" r="7" fill="#F7B89C"/><circle cx="19" cy="19" r="7" fill="#F7B89C"/><circle cx="19" cy="19" r="5.5" fill="#F5E4CC"/><circle cx="19" cy="19" r="3.5" fill="#384657"/></svg></div>
                 <div class="choice-text">J'ai besoin de m'apaiser</div>
             </div>
         </div>
@@ -724,14 +752,10 @@
     <div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-label="De quoi as-tu besoin">
         <div class="modal-content">
             <div class="modal-close" data-close="helpModal" role="button" aria-label="Fermer">×</div>
-            <div class="modal-title">De quoi as-tu besoin&nbsp;?</div>
-            <div class="modal-option" id="btnEmergency">
-                <div class="option-icon">🪪</div>
-                <div class="option-text">Afficher ma carte d'urgence</div>
-            </div>
+            <div class="modal-title">Comment veux-tu communiquer&nbsp;?</div>
             <div class="modal-option" id="btnContext">
                 <div class="option-icon">🧭</div>
-                <div class="option-text">Communiquer selon le contexte</div>
+                <div class="option-text">Selon ma situation</div>
             </div>
             <div class="modal-option" id="btnComCards">
                 <div class="option-icon">💬</div>
@@ -954,6 +978,7 @@
     </div>
 
     <div class="timer-fab" id="timerFab"></div>
+    <div class="urgence-fab" id="urgenceFab"><img src="assets/images/shortcut-urgence.svg" alt="Carte d'urgence" width="32" height="32"></div>
 
     <!-- Sous-modale sélection déclencheurs (depuis precrisisModal) -->
     <div class="modal" id="pcmTriggersModal" role="dialog" aria-modal="true" aria-label="Déclencheurs">
@@ -1476,8 +1501,8 @@
             open('contextModal');
         };
 
-        btnEmergency.onclick = () => location.href = 'carte.html';
         btnComCards.onclick = () => location.href = 'cartes-communication.html';
+        document.getElementById('urgenceFab').addEventListener('click', () => location.href = 'carte.html');
 
         document.querySelectorAll('[data-close]').forEach(el =>
             el.onclick = () => history.back()
