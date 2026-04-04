@@ -15,11 +15,6 @@
     <title>Nora – Accueil</title>
 
     <style>
-        /* HEADER – override: right-aligned icons on this page */
-        .header {
-            justify-content: flex-end;
-        }
-
         /* MAIN */
         .main {
             padding: 110px 24px 24px;
@@ -64,6 +59,14 @@
             line-height: 1.4;
         }
 
+        .choice-subtitle {
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.65;
+            margin-top: 3px;
+            line-height: 1.3;
+        }
+
         /* MODALES */
         .modal {
             display: none;
@@ -82,7 +85,7 @@
         .modal-content {
             background: var(--bg);
             border-radius: 36px;
-            padding: 24px 20px; /* Réduit pour gagner de la place */
+            padding: 24px 20px;
             width: 100%;
             max-width: 520px;
             position: relative;
@@ -100,33 +103,33 @@
         /* TITRE MODALE */
         .modal-title {
             text-align: center;
-            font-size: 19px; /* Légèrement réduit */
+            font-size: 19px;
             font-weight: 500;
-            margin-bottom: 20px; /* Réduit */
+            margin-bottom: 20px;
         }
 
-        /* OPTIONS - Hauteur réduite ici */
+        /* OPTIONS - Hauteur réduite */
         .modal-option {
             background: rgba(245,228,204,0.12);
             border: 2px solid rgba(247,184,156,0.5);
             border-radius: 22px;
-            padding: 14px 12px; /* Hauteur réduite de 22px à 14px */
-            margin-bottom: 12px; /* Espace entre boutons réduit de 18px à 12px */
+            padding: 14px 12px;
+            margin-bottom: 12px;
             text-align: center;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px; /* Réduit */
+            gap: 6px;
         }
 
         .option-icon {
-            font-size: 26px; /* Légèrement réduit */
+            font-size: 26px;
             color: var(--accent);
         }
 
         .option-text {
-            font-size: 16px; /* Légèrement réduit */
+            font-size: 16px;
             font-weight: 400;
             line-height: 1.3;
         }
@@ -134,7 +137,7 @@
         .context-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px; /* Réduit */
+            gap: 12px;
         }
 
         /* MODALE FIN DE CRISE */
@@ -281,14 +284,6 @@
             -webkit-tap-highlight-color: transparent;
         }
         .urgence-fab:active { transform: scale(0.92); }
-
-        .choice-subtitle {
-            font-size: 13px;
-            font-weight: 400;
-            opacity: 0.65;
-            margin-top: 3px;
-            line-height: 1.3;
-        }
 
         /* Toast */
         .crisis-toast {
@@ -1131,18 +1126,18 @@
         var html = '';
         TRIGGER_CATEGORIES.forEach(function(cat) {
             var hasSelected = cat.items.some(function(trigger) {
-                if (trigger.custom) return selectedPcmTriggers.some(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; });
-                return selectedPcmTriggers.indexOf(cat.key + ' \u2014 ' + trigger.name) !== -1;
+                if (trigger.custom) return selectedPcmTriggers.some(function(t) { return t.startsWith('Divers — ') && t !== 'Divers — Déclencheur flou ou non identifié'; });
+                return selectedPcmTriggers.indexOf(cat.key + ' — ' + trigger.name) !== -1;
             });
             html += '<div class="trigger-category' + (hasSelected ? ' open' : '') + '">';
             html += '<div class="trigger-category-title">' +
                 '<span>' + cat.label + '</span>' +
-                '<span class="trigger-category-chevron">\u25ba</span></div>';
+                '<span class="trigger-category-chevron">►</span></div>';
             html += '<div class="trigger-category-items">';
             cat.items.forEach(function(trigger, idx) {
-                var storedName = cat.key + ' \u2014 ' + trigger.name;
+                var storedName = cat.key + ' — ' + trigger.name;
                 var isChecked = trigger.custom
-                    ? selectedPcmTriggers.some(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; })
+                    ? selectedPcmTriggers.some(function(t) { return t.startsWith('Divers — ') && t !== 'Divers — Déclencheur flou ou non identifié'; })
                     : selectedPcmTriggers.indexOf(storedName) !== -1;
                 var uniqueId = 'pcm_t_' + cat.key + '_' + idx;
                 var descHtml = trigger.desc ? ' <span class="trigger-description">' + trigger.desc + '</span>' : '';
@@ -1153,10 +1148,10 @@
                     '><label class="trigger-label" for="' + uniqueId + '">' +
                     '<span class="trigger-name">' + trigger.name + '</span>' + descHtml + '</label></div>';
                 if (trigger.custom) {
-                    var existing = selectedPcmTriggers.find(function(t) { return t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9'; });
-                    var customValue = existing ? existing.replace('Divers \u2014 ', '') : '';
+                    var existing = selectedPcmTriggers.find(function(t) { return t.startsWith('Divers — ') && t !== 'Divers — Déclencheur flou ou non identifié'; });
+                    var customValue = existing ? existing.replace('Divers — ', '') : '';
                     html += '<div class="trigger-custom-container" id="pcmCustomTriggerContainer" style="' + (isChecked ? '' : 'display:none') + '">' +
-                        '<input type="text" id="pcmCustomTriggerInput" class="trigger-custom-input" placeholder="D\u00e9cris le d\u00e9clencheur\u2026" value="' + escapeHtml(customValue) + '"></div>';
+                        '<input type="text" id="pcmCustomTriggerInput" class="trigger-custom-input" placeholder="Décris le déclencheur…" value="' + escapeHtml(customValue) + '"></div>';
                 }
             });
             html += '</div></div>';
@@ -1194,12 +1189,12 @@
         var customCheckbox = document.querySelector('#pcmTriggersContent [data-custom="true"]');
         if (customCheckbox) {
             selectedPcmTriggers = selectedPcmTriggers.filter(function(t) {
-                return !(t.startsWith('Divers \u2014 ') && t !== 'Divers \u2014 D\u00e9clencheur flou ou non identifi\u00e9');
+                return !(t.startsWith('Divers — ') && t !== 'Divers — Déclencheur flou ou non identifié');
             });
             if (customCheckbox.checked) {
                 var customInput = document.getElementById('pcmCustomTriggerInput');
                 if (customInput && customInput.value.trim()) {
-                    selectedPcmTriggers.push('Divers \u2014 ' + customInput.value.trim());
+                    selectedPcmTriggers.push('Divers — ' + customInput.value.trim());
                 }
             }
         }
@@ -1210,7 +1205,7 @@
     function updatePcmTriggersPreview() {
         var preview = document.getElementById('pcmTriggersPreview');
         if (selectedPcmTriggers.length === 0) {
-            preview.textContent = 'Aucun d\u00e9clencheur s\u00e9lectionn\u00e9';
+            preview.textContent = 'Aucun déclencheur sélectionné';
             preview.style.fontStyle = 'italic';
         } else {
             preview.style.fontStyle = '';
@@ -1218,9 +1213,9 @@
                 var isNull = pcmTriggerIntensities[t] === undefined || pcmTriggerIntensities[t] === null;
                 var val = isNull ? 5 : pcmTriggerIntensities[t];
                 return '<div class="trigger-intensity-row">' +
-                    '<span class="trigger-name-label">\u2022 ' + t + '</span>' +
+                    '<span class="trigger-name-label">• ' + t + '</span>' +
                     '<input type="range" min="0" max="10" value="' + val + '" class="' + (isNull ? 'null-state' : '') + '" oninput="setPcmTriggerIntensity(\'' + t.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + '\', this.value, this)">' +
-                    '<span class="trigger-intensity-val ' + (isNull ? 'null-state' : '') + '">' + (isNull ? '\u2014 /10' : val + '/10') + '</span>' +
+                    '<span class="trigger-intensity-val ' + (isNull ? 'null-state' : '') + '">' + (isNull ? '— /10' : val + '/10') + '</span>' +
                     '</div>';
             }).join('');
         }
@@ -1619,6 +1614,13 @@
             if (cb) handlePcmTriggerChange(cb);
         });
 
+        // Sliders pré-crise
+        ['energie', 'mentale', 'sociale', 'intensite'].forEach(function(field) {
+            document.getElementById(PCM_SLIDER_CONFIG[field].slider).addEventListener('input', function() {
+                activatePcmSlider(field);
+            });
+        });
+
         // Indicateurs de scroll pour les modales
         function setupModalScrollIndicator(scrollEl, indicatorId) {
             var ind = document.getElementById(indicatorId);
@@ -1640,7 +1642,7 @@
             'triggersScrollIndicator'
         );
 
-        // Vérifier au moment où les modales s'ouvrent (MutationObserver sur la classe visible)
+        // Vérifier au moment où les modales s'ouvrent
         new MutationObserver(function() { setTimeout(checkPcmScroll, 50); })
             .observe(document.getElementById('precrisisModal'), { attributes: true, attributeFilter: ['class'] });
         new MutationObserver(function() { setTimeout(checkTriggersScroll, 50); })
@@ -1649,6 +1651,6 @@
     </script>
     <script>document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".modal.visible").forEach(m => m.classList.remove("visible")); });</script>
     <script src="nora-scroll.js"></script>
-<script src="sw-register.js"></script>
+    <script src="sw-register.js"></script>
 </body>
 </html>
